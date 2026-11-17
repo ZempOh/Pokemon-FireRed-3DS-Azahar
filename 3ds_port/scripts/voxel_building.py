@@ -64,7 +64,7 @@ from dump_region_art import incbin_map, read_u16, Tilesets, ROOT  # noqa: E402
 
 import json  # noqa: E402
 
-NUM_PRIMARY = 512
+from voxel_art import PRIMARY_METATILES as NUM_PRIMARY, METATILE_ENTRIES
 EPS = 1e-6
 
 # Face shades for the model's faces: the drawing already carries Emerald's lighting, so a face the GBA camera sees
@@ -121,8 +121,10 @@ class LayoutArt:
 
     def entries(self, m):
         if m < NUM_PRIMARY:
-            return self.pm[m * 8:m * 8 + 8]
-        return self.sm[(m - NUM_PRIMARY) * 8:(m - NUM_PRIMARY) * 8 + 8]
+            start = m * METATILE_ENTRIES
+            return self.pm[start:start + METATILE_ENTRIES]
+        start = (m - NUM_PRIMARY) * METATILE_ENTRIES
+        return self.sm[start:start + METATILE_ENTRIES]
 
     def subtiles(self, m, layer):
         """Four 8x8 blocks of (rgb, colour index), flips applied, row major.

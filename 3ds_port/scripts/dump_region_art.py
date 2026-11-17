@@ -13,39 +13,23 @@ import struct
 
 from PIL import Image
 
+import voxel_art
+
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-NUM_PRIMARY = 512
-TILES_PER_TILESET = 512
+NUM_PRIMARY = voxel_art.PRIMARY_METATILES
+TILES_PER_TILESET = voxel_art.PRIMARY_TILES
 
 
 # The generators build a LayoutArt per layout (thousands per run) over a few
 # dozen tilesets: the files are read and parsed once per process.
-_INCBIN = {}
 _U16 = {}
 _GRAPHICS = {}
 
 
 def incbin_map(pattern):
-    if pattern not in _INCBIN:
-        _INCBIN[pattern] = _incbin_map(pattern)
-    return dict(_INCBIN[pattern])
-
-
-def _incbin_map(pattern):
-    text = open(os.path.join(ROOT, "src", "data", "tilesets", "metatiles.h"),
-                encoding="utf-8").read()
-    out = {"gTileset_" + n: os.path.join(ROOT, p)
-           for n, p in re.findall(pattern, text)}
-    # A tileset whose data goes by another name: gTileset_Building is drawn
-    # from gMetatiles_InsideBuilding. headers.h says which.
-    headers = open(os.path.join(ROOT, "src", "data", "tilesets", "headers.h"),
-                   encoding="utf-8").read()
-    for name, body in re.findall(r"const struct Tileset (gTileset_\w+)\s*=\s*\{(.*?)\};",
-                                 headers, re.S):
-        m = re.search(r"\.metatiles\s*=\s*gMetatiles_(\w+)", body)
-        if m and name not in out and "gTileset_" + m.group(1) in out:
-            out[name] = out["gTileset_" + m.group(1)]
-    return out
+    if pattern.startswith("gMetatileAttributes_"):
+        return dict(voxel_art.ATTRIBUTES)
+    return dict(voxel_art.METATILES)
 
 
 def read_u16(path):
@@ -55,14 +39,7 @@ def read_u16(path):
     return list(_U16[path])
 
 
-def tileset_dir(name):
-    """data/tilesets/<primary|secondary>/<snake_name>/ from the C symbol."""
-    snake = re.sub(r"(?<!^)(?=[A-Z])", "_", name[len("gTileset_"):]).lower()
-    for kind in ("primary", "secondary"):
-        path = os.path.join(ROOT, "data", "tilesets", kind, snake)
-        if os.path.isdir(path):
-            return path
-    return None
+tileset_dir = voxel_art.tileset_dir
 
 
 def load_graphics(name):
@@ -112,7 +89,7 @@ class Tilesets:
         # tileset the subtile came from - as the GBA and voxel_atlas.c
         # LookupColor do. Jagged Pass draws General tiles in Lavaridge's
         # palettes; read by the tile's own tileset they came out black.
-        palettes = self.pp if palette_id < 6 else self.sp
+        palettes = self.pp if palette_id < voxel_art.PRIMARY_PALETTES else self.sp
         pal = palettes[palette_id] if palette_id < len(palettes) else [(255, 0, 255)] * 16
         for y in range(8):
             for x in range(8):

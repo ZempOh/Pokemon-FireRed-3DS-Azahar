@@ -3589,7 +3589,7 @@ static void Snapshot(ViewState *s, u8 mode, u8 pressed)
     StringCopy(s->name, gSaveBlock2Ptr->playerName);
     /* The header's Y and RUN, and the focus on the dock or the header; in a
      * battle neither is for now. */
-    s->registered = s->dockLocked ? ITEM_NONE : gSaveBlock1Ptr->registeredItem;
+    s->registered = s->dockLocked ? ITEM_NONE : gSaveBlock1Ptr->registeredItemL;
     s->run = s->dockLocked ? 0 : (CtrSettings_RunAlways() ? 1 : 0) | (FlagGet(FLAG_SYS_B_DASH) ? 2 : 0);
     s->focus = sFocus;
     s->optFocus = FOCUS_NONE;
@@ -3620,7 +3620,7 @@ static void Snapshot(ViewState *s, u8 mode, u8 pressed)
             if (s->mapFly)
             {
                 for (int i = 0; i <= MAPSEC_EVER_GRANDE_CITY - MAPSEC_LITTLEROOT_TOWN; ++i)
-                    if (FlagGet(FLAG_VISITED_LITTLEROOT_TOWN + i))
+                    if (FlagGet(FLAG_VISITED_PALLET_TOWN + i))
                         s->flyVisited |= 1 << i;
                 s->flyFrontier = FlagGet(FLAG_LANDMARK_BATTLE_FRONTIER) != 0;
                 s->flyCanFly = s->pickType == MAPSECTYPE_CITY_CANFLY || s->pickType == MAPSECTYPE_BATTLE_FRONTIER;
@@ -3767,7 +3767,7 @@ static bool8 Prefetch(const ViewState *s)
         if (sIconBudget)
             BagPic(s->bv.female, s->bv.bagFrame);
         if (sIconBudget)
-            ItemIcon(s->bv.item != ITEM_NONE ? s->bv.item : ITEM_LIST_END);
+            ItemIcon(s->bv.item);
     }
     if (sIconBudget)
     {
@@ -6382,7 +6382,7 @@ static void Activate(u8 id, u8 mode)
     /* Y: SELECT in the field, the registered item. RUN: running by default. */
     if (id == HIT_COLUMN + COL_Y)
     {
-        if (mode == MODE_FIELD && FieldIdle() && gSaveBlock1Ptr->registeredItem != ITEM_NONE)
+        if (mode == MODE_FIELD && FieldIdle() && gSaveBlock1Ptr->registeredItemL != ITEM_NONE)
             PressOnce(SELECT_BUTTON);
         return;
     }
@@ -6862,7 +6862,7 @@ static bool8 ColumnItemAvailable(u8 item)
     if (item < SCR_COUNT)
         return (EnabledScreens() >> item) & 1;
     if (item == COL_Y)
-        return gSaveBlock1Ptr->registeredItem != ITEM_NONE;
+        return gSaveBlock1Ptr->registeredItemL != ITEM_NONE;
     if (item == COL_TITLE)
         return TitleToggles(&sShown);
     return FlagGet(FLAG_SYS_B_DASH);

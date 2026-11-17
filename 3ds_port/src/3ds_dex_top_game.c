@@ -126,15 +126,15 @@ struct Terrain
 
 static const struct Terrain sTerrains[] =
 {
-    [BATTLE_ENVIRONMENT_GRASS] = {gBattleEnvironmentTiles_TallGrass, gBattleEnvironmentTilemap_TallGrass, gBattleEnvironmentPalette_TallGrass},
-    [BATTLE_ENVIRONMENT_LONG_GRASS] = {gBattleEnvironmentTiles_LongGrass, gBattleEnvironmentTilemap_LongGrass, gBattleEnvironmentPalette_LongGrass},
-    [BATTLE_ENVIRONMENT_SAND] = {gBattleEnvironmentTiles_Sand, gBattleEnvironmentTilemap_Sand, gBattleEnvironmentPalette_Sand},
-    [BATTLE_ENVIRONMENT_UNDERWATER] = {gBattleEnvironmentTiles_Underwater, gBattleEnvironmentTilemap_Underwater, gBattleEnvironmentPalette_Underwater},
-    [BATTLE_ENVIRONMENT_WATER] = {gBattleEnvironmentTiles_Water, gBattleEnvironmentTilemap_Water, gBattleEnvironmentPalette_Water},
-    [BATTLE_ENVIRONMENT_POND] = {gBattleEnvironmentTiles_PondWater, gBattleEnvironmentTilemap_PondWater, gBattleEnvironmentPalette_PondWater},
-    [BATTLE_ENVIRONMENT_MOUNTAIN] = {gBattleEnvironmentTiles_Rock, gBattleEnvironmentTilemap_Rock, gBattleEnvironmentPalette_Rock},
-    [BATTLE_ENVIRONMENT_CAVE] = {gBattleEnvironmentTiles_Cave, gBattleEnvironmentTilemap_Cave, gBattleEnvironmentPalette_Cave},
-    [BATTLE_ENVIRONMENT_BUILDING] = {gBattleEnvironmentTiles_Building, gBattleEnvironmentTilemap_Building, gBattleEnvironmentPalette_Building},
+    [BATTLE_TERRAIN_GRASS] = {gBattleTerrainTiles_TallGrass, gBattleTerrainTilemap_TallGrass, gBattleTerrainPalette_TallGrass},
+    [BATTLE_TERRAIN_LONG_GRASS] = {gBattleTerrainTiles_LongGrass, gBattleTerrainTilemap_LongGrass, gBattleTerrainPalette_LongGrass},
+    [BATTLE_TERRAIN_SAND] = {gBattleTerrainTiles_Sand, gBattleTerrainTilemap_Sand, gBattleTerrainPalette_Sand},
+    [BATTLE_TERRAIN_UNDERWATER] = {gBattleTerrainTiles_Underwater, gBattleTerrainTilemap_Underwater, gBattleTerrainPalette_Underwater},
+    [BATTLE_TERRAIN_WATER] = {gBattleTerrainTiles_Water, gBattleTerrainTilemap_Water, gBattleTerrainPalette_Water},
+    [BATTLE_TERRAIN_POND] = {gBattleTerrainTiles_PondWater, gBattleTerrainTilemap_PondWater, gBattleTerrainPalette_PondWater},
+    [BATTLE_TERRAIN_MOUNTAIN] = {gBattleTerrainTiles_Rock, gBattleTerrainTilemap_Rock, gBattleTerrainPalette_Rock},
+    [BATTLE_TERRAIN_CAVE] = {gBattleTerrainTiles_Cave, gBattleTerrainTilemap_Cave, gBattleTerrainPalette_Cave},
+    [BATTLE_TERRAIN_BUILDING] = {gBattleTerrainTiles_Building, gBattleTerrainTilemap_Building, gBattleTerrainPalette_Building},
 };
 
 static bool8 InTable(const struct WildPokemonInfo *info, unsigned count, u16 species)
@@ -154,20 +154,20 @@ static u8 TerrainOf(u16 species)
         u8 type = map ? map->mapType : MAP_TYPE_ROUTE;
 
         if (InTable(h->landMonsInfo, LAND_WILD_COUNT, species))
-            return type == MAP_TYPE_UNDERGROUND ? BATTLE_ENVIRONMENT_CAVE : BATTLE_ENVIRONMENT_GRASS;
+            return type == MAP_TYPE_UNDERGROUND ? BATTLE_TERRAIN_CAVE : BATTLE_TERRAIN_GRASS;
         if (InTable(h->waterMonsInfo, WATER_WILD_COUNT, species) || InTable(h->fishingMonsInfo, FISH_WILD_COUNT, species))
-            return type == MAP_TYPE_OCEAN_ROUTE ? BATTLE_ENVIRONMENT_WATER
-                 : type == MAP_TYPE_UNDERWATER ? BATTLE_ENVIRONMENT_UNDERWATER : BATTLE_ENVIRONMENT_POND;
+            return type == MAP_TYPE_OCEAN_ROUTE ? BATTLE_TERRAIN_WATER
+                 : type == MAP_TYPE_UNDERWATER ? BATTLE_TERRAIN_UNDERWATER : BATTLE_TERRAIN_POND;
         if (InTable(h->rockSmashMonsInfo, ROCK_WILD_COUNT, species))
-            return BATTLE_ENVIRONMENT_MOUNTAIN;
+            return BATTLE_TERRAIN_MOUNTAIN;
     }
     switch (gSpeciesInfo[species].types[0])
     {
-    case TYPE_WATER: return BATTLE_ENVIRONMENT_WATER;
-    case TYPE_ROCK: case TYPE_GROUND: case TYPE_STEEL: case TYPE_DARK: return BATTLE_ENVIRONMENT_CAVE;
-    case TYPE_FIRE: case TYPE_DRAGON: return BATTLE_ENVIRONMENT_MOUNTAIN;
-    case TYPE_PSYCHIC: case TYPE_GHOST: return BATTLE_ENVIRONMENT_BUILDING;
-    default: return BATTLE_ENVIRONMENT_GRASS;
+    case TYPE_WATER: return BATTLE_TERRAIN_WATER;
+    case TYPE_ROCK: case TYPE_GROUND: case TYPE_STEEL: case TYPE_DARK: return BATTLE_TERRAIN_CAVE;
+    case TYPE_FIRE: case TYPE_DRAGON: return BATTLE_TERRAIN_MOUNTAIN;
+    case TYPE_PSYCHIC: case TYPE_GHOST: return BATTLE_TERRAIN_BUILDING;
+    default: return BATTLE_TERRAIN_GRASS;
     }
 }
 

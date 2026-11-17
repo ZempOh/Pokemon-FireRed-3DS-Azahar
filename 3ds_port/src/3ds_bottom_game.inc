@@ -1028,7 +1028,7 @@ static void DrawBagDesc(const ViewState *s)
     const struct CtrBagView *v = &s->bv;
     int oy = PlateEx(AREA_X, BAG_FOOT_Y, AREA_W, BAG_FOOT_H, sCreamPlate, PLATE_STATE_NORMAL, 0, 25, 4, 0);
 
-    DrawItemIcon(v->item != ITEM_NONE ? v->item : ITEM_LIST_END, AREA_X + 8, oy + (BAG_FOOT_H - 24) / 2);
+    DrawItemIcon(v->item, AREA_X + 8, oy + (BAG_FOOT_H - 24) / 2);
     TextLines(v->text, AREA_X + 40, oy + 2, AREA_W - 48, 13, 3, &sNormal, STYLE_INK, TRUE);
     if (v->state == CTR_BAG_VIEW_SWAP)
         AddHit(AREA_X, BAG_FOOT_Y, AREA_W, BAG_FOOT_H, HIT_BAG_DESC);
@@ -1417,9 +1417,9 @@ static void DrawDexInfo(const ViewState *s)
     if (v->owned)
     {
         DrawFootprint(v->footprint, x + w - 34, oy + 46);
-        DrawTypeIcon(gBaseStats[v->species].types[0], x + 8, oy + 76);
-        if (gBaseStats[v->species].types[1] != gBaseStats[v->species].types[0])
-            DrawTypeIcon(gBaseStats[v->species].types[1], x + 44, oy + 76);
+        DrawTypeIcon(gBaseStats[v->species].type1, x + 8, oy + 76);
+        if (gBaseStats[v->species].type2 != gBaseStats[v->species].type1)
+            DrawTypeIcon(gBaseStats[v->species].type2, x + 44, oy + 76);
     }
     oy = Plate(AREA_X, y + 100, AREA_W, AREA_Y + AREA_H - y - 100, sLight, PLATE_STATE_NORMAL);
     if (v->description)

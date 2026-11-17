@@ -105,9 +105,39 @@ both the executable and the data pack and keep your existing save.
 
 ### Compatibility and troubleshooting
 
-The browser installer and its cleanup and rollback tests have been verified.
-An end-to-end install and gameplay check on the AYN Thor is still pending.
-Updating Azahar resolved the mirrored title screen on the target AYN Thor.
+The browser installer's cleanup and rollback are covered by automated tests.
+The installed standalone cartridge was tested on an AYN Thor running Azahar
+2126.2 (Google Play) with the stock Adreno driver. The title rendered in the
+correct orientation, an existing save loaded into Pallet Town, and the
+lower-screen map responded to touch when switching between 2D and voxel 3D.
+
+On this setup, use Vulkan, 3× internal resolution, and nearest display
+filtering. Keep the disk shader cache enabled and async shader compilation
+disabled. Nearest filtering sharpens the pixel art and lower-screen text,
+and the higher internal resolution sharpens voxel geometry. Changes made
+in Azahar's global graphics settings also apply to other games.
+
+During short Pallet Town walks, Android's main-display presentation intervals
+averaged about 16.7 ms at both 1× with linear filtering and 3× with nearest
+filtering. The 95th percentile was about 25 ms at 1× and 17 ms on two 3× voxel
+passes. Enabling async shaders at 3× produced more intervals over 25 ms in
+one pass.
+
+The renderer reuses the uploaded texture when consecutive classic frames
+match. When opening a menu over the voxel world, it displays the captured
+scene and its matching overlay from the first held frame.
+
+The rebuilt cartridge was tested on the same Thor through Pallet Town,
+Oak's Lab, and Route 1, including crossing back to Pallet Town in 2D.
+The party menu opened on the lower screen with the voxel scene held above.
+A classic Poochyena battle and a voxel Sentret battle both completed and
+returned to the field.
+
+Two cold launches of each build used a fresh Azahar process and empty
+FireRed Vulkan disk caches. Both builds averaged about 16.7 ms between
+main-display presentations with a 95th percentile of about 25.4 ms.
+The counts of intervals over 25 ms varied between runs, and the samples
+showed no repeatable cold-start improvement.
 
 If the title screen appears mirrored, fully close the game, switch Azahar
 between Vulkan and OpenGL ES, and compare the same screen. To collect the

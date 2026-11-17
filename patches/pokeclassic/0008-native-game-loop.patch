@@ -1,0 +1,88 @@
+diff --git a/src/main.c b/src/main.c
+index 831fa1492874531f6187f415928a42b72bd54a32..da28f5549be2543843c772c95ecebe2b3681098b 100644
+--- a/src/main.c
++++ b/src/main.c
+@@ -1,4 +1,9 @@
+ #include "global.h"
++#ifdef PORT_BRIDGE
++#include "platform.h"
++#include "port_platform.h"
++u8 gHeap[HEAP_SIZE] __attribute__((aligned(4)));
++#endif
+ #include "crt0.h"
+ #include "malloc.h"
+ #include "link.h"
+@@ -98,7 +103,9 @@ void AgbMain()
+     InitIntrHandlers();
+     m4aSoundInit();
+     EnableVCountIntrAtLine150();
++#ifndef PORTABLE
+     InitRFU();
++#endif
+     RtcInit();
+     CheckForFlashMemory();
+     InitMainCallbacks();
+@@ -155,6 +162,9 @@ void AgbMain()
+ 
+         PlayTimeCounter_Update();
+         MapMusicMain();
++#ifdef PORT_BRIDGE
++        Port_RecordMainLoopIteration();
++#endif
+         WaitForVBlank();
+     }
+ }
+@@ -240,7 +250,11 @@ void InitKeys(void)
+ 
+ static void ReadKeys(void)
+ {
++#ifdef PORT_BRIDGE
++    u16 keyInput = Platform_GetKeyInput();
++#else
+     u16 keyInput = REG_KEYINPUT ^ KEYS_MASK;
++#endif
+     gMain.newKeysRaw = keyInput & ~gMain.heldKeysRaw;
+     gMain.newKeys = gMain.newKeysRaw;
+     gMain.newAndRepeatedKeys = gMain.newKeysRaw;
+@@ -289,9 +303,10 @@ void InitIntrHandlers(void)
+     for (i = 0; i < INTR_COUNT; i++)
+         gIntrTable[i] = gIntrTableTemplate[i];
+ 
++#ifndef PORTABLE
+     DmaCopy32(3, IntrMain, IntrMain_Buffer, sizeof(IntrMain_Buffer));
+-
+     INTR_VECTOR = IntrMain_Buffer;
++#endif
+ 
+     SetVBlankCallback(NULL);
+     SetHBlankCallback(NULL);
+@@ -400,10 +415,14 @@ static void IntrDummy(void)
+ 
+ static void WaitForVBlank(void)
+ {
++#ifdef PORT_BRIDGE
++    VBlankIntrWait();
++#else
+     gMain.intrCheck &= ~INTR_FLAG_VBLANK;
+ 
+     while (!(gMain.intrCheck & INTR_FLAG_VBLANK))
+         ;
++#endif
+ }
+ 
+ void SetTrainerHillVBlankCounter(u32 *counter)
+@@ -435,10 +454,14 @@ void ClearPokemonCrySongs(void)
+ 
+ // TODO: Needs to be updated if compiling for a different processor than the GBA's
+ bool8 IsAccurateGBA(void) { // tests to see whether running on either an accurate emulator in >=2020, or real hardware
++#ifdef PORTABLE
++  return FALSE;
++#else
+   u32 code[5] = {0xFF1EE12F, 0xE1DF00B0, 0xE12FFF1E, 0xAAAABBBB, 0xCCCCDDDD}; // ARM: _;ldrh r0, [pc];bx lr
+   u32 func = (u32) &code[0];
+   if (func & 3) // not word aligned; safer to just return false here
+     return FALSE;
+   func = (func & ~3) | 0x2; // misalign PC to test PC-relative loading
+   return ((u32 (*)(void)) func)() == code[3] >> 16;
++#endif
+ }

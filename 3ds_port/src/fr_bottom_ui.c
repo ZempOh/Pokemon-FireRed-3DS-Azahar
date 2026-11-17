@@ -251,6 +251,7 @@ static u8 sScreen = SCR_MAP;
 static u8 sOptTab, sOptSub, sOptPage;
 static s8 sDockFocus = -1;
 static s8 sOptionFocus = -1;
+static u16 sPanelConsumed;
 
 /* The battle menus (battle_controller_player.c, Port_BattleMenu) */
 static u32 sBattleMenuFrame = 0xFFFFFFF0;
@@ -4570,7 +4571,7 @@ static bool8 ProcessPanelKeys(const ViewState *s)
         do
         {
             sDockFocus = (sDockFocus + MENU_COUNT + direction) % MENU_COUNT;
-        } while (!(s->enabled & (1 << sDockFocus)));
+        } while (sDockFocus != MENU_OPTION && !(s->enabled & (1 << sDockFocus)));
     }
     return TRUE;
 }
@@ -4641,6 +4642,7 @@ void CtrBottom_Frame(void)
         sInGame = FALSE;
         sScreen = SCR_MAP;
         sDockFocus = sOptionFocus = -1;
+        sPanelConsumed = 0;
         sDrawn = FALSE;
     }
     if (!sInGame && InField())
@@ -4675,7 +4677,12 @@ void CtrBottom_Frame(void)
     {
         ProcessPanelTouch(&now, active, x, y);
         if (ProcessPanelKeys(&now))
+        {
+            sPanelConsumed |= CtrInput_Get()->held & CTR_KEY_GAME;
+            if (CtrInput_Get()->physicalHeld & CTR_KEY_Y)
+                sPanelConsumed |= SELECT_BUTTON;
             Snapshot(&now);
+        }
     }
     now.pressed = sTouchHit;
     if (sDrawn && memcmp(&now, &sShown, sizeof(now)) == 0)
@@ -4739,6 +4746,9 @@ uint16_t CtrBottom_InjectedKeys(void)
 
 uint16_t CtrBottom_FilterKeys(uint16_t held)
 {
+    /* Retain ownership of buttons that closed the panel until their release. */
+    sPanelConsumed &= held;
+    held &= ~sPanelConsumed;
     sDpadHeld = held & DPAD_ANY;
     if (PageActive())
         held &= ~sPageDpad;

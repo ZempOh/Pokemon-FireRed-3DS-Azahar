@@ -53,7 +53,7 @@ jobs:
           echo 'c34a4401f2fe86c515fc6d9a6d231224a98f55d5  /tmp/frlg-plus.gba' | sha1sum -c
       - name: Generate matching local-builder recipe
         run: |
-          python3 tools/build_release.py --version 1.5.1 --python-builder --tree build/upstream \
+          python3 tools/build_release.py --version 1.5.1 --cartridge-recipe-only --tree build/upstream \
             --rom /tmp/frlg-plus.gba --nm "$DEVKITARM/bin/arm-none-eabi-nm"
       - uses: actions/upload-artifact@v4
         with:

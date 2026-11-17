@@ -91,6 +91,8 @@ def main() -> None:
     ap.add_argument("--tree", type=Path, default=Path("C:/fr3ds/upstream"), help="the build tree")
     ap.add_argument("--nm", default="C:/devkitPro/devkitARM/bin/arm-none-eabi-nm.exe")
     ap.add_argument("--skip-recipe", action="store_true")
+    ap.add_argument("--cartridge-recipe-only", action="store_true",
+                    help="package the recipe and generators for the separate cartridge template")
     ap.add_argument("--python-builder", action="store_true",
                     help="ship the builder as Python sources instead of a PyInstaller executable")
     args = ap.parse_args()
@@ -99,7 +101,8 @@ def main() -> None:
     tag = "v" + args.version
     release = DIST / ("%s-%s-Windows" % (APP, tag))
     payload = release / "payload"
-    for name in (APP + ".3dsx", APP + ".smdh"):
+    executables = () if args.cartridge_recipe_only else (APP + ".3dsx", APP + ".smdh")
+    for name in executables:
         if not (port / "dist" / name).exists():
             sys.exit("%s is missing: run make release in %s first" % (port / "dist" / name, port))
 
@@ -114,7 +117,7 @@ def main() -> None:
     if release.exists():
         shutil.rmtree(release)
     payload.mkdir(parents=True)
-    for name in (APP + ".3dsx", APP + ".smdh"):
+    for name in executables:
         shutil.copy2(port / "dist" / name, payload / name)
     shutil.copy2(recipe, payload / "firered3ds.recipe")
     scripts, external = local_closure(port / "scripts", GENERATORS)
@@ -126,7 +129,9 @@ def main() -> None:
         dst.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(port / rel, dst)
 
-    if args.python_builder:
+    if args.cartridge_recipe_only:
+        pass
+    elif args.python_builder:
         shutil.copytree(ROOT / "builder" / "firered3ds_builder", release / "firered3ds_builder",
                         ignore=shutil.ignore_patterns("__pycache__"))
         shutil.copy2(ROOT / "builder" / "firered3ds-builder.py", release / "firered3ds-builder.py")
@@ -139,7 +144,8 @@ def main() -> None:
             cwd=ROOT / "builder")
         shutil.copytree(build / "dist" / (APP + "-Builder"), release, dirs_exist_ok=True)
 
-    shutil.copy2(ROOT / "builder" / "README-release.txt", release / "README.txt")
+    if not args.cartridge_recipe_only:
+        shutil.copy2(ROOT / "builder" / "README-release.txt", release / "README.txt")
     licenses = release / "LICENSES"
     licenses.mkdir()
     shutil.copy2(ROOT / "NOTICE.md", licenses / "NOTICE.md")
@@ -154,11 +160,11 @@ def main() -> None:
                 zf.write(path, path.relative_to(DIST).as_posix())
 
     standalone = []
-    for name in (APP + ".3dsx", APP + ".smdh"):
+    for name in executables:
         shutil.copy2(payload / name, DIST / name)
         standalone.append(DIST / name)
     cia = port / "forwarder" / "dist" / CIA_NAME
-    if cia.exists():
+    if not args.cartridge_recipe_only and cia.exists():
         shutil.copy2(cia, DIST / CIA_NAME)
         standalone.append(DIST / CIA_NAME)
 

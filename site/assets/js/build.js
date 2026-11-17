@@ -24,11 +24,13 @@ const WEIGHT = { runtime: 0.07, payload: 0.03, data: 0.04, scenery: 0.66, verify
 const STEP_LABEL = { "terrain relief": "s.terrain relief", "trees": "s.trees", "buildings": "s.buildings" };
 
 const state = { file: null, bytes: null, ok: false, manifest: null, info: null, worker: null, url: null };
+let cartridgeAvailable = false;
 const frac = {};
 let followersOn = true;
 let timer = null;
 let wakeLock = null;
 let started = 0;
+let buildMode = "zip";
 let lastError = null;
 let azahar = null;
 let games = null;
@@ -124,7 +126,8 @@ folderButton.addEventListener("click", async () => {
 function view(name) {
   viewName = name;
   document.querySelectorAll("[data-view]").forEach((el) => el.classList.toggle("hidden", el.dataset.view !== name));
-  $("[data-azahar-panel]").hidden = name !== "pick" && (name !== "done" || state.done?.install === "a.installed");
+  $("[data-azahar-panel]").hidden = name !== "pick" &&
+    (name !== "done" || state.done?.install === "a.installed" || state.done?.cartridge);
 }
 
 function log(line) {
@@ -204,6 +207,7 @@ function updateStart() {
   const ready = state.ok && state.manifest && !choosingFolder;
   $("[data-start]").disabled = !ready;
   $("[data-build-zip]").disabled = !ready;
+  $("[data-build-cartridge]").disabled = !ready || !cartridgeAvailable;
 }
 
 /* --- the follower's sprites --------------------------------------------- */
@@ -349,7 +353,9 @@ function start(mode) {
     return;
   }
   if (typeof Worker === "undefined" || !window.crypto || !crypto.subtle) return fail("unsupported_browser");
-  followersOn = $("[data-followers]").checked;
+  buildMode = mode;
+  $("[data-phase='zip'] [data-i18n]").textContent = t(mode === "cartridge" ? "p.cartridge" : "p.zip");
+  followersOn = mode !== "cartridge" && $("[data-followers]").checked;
   lastError = null;
   $("[data-log]").textContent = "";
   PHASES.forEach((p) => { frac[p] = 0; detail(p, ""); setPhase(p, ""); });
@@ -360,7 +366,7 @@ function start(mode) {
   timer = setInterval(() => { $("[data-elapsed]").textContent = clock(); }, 500);
   acquireWakeLock();
 
-  const worker = new Worker(new URL("./builder.worker.js?v=2", import.meta.url), { type: "module" });
+  const worker = new Worker(new URL("./builder.worker.js?v=4", import.meta.url), { type: "module" });
   state.worker = worker;
   let followerJob = null;
   worker.onerror = (e) => fail("internal_error", t("e.internal"), e.message || "");
@@ -392,8 +398,9 @@ function start(mode) {
   };
   // the worker gets its own copy: the page keeps the ROM for "Build again"
   const rom = state.bytes.slice(0);
-  worker.postMessage({ type: "start", base: new URL("../../", import.meta.url).href, rom, romName: state.file.name,
-                       followers: followersOn, direct: canConnect }, [rom]);
+  const base = new URL(mode === "cartridge" ? "../../cartridge/" : "../../", import.meta.url).href;
+  worker.postMessage({ type: "start", base, rom, romName: state.file.name,
+                       followers: followersOn, direct: canConnect, cartridge: mode === "cartridge" }, [rom]);
 }
 
 async function finish(m, mode) {
@@ -402,15 +409,17 @@ async function finish(m, mode) {
   render();
   const info = state.info || {};
   const tag = (state.manifest && state.manifest.releaseTag) || info.tag || "";
-  const name = "FireRed3DS-" + tag + "-SD.zip";
+  const name = m.cartridge ? "FireRed3DS.3ds" : "FireRed3DS-" + tag + "-SD.zip";
   if (state.url) URL.revokeObjectURL(state.url);
-  state.url = URL.createObjectURL(new Blob([m.zip], { type: "application/zip" }));
+  const bytes = m.cartridge || m.zip;
+  state.url = URL.createObjectURL(new Blob([bytes], { type: m.cartridge ? "application/octet-stream" : "application/zip" }));
   const a = $("[data-download]");
   a.href = state.url;
   a.download = name;
-  const mb = (m.zip.byteLength / 1048576).toFixed(1) + " MB";
-  state.done = { name, mb, time: clock(), followers: m.followers, files: m.files,
+  const mb = (bytes.byteLength / 1048576).toFixed(1) + " MB";
+  state.done = { name, mb, time: clock(), followers: m.followers, files: m.files, cartridge: !!m.cartridge,
                  install: canConnect ? "a.zipReady" : "a.manualReady" };
+  if (m.cartridge) state.done.install = "a.cartridgeReady";
   if (mode === "install") await installBuiltFiles();
   doneText();
   view("done");
@@ -458,7 +467,8 @@ function doneText() {
     ? t("a.installedGames", { folder: state.done.games })
     : state.done.install ? t(state.done.install) : "";
   $("[data-install-detail]").hidden = state.done.install !== "a.failed";
-  $("[data-zip-instructions]").hidden = state.done.install === "a.installed";
+  $("[data-zip-instructions]").hidden = state.done.install === "a.installed" || state.done.cartridge;
+  $("[data-download] span").textContent = t(state.done.cartridge ? "d.downloadCartridge" : "d.download");
   $("[data-done-title]").textContent = t(state.done.install === "a.installed" ? "a.done" : "d.title");
 }
 
@@ -486,7 +496,7 @@ const input = $("[data-rom]");
 const drop = $("[data-drop]");
 async function selectRom(file) {
   await Promise.all([restoreFolder, checkRom(file)]);
-  if (file === lastRom && azahar && !choosingFolder) start("install");
+  if (file === lastRom && azahar && !choosingFolder && !cartridgeAvailable) start("install");
 }
 
 input.addEventListener("change", () => {
@@ -507,6 +517,18 @@ $("[data-start]").addEventListener("click", () => {
   else folderButton.click();
 });
 $("[data-build-zip]").addEventListener("click", () => start("zip"));
+$("[data-build-cartridge]").addEventListener("click", () => start("cartridge"));
+fetch("cartridge/payload/web-manifest.json", { cache: "no-cache" })
+  .then((response) => response.ok ? response.json() : null)
+  .then((manifest) => {
+    if (manifest?.kind !== "firered3ds-web-payload") return;
+    cartridgeAvailable = true;
+    $("[data-build-cartridge]").hidden = false;
+    $("[data-standalone-browser-help]").hidden = false;
+    $("[data-standalone-local-help]").hidden = true;
+    updateStart();
+  })
+  .catch(() => {});
 document.querySelectorAll("[data-again]").forEach((b) => b.addEventListener("click", () => {
   if (installing || choosingFolder) return;
   state.done = null;
@@ -516,6 +538,7 @@ document.querySelectorAll("[data-again]").forEach((b) => b.addEventListener("cli
 window.addEventListener("beforeunload", (e) => { if (state.worker || installing) { e.preventDefault(); e.returnValue = ""; } });
 
 onLang(() => {
+  $("[data-phase='zip'] [data-i18n]").textContent = t(buildMode === "cartridge" ? "p.cartridge" : "p.zip");
   showFolderStatus();
   if (lastRom && !state.worker) checkRom(lastRom);
   showError();

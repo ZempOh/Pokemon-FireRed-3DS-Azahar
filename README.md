@@ -17,6 +17,19 @@ executable and data recipe. You supply your own FireRed cartridge dump.
 
 ## Install and update
 
+### One-file cartridge for Azahar
+
+1. Open the [game builder](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/build.html)
+   and select your own Pokémon FireRed (USA, Rev 1) ROM.
+2. Click **Build standalone .3ds**, then download `FireRed3DS.3ds`.
+3. Put that file in the folder Azahar already scans for your other 3DS
+   games. In Azahar, select **HLE** audio emulation and launch FireRed.
+
+The browser generates the game data on your device and embeds it in the
+cartridge. The standalone build uses the same virtual SD save location
+as the homebrew edition. Optional follower sprites are available in the
+homebrew edition.
+
 ### Azahar on Android (including AYN Thor)
 
 1. In Chrome 132 or later on the handheld, open the [Azahar game builder](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/build.html).
@@ -223,7 +236,11 @@ The target writes `build/upstream/3ds_port/dist/FireRed3DS.3ds`. Its RomFS
 contains the game data, so no SD data pack is needed. Select **HLE** audio
 emulation in Azahar. The image supplies its own HLE DSP component and uses
 Azahar's virtual SD card for saves and settings. Build the cartridge image
-locally for personal use. The web builder still produces the homebrew release.
+locally for personal use. To refresh the browser cartridge, the cartridge
+workflow compiles a template with an empty RomFS data slot and generates
+the extraction recipe for that exact engine. Run
+`tools/build_cartridge_payload.py` on the resulting template and release
+ZIP to assemble the assets under `cartridge/payload/` on the site.
 
 The source tree is the pinned decomp plus this project's patches and port:
 

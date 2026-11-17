@@ -117,7 +117,7 @@ function mkdirs(py, path) {
   if (dir) py.FS.mkdirTree(dir);
 }
 
-async function run({ base, rom, romName, followers, direct }) {
+async function run({ base, rom, romName, followers, direct, cartridge }) {
   const t0 = performance.now();
   post({ type: "phase", phase: "runtime" });
   const py = await loadRuntime();
@@ -190,6 +190,20 @@ _res
   }
 
   post({ type: "phase", phase: "zip" });
+  if (cartridge) {
+    const template = await download(base + "payload/cartridge-template.gz", "zip");
+    py.FS.writeFile("/fr3ds/cartridge-template.gz", template);
+    py.runPython(`
+from pathlib import Path
+from firered3ds_builder.cartridge import build_cartridge
+build_cartridge(Path("/fr3ds/cartridge-template.gz"),
+                Path("/sd/3ds/firered3ds/firered3ds.pak"),
+                Path("/fr3ds/payload/firered3ds.recipe"), Path("/out.3ds"))
+`);
+    const image = py.FS.readFile("/out.3ds");
+    post({ type: "done", cartridge: image.buffer, result: built.result }, [image.buffer]);
+    return;
+  }
   py.runPython(`
 from firered3ds_builder.web import make_sd_zip
 make_sd_zip("/sd", "/out.zip")

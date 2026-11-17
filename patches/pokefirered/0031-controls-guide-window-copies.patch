@@ -1,0 +1,46 @@
+diff --git a/src/oak_speech.c b/src/oak_speech.c
+index 77dd3db..70e3f60 100644
+--- a/src/oak_speech.c
++++ b/src/oak_speech.c
+@@ -886,12 +886,20 @@ static void Task_ControlsGuide_ChangePage(u8 taskId)
+         {
+             for (i = 0; i < numWindows; i++)
+             {
++#ifndef PORT_BRIDGE
+                 FillWindowPixelBuffer(sOakSpeechResources->windowIds[i], PIXEL_FILL(0));
++#endif
+                 ClearWindowTilemap(sOakSpeechResources->windowIds[i]);
++#ifndef PORT_BRIDGE
+                 CopyWindowToVram(sOakSpeechResources->windowIds[i], COPYWIN_FULL);
++#endif
+                 RemoveWindow(sOakSpeechResources->windowIds[i]);
+                 sOakSpeechResources->windowIds[i] = 0;
+             }
++#ifdef PORT_BRIDGE
++            /* Window pixels are freed before queued DMA runs. Only upload the tilemap. */
++            CopyBgTilemapBufferToVram(0);
++#endif
+             gTasks[taskId].func = Task_ControlsGuide_LoadPage;
+         }
+         else
+@@ -911,12 +919,20 @@ static void Task_ControlsGuide_Clear(u8 taskId)
+     {
+         for (i = 0; i < NUM_CONTROLS_GUIDE_PAGES_2_3_WINDOWS; i++)
+         {
++#ifndef PORT_BRIDGE
+             FillWindowPixelBuffer(sOakSpeechResources->windowIds[i], PIXEL_FILL(0));
++#endif
+             ClearWindowTilemap(sOakSpeechResources->windowIds[i]);
++#ifndef PORT_BRIDGE
+             CopyWindowToVram(sOakSpeechResources->windowIds[i], COPYWIN_FULL);
++#endif
+             RemoveWindow(sOakSpeechResources->windowIds[i]);
+             sOakSpeechResources->windowIds[i] = 0;
+         }
++#ifdef PORT_BRIDGE
++        /* Window pixels are freed before queued DMA runs. Only upload the tilemap. */
++        CopyBgTilemapBufferToVram(0);
++#endif
+         FillBgTilemapBufferRect_Palette0(1, 0, 0, 2, 30, 18);
+         CopyBgTilemapBufferToVram(1);
+         DestroyTextCursorSprite(gTasks[taskId].tTextCursorSpriteId);

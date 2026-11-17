@@ -142,7 +142,10 @@ async function run({ base, rom, romName, followers, direct, cartridge }) {
       (manifest.kind !== "firered3ds-web-payload" && !(cartridge && cartridgeOnly))) {
     throw new Failure("payload_missing", "", "unknown web manifest");
   }
-  const zip = await download(base + "payload/FireRed3DS-WebPayload.zip?v=" + encodeURIComponent(manifest.releaseTag), "payload");
+  const payloadVersion = cartridgeOnly
+    ? [manifest.releaseTag, manifest.dataAbi, manifest.cartridgeSha256].join("-")
+    : manifest.releaseTag;
+  const zip = await download(base + "payload/FireRed3DS-WebPayload.zip?v=" + encodeURIComponent(payloadVersion), "payload");
   py.FS.mkdirTree("/fr3ds");
   py.FS.writeFile("/fr3ds/payload.zip", zip);
   py.globals.set("expected_manifest", JSON.stringify(manifest));
@@ -204,7 +207,8 @@ _res
 
   post({ type: "phase", phase: "zip" });
   if (cartridge) {
-    const template = await download(base + "payload/cartridge-template.gz", "zip");
+    const templateVersion = cartridgeOnly ? "?v=" + encodeURIComponent(manifest.cartridgeSha256) : "";
+    const template = await download(base + "payload/cartridge-template.gz" + templateVersion, "zip");
     if (cartridgeOnly) {
       const digest = new Uint8Array(await crypto.subtle.digest("SHA-256", template));
       const hex = Array.from(digest, (byte) => byte.toString(16).padStart(2, "0")).join("");

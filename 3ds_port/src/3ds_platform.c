@@ -72,10 +72,12 @@ static void ShowNoSound(void)
     consoleSelect(&console);
     consoleClear();
 #if CTR_AZAHAR_HLE
+    unsigned long result = CtrAudio_InitResult();
     printf("\x1b[2;2HPokemon FireRed 3DS\n\n\x1b[33m No sound\x1b[0m\n\n"
-           " Select HLE audio emulation in Azahar\n"
-           " and restart the game for sound.\n\n"
-           " Press A to continue.");
+           " %s\n"
+           " Audio result: %08lX\n\n"
+           " Press A to continue.",
+           result ? "Azahar audio initialization failed." : "Audio buffer allocation failed.", result);
 #else
     printf("\x1b[2;2HPokemon FireRed 3DS\n\n\x1b[33m No sound\x1b[0m\n\n"
            " This console has no dump of its DSP\n"
@@ -140,10 +142,17 @@ bool CtrPlatform_Init(void)
     /* A console without dumped DSP firmware still plays; it just plays silent.
      * CtrAudio_Init says so in the log, and once on the screen: a player
      * would only hear nothing, and not know why. */
-    if (!CtrAudio_Init() && !CtrSettings_GetInt(NO_SOUND_SEEN_KEY, 0))
+    if (!CtrAudio_Init())
     {
+#if CTR_AZAHAR_HLE
         ShowNoSound();
-        CtrSettings_SetInt(NO_SOUND_SEEN_KEY, 1);
+#else
+        if (!CtrSettings_GetInt(NO_SOUND_SEEN_KEY, 0))
+        {
+            ShowNoSound();
+            CtrSettings_SetInt(NO_SOUND_SEEN_KEY, 1);
+        }
+#endif
     }
     if (!CtrVideo_Init())
     {

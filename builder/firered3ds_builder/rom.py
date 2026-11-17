@@ -19,6 +19,7 @@ from pathlib import Path
 from .errors import BuilderError
 
 SUPPORTED_SHA1 = "dd5945db9b930750cb39d00c84da8571feebf417"
+FRLG_PLUS_SHA1 = "c34a4401f2fe86c515fc6d9a6d231224a98f55d5"
 # Fingerprints: libretro-database/metadat/no-intro/Nintendo - Game Boy Advance.dat
 ROM_PROFILES = {"BPRE": SUPPORTED_SHA1}
 ROM_SIZE = 16 * 1024 * 1024
@@ -77,7 +78,7 @@ def check_rom_bytes(data: bytes, source: Path, supported: tuple[str, ...] | None
     title, code = header(data)
     sha1 = hashlib.sha1(data).hexdigest()
     if supported is None:
-        supported = tuple(ROM_PROFILES.values())
+        supported = (*ROM_PROFILES.values(), FRLG_PLUS_SHA1)
     if sha1 not in supported:
         codes = [c for c, s in ROM_PROFILES.items() if s in supported] or ["BPRE"]
         names = " or ".join(KNOWN_CODES[c] for c in codes)
@@ -88,8 +89,8 @@ def check_rom_bytes(data: bytes, source: Path, supported: tuple[str, ...] | None
         if code in codes:
             raise BuilderError(
                 "This is a %s ROM, but not an unmodified one." % what,
-                "Patched, hacked or bad dumps are not supported. Use a clean dump of your cartridge "
-                "(SHA-1 %s)." % ROM_PROFILES[code], code="rom_modified")
+                "Use a clean cartridge dump (SHA-1 %s) or the supported FireRed & LeafGreen+ "
+                "v1.5.1 ROM (SHA-1 %s)." % (ROM_PROFILES[code], FRLG_PLUS_SHA1), code="rom_modified")
         raise BuilderError("This file is not the supported ROM.",
                            "Expected %s, SHA-1 %s." % (names, " or ".join(ROM_PROFILES[c] for c in codes)),
                            code="rom_unsupported")

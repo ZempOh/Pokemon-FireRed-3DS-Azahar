@@ -1,0 +1,96 @@
+diff --git a/gflib/sprite.c b/gflib/sprite.c
+index 224e512520f50cb4c159ee6c7556cfe7cb58e92d..7d006df08f63d628d3ef8e69862deff66fe97d30 100644
+--- a/gflib/sprite.c
++++ b/gflib/sprite.c
+@@ -2,6 +2,9 @@
+ #include "sprite.h"
+ #include "main.h"
+ #include "palette.h"
++#ifdef PORT_BRIDGE
++#include "port_platform.h"
++#endif
+ 
+ #define MAX_SPRITE_COPY_REQUESTS 64
+ 
+diff --git a/include/constants/local_link.h b/include/constants/local_link.h
+new file mode 100644
+index 0000000000000000000000000000000000000000..f06273c0ed07f6388e89cd084e3f2b3f18ba0969
+--- /dev/null
++++ b/include/constants/local_link.h
+@@ -0,0 +1,24 @@
++#ifndef GUARD_CONSTANTS_LOCAL_LINK_H
++#define GUARD_CONSTANTS_LOCAL_LINK_H
++
++// Local wireless play (3ds_port/src/3ds_local.c): the state of a session with
++// other 3DS systems nearby, as the link counters' scripts see it
++// (special LocalSession_Wait).
++#define LOCAL_SESSION_OFF       0 // local wireless isn't set up
++#define LOCAL_SESSION_SEARCHING 1 // looking for a session nearby
++#define LOCAL_SESSION_IN        2 // joined one, or hosting one
++#define LOCAL_SESSION_FAILED    3 // the wireless couldn't be started (switched off?)
++#define LOCAL_SESSION_NONE      4 // not in a session
++#define LOCAL_SESSION_OTHER_BUILD 5 // the players nearby have another build of the game
++
++// Which counter a session is for: players only meet others at the same kind
++// of counter, as the GBA's wireless features only see their own kind.
++#define LOCAL_KIND_ANY            0 // sessions started for tests
++#define LOCAL_KIND_UNION_ROOM     1
++#define LOCAL_KIND_DIRECT_CORNER  2
++#define LOCAL_KIND_GAME_CORNER    3 // Mossdeep Game Corner: Pokemon Jump, Dodrio Berry-Picking
++#define LOCAL_KIND_BERRY_BLENDER  4 // Lilycove Contest Hall's Berry Blenders
++#define LOCAL_KIND_CONTEST        5 // Lilycove Contest Hall's link contest receptionist
++#define LOCAL_KIND_BATTLE_TOWER   6 // Battle Tower link multi battles
++
++#endif // GUARD_CONSTANTS_LOCAL_LINK_H
+diff --git a/include/local_link.h b/include/local_link.h
+new file mode 100644
+index 0000000000000000000000000000000000000000..8957391b5cc3a3d117f4001522cd071f74bbeba4
+--- /dev/null
++++ b/include/local_link.h
+@@ -0,0 +1,26 @@
++#ifndef GUARD_LOCAL_LINK_H
++#define GUARD_LOCAL_LINK_H
++
++// Local wireless play: the link through the emulated Wireless Adapter
++// (3ds_port/src/3ds_rfu_adapter.c), its radio the 3DS's local wireless
++// (3ds_port/src/3ds_local.c).
++
++bool8 PlatformLocalLinkEnabled(void); // the emulated adapter is there
++bool8 PlatformLocalLinkActive(void);  // linked to other players through it
++// Battle messages go whole, straight to the other players (everyone gets
++// their own back too, in order), instead of 12 bytes a frame.
++void PlatformLinkBattleReset(void);
++void PlatformLinkBattleSend(const void *data, u16 size, bool8 toSelf);
++u16 PlatformLinkBattleRecv(void *out, u16 max); // next message, 0 if none
++// Link blocks (SendBlock) the same way: the next block from the player with
++// that index in the link layer (0 if none). The host works out the index of
++// a child's blocks with PlatformRfuPlayerIndexForSlot (link_rfu_2.c).
++void PlatformLinkBlockSend(const void *data, u16 size);
++u16 PlatformLinkBlockTake(u8 playerIndex, void *out, u16 max);
++u8 PlatformRfuPlayerIndexForSlot(u8 slot);
++
++// The link counters' session (src/local_session.c): once a frame, leaves it
++// when the player has walked away from the counter.
++void LocalSession_Update(void);
++
++#endif // GUARD_LOCAL_LINK_H
+diff --git a/src/intro.c b/src/intro.c
+index f04f3bceb74a2dc239de37fbfdadec0d6e1d348f..114f64af17e97a4c5441d6d660babea1f03ce518 100644
+--- a/src/intro.c
++++ b/src/intro.c
+@@ -863,6 +863,7 @@ static bool8 RunCopyrightScreen(void)
+             {
+                 if (sGcmb.gcmb_field_2 == 2)
+                 {
++#ifndef PORTABLE
+                     // Gc6e
+                     if (*((u32 *)0x020000AC) == 0x65366347)
+                     {
+@@ -870,6 +871,7 @@ static bool8 RunCopyrightScreen(void)
+                         *((u32 *)0x020000AC) = 0x65366347;
+                     }
+                     GameCubeMultiBoot_ExecuteProgram(&sGcmb);
++#endif
+                 }
+             }
+             else

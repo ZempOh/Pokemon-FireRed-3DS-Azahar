@@ -36,6 +36,10 @@
     <span class="eyebrow" data-i18n="b.eyebrow">Web builder</span>
     <h1 data-i18n="b.title">Build Pokémon FireRed 3DS</h1>
     <p class="lead"><span data-i18n="b.lead">Install FireRed 3DS into Azahar, or build a ZIP for manual installation.</span> <span data-i18n="b.version">Version:</span> <strong data-release="tag">…</strong></p>
+    <details class="callout" style="margin-top:20px">
+      <summary data-i18n="b.standalone">Standalone .3ds cartridge for Azahar</summary>
+      <p data-i18n-html="b.standaloneHelp">The cartridge currently builds on a computer with the 3DS toolchain. Follow the <a href="https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar#standalone-cartridge-image-for-azahar">local build instructions</a>, copy <code>FireRed3DS.3ds</code> to your Azahar games folder, and select <strong>HLE</strong> audio emulation. The cartridge includes its game data. The browser build below produces the <code>.3dsx</code> and <code>.pak</code> edition.</p>
+    </details>
     <p class="privacy">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
       <span data-i18n="b.privacy">Your ROM is processed entirely in your browser and never leaves your device. Nothing is uploaded: the game data is created on this device by the project's own builder.</span>
@@ -176,7 +180,7 @@
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js" integrity="sha384-mZT2gIty7ZDdOGkxfP6joZcYdMW1Jvj9dRlfpTmaJAKKXTqzygtB22k7FLe+KZC1" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
-<script src="assets/js/i18n.js?v=3"></script>
+<script src="assets/js/i18n.js?v=4"></script>
 <script src="assets/js/site.js"></script>
 <script type="module" src="assets/js/build.js?v=3"></script>
 </body>

@@ -51,6 +51,8 @@ window.I18N = {
 
     "b.eyebrow": "Web builder", "b.title": "Build Pokémon FireRed 3DS",
     "b.lead": "Install FireRed 3DS into Azahar, or build a ZIP for manual installation.",
+    "b.standalone": "Standalone .3ds cartridge for Azahar",
+    "b.standaloneHelp": "The cartridge currently builds on a computer with the 3DS toolchain. Follow the <a href=\"https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar#standalone-cartridge-image-for-azahar\">local build instructions</a>, copy <code>FireRed3DS.3ds</code> to your Azahar games folder, and select <strong>HLE</strong> audio emulation. The cartridge includes its game data. The browser build below produces the <code>.3dsx</code> and <code>.pak</code> edition.",
     "b.version": "Version:",
     "b.privacy": "Your ROM is processed entirely in your browser and never leaves your device. Nothing is uploaded: the game data is created on this device by the project's own builder.",
     "b.pick": "Choose your ROM",
@@ -176,6 +178,8 @@ window.I18N = {
 
     "b.eyebrow": "Builder web", "b.title": "Crea Pokémon FireRed 3DS",
     "b.lead": "Instala FireRed 3DS en Azahar o genera un ZIP para instalarlo manualmente.",
+    "b.standalone": "Cartucho .3ds independiente para Azahar",
+    "b.standaloneHelp": "Por ahora, el cartucho se compila en un ordenador con las herramientas de desarrollo de 3DS. Sigue las <a href=\"https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar#standalone-cartridge-image-for-azahar\">instrucciones de compilación local</a>, copia <code>FireRed3DS.3ds</code> a la carpeta de juegos de Azahar y selecciona la emulación de audio <strong>HLE</strong>. El cartucho incluye los datos del juego. El builder web de abajo genera la edición <code>.3dsx</code> y <code>.pak</code>.",
     "b.version": "Versión:",
     "b.privacy": "Tu ROM se procesa por completo en tu navegador y nunca sale de tu dispositivo. No se sube nada: los datos del juego los crea en este dispositivo el builder del propio proyecto.",
     "b.pick": "Elige tu ROM",

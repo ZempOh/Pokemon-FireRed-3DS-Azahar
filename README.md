@@ -1,3 +1,9 @@
+# Pokémon Classic voxel port
+
+This development branch pins Pokémon Classic v1.5.1 and applies the initial portable memory, DMA and BIOS layer from the Emerald 3DS project. Build integration and voxel rendering for Classic's maps are still in progress.
+
+The renderer baseline and its documentation follow.
+
 <p align="center">
   <img src="https://i.postimg.cc/XJRQB9cc/logo2.png" alt="Emerald 3DS" width="480">
 </p>

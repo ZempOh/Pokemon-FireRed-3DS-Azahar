@@ -27,11 +27,11 @@ BRIDGE_FLAGS := -DPORT_BRIDGE
 # The compile runs from the repository root (preproc resolves charmap and
 # include paths there), so every search path is absolute.
 FULL_INCLUDES := -iquote $(abspath compat) -iquote $(abspath include) -iquote $(abspath $(ROOT)/include)
-FULL_INCLUDES += -iquote $(abspath $(ROOT)/include/constants) -iquote $(abspath $(ROOT))
+FULL_INCLUDES += -iquote $(abspath $(ROOT)/include/constants) -iquote $(abspath $(ROOT)/gflib) -iquote $(abspath $(ROOT))
 FULLFLAGS := $(filter-out -iquote include -iquote ../include -iquote ../include/constants -iquote ..,$(GAMEFLAGS)) $(FULL_INCLUDES) $(BRIDGE_FLAGS)
 FULLCFLAGS := $(GAME_ARCH) $(filter-out $(ARCH),$(GAMECFLAGS))
 
-ROOT_C_SRCS := $(wildcard $(ROOT)/src/*.c $(ROOT)/src/*/*.c $(ROOT)/src/*/*/*.c)
+ROOT_C_SRCS := $(wildcard $(ROOT)/src/*.c $(ROOT)/src/*/*.c $(ROOT)/src/*/*/*.c $(ROOT)/gflib/*.c)
 # GBA-only link/multiboot programs; 3ds_compat.c provides their entry points.
 ROOT_C_SRCS := $(filter-out $(ROOT)/src/berry_fix_program.c $(ROOT)/src/ereader_screen.c $(ROOT)/src/mystery_gift_menu.c $(ROOT)/src/mystery_event_menu.c,$(ROOT_C_SRCS))
 

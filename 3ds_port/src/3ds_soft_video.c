@@ -149,6 +149,8 @@ static C3D_RenderTarget *sTop;
 static C3D_Tex sFrameTex;
 static Tex3DS_SubTexture sFrameSub;
 static uint16_t *sLinear;
+static uint16_t sUploadedFrame[CTR_SOFT_WIDTH * CTR_SOFT_HEIGHT];
+static bool sFrameUploaded;
 /* The UI over the 3D overworld: RGBA5551, alpha 0 where nothing is drawn. */
 static C3D_Tex sUiTex;
 static uint16_t *sUiLinear;
@@ -193,6 +195,7 @@ static bool GpuInit(void)
     if (sTop == NULL || sLinear == NULL || !C3D_TexInit(&sFrameTex, TEX_DIM, TEX_DIM, GPU_RGB565))
         return false;
     memset(sLinear, 0, TEX_DIM * TEX_DIM * sizeof(uint16_t));
+    sFrameUploaded = false;
     C3D_TexSetFilter(&sFrameTex, GPU_LINEAR, GPU_LINEAR);
     sUiLinear = linearAlloc(TEX_DIM * TEX_DIM * sizeof(uint16_t));
     if (sUiLinear == NULL || !C3D_TexInit(&sUiTex, TEX_DIM, TEX_DIM, GPU_RGBA5551))
@@ -242,6 +245,12 @@ static inline void DoubleRow(uint16_t *dst, const uint16_t *row)
 static void GpuUpload(void)
 {
     uint16_t row[CTR_SOFT_WIDTH];
+
+    /* Menus and several transition frames reuse the same 2D picture. */
+    if (sFrameUploaded && memcmp(sUploadedFrame, sFrame, sizeof(sUploadedFrame)) == 0)
+        return;
+    memcpy(sUploadedFrame, sFrame, sizeof(sUploadedFrame));
+    sFrameUploaded = true;
 
     for (unsigned y = 0; y < CTR_SOFT_HEIGHT; ++y)
     {
@@ -397,7 +406,8 @@ static void GpuPresent(void)
         voxel = sVoxelReady && sUi != NULL && CtrVoxel_IsAvailable();
 #endif
     /* Held on the 3D world's last clean frame, or on the picture given. */
-    bool held = sHold && sHoldValid;
+    bool captureHeld = sHold && sSurfaceClean && sHoldReady;
+    bool held = sHold && (captureHeld || sHoldValid);
     /* The world being built: black under the UI, no 2D picture shown. */
     bool warmingUp = false;
     /* A new map's world still being built: black under the UI meanwhile, not
@@ -405,7 +415,7 @@ static void GpuPresent(void)
     bool warming = false;
 
     if (held)
-        GpuUploadUi(sHoldUi);
+        GpuUploadUi(captureHeld ? sLastUi : sHoldUi);
     else if (sFrame && !voxel && sFrameDrawn)
         GpuUpload();
     else if (!voxel && sUi != NULL)

@@ -117,7 +117,7 @@ function mkdirs(py, path) {
   if (dir) py.FS.mkdirTree(dir);
 }
 
-async function run({ base, rom, romName, followers }) {
+async function run({ base, rom, romName, followers, direct }) {
   const t0 = performance.now();
   post({ type: "phase", phase: "runtime" });
   const py = await loadRuntime();
@@ -196,6 +196,15 @@ make_sd_zip("/sd", "/out.zip")
 `);
   const out = py.FS.readFile("/out.zip");
   const buffer = out.buffer.byteLength === out.byteLength ? out.buffer : out.slice().buffer;
+  const files = [];
+  if (direct) {
+    const dir = "/sd/3ds/firered3ds/";
+    for (const name of py.FS.readdir(dir)) {
+      if (name === "." || name === "..") continue;
+      files.push([name, py.FS.readFile(dir + name).slice().buffer]);
+    }
+  }
   post({ type: "log", line: "done in " + ((performance.now() - t0) / 1000).toFixed(1) + " s" });
-  post({ type: "done", zip: buffer, result: built.result, followers: followersOk }, [buffer]);
+  post({ type: "done", zip: buffer, files, result: built.result, followers: followersOk },
+       [buffer, ...files.map(([, bytes]) => bytes)]);
 }

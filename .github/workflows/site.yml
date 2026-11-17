@@ -47,14 +47,24 @@ jobs:
         run: python -m pip install --upgrade pillow
 
       - name: Builder tests
-        run: python -m unittest discover -s builder/tests
+        run: |
+          python -m unittest discover -s builder/tests
+          node --test tools/tests/azahar.test.mjs
 
       - name: Download the latest release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           mkdir -p release
-          gh release view --repo "$GITHUB_REPOSITORY" --json tagName,publishedAt,body,assets > release/release.json
+          release_repo="$GITHUB_REPOSITORY"
+          tag=()
+          if [ "$GITHUB_REPOSITORY" = "ZempOh/Pokemon-FireRed-3DS-Azahar" ]; then
+            # The installer uses the upstream executable; pin its matching data recipe.
+            release_repo=NachoGonzalez2001/Pokemon-FireRed-3DS
+            tag=(v0.5.1)
+          fi
+          gh release view "${tag[@]}" --repo "$release_repo" --json tagName,publishedAt,body,assets > release/release.json
+          echo "RELEASE_REPO=$release_repo" >> "$GITHUB_ENV"
           python - <<'EOF'
           import json, os
           r = json.load(open("release/release.json", encoding="utf-8"))
@@ -65,12 +75,12 @@ jobs:
               env.write("PUBLISHED=%s\n" % r["publishedAt"])
               env.write("CIA=%s\n" % ("1" if "FireRed3DS-Forwarder.cia" in names else ""))
           EOF
-          gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --pattern "FireRed3DS-*-Windows.zip" --dir release
+          gh release download "$TAG" --repo "$release_repo" --pattern "FireRed3DS-*-Windows.zip" --dir release
 
       - name: Assemble the site
         run: |
           python tools/build_site.py --windows-zip release/FireRed3DS-${TAG}-Windows.zip --tag "$TAG" \
-            --published-at "$PUBLISHED" --notes release/notes.md ${CIA:+--cia} --out _site
+            --published-at "$PUBLISHED" --notes release/notes.md --repo "$RELEASE_REPO" ${CIA:+--cia} --out _site
           python tools/release_audit.py --zip _site/payload/FireRed3DS-WebPayload.zip --web-payload --strict
 
       - uses: actions/upload-pages-artifact@v3

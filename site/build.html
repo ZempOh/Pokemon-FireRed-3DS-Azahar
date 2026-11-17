@@ -44,6 +44,10 @@
     <div class="panel" style="margin-top:26px">
       <!-- 1: the ROM -->
       <div data-view="pick">
+        <div class="callout" style="margin-bottom:20px">
+          <button class="btn btn-ghost" type="button" data-azahar-folder data-i18n="a.choose">Connect Azahar folder</button>
+          <p class="small" role="status" data-azahar-status></p>
+        </div>
         <h2 style="font-size:1.35rem" data-i18n="b.pick">1. Choose your ROM</h2>
         <p class="muted small" data-i18n-html="b.pickhint">Pokémon FireRed (USA, Rev 1): a <code>.gba</code> file, or a <code>.zip</code> with one inside.</p>
         <label class="drop" data-drop>
@@ -94,6 +98,7 @@
           <span class="eyebrow" data-i18n="d.eyebrow">Ready</span>
           <h2 data-i18n="d.title">Your game is ready</h2>
           <p class="muted" data-done-summary></p>
+          <p class="small" role="status" data-install-result></p>
           <div class="actions" style="justify-content:center">
             <a class="btn btn-primary" data-download download>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 21h16"/></svg>

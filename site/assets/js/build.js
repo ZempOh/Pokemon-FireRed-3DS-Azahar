@@ -7,6 +7,8 @@
    time) and gives them to the worker when it is ready for them. Nothing is
    ever sent anywhere: the only requests are downloads. */
 
+import { azaharSd, installAzahar, savedFolder } from "./azahar.js";
+
 const { t, release, onLang } = window.FR3DS;
 const $ = (sel) => document.querySelector(sel);
 
@@ -28,6 +30,42 @@ let timer = null;
 let wakeLock = null;
 let started = 0;
 let lastError = null;
+let azahar = null;
+let installing = false;
+const folderButton = $("[data-azahar-folder]");
+const folderStatus = $("[data-azahar-status]");
+const canConnect = typeof window.showDirectoryPicker === "function" &&
+  typeof window.FileSystemFileHandle?.prototype.createWritable === "function";
+let folderStatusKey = canConnect ? "a.setup" : "a.browser";
+
+function showFolderStatus(key = folderStatusKey) {
+  folderStatusKey = key;
+  folderStatus.textContent = t(key);
+}
+
+const restoreFolder = canConnect ? savedFolder().then(async (folder) => {
+  if (!folder) return;
+  if (await folder.queryPermission({ mode: "readwrite" }) === "granted") {
+    azahar = await azaharSd(folder);
+    showFolderStatus("a.ready");
+  } else showFolderStatus("a.reconnect");
+}).catch(() => showFolderStatus("a.reconnect")) : Promise.resolve();
+
+folderButton.hidden = !canConnect;
+folderButton.disabled = true;
+showFolderStatus();
+restoreFolder.finally(() => { folderButton.disabled = false; });
+folderButton.addEventListener("click", async () => {
+  try {
+    const root = await window.showDirectoryPicker({ id: "firered-azahar", mode: "readwrite" });
+    azahar = await azaharSd(root);
+    const remembered = await savedFolder(root).then(() => true, () => false);
+    showFolderStatus(remembered ? "a.ready" : "a.session");
+    if (state.ok) start();
+  } catch (err) {
+    if (err.name !== "AbortError") showFolderStatus("a.invalid");
+  }
+});
 
 /* --- views ------------------------------------------------------------- */
 
@@ -249,7 +287,7 @@ function showError() {
 }
 
 function start() {
-  if (!state.ok || !state.manifest) return;
+  if (!state.ok || !state.manifest || state.worker || installing) return;
   if (typeof Worker === "undefined" || !window.crypto || !crypto.subtle) return fail("unsupported_browser");
   followersOn = $("[data-followers]").checked;
   lastError = null;
@@ -295,7 +333,7 @@ function start() {
   // the worker gets its own copy: the page keeps the ROM for "Build again"
   const rom = state.bytes.slice(0);
   worker.postMessage({ type: "start", base: new URL("../../", import.meta.url).href, rom, romName: state.file.name,
-                       followers: followersOn }, [rom]);
+                       followers: followersOn, direct: !!azahar }, [rom]);
 }
 
 async function finish(m) {
@@ -312,15 +350,34 @@ async function finish(m) {
   a.download = name;
   const mb = (m.zip.byteLength / 1048576).toFixed(1) + " MB";
   state.done = { name, mb, time: clock(), followers: m.followers };
+  if (m.files?.length && azahar) {
+    installing = true;
+    $("[data-bar-text]").textContent = t("a.installing");
+    try {
+      const sd = azahar;
+      if (navigator.locks) {
+        await navigator.locks.request("firered3ds-azahar-install", () => installAzahar(sd, m.files));
+      } else {
+        await installAzahar(sd, m.files);
+      }
+      state.done.install = "a.installed";
+    } catch (err) {
+      log("Azahar install: " + err);
+      state.done.install = "a.failed";
+    } finally {
+      installing = false;
+    }
+  }
   doneText();
   view("done");
-  a.click();
+  if (!state.done.install) a.click();
 }
 
 function doneText() {
   if (!state.done) return;
   $("[data-done-summary]").textContent = t("d.summary", { name: state.done.name, size: state.done.mb, time: state.done.time });
   $("[data-done-warn]").textContent = followersOn && !state.done.followers ? t("d.nofollowers") : "";
+  $("[data-install-result]").textContent = state.done.install ? t(state.done.install) : "";
 }
 
 function showCia(info) {
@@ -345,19 +402,25 @@ function showCia(info) {
 
 const input = $("[data-rom]");
 const drop = $("[data-drop]");
-input.addEventListener("change", () => { if (input.files[0]) checkRom(input.files[0]); });
+async function selectRom(file) {
+  await Promise.all([restoreFolder, checkRom(file)]);
+  if (file === lastRom && azahar) start();
+}
+
+input.addEventListener("change", () => { if (input.files[0]) selectRom(input.files[0]); });
 ["dragenter", "dragover"].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add("over"); }));
 ["dragleave", "drop"].forEach((ev) => drop.addEventListener(ev, () => drop.classList.remove("over")));
 drop.addEventListener("drop", (e) => {
   e.preventDefault();
   const f = e.dataTransfer.files[0];
-  if (f) checkRom(f);
+  if (f) selectRom(f);
 });
 $("[data-start]").addEventListener("click", start);
 document.querySelectorAll("[data-again]").forEach((b) => b.addEventListener("click", () => { view("pick"); updateStart(); }));
-window.addEventListener("beforeunload", (e) => { if (state.worker) { e.preventDefault(); e.returnValue = ""; } });
+window.addEventListener("beforeunload", (e) => { if (state.worker || installing) { e.preventDefault(); e.returnValue = ""; } });
 
 onLang(() => {
+  showFolderStatus();
   if (lastRom && !state.worker) checkRom(lastRom);
   showError();
   doneText();
@@ -370,7 +433,7 @@ fetch("payload/web-manifest.json", { cache: "no-cache" })
     if (m.schemaVersion !== 1 || m.kind !== "firered3ds-web-payload") throw new Error("unknown manifest");
     state.manifest = m;
     document.querySelectorAll('[data-release="tag"]').forEach((el) => { el.textContent = m.releaseTag; });
-    if (lastRom) checkRom(lastRom);
+    if (lastRom) selectRom(lastRom);
     updateStart();
   })
   .catch((err) => { log("manifest: " + err); fail("payload_missing"); });

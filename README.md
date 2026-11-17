@@ -95,16 +95,20 @@ that passes in 24 minutes, or stays off - OPTIONS > DAY/NIGHT):
 
 ### Azahar on Android (including AYN Thor)
 
-1. On the handheld, open the [web builder](https://nachogonzalez2001.github.io/Pokemon-FireRed-3DS/build.html).
-   Select your Pokémon FireRed (USA, Rev 1) ROM and tap **Build**. Keep the
-   browser tab open until the ZIP is ready. The builder processes the ROM on
-   your device and bundles the generated data with the matching 3DS executable.
-2. Extract the ZIP. In Azahar's user folder, find `sdmc` and merge the extracted
-   `3ds` folder into it. Replace the older executable and pack together. Keep
-   your existing `sdmc/3ds/firered3ds/firered3ds.sav` if upgrading.
-3. Add `sdmc/3ds/firered3ds` as a game folder in Azahar and launch
-   `FireRed3DS.3dsx`. To enable sound, place the `dspfirm.cdc` you dumped from
-   your 3DS in `sdmc/3ds/` and restart the game.
+1. In Chrome on the handheld, open the [Azahar game builder](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/build.html).
+   Close Azahar, tap **Connect Azahar folder**, and grant access to the user
+   folder you selected in Azahar. It contains `sdmc`. Chrome may ask you
+   to reconnect if it loses folder permission.
+2. Select your Pokémon FireRed (USA, Rev 1) ROM. Keep the tab open until it
+   reports that installation is complete. The builder replaces the matching
+   executable and data pack, cleans up obsolete FireRed build files in the
+   install folder, and preserves saves and settings.
+3. In Azahar, add `sdmc/3ds/firered3ds` as a game folder the first time and
+   launch `FireRed3DS.3dsx`. For sound, put the `dspfirm.cdc` you dumped
+   from your 3DS in `sdmc/3ds/`.
+
+If your browser cannot grant write access, tap **Build** and use the ZIP.
+Merge its `3ds` folder into Azahar's `sdmc` folder, keeping your save.
 
 If the title screen appears mirrored, fully close the game, switch Azahar
 between Vulkan and OpenGL ES, and compare the same screen. To collect the

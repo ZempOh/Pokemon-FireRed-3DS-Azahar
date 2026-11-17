@@ -19,7 +19,7 @@
 #include "overworld.h"
 #include "wild_encounter.h"
 #include "constants/battle.h"
-#include "constants/characters.h"
+#include "characters.h"
 #include "constants/map_groups.h"
 #include "constants/map_types.h"
 #include "constants/species.h"
@@ -147,7 +147,7 @@ static bool8 InTable(const struct WildPokemonInfo *info, unsigned count, u16 spe
 
 static u8 TerrainOf(u16 species)
 {
-    for (unsigned i = 0; gWildMonHeaders[i].mapGroup != MAP_GROUP(MAP_UNDEFINED); ++i)
+    for (unsigned i = 0; gWildMonHeaders[i].mapGroup != MAP_GROUP(UNDEFINED); ++i)
     {
         const struct WildPokemonHeader *h = &gWildMonHeaders[i];
         const struct MapHeader *map = Overworld_GetMapHeaderByGroupAndId(h->mapGroup, h->mapNum);

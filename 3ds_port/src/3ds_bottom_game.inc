@@ -1417,9 +1417,9 @@ static void DrawDexInfo(const ViewState *s)
     if (v->owned)
     {
         DrawFootprint(v->footprint, x + w - 34, oy + 46);
-        DrawTypeIcon(gSpeciesInfo[v->species].types[0], x + 8, oy + 76);
-        if (gSpeciesInfo[v->species].types[1] != gSpeciesInfo[v->species].types[0])
-            DrawTypeIcon(gSpeciesInfo[v->species].types[1], x + 44, oy + 76);
+        DrawTypeIcon(gBaseStats[v->species].types[0], x + 8, oy + 76);
+        if (gBaseStats[v->species].types[1] != gBaseStats[v->species].types[0])
+            DrawTypeIcon(gBaseStats[v->species].types[1], x + 44, oy + 76);
     }
     oy = Plate(AREA_X, y + 100, AREA_W, AREA_Y + AREA_H - y - 100, sLight, PLATE_STATE_NORMAL);
     if (v->description)

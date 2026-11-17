@@ -31,7 +31,7 @@
 #include "battle_message.h"
 #include "string_util.h"
 #include "strings.h"
-#include "constants/characters.h"
+#include "characters.h"
 
 #include "3ds_battle_hud.h"
 #include "3ds_log.h"

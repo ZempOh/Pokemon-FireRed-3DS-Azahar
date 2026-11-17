@@ -2941,10 +2941,10 @@ static void SetTargetCursor(u8 battler)
     if (battler == gMultiUsePlayerCursor)
         return;
     PlaySE(SE_SELECT);
-    gSprites[gBattlerSpriteIds[gMultiUsePlayerCursor]].callback = SpriteCB_HideAsMoveTarget;
+    gSprites[gBattlerSpriteIds[gMultiUsePlayerCursor]].callback = SpriteCb_HideAsMoveTarget;
     EndBounceEffect(gMultiUsePlayerCursor, BOUNCE_HEALTHBOX);
     gMultiUsePlayerCursor = battler;
-    gSprites[gBattlerSpriteIds[battler]].callback = SpriteCB_ShowAsMoveTarget;
+    gSprites[gBattlerSpriteIds[battler]].callback = SpriteCb_ShowAsMoveTarget;
 }
 
 void CtrBattleMenu_TargetInput(void)
@@ -3297,7 +3297,7 @@ static void SnapshotPartyBalls(ViewState *s)
     for (int i = 0; i < PARTY_SIZE; ++i)
     {
         struct Pokemon *mon = &gPlayerParty[i];
-        u16 species = GetMonData(mon, MON_DATA_SPECIES_OR_EGG);
+        u16 species = GetMonData(mon, MON_DATA_SPECIES2);
 
         if (species == SPECIES_NONE || species == SPECIES_EGG)
             continue;
@@ -3424,12 +3424,12 @@ static const struct WildPokemonHeader *EncHeader(void)
 {
     u8 group = gSaveBlock1Ptr->location.mapGroup, num = gSaveBlock1Ptr->location.mapNum;
 
-    for (u16 i = 0; gWildMonHeaders[i].mapGroup != MAP_GROUP(MAP_UNDEFINED); ++i)
+    for (u16 i = 0; gWildMonHeaders[i].mapGroup != MAP_GROUP(UNDEFINED); ++i)
     {
         if (gWildMonHeaders[i].mapGroup != group || gWildMonHeaders[i].mapNum != num)
             continue;
         /* Altering Cave's sets follow each other; an unknown set is the first, as in the game. */
-        if (group == MAP_GROUP(MAP_ALTERING_CAVE) && num == MAP_NUM(MAP_ALTERING_CAVE))
+        if (group == MAP_GROUP(ALTERING_CAVE) && num == MAP_NUM(ALTERING_CAVE))
         {
             u16 set = VarGet(VAR_ALTERING_CAVE_WILD_SET), run = 0;
 
@@ -3816,7 +3816,7 @@ static Rgb Shade(Rgb c, int keep)
 static void DrawCategoryIcon(u16 move, int x, int y)
 {
     if (sRes.categoryTiles && move < MOVES_COUNT && MoveSplitEnabled())
-        DrawSprite(sRes.categoryTiles + gMoveCategories[move] * 8 * 32, 4, 2, x, y, sRes.categoryPal.c);
+        DrawSprite(sRes.categoryTiles + gBattleMoves[move].split * 8 * 32, 4, 2, x, y, sRes.categoryPal.c);
 }
 
 static void DrawTypeIcon(u8 type, int x, int y)

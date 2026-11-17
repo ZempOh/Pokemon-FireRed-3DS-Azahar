@@ -15876,7 +15876,7 @@ index 0000000000000000000000000000000000000000..cf9d3abe1220dfd115bbda0cd61233d4
 +    return gBDPCMBlockBuffer[current & 63]; // index same as current % 64
 +}
 diff --git a/src/sprite.c b/src/sprite.c
-index 0e265233a070f42325f6cad35f400f8ab6639dc2..398daf82ab902bb2c068a87f759c68926bd84ace 100644
+index 0e265233a070f42325f6cad35f400f8ab6639dc2..7d7c5ef175d1c69cad95f14faba109c1a94d3ca5 100644
 --- a/src/sprite.c
 +++ b/src/sprite.c
 @@ -1,5 +1,8 @@
@@ -15910,7 +15910,7 @@ index 0e265233a070f42325f6cad35f400f8ab6639dc2..398daf82ab902bb2c068a87f759c6892
 +{
 +    if (Port_GetAssetSizeExact(image->data) != 0)
 +        return Port_ResolveSpriteFramePointer(image->data, size, image->offset);
-+    return image->data;
++    return image->data == NULL ? NULL : (const u8 *)image->data + image->offset;
 +}
 +#define FRAME_IMAGE_SIZE(image) FrameImageSize(image)
 +#else

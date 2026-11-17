@@ -28,8 +28,9 @@ cartridge dump.
 Launch FireRed from your Azahar library. If your browser cannot write to the
 folder, download the built cartridge and move it there manually.
 To update, fully close the game, pick the same folder and ROM, and let the
-builder replace `FireRed3DS.3ds`. The cartridge uses its virtual SD save
-location across rebuilds.
+builder replace `FireRed3DS.3ds`. After installation it removes the old
+FireRed homebrew launcher and FireRed cartridge temporary files from the
+selected games folder. Saves stay in Azahar's virtual SD folder.
 
 The browser generates the game data on your device and embeds it in the
 cartridge. The standalone build uses the same virtual SD save location

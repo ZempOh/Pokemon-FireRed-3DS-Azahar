@@ -7,7 +7,7 @@
    time) and gives them to the worker when it is ready for them. Nothing is
    ever sent anywhere: the only requests are downloads. */
 
-import { enableAzaharAudio, installAzaharLauncher, installAzaharCartridge, writableAzaharSd, installAzahar, savedFolder } from "./azahar.js?v=4";
+import { enableAzaharAudio, installAzaharLauncher, installAzaharCartridge, writableAzaharSd, installAzahar, savedFolder } from "./azahar.js?v=5";
 
 const { t, release, onLang } = window.FR3DS;
 const $ = (sel) => document.querySelector(sel);

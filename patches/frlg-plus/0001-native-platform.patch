@@ -4878,10 +4878,10 @@ index 73c2b483a9da20986a08c2878cdb4393039b5b36..d8f70bf0c4b7504af6fa9e7439661fc6
      {
      case 0:
 diff --git a/src/data.c b/src/data.c
-index 13d56f98e262b4de67a6db6da5bd6de0e16c5200..3f97a50128db1f9fb85ad417fbe7a276a3bbd235 100644
+index 13d56f98e262b4de67a6db6da5bd6de0e16c5200..914c6a3cc117c7d12e150d225a5c07e9fbddd855 100644
 --- a/src/data.c
 +++ b/src/data.c
-@@ -12,84 +12,84 @@
+@@ -12,100 +12,100 @@
  
  const struct SpriteFrameImage gBattlerPicTable_PlayerLeft[] =
  {
@@ -5008,6 +5008,30 @@ index 13d56f98e262b4de67a6db6da5bd6de0e16c5200..3f97a50128db1f9fb85ad417fbe7a276
  };
  
  const struct SpriteFrameImage gTrainerBackPicTable_EmBrendan[] =
+ {
+-    gTrainerBackPic_EmBrendan, 0x0800,
+-    gTrainerBackPic_EmBrendan + 0x0800, 0x0800,
+-    gTrainerBackPic_EmBrendan + 0x1000, 0x0800,
+-    gTrainerBackPic_EmBrendan + 0x1800, 0x0800,
++    {gTrainerBackPic_EmBrendan, 0x0800},
++    frame_at(gTrainerBackPic_EmBrendan, 0x0800, 0x0800),
++    frame_at(gTrainerBackPic_EmBrendan, 0x1000, 0x0800),
++    frame_at(gTrainerBackPic_EmBrendan, 0x1800, 0x0800),
+ };
+ 
+ const struct SpriteFrameImage gTrainerBackPicTable_EmMay[] =
+ {
+-    gTrainerBackPic_EmMay, 0x0800,
+-    gTrainerBackPic_EmMay + 0x0800, 0x0800,
+-    gTrainerBackPic_EmMay + 0x1000, 0x0800,
+-    gTrainerBackPic_EmMay + 0x1800, 0x0800,
++    {gTrainerBackPic_EmMay, 0x0800},
++    frame_at(gTrainerBackPic_EmMay, 0x0800, 0x0800),
++    frame_at(gTrainerBackPic_EmMay, 0x1000, 0x0800),
++    frame_at(gTrainerBackPic_EmMay, 0x1800, 0x0800),
+ };
+ 
+ static const union AnimCmd sAnim_GeneralFrame0[] =
 diff --git a/src/data/object_events/movement_action_func_tables.h b/src/data/object_events/movement_action_func_tables.h
 index 2a1c496f77d7ae9b9687bd9567c6e9e780e8c6d3..e39197ef534e9aff08629d4308141876b12df9b5 100644
 --- a/src/data/object_events/movement_action_func_tables.h
@@ -14741,7 +14765,7 @@ index 02f8ae4689886244757e4666f087453212ac4852..ee1f70bfe14fa26d93f237a259dfb428
                      case QL_ACTION_EMPTY:
                          // End
 diff --git a/src/region_map.c b/src/region_map.c
-index a5edd61d7f7f078415a075ce61649dc8c6b5b77d..f6dfe86938d04fb1d95f1fab6f928839f1a7b17d 100644
+index a5edd61d7f7f078415a075ce61649dc8c6b5b77d..e8b8b3cd26644a045d54482a6ecad07ab06dbbab 100644
 --- a/src/region_map.c
 +++ b/src/region_map.c
 @@ -871,6 +871,12 @@ static const u8 sTextColors[] = {TEXT_DYNAMIC_COLOR_6, TEXT_COLOR_WHITE, TEXT_CO
@@ -14950,7 +14974,7 @@ index a5edd61d7f7f078415a075ce61649dc8c6b5b77d..f6dfe86938d04fb1d95f1fab6f928839
 +    u8 region = REGIONMAP_KANTO;
 +    int i, j;
 +
-+    if (gMapHeader.regionMapSectionId >= SEVII_MAPSEC_START)
++    if (gMapHeader.regionMapSectionId >= MAPSEC_ONE_ISLAND)
 +    {
 +        for (j = 0; j < (int)NELEMS(sSeviiMapsecs) && region == REGIONMAP_KANTO; j++)
 +            for (i = 0; sSeviiMapsecs[j][i] != MAPSEC_NONE; i++)
@@ -15147,6 +15171,46 @@ index f9795df08790f38ad767d0c81bb9014026f1ac8e..ad5ae908852198b618282c41d478cd90
      return FALSE;
  }
  
+diff --git a/src/script.c b/src/script.c
+index b98400862695d176199bf821d4479fe0718e9b12..49a37ef7ec2f6b67f3e39e1032f954ebeb8093fe 100644
+--- a/src/script.c
++++ b/src/script.c
+@@ -865,7 +865,7 @@ static bool8 AllPossibleGymLeadersPresent(void)
+ {
+     struct BattleHouse* BattleHouseVar;
+     u16 *varPtr = GetVarPointer(VAR_BATTLE_HOUSE);
+-    (void*) BattleHouseVar = varPtr;
++    BattleHouseVar = (struct BattleHouse *)varPtr;
+ 
+     if(BattleHouseVar->toldBrock && !BattleHouseVar->visitorBrock)
+     {
+@@ -903,7 +903,7 @@ u8 ReturnBattleHouseLevel(void)
+     struct BattleHouse* BattleHouseVar;
+     u16 *varPtr = GetVarPointer(VAR_BATTLE_HOUSE);
+     u8 levelGrowth;
+-    (void*) BattleHouseVar = varPtr;
++    BattleHouseVar = (struct BattleHouse *)varPtr;
+ 
+     levelGrowth = BattleHouseVar->levelGrowth;
+ 
+@@ -915,7 +915,7 @@ void UpdateBattleHouseStepCounter(void)
+     struct BattleHouse* BattleHouseVar;
+     u16 *varPtr = GetVarPointer(VAR_BATTLE_HOUSE);
+     u8 chanceOfVisit = 46;
+-    (void*) BattleHouseVar = varPtr;
++    BattleHouseVar = (struct BattleHouse *)varPtr;
+ 
+     if(VarGet(VAR_BATTLE_HOUSE) && gMapHeader.regionMapSectionId != MAPSEC_SEVEN_ISLAND)
+     {
+@@ -1039,7 +1039,7 @@ void UseBattleHouseVar(void)
+     u16 *varPtr = GetVarPointer(VAR_BATTLE_HOUSE);
+     u8 totalCount = 0;
+     u8 runningCount = 0;
+-    (void*) BattleHouseVar = varPtr;
++    BattleHouseVar = (struct BattleHouse *)varPtr;
+ 
+     switch(type)
+     {
 diff --git a/src/seagallop.c b/src/seagallop.c
 index 8c0ad4a29f4d831caabad1b1b41013d84a722994..ccf9b7165771bc30baa847f4560268acaf0d59ea 100644
 --- a/src/seagallop.c
@@ -16964,20 +17028,33 @@ index fc064fa8fa1776c1483c8eaf769923695b5cf794..6a44fbcc6e3510eab76b112f70c7a78d
 +}
 +#endif
 diff --git a/src/union_room.c b/src/union_room.c
-index 0e3df53668b27fd93e6092c4b4a0a01030b9e9a5..08ae993ddecea827e482260a2721531a606919b4 100644
+index 0e3df53668b27fd93e6092c4b4a0a01030b9e9a5..ca51c69ebf521f0ed93496fe875f9aaa7b125c63 100644
 --- a/src/union_room.c
 +++ b/src/union_room.c
-@@ -3114,6 +3114,10 @@ void InitUnionRoom(void)
-     struct WirelessLink_URoom * data;
+@@ -3111,9 +3111,13 @@ static bool32 HandleContactFromOtherPlayer(struct WirelessLink_URoom * uroom)
  
+ void InitUnionRoom(void)
+ {
+-    struct WirelessLink_URoom * data;
+-
      sUnionRoomPlayerName[0] = EOS;
 +#if REVISION >= 0xA || defined(PORTABLE)
 +    // The rest of this function is stubbed out, as if QL_IS_PLAYBACK_STATE is always true.
 +    // The 3DS has no wireless adapter: looking for players would wait on it forever.
 +#else
++    struct WirelessLink_URoom *data;
++
      if (QL_IS_PLAYBACK_STATE)
          return;
      CreateTask(Task_InitUnionRoom, 0);
+@@ -3125,6 +3129,7 @@ void InitUnionRoom(void)
+     data->unknown = 0;
+     data->unreadPlayerId = 0;
+     sUnionRoomPlayerName[0] = EOS;
++#endif
+ }
+ 
+ static void Task_InitUnionRoom(u8 taskId)
 diff --git a/src/union_room_chat_objects.c b/src/union_room_chat_objects.c
 index d7e26a46a01a504e7afdfda4ff81cc53c0dcdc0d..43f8238ec660ac217aa7a20af573aa5ce7199ad9 100644
 --- a/src/union_room_chat_objects.c

@@ -3690,7 +3690,8 @@ static void Snapshot(ViewState *s, u8 mode, u8 pressed)
         SnapshotBattle(s);
         s->battler = b;
         s->cursor = sMoveCancel ? MAX_MON_MOVES : gMoveSelectionCursor[b];
-        memcpy(&s->moves4, &gBattleBufferA[b][4], sizeof(s->moves4));
+        if (gBattleResources != NULL)
+            memcpy(&s->moves4, &gBattleResources->bufferA[b][4], sizeof(s->moves4));
         break;
     }
     case MODE_BATTLE_TARGET:

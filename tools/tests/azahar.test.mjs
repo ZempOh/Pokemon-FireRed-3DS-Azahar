@@ -3,7 +3,7 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 const code = await readFile(new URL("../../site/assets/js/azahar.js", import.meta.url));
-const { azaharSd, enableAzaharAudio, installAzahar, installAzaharLauncher, writableAzaharSd } =
+const { azaharSd, enableAzaharAudio, installAzahar, installAzaharCartridge, installAzaharLauncher, writableAzaharSd } =
   await import("data:text/javascript;base64," + code.toString("base64"));
 
 function directory() {
@@ -120,4 +120,14 @@ test("copies only the launchable homebrew file to the existing games folder", as
   await games.getFileHandle("Existing Game.cci", { create: true });
   await installAzaharLauncher(games, files);
   assert.deepEqual([...games.entries()].map(([name]) => name), ["Existing Game.cci", "FireRed3DS.3dsx"]);
+});
+
+test("saves only the standalone cartridge and rejects other file formats", async () => {
+  const games = directory();
+  await assert.rejects(installAzaharCartridge(games, new ArrayBuffer(32)), /Invalid cartridge/);
+  const image = new Uint8Array(0x200);
+  image.set(new TextEncoder().encode("NCSD"), 0x100);
+  await installAzaharCartridge(games, image.buffer);
+  assert.deepEqual([...games.entries()].map(([name]) => name), ["FireRed3DS.3ds"]);
+  assert.deepEqual((await games.getFileHandle("FireRed3DS.3ds")).data, image.buffer);
 });

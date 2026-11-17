@@ -67,6 +67,12 @@ export async function installAzaharLauncher(games, files) {
   await writeFile(games, name, new Map(files).get(name));
 }
 
+export async function installAzaharCartridge(games, image) {
+  const magic = new Uint8Array(image).subarray(0x100, 0x104);
+  if (String.fromCharCode(...magic) !== "NCSD") throw new Error("Invalid cartridge image.");
+  await writeFile(games, "FireRed3DS.3ds", image);
+}
+
 export async function installAzahar(sd, files) {
   const incoming = new Map(files);
   if (!required.every((name) => incoming.get(name)?.byteLength) ||

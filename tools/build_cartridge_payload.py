@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import gzip
+import struct
 import tempfile
 from pathlib import Path
 
@@ -21,7 +22,11 @@ def main() -> None:
     parser.add_argument("--out", type=Path, required=True)
     args = parser.parse_args()
     template = bytearray(args.template.read_bytes())
-    _, _, _, _, slot, capacity = pack_slot(template)
+    ncch, _, _, _, slot, capacity = pack_slot(template)
+    caps = struct.unpack_from("<28I", template, ncch + 0x200 + 0x370)
+    dsp_ranges = (0xFF81FF50, 0xFF81FF58, 0xFF81FF70, 0xFF81FF78)
+    if not any(caps[index:index + 4] == dsp_ranges for index in range(len(caps) - 3)):
+        raise SystemExit("The cartridge header does not map both DSP shared-memory ranges")
     if any(memoryview(template)[slot:slot + capacity]):
         raise SystemExit("Refusing to publish a cartridge containing game data")
 

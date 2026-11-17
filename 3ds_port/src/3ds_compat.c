@@ -178,7 +178,9 @@ static struct
 #endif
 };
 
-#if GAME_LANGUAGE != LANGUAGE_JAPANESE
+#define GLYPH_BYTES 0x40
+#if GAME_LANGUAGE != LANGUAGE_JAPANESE && defined(CHAR_A_TILDE) && defined(CHAR_O_TILDE) && defined(CHAR_a_TILDE) && defined(CHAR_o_TILDE)
+#define CTR_COMPOSE_TILDE_GLYPHS 1
 extern const u8 gFontSmallNarrowLatinGlyphWidths[];
 extern const u8 gFontSmallLatinGlyphWidths[];
 extern const u8 gFontNarrowLatinGlyphWidths[];
@@ -196,8 +198,6 @@ static const u8 *const sLatinFontWidths[] = {
  * second, 4-7 in the first, the leftmost in the high bits (gbagfx font.c).
  * Values 1 and 2 are the ink and its shadow, 3 the background.
  */
-#define GLYPH_BYTES 0x40
-
 static u8 *GlyphByte(u8 *glyph, int x, int y)
 {
     return glyph + ((y / 8) * 2 + x / 8) * 16 + (y % 8) * 2 + ((x % 8) < 4);
@@ -300,7 +300,7 @@ static bool LoadLatinFont(unsigned index)
     }
     fclose(file);
     sLatinFonts[index].size = (u32)size;
-#if GAME_LANGUAGE != LANGUAGE_JAPANESE
+#ifdef CTR_COMPOSE_TILDE_GLYPHS
     ComposeTildeLetters(sLatinFonts[index].raw, sLatinFonts[index].size, sLatinFontWidths[index]);
 #endif
     return true;

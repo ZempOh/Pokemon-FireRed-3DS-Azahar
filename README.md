@@ -52,7 +52,7 @@ DSP memory used by FireRed. `debug.txt` only enables diagnostics.
   toggle it, **Up/Down** to select another row, and **Left/Right** to adjust a
   setting. **L/R** change pages, **X/Y** change tabs, and **B** goes back. You can
   also use the touch gear and page arrows. The settings include audio, camera
-  angle, zoom, depth blur, battle presentation, and running.
+  angle, zoom, battle presentation, and running.
 - If the overlay Start works and the Thor's physical Start does not, check
   that the Thor button is bound to **Start** under Azahar's **Settings → Gamepad**.
 

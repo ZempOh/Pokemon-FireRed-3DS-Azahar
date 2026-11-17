@@ -20,9 +20,9 @@ executable and data recipe. You supply your own FireRed cartridge dump.
 ### Azahar on Android (including AYN Thor)
 
 1. In Chrome 132 or later on the handheld, open the [Azahar game builder](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/build.html).
-   Close Azahar, tap **Connect Azahar folder**, and grant access to the user
-   folder you selected in Azahar. It contains `sdmc`. Chrome may ask you
-   to reconnect if it loses folder permission.
+   In Azahar, check **Options → Select User Folder**, then close Azahar. Tap
+   **Connect Azahar folder** in the builder, choose that folder or its `sdmc`
+   subfolder, and allow write access. Chrome may ask you to reconnect later.
 2. Select your Pokémon FireRed (USA, Rev 1) ROM as a `.gba` file or a ZIP
    containing it. The build starts automatically. Keep the tab open until
    the builder reports that installation is complete.
@@ -37,9 +37,12 @@ temporary files, and obsolete follower assets in the FireRed install folder.
 It preserves saves and settings and attempts to restore the previous game files
 if a write fails. Cleanup is limited to `sdmc/3ds/firered3ds/`.
 
-**ZIP fallback.** If your browser cannot grant folder access, tap **Build**,
-extract the ZIP, and merge its `3ds` folder into Azahar's `sdmc` folder.
-Replace both the executable and the data pack and keep your existing save.
+If installation fails after the build, reconnect the Azahar folder from the
+results screen to retry without rebuilding.
+
+**ZIP fallback.** Choose **Build ZIP only** and then **Download the ZIP**.
+Extract it and merge its `3ds` folder into Azahar's `sdmc` folder. Replace
+both the executable and the data pack and keep your existing save.
 
 ### Compatibility and troubleshooting
 

@@ -3,7 +3,7 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 const code = await readFile(new URL("../../site/assets/js/azahar.js", import.meta.url));
-const { azaharSd, installAzahar } = await import("data:text/javascript;base64," + code.toString("base64"));
+const { azaharSd, installAzahar, writableAzaharSd } = await import("data:text/javascript;base64," + code.toString("base64"));
 
 function directory() {
   const entries = new Map();
@@ -85,4 +85,20 @@ test("restores old files and leaves conflicts alone if installation fails", asyn
 
 test("rejects a folder without an existing Azahar SD directory", async () => {
   await assert.rejects(azaharSd(directory()), { name: "NotFoundError" });
+});
+
+test("accepts selecting Azahar's sdmc folder directly", async () => {
+  const sd = Object.assign(directory(), { name: "sdmc" });
+  assert.equal(await writableAzaharSd(sd), sd);
+});
+
+test("requires write access before accepting the folder", async () => {
+  const sd = Object.assign(directory(), {
+    name: "sdmc",
+    async queryPermission({ mode }) {
+      assert.equal(mode, "readwrite");
+      return "denied";
+    },
+  });
+  await assert.rejects(writableAzaharSd(sd), { name: "NotAllowedError" });
 });

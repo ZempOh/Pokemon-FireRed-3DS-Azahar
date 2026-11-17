@@ -361,6 +361,13 @@ build/map_includes.stamp: $(wildcard $(ROOT)/data/maps/*/map.json) $(ROOT)/data/
 	@touch $@
 build/root/data/map_events.o build/root/data/maps.o: build/map_includes.stamp
 
+# Classic still includes its tileset graphics and palettes from assembly.
+build/tileset_assets.stamp: $(ROOT)/data/tilesets.s $(wildcard $(ROOT)/data/tilesets/*.inc) $(SCANINC)
+	+cd $(ROOT) && $(MAKE) NODEP=1 $$("$(SCANINC)" -I include -I "" data/tilesets.s | grep -E '\.(4bpp|gbapal|lz|rl)$$')
+	@mkdir -p build
+	@touch $@
+build/root/data/tilesets.o: build/tileset_assets.stamp
+
 # Sample conversion, using the same format and flags as Classic's GBA build.
 $(AIF2PCM): $(wildcard $(ROOT)/tools/aif2pcm/*.c $(ROOT)/tools/aif2pcm/*.h)
 	$(MAKE) -C $(ROOT)/tools/aif2pcm

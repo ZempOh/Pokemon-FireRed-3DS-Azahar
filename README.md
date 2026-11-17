@@ -13,9 +13,8 @@ technical groundwork of
 **This repository and its releases do not contain the game.** You need your
 own dump of your own Pokémon FireRed cartridge.
 
-**Website and web builder:
-[nachogonzalez2001.github.io/Pokemon-FireRed-3DS](https://nachogonzalez2001.github.io/Pokemon-FireRed-3DS/)**,
-to build the game in your browser from your ROM, with nothing to install.
+**[Project website](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/)**
+· **[Game builder](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/build.html)**
 
 ## Screenshots
 
@@ -119,7 +118,7 @@ port's startup log, create an empty file named `debug.txt` in
 ### Nintendo 3DS hardware
 
 **In your browser (any system).** Open the
-[web builder](https://nachogonzalez2001.github.io/Pokemon-FireRed-3DS/build.html),
+[web builder](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/build.html),
 choose your ROM - Pokémon FireRed (USA, Rev 1), SHA-1
 `dd5945db9b930750cb39d00c84da8571feebf417` - and it makes a ZIP with the
 `3ds` folder to copy to the root of the SD card. The ROM is read on your

@@ -195,6 +195,8 @@ build/%.o: src/%.c Makefile
 	@mkdir -p $(dir $@)
 	$(CC) $(CPPFLAGS) $(CFLAGS) -MMD -MP -c $< -o $@
 
+build/3ds_data.o: CPPFLAGS += -iquote ../include
+
 # The linker script and specs are generated from emerald3ds.ld.in: the image
 # link keeps .gamedata's contents, the shipped executable reserves it NOLOAD.
 build/emerald3ds_image.ld: emerald3ds.ld.in

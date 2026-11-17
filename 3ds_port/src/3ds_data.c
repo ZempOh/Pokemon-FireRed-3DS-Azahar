@@ -90,7 +90,11 @@ static bool OpenPak(void)
     CtrPakStatus status;
     char detail[512];
 
+#if CTR_AZAHAR_HLE
+    sPak = fopen("romfs:/firered3ds.pak", "rb");
+#else
     sPak = fopen(CTR_DATA_PAK_PATH, "rb");
+#endif
     if (sPak == NULL)
     {
         SetError("The game data pack was not found.",

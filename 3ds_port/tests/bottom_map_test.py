@@ -92,8 +92,8 @@ typedef bool bool8;
 #define FLAG_GET_SEEN 0
 #define VAR_REPEL_STEP_COUNT 0x4021
 #define VAR_ALTERING_CAVE_WILD_SET 0x403E
-#define MAP_GROUP(map) ((map) >> 8)
-#define MAP_NUM(map) ((map) & 0xFF)
+#define MAP_GROUP(map) (MAP_##map >> 8)
+#define MAP_NUM(map) (MAP_##map & 0xFF)
 #define MAP_UNDEFINED (0xFF | (0xFF << 8))
 #define MAP_ALTERING_CAVE ((24 << 8) | 5)
 #define FOCUS_NONE 0xFF

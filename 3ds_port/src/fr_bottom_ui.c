@@ -513,7 +513,7 @@ static void Snapshot(ViewState *s)
     if (InField())
     {
         s->mapsec = gMapHeader.regionMapSectionId;
-        if (s->mapsec >= KANTO_MAPSEC_START && s->mapsec < MAPSEC_NONE)
+        if (s->mapsec >= MAPSEC_PALLET_TOWN && s->mapsec < MAPSEC_NONE)
         {
             s->region = Port_GetRegionMapPlayer(&s->mapX, &s->mapY);
             s->onMap = TRUE;
@@ -2988,7 +2988,9 @@ static void DrawDexBase(const PageView *v)
         RoundBox(114, 31, 200, 112, 6, C_CARD, C_LINE);
         DrawDexDetails(d->species, caught, 114, 36, 200, C_CARD);
         RoundRect(LIST_X, 147, LIST_W, 57, 6, C_SLATE);
-        TextLines(FONT_SMALL, caught ? Port_DexEntry(SpeciesToNationalPokedexNum(d->species))->description : Ascii("Catch it to learn more."),
+        TextLines(FONT_SMALL, caught ? (gSaveBlock1Ptr->keyFlags.version == 0
+            ? Port_DexEntry(SpeciesToNationalPokedexNum(d->species))->description_FR
+            : Port_DexEntry(SpeciesToNationalPokedexNum(d->species))->description_LG) : Ascii("Catch it to learn more."),
                   14, 148, 13, C_WHITE, C_SLATE);
         Footer();
         BackKey(v->pressed == PAGE_HIT_BACK);

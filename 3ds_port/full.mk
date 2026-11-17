@@ -15,6 +15,8 @@ PREPROC := $(abspath $(ROOT)/tools/preproc/preproc$(EXESUFFIX))
 MAPJSON := $(abspath $(ROOT)/tools/mapjson/mapjson$(EXESUFFIX))
 WAV2AGB := $(abspath $(ROOT)/tools/wav2agb/wav2agb$(EXESUFFIX))
 GAME_ARCH := $(ARCH)
+SHELL := /bin/bash
+.SHELLFLAGS := -o pipefail -c
 ASM_PSEUDO_OP_CONV := sed -e 's/\.4byte/\.int/g;s/\.2byte/\.short/g'
 AS := $(DEVKITARM)/bin/arm-none-eabi-as
 CPPTOOL := $(DEVKITARM)/bin/arm-none-eabi-cpp
@@ -171,7 +173,7 @@ build/root/sound/songs/%.o: $(ROOT)/sound/songs/%.s
 
 # mid2agb takes per-song options from sound/songs/midi/midi.cfg, which the root
 # Makefile already parses: the conversion is delegated to it, in one call.
-ROOT_MID_DEPS := $(wildcard $(ROOT)/sound/songs/midi/*.mid) $(ROOT)/sound/songs/midi/midi.cfg
+ROOT_MID_DEPS := $(wildcard $(ROOT)/sound/songs/midi/*.mid)
 build/midi.stamp: $(ROOT_MID_DEPS)
 	+$(MAKE) -C $(ROOT) $(patsubst $(ROOT)/%,%,$(ROOT_MID_SRCS))
 	@mkdir -p build

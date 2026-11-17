@@ -119,7 +119,6 @@ bool CtrPlatform_Init(void)
     /* A New 3DS runs the application core at 804 MHz with its L2 cache when
      * asked; an Old 3DS ignores this. */
     osSetSpeedupEnable(true);
-    CtrFs_MigrateLegacy();
     CtrLog_Init();
     sInitialized = true;
     atexit(CtrPlatform_Shutdown);

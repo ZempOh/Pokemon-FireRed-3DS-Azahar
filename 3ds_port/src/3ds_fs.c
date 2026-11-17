@@ -47,81 +47,8 @@ static FILE *Open(const char *base, const char *path, const char *mode)
     return file;
 }
 
-/*
- * Builds before the FireRed name kept their files in sdmc:/3ds/emerald3ds/,
- * the Emerald port's folder - which that port, beside this one on a card,
- * uses too. The save is copied (the old one stays, a backup) when the new
- * folder has none and the old one is FireRed's: section 0 of a FireRed save,
- * the trainer's, holds the game code 1 at 0xAC, where Emerald keeps a random
- * security key. The settings and the log switch come along with it.
- */
-#define LEGACY_DIR "sdmc:/3ds/emerald3ds/"
-#define SAVE_SECTOR 0x1000
-#define SAVE_SECTORS 32
-static const char *sMigrated;
-
-static bool IsFireRedSave(const char *path)
-{
-    static u8 sector[SAVE_SECTOR];
-    FILE *file = fopen(path, "rb");
-    bool fireRed = false;
-
-    if (file == NULL)
-        return false;
-    for (int i = 0; i < SAVE_SECTORS && !fireRed; i++)
-    {
-        u16 id;
-        u32 signature, code;
-
-        if (fread(sector, 1, SAVE_SECTOR, file) != SAVE_SECTOR)
-            break;
-        memcpy(&id, sector + 0xFF4, 2);
-        memcpy(&signature, sector + 0xFF8, 4);
-        memcpy(&code, sector + 0xAC, 4);
-        fireRed = id == 0 && signature == 0x08012025 && code == 1;
-    }
-    fclose(file);
-    return fireRed;
-}
-
-static bool Exists(const char *path)
-{
-    struct stat st;
-
-    return stat(path, &st) == 0;
-}
-
-static bool CopyFile(const char *from, const char *to)
-{
-    static u8 buffer[16 * 1024];
-    FILE *in = fopen(from, "rb"), *out;
-    bool ok = in != NULL;
-    size_t n;
-
-    if (!ok)
-        return false;
-    out = fopen(to, "wb");
-    ok = out != NULL;
-    while (ok && (n = fread(buffer, 1, sizeof(buffer), in)) > 0)
-        ok = fwrite(buffer, 1, n, out) == n;
-    ok = ok && !ferror(in);
-    fclose(in);
-    if (out != NULL && fclose(out) != 0)
-        ok = false;
-    if (!ok)
-        remove(to);
-    return ok;
-}
-
-void CtrFs_MigrateLegacy(void)
-{
-    /* FRLG+ has its own save format and SD directory. */
-}
-
 bool CtrFs_Init(void)
 {
-    if (sMigrated != NULL)
-        CtrLog_Write(CTR_LOG_FS, "from %s: %s", LEGACY_DIR, sMigrated);
     Result result = romfsInit();
     sMounted = R_SUCCEEDED(result);
     if (!sMounted)

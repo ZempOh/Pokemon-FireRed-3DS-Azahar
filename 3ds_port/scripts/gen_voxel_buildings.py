@@ -2915,7 +2915,6 @@ def build_models(only=None):
             expanded += voxel_bridge.block_specs(spec)
         else:
             expanded.append(spec)
-    reuse_everywhere()
     for spec in expanded:
         if only and not spec["name"].startswith(only):
             continue
@@ -4902,7 +4901,7 @@ def bridge_check(models, layout_id, out_dir):
     return sum(len(v) for v in culprits.values())
 
 
-LINT_ALLOW = os.path.join(PORT, "assets", "voxel", "interior_lint_allow.toml")
+LINT_ALLOW = os.path.join(PORT, "assets", "voxel", "classic_interior_lint_allow.toml")
 
 
 def lint_allowed(path=LINT_ALLOW):

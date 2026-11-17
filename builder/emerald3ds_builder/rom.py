@@ -17,7 +17,8 @@ from pathlib import Path
 
 from .errors import BuilderError
 
-SUPPORTED_SHA1 = "f3ae088181bf583e55daf962a92bb46f4f1d07b7"
+SUPPORTED_SHA1 = "7e27a7878d6aeb3b798757f98e60d1064d762dbb"
+CLASSIC_ROM_SIZE = 18_677_224
 SPANISH_SHA1 = "fe1558a3dcb0360ab558969e09b690888b846dd9"
 FRENCH_SHA1 = "ca666651374d89ca439007bed54d839eb7bd14d0"
 ITALIAN_SHA1 = "1692db322400c3141c5de2db38469913ceb1f4d4"
@@ -28,7 +29,7 @@ ROM_PROFILES = {"BPEE": SUPPORTED_SHA1, "BPES": SPANISH_SHA1, "BPEF": FRENCH_SHA
                 "BPEI": ITALIAN_SHA1, "BPED": GERMAN_SHA1, "BPEJ": JAPANESE_SHA1}
 ROM_SIZE = 16 * 1024 * 1024
 KNOWN_CODES = {
-    "BPEE": "Pokemon Emerald (USA, Europe)",
+    "BPEE": "Pokemon Classic v1.5.1",
     "BPEJ": "Pokemon Emerald (Japan)",
     "BPES": "Pokemon Emerald (Spain)",
     "BPED": "Pokemon Emerald (Germany)",
@@ -94,6 +95,11 @@ def check_rom_bytes(data: bytes, source: Path, supported: tuple[str, ...] | None
         except zipfile.BadZipFile as exc:
             raise BuilderError("The ROM file could not be read.", str(exc), code="rom_unreadable") from exc
     if len(data) > ROM_SIZE:
+        if len(data) == CLASSIC_ROM_SIZE and (supported is None or SUPPORTED_SHA1 in supported):
+            sha1 = hashlib.sha1(data).hexdigest()
+            if sha1 == SUPPORTED_SHA1:
+                title, code = header(data)
+                return Rom(data=data, sha1=sha1, title=title, code=code, source=source)
         raise BuilderError("This file is larger than a GBA cartridge; it is not the supported ROM.",
                            code="rom_too_large")
     if len(data) < ROM_SIZE:

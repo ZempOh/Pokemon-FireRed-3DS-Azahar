@@ -1,0 +1,285 @@
+diff --git a/gflib/bg.c b/gflib/bg.c
+index 6e97be2073f7699d10c75cb2dc2ce9a4230f8c35..5348de13f2be61203e2fb929b731b149ab07517d 100644
+--- a/gflib/bg.c
++++ b/gflib/bg.c
+@@ -1240,10 +1240,9 @@ bool32 IsInvalidBg32(u8 bg)
+ 
+ bool32 IsTileMapOutsideWram(u8 bg)
+ {
++#ifndef PORTABLE
+     if (sGpuBgConfigs2[bg].tilemap > (void*)IWRAM_END)
+         return TRUE;
+-    else if (sGpuBgConfigs2[bg].tilemap == NULL)
+-        return TRUE;
+-    else
+-        return FALSE;
++#endif
++    return sGpuBgConfigs2[bg].tilemap == NULL;
+ }
+diff --git a/gflib/sprite.h b/gflib/sprite.h
+index 57fabc05637118f56f5ad341a3e5675e721a69d2..efcb39e060ddeea8faba5835f50b21d529ddbf9e 100644
+--- a/gflib/sprite.h
++++ b/gflib/sprite.h
+@@ -36,8 +36,10 @@ struct SpriteFrameImage
+ 
+ #ifdef PORT_BRIDGE
+ #define overworld_frame(ptr, width, height, frame) {.data = (ptr), .size = (width) * (height) * 32, .offset = (width) * (height) * (frame) * 32}
++#define frame_at(ptr, byteOffset, frameSize) {.data = (ptr), .size = (frameSize), .offset = (byteOffset)}
+ #else
+ #define overworld_frame(ptr, width, height, frame) {.data = (u8 *)ptr + (width * height * frame * 64)/2, .size = (width * height * 64)/2}
++#define frame_at(ptr, byteOffset, frameSize) {.data = (const u8 *)(ptr) + (byteOffset), .size = (frameSize)}
+ #endif
+ 
+ struct SpritePalette
+diff --git a/src/data.c b/src/data.c
+index 48873ded9fd352174b78116058a42921d89cdc7f..135598439badb17167a094f167cf44ebb8805472 100644
+--- a/src/data.c
++++ b/src/data.c
+@@ -16,156 +16,156 @@ static const u32 sMinigameDigitsThin_Gfx[] = INCBIN_U32("graphics/link/minigame_
+ 
+ const struct SpriteFrameImage gBattlerPicTable_PlayerLeft[] =
+ {
+-    BATTLER_OFFSET(0), MON_PIC_SIZE,
+-    BATTLER_OFFSET(1), MON_PIC_SIZE,
+-    BATTLER_OFFSET(2), MON_PIC_SIZE,
+-    BATTLER_OFFSET(3), MON_PIC_SIZE,
++    {.data = BATTLER_OFFSET(0), .size = MON_PIC_SIZE},
++    {.data = BATTLER_OFFSET(1), .size = MON_PIC_SIZE},
++    {.data = BATTLER_OFFSET(2), .size = MON_PIC_SIZE},
++    {.data = BATTLER_OFFSET(3), .size = MON_PIC_SIZE},
+ };
+ 
+ const struct SpriteFrameImage gBattlerPicTable_OpponentLeft[] =
+ {
+-    BATTLER_OFFSET(4), MON_PIC_SIZE,
+-    BATTLER_OFFSET(5), MON_PIC_SIZE,
+-    BATTLER_OFFSET(6), MON_PIC_SIZE,
+-    BATTLER_OFFSET(7), MON_PIC_SIZE,
++    {.data = BATTLER_OFFSET(4), .size = MON_PIC_SIZE},
++    {.data = BATTLER_OFFSET(5), .size = MON_PIC_SIZE},
++    {.data = BATTLER_OFFSET(6), .size = MON_PIC_SIZE},
++    {.data = BATTLER_OFFSET(7), .size = MON_PIC_SIZE},
+ };
+ 
+ const struct SpriteFrameImage gBattlerPicTable_PlayerRight[] =
+ {
+-    BATTLER_OFFSET(8),  MON_PIC_SIZE,
+-    BATTLER_OFFSET(9),  MON_PIC_SIZE,
+-    BATTLER_OFFSET(10), MON_PIC_SIZE,
+-    BATTLER_OFFSET(11), MON_PIC_SIZE,
++    {.data = BATTLER_OFFSET(8), .size = MON_PIC_SIZE},
++    {.data = BATTLER_OFFSET(9), .size = MON_PIC_SIZE},
++    {.data = BATTLER_OFFSET(10), .size = MON_PIC_SIZE},
++    {.data = BATTLER_OFFSET(11), .size = MON_PIC_SIZE},
+ };
+ 
+ const struct SpriteFrameImage gBattlerPicTable_OpponentRight[] =
+ {
+-    BATTLER_OFFSET(12), MON_PIC_SIZE,
+-    BATTLER_OFFSET(13), MON_PIC_SIZE,
+-    BATTLER_OFFSET(14), MON_PIC_SIZE,
+-    BATTLER_OFFSET(15), MON_PIC_SIZE,
++    {.data = BATTLER_OFFSET(12), .size = MON_PIC_SIZE},
++    {.data = BATTLER_OFFSET(13), .size = MON_PIC_SIZE},
++    {.data = BATTLER_OFFSET(14), .size = MON_PIC_SIZE},
++    {.data = BATTLER_OFFSET(15), .size = MON_PIC_SIZE},
+ };
+ 
+ const struct SpriteFrameImage gTrainerBackPicTable_Brendan[] =
+ {
+-    gTrainerBackPic_Brendan, 0x0800,
+-    gTrainerBackPic_Brendan + 0x0800, 0x0800,
+-    gTrainerBackPic_Brendan + 0x1000, 0x0800,
+-    gTrainerBackPic_Brendan + 0x1800, 0x0800,
++    frame_at(gTrainerBackPic_Brendan, 0, 0x0800),
++    frame_at(gTrainerBackPic_Brendan, 0x0800, 0x0800),
++    frame_at(gTrainerBackPic_Brendan, 0x1000, 0x0800),
++    frame_at(gTrainerBackPic_Brendan, 0x1800, 0x0800),
+ };
+ 
+ const struct SpriteFrameImage gTrainerBackPicTable_May[] =
+ {
+-    gTrainerBackPic_May, 0x0800,
+-    gTrainerBackPic_May + 0x0800, 0x0800,
+-    gTrainerBackPic_May + 0x1000, 0x0800,
+-    gTrainerBackPic_May + 0x1800, 0x0800,
++    frame_at(gTrainerBackPic_May, 0, 0x0800),
++    frame_at(gTrainerBackPic_May, 0x0800, 0x0800),
++    frame_at(gTrainerBackPic_May, 0x1000, 0x0800),
++    frame_at(gTrainerBackPic_May, 0x1800, 0x0800),
+ };
+ 
+ const struct SpriteFrameImage gTrainerBackPicTable_Red[] =
+ {
+-    gTrainerBackPic_Red, 0x0800,
+-    gTrainerBackPic_Red + 0x0800, 0x0800,
+-    gTrainerBackPic_Red + 0x1000, 0x0800,
+-    gTrainerBackPic_Red + 0x1800, 0x0800,
+-    gTrainerBackPic_Red + 0x2000, 0x0800,
++    frame_at(gTrainerBackPic_Red, 0, 0x0800),
++    frame_at(gTrainerBackPic_Red, 0x0800, 0x0800),
++    frame_at(gTrainerBackPic_Red, 0x1000, 0x0800),
++    frame_at(gTrainerBackPic_Red, 0x1800, 0x0800),
++    frame_at(gTrainerBackPic_Red, 0x2000, 0x0800),
+ };
+ 
+ const struct SpriteFrameImage gTrainerBackPicTable_Leaf[] =
+ {
+-    gTrainerBackPic_Leaf, 0x0800,
+-    gTrainerBackPic_Leaf + 0x0800, 0x0800,
+-    gTrainerBackPic_Leaf + 0x1000, 0x0800,
+-    gTrainerBackPic_Leaf + 0x1800, 0x0800,
+-    gTrainerBackPic_Leaf + 0x2000, 0x0800,
++    frame_at(gTrainerBackPic_Leaf, 0, 0x0800),
++    frame_at(gTrainerBackPic_Leaf, 0x0800, 0x0800),
++    frame_at(gTrainerBackPic_Leaf, 0x1000, 0x0800),
++    frame_at(gTrainerBackPic_Leaf, 0x1800, 0x0800),
++    frame_at(gTrainerBackPic_Leaf, 0x2000, 0x0800),
+ };
+ 
+ const struct SpriteFrameImage gTrainerBackPicTable_RubySapphireBrendan[] =
+ {
+-    gTrainerBackPic_RubySapphireBrendan, 0x0800,
+-    gTrainerBackPic_RubySapphireBrendan + 0x0800, 0x0800,
+-    gTrainerBackPic_RubySapphireBrendan + 0x1000, 0x0800,
+-    gTrainerBackPic_RubySapphireBrendan + 0x1800, 0x0800,
++    frame_at(gTrainerBackPic_RubySapphireBrendan, 0, 0x0800),
++    frame_at(gTrainerBackPic_RubySapphireBrendan, 0x0800, 0x0800),
++    frame_at(gTrainerBackPic_RubySapphireBrendan, 0x1000, 0x0800),
++    frame_at(gTrainerBackPic_RubySapphireBrendan, 0x1800, 0x0800),
+ };
+ 
+ const struct SpriteFrameImage gTrainerBackPicTable_RubySapphireMay[] =
+ {
+-    gTrainerBackPic_RubySapphireMay, 0x0800,
+-    gTrainerBackPic_RubySapphireMay + 0x0800, 0x0800,
+-    gTrainerBackPic_RubySapphireMay + 0x1000, 0x0800,
+-    gTrainerBackPic_RubySapphireMay + 0x1800, 0x0800,
++    frame_at(gTrainerBackPic_RubySapphireMay, 0, 0x0800),
++    frame_at(gTrainerBackPic_RubySapphireMay, 0x0800, 0x0800),
++    frame_at(gTrainerBackPic_RubySapphireMay, 0x1000, 0x0800),
++    frame_at(gTrainerBackPic_RubySapphireMay, 0x1800, 0x0800),
+ };
+ 
+ const struct SpriteFrameImage gTrainerBackPicTable_Wally[] =
+ {
+-    gTrainerBackPic_Wally, 0x0800,
+-    gTrainerBackPic_Wally + 0x0800, 0x0800,
+-    gTrainerBackPic_Wally + 0x1000, 0x0800,
+-    gTrainerBackPic_Wally + 0x1800, 0x0800,
++    frame_at(gTrainerBackPic_Wally, 0, 0x0800),
++    frame_at(gTrainerBackPic_Wally, 0x0800, 0x0800),
++    frame_at(gTrainerBackPic_Wally, 0x1000, 0x0800),
++    frame_at(gTrainerBackPic_Wally, 0x1800, 0x0800),
+ };
+ 
+ const struct SpriteFrameImage gTrainerBackPicTable_Steven[] =
+ {
+-    gTrainerBackPic_Steven, 0x0800,
+-    gTrainerBackPic_Steven + 0x0800, 0x0800,
+-    gTrainerBackPic_Steven + 0x1000, 0x0800,
+-    gTrainerBackPic_Steven + 0x1800, 0x0800,
++    frame_at(gTrainerBackPic_Steven, 0, 0x0800),
++    frame_at(gTrainerBackPic_Steven, 0x0800, 0x0800),
++    frame_at(gTrainerBackPic_Steven, 0x1000, 0x0800),
++    frame_at(gTrainerBackPic_Steven, 0x1800, 0x0800),
+ };
+ 
+ const struct SpriteFrameImage gTrainerBackPicTable_Ethan[] =
+ {
+-    gTrainerBackPic_Ethan, 0x0800,
+-    gTrainerBackPic_Ethan + 0x0800, 0x0800,
+-    gTrainerBackPic_Ethan + 0x1000, 0x0800,
+-    gTrainerBackPic_Ethan + 0x1800, 0x0800,
++    frame_at(gTrainerBackPic_Ethan, 0, 0x0800),
++    frame_at(gTrainerBackPic_Ethan, 0x0800, 0x0800),
++    frame_at(gTrainerBackPic_Ethan, 0x1000, 0x0800),
++    frame_at(gTrainerBackPic_Ethan, 0x1800, 0x0800),
+ };
+ 
+ const struct SpriteFrameImage gTrainerBackPicTable_Lyra[] =
+ {
+-    gTrainerBackPic_Lyra, 0x0800,
+-    gTrainerBackPic_Lyra + 0x0800, 0x0800,
+-    gTrainerBackPic_Lyra + 0x1000, 0x0800,
+-    gTrainerBackPic_Lyra + 0x1800, 0x0800,
++    frame_at(gTrainerBackPic_Lyra, 0, 0x0800),
++    frame_at(gTrainerBackPic_Lyra, 0x0800, 0x0800),
++    frame_at(gTrainerBackPic_Lyra, 0x1000, 0x0800),
++    frame_at(gTrainerBackPic_Lyra, 0x1800, 0x0800),
+ };
+ 
+ const struct SpriteFrameImage gTrainerBackPicTable_Kris[] =
+ {
+-    gTrainerBackPic_Kris, 0x0800,
+-    gTrainerBackPic_Kris + 0x0800, 0x0800,
+-    gTrainerBackPic_Kris + 0x1000, 0x0800,
+-    gTrainerBackPic_Kris + 0x1800, 0x0800,
++    frame_at(gTrainerBackPic_Kris, 0, 0x0800),
++    frame_at(gTrainerBackPic_Kris, 0x0800, 0x0800),
++    frame_at(gTrainerBackPic_Kris, 0x1000, 0x0800),
++    frame_at(gTrainerBackPic_Kris, 0x1800, 0x0800),
+ };
+ 
+ const struct SpriteFrameImage gTrainerBackPicTable_Lucas[] =
+ {
+-    gTrainerBackPic_Lucas, 0x0800,
+-    gTrainerBackPic_Lucas + 0x0800, 0x0800,
+-    gTrainerBackPic_Lucas + 0x1000, 0x0800,
+-    gTrainerBackPic_Lucas + 0x1800, 0x0800,
++    frame_at(gTrainerBackPic_Lucas, 0, 0x0800),
++    frame_at(gTrainerBackPic_Lucas, 0x0800, 0x0800),
++    frame_at(gTrainerBackPic_Lucas, 0x1000, 0x0800),
++    frame_at(gTrainerBackPic_Lucas, 0x1800, 0x0800),
+ };
+ 
+ const struct SpriteFrameImage gTrainerBackPicTable_Dawn[] =
+ {
+-    gTrainerBackPic_Dawn, 0x0800,
+-    gTrainerBackPic_Dawn + 0x0800, 0x0800,
+-    gTrainerBackPic_Dawn + 0x1000, 0x0800,
+-    gTrainerBackPic_Dawn + 0x1800, 0x0800,
++    frame_at(gTrainerBackPic_Dawn, 0, 0x0800),
++    frame_at(gTrainerBackPic_Dawn, 0x0800, 0x0800),
++    frame_at(gTrainerBackPic_Dawn, 0x1000, 0x0800),
++    frame_at(gTrainerBackPic_Dawn, 0x1800, 0x0800),
+ };
+ 
+ const struct SpriteFrameImage gTrainerBackPicTable_LucasPlatinum[] =
+ {
+-    gTrainerBackPic_LucasPlatinum, 0x0800,
+-    gTrainerBackPic_LucasPlatinum + 0x0800, 0x0800,
+-    gTrainerBackPic_LucasPlatinum + 0x1000, 0x0800,
+-    gTrainerBackPic_LucasPlatinum + 0x1800, 0x0800,
++    frame_at(gTrainerBackPic_LucasPlatinum, 0, 0x0800),
++    frame_at(gTrainerBackPic_LucasPlatinum, 0x0800, 0x0800),
++    frame_at(gTrainerBackPic_LucasPlatinum, 0x1000, 0x0800),
++    frame_at(gTrainerBackPic_LucasPlatinum, 0x1800, 0x0800),
+ };
+ 
+ const struct SpriteFrameImage gTrainerBackPicTable_DawnPlatinum[] =
+ {
+-    gTrainerBackPic_DawnPlatinum, 0x0800,
+-    gTrainerBackPic_DawnPlatinum + 0x0800, 0x0800,
+-    gTrainerBackPic_DawnPlatinum + 0x1000, 0x0800,
+-    gTrainerBackPic_DawnPlatinum + 0x1800, 0x0800,
++    frame_at(gTrainerBackPic_DawnPlatinum, 0, 0x0800),
++    frame_at(gTrainerBackPic_DawnPlatinum, 0x0800, 0x0800),
++    frame_at(gTrainerBackPic_DawnPlatinum, 0x1000, 0x0800),
++    frame_at(gTrainerBackPic_DawnPlatinum, 0x1800, 0x0800),
+ };
+ 
+ static const union AnimCmd sAnim_GeneralFrame0[] =
+diff --git a/src/data/party_menu.h b/src/data/party_menu.h
+index 4838c1680128fb17f446661cb25496e1b58e6b44..8c558a8622b6f5f91115619c2eb4f26692b8f00a 100644
+--- a/src/data/party_menu.h
++++ b/src/data/party_menu.h
+@@ -915,7 +915,7 @@ const struct SpriteSheet gSpriteSheet_HeldItem =
+     sHeldItemGfx, sizeof(sHeldItemGfx), 0xd750
+ };
+ 
+-static const struct SpritePalette sSpritePalette_HeldItem =
++const struct SpritePalette sSpritePalette_HeldItem =
+ {
+     gHeldItemPalette, 0xd750
+ };

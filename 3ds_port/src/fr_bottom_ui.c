@@ -116,6 +116,10 @@ enum { MENU_POKEDEX, MENU_POKEMON, MENU_BAG, MENU_PLAYER, MENU_SAVE, MENU_OPTION
 #define MAP_VIEW_H 122
 #define MAP_SRC_X 24
 #define MAP_SRC_Y 30
+#define WORLD_KEY_X 146
+#define WORLD_KEY_Y 157
+#define WORLD_KEY_W 59
+#define WORLD_KEY_H 20
 /* the party's cards, two by three */
 #define PARTY_X 214
 #define PARTY_Y 31
@@ -181,7 +185,7 @@ enum {
 #define RUN_H 19
 
 /* Touch targets */
-enum { HIT_NONE, HIT_BUTTON, HIT_PARTY = HIT_BUTTON + MENU_COUNT, HIT_RUN, HIT_BATTLE,
+enum { HIT_NONE, HIT_BUTTON, HIT_PARTY = HIT_BUTTON + MENU_COUNT, HIT_RUN, HIT_WORLD, HIT_BATTLE,
        HIT_TAB = HIT_BATTLE + 6, HIT_ROW = HIT_TAB + CTR_EXTRAS_PAGES, HIT_ROW_BACK = HIT_ROW + OPT_PAGE_ROWS,
        HIT_PAGE_PREV = HIT_ROW_BACK + OPT_PAGE_ROWS, HIT_PAGE_NEXT, HIT_BACK, HIT_SCENE, HIT_COUNT };
 
@@ -219,6 +223,8 @@ typedef struct {
     u8 enabled;      /* bit per MENU_* */
     u8 run;          /* bit 0 running is the default, bit 1 the player can run */
     u8 pressed;      /* HIT_* under the finger */
+    u8 focus;        /* HIT_* selected with buttons */
+    u8 world;        /* bit 0 3D enabled, bit 1 toggle is available */
     u8 region;
     u8 onMap;        /* the player is placed on the map */
     s16 mapX, mapY;
@@ -243,6 +249,9 @@ static bool8 sInGame;
 static u32 sResetsSeen;
 static u8 sScreen = SCR_MAP;
 static u8 sOptTab, sOptSub, sOptPage;
+static s8 sDockFocus = -1;
+static s8 sOptionFocus = -1;
+static u16 sPanelConsumed;
 
 /* The battle menus (battle_controller_player.c, Port_BattleMenu) */
 static u32 sBattleMenuFrame = 0xFFFFFFF0;
@@ -473,6 +482,13 @@ static void Snapshot(ViewState *s)
     if (gSaveBlock2Ptr == NULL || gSaveBlock1Ptr == NULL)
         return;
     s->screen = sScreen;
+#if CTR_VOXEL_ENABLED
+    s->world = (CtrSettings_Voxel() ? 1 : 0) | (InField() ? 2 : 0);
+#endif
+    if (sScreen == SCR_OPTIONS && sOptionFocus >= 0)
+        s->focus = HIT_ROW + sOptionFocus;
+    else if (sDockFocus >= 0)
+        s->focus = HIT_BUTTON + sDockFocus;
     if (sScreen == SCR_OPTIONS)
         SnapshotOptions(s);
     if (gMain.inBattle)
@@ -1227,6 +1243,8 @@ static void DrawOptions(const ViewState *s)
             FillRect(x + 2, y - 1, w - 4, 1, C_LINE);
         if (kind != ROW_STEP && (pressed || pressedBack))
             RoundRect(x, y, w, h, 4, C_PINK);
+        if (s->focus == HIT_ROW + i)
+            RoundBox(x, y, w, h, 4, C_PINK, C_BAND_DK);
         Text(FONT_SMALL, r->opt >= 0 ? OptionName(r->opt) : Ascii(r->extra->name), x + 4, y + 3, ink, shade, TRUE);
         if (kind == ROW_TOGGLE)
         {
@@ -1395,7 +1413,8 @@ static void DrawDock(const ViewState *s)
         bool8 on = i == MENU_OPTION || ((s->enabled >> i) & 1), pressed = s->pressed == HIT_BUTTON + i && on;
         int x = DOCK_KEY_X + i * DOCK_STEP, dy = pressed ? 1 : 0;
 
-        RoundBox(x, DOCK_KEY_Y, DOCK_KEY_W, DOCK_KEY_H, 7, pressed ? C_PINK : on ? C_WHITE : C_EMPTY, C_BAND_DK);
+        RoundBox(x, DOCK_KEY_Y, DOCK_KEY_W, DOCK_KEY_H, 7,
+                 pressed || s->focus == HIT_BUTTON + i ? C_PINK : on ? C_WHITE : C_EMPTY, C_BAND_DK);
         DrawUiIcon(sMenuIcons[i], x + (DOCK_KEY_W - 26) / 2, DOCK_KEY_Y + 1 + dy, on);
         TextCentered(FONT_SMALL, MenuLabel(s, i), x + DOCK_KEY_W / 2, DOCK_KEY_Y + 27 + dy,
                      on ? C_TEXT : C_MUTED, on ? C_TEXT_SH : C_EMPTY);
@@ -1483,9 +1502,17 @@ static void RenderPanel(const ViewState *s)
         {
             GetMapName(name, s->mapsec, 0);
             Text(FONT_SMALL, name, MAP_X + 3, MAP_Y + MAP_VIEW_H + 4, C_TEXT, C_TEXT_SH, TRUE);
-            TextRight(FONT_SMALL, Ascii(s->region ? "SEVII ISLES" : "KANTO"),
-                      MAP_X + MAP_VIEW_W - 3, MAP_Y + MAP_VIEW_H + 4, C_MUTED, C_CARD);
         }
+#if CTR_VOXEL_ENABLED
+        if (s->world & 2)
+        {
+            u16 color = (s->world & 1) ? C_GREEN : C_SLATE;
+            RoundBox(WORLD_KEY_X, WORLD_KEY_Y, WORLD_KEY_W, WORLD_KEY_H, 5,
+                     s->pressed == HIT_WORLD ? C_BAND : color, C_BAND_DK);
+            TextCentered(FONT_SMALL, Ascii(s->world & 1 ? "3D ON" : "3D OFF"),
+                         WORLD_KEY_X + WORLD_KEY_W / 2, WORLD_KEY_Y + 3, C_WHITE, C_BAND_DK);
+        }
+#endif
         DrawParty(s);
         DrawDock(s);
     }
@@ -4338,6 +4365,11 @@ static u8 HitTest(int x, int y)
         return HIT_SCENE;
     if (sScreen == SCR_OPTIONS)
         return OptionsHitTest(x, y);
+#if CTR_VOXEL_ENABLED
+    if (x >= WORLD_KEY_X && x < WORLD_KEY_X + WORLD_KEY_W
+     && y >= WORLD_KEY_Y && y < WORLD_KEY_Y + WORLD_KEY_H && InField())
+        return HIT_WORLD;
+#endif
     if (y < HEADER_H)
         return x >= RUN_X - 4 && x < RUN_X + RUN_W + 4 ? HIT_RUN : HIT_NONE;
     if (y >= DOCK_Y)
@@ -4399,6 +4431,17 @@ static void Activate(const ViewState *s, u8 hit)
         }
         return;
     }
+#if CTR_VOXEL_ENABLED
+    if (hit == HIT_WORLD)
+    {
+        if (FieldIdle())
+        {
+            CtrSettings_SetVoxel(!CtrSettings_Voxel());
+            PlaySE(SE_SELECT);
+        }
+        return;
+    }
+#endif
     /* OPTION shows the port's own options screen; its BACK key leaves it. */
     if (hit == HIT_BUTTON + MENU_OPTION)
     {
@@ -4440,6 +4483,97 @@ static bool ReadTouch(u16 *x, u16 *y)
         return true;
 #endif
     return in->touchActive;
+}
+
+/* START opens the same dock the touchscreen exposes. Navigation never leaks
+ * through as movement, a field interaction, or a shoulder-button Help press. */
+static bool8 ProcessPanelKeys(const ViewState *s)
+{
+    const u16 down = CtrInput_Get()->physicalDown;
+
+    if (s->battle || !InField() || ZoomActive())
+    {
+        sDockFocus = sOptionFocus = -1;
+        return FALSE;
+    }
+    if (!down)
+        return FALSE;
+    if (sScreen == SCR_OPTIONS)
+    {
+        OptRow rows[OPT_MAX_ROWS];
+        int count, visible;
+
+        if (down & (CTR_KEY_B | CTR_KEY_START))
+        {
+            OptionsActivate(HIT_BACK);
+            sOptionFocus = -1;
+            return TRUE;
+        }
+        if (down & (CTR_KEY_L | CTR_KEY_R))
+        {
+            OptionsActivate(down & CTR_KEY_L ? HIT_PAGE_PREV : HIT_PAGE_NEXT);
+            sOptionFocus = 0;
+        }
+        else if (down & (CTR_KEY_X | CTR_KEY_Y))
+        {
+            int direction = down & CTR_KEY_X ? -1 : 1;
+            int tab = (sOptTab + CTR_EXTRAS_PAGES + direction) % CTR_EXTRAS_PAGES;
+
+            OptionsActivate(HIT_TAB + tab);
+            sOptionFocus = 0;
+        }
+        count = PageRows(sOptTab, sOptSub, rows) - sOptPage * OPT_PAGE_ROWS;
+        if (count <= 0)
+            return TRUE;
+        visible = count < OPT_PAGE_ROWS ? count : OPT_PAGE_ROWS;
+        if (sOptionFocus < 0 || sOptionFocus >= visible)
+            sOptionFocus = 0;
+        else if (down & CTR_KEY_UP)
+            sOptionFocus = (sOptionFocus + visible - 1) % visible;
+        else if (down & CTR_KEY_DOWN)
+            sOptionFocus = (sOptionFocus + 1) % visible;
+        else if (down & CTR_KEY_LEFT)
+            OptionsActivate(HIT_ROW_BACK + sOptionFocus);
+        else if (down & (CTR_KEY_RIGHT | CTR_KEY_A))
+            OptionsActivate(HIT_ROW + sOptionFocus);
+        return TRUE;
+    }
+    if (down & CTR_KEY_START)
+    {
+        if (sDockFocus >= 0)
+            sDockFocus = -1;
+        else if (FieldIdle())
+            sDockFocus = MENU_OPTION;
+        return TRUE;
+    }
+    if (sDockFocus < 0)
+        return FALSE;
+    if (down & CTR_KEY_B)
+        sDockFocus = -1;
+    else if (down & CTR_KEY_A)
+    {
+        u8 entry = sDockFocus;
+
+        sDockFocus = -1;
+        if (entry == MENU_OPTION)
+        {
+            sOptTab = CTR_EXTRAS_OPTIONS;
+            sOptSub = 0;
+            sOptPage = CTR_VOXEL_ENABLED ? OPT_VOXEL / OPT_PAGE_ROWS : 0;
+            sOptionFocus = 0;
+        }
+        Activate(s, HIT_BUTTON + entry);
+    }
+    else if (down & CTR_KEY_DPAD)
+    {
+        int direction = down & (CTR_KEY_LEFT | CTR_KEY_UP) ? -1 : 1;
+
+        do
+        {
+            sDockFocus = (sDockFocus + MENU_COUNT + direction) % MENU_COUNT;
+        } while (sDockFocus != MENU_OPTION && !(s->enabled & (1 << sDockFocus)));
+    }
+    return TRUE;
 }
 
 static void ProcessPanelTouch(const ViewState *s, bool active, u16 x, u16 y)
@@ -4507,6 +4641,8 @@ void CtrBottom_Frame(void)
         sResetsSeen = CtrGame_Resets();
         sInGame = FALSE;
         sScreen = SCR_MAP;
+        sDockFocus = sOptionFocus = -1;
+        sPanelConsumed = 0;
         sDrawn = FALSE;
     }
     if (!sInGame && InField())
@@ -4532,7 +4668,22 @@ void CtrBottom_Frame(void)
         else if (--sDockWaitFrames)
             sDockWait = hit;
     }
-    ProcessPanelTouch(&now, active, x, y);
+    if (active)
+    {
+        sDockFocus = sOptionFocus = -1;
+        ProcessPanelTouch(&now, active, x, y);
+    }
+    else
+    {
+        ProcessPanelTouch(&now, active, x, y);
+        if (ProcessPanelKeys(&now))
+        {
+            sPanelConsumed |= CtrInput_Get()->held & CTR_KEY_GAME;
+            if (CtrInput_Get()->physicalHeld & CTR_KEY_Y)
+                sPanelConsumed |= SELECT_BUTTON;
+            Snapshot(&now);
+        }
+    }
     now.pressed = sTouchHit;
     if (sDrawn && memcmp(&now, &sShown, sizeof(now)) == 0)
         return;
@@ -4595,9 +4746,14 @@ uint16_t CtrBottom_InjectedKeys(void)
 
 uint16_t CtrBottom_FilterKeys(uint16_t held)
 {
+    /* Retain ownership of buttons that closed the panel until their release. */
+    sPanelConsumed &= held;
+    held &= ~sPanelConsumed;
     sDpadHeld = held & DPAD_ANY;
     if (PageActive())
         held &= ~sPageDpad;
+    else if (!gMain.inBattle && !ZoomActive() && (sDockFocus >= 0 || sScreen == SCR_OPTIONS) && InField())
+        held &= ~(A_BUTTON | B_BUTTON | START_BUTTON | SELECT_BUTTON | L_BUTTON | R_BUTTON | DPAD_ANY);
     return held;
 }
 

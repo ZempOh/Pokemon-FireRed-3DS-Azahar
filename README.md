@@ -4,13 +4,14 @@
 
 # Pokémon FireRed 3DS for Azahar
 
-**Proudly vibe coded.** This fork brings one-step FireRed 3DS installation to
-Azahar on Android, with the AYN Thor as the target handheld. Connect the Azahar
-folder once, then pick your FireRed ROM to build and install the game.
+**Proudly vibe coded.** This fork brings FireRed 3DS to Azahar on Android, with
+the AYN Thor as the target handheld. Choose your 3DS games folder and your
+FireRed ROM to build and install one standalone cartridge.
 
 The game is a native Nintendo 3DS port with a dual-screen interface and a
-voxel-styled 3D world. The installer uses the matching upstream v0.5.1
-executable and data recipe. You supply your own FireRed cartridge dump.
+voxel-styled 3D world. The builder uses this fork's cartridge engine and a
+matching data recipe based on upstream v0.5.1. You supply your own FireRed
+cartridge dump.
 
 **[Project website](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/)**
 · **[Game builder](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/build.html)**
@@ -26,6 +27,10 @@ executable and data recipe. You supply your own FireRed cartridge dump.
 
 Launch FireRed from your Azahar library. If your browser cannot write to the
 folder, download the built cartridge and move it there manually.
+To update, fully close the game, pick the same folder and ROM, and let the
+builder replace `FireRed3DS.3ds`. After installation it removes the old
+FireRed homebrew launcher and FireRed cartridge temporary files from the
+selected games folder. Saves stay in Azahar's virtual SD folder.
 
 The browser generates the game data on your device and embeds it in the
 cartridge. The standalone build uses the same virtual SD save location
@@ -34,6 +39,22 @@ homebrew edition.
 
 Azahar on Android defaults to HLE audio. The cartridge header maps the
 DSP memory used by FireRed. `debug.txt` only enables diagnostics.
+
+### Map, 3D, and controller navigation
+
+- Voxel 3D starts enabled with fresh settings. Tap **3D ON** or **3D OFF** on
+  the lower-screen map while standing in the overworld to switch between
+  voxel 3D and the classic view. Your saved preference carries over.
+- Press **Start** in the overworld to focus the lower-screen dock. Use the
+  **D-pad** to select Pokédex, Pokémon, Bag, your trainer card, Save, or Options,
+  and press **A** to open it. Press **B** or **Start** to leave dock navigation.
+- Opening **Options** with the controller starts on **3D WORLD**. Use **A** to
+  toggle it, **Up/Down** to select another row, and **Left/Right** to adjust a
+  setting. **L/R** change pages, **X/Y** change tabs, and **B** goes back. You can
+  also use the touch gear and page arrows. The settings include audio, camera
+  angle, zoom, battle presentation, and running.
+- If the overlay Start works and the Thor's physical Start does not, check
+  that the Thor button is bound to **Start** under Azahar's **Settings → Gamepad**.
 
 ### Azahar on Android (including AYN Thor)
 

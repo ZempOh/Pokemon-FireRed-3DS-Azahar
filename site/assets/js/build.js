@@ -7,7 +7,7 @@
    time) and gives them to the worker when it is ready for them. Nothing is
    ever sent anywhere: the only requests are downloads. */
 
-import { enableAzaharAudio, installAzaharLauncher, installAzaharCartridge, writableAzaharSd, installAzahar, savedFolder } from "./azahar.js?v=4";
+import { enableAzaharAudio, installAzaharLauncher, installAzaharCartridge, writableAzaharSd, installAzahar, savedFolder } from "./azahar.js?v=5";
 
 const { t, release, onLang } = window.FR3DS;
 const $ = (sel) => document.querySelector(sel);
@@ -406,7 +406,7 @@ function start(mode) {
   };
   // the worker gets its own copy: the page keeps the ROM for "Build again"
   const rom = state.bytes.slice(0);
-  const base = new URL(cartridge ? "../../cartridge-audio/" : "../../", import.meta.url).href;
+  const base = new URL(cartridge ? "../../cartridge-controls/" : "../../", import.meta.url).href;
   worker.postMessage({ type: "start", base, rom, romName: state.file.name,
                        followers: followersOn, direct: canConnect, cartridge }, [rom]);
 }
@@ -560,7 +560,7 @@ $("[data-start]").addEventListener("click", () => {
 });
 $("[data-build-zip]").addEventListener("click", () => start("zip"));
 $("[data-build-cartridge]").addEventListener("click", () => start("cartridge-download"));
-const cartridgeProbe = fetch("cartridge-audio/payload/web-manifest.json", { cache: "no-cache" })
+const cartridgeProbe = fetch("cartridge-controls/payload/web-manifest.json", { cache: "no-cache" })
   .then((response) => response.ok ? response.json() : null)
   .then((manifest) => {
     if (manifest?.kind !== "firered3ds-web-payload") return;

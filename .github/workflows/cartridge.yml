@@ -3,7 +3,7 @@ name: Build browser cartridge engine
 on:
   push:
     branches: [standalone-browser-output]
-    paths: ['.github/workflows/cartridge.yml', '3ds_port/**', 'tools/**']
+    paths: ['.github/workflows/cartridge.yml', '3ds_port/**', 'patches/**', 'tools/**']
   workflow_dispatch:
 
 permissions:

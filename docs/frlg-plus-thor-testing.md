@@ -8,4 +8,6 @@ The native cartridge build from commit `b85c5fc` was assembled locally using the
 - Checked the Kanto map and opened the party and bag on the lower screen.
 - Saved in Oak's lab, force-stopped Azahar and confirmed Continue loaded the save after restart.
 
-A multicolored artifact briefly appeared over the grass at the north end of Pallet Town during the scripted encounter with Oak. Wider map coverage and frame-time measurements are pending.
+The Oak encounter at Pallet Town's north grass had rendered the player's exclamation mark as a block of multicolored pixels. The 3DS engine replaces the original graphics sheet with a placeholder, so the icon frames now use the asset's base symbol and a byte offset. This preserves all 15 emoticon frames and their original order.
+
+I replayed the same cutscene from the same pre-Oak save in voxel 3D with the original and fixed cartridges. The fixed build from `616e507` displays the exclamation mark cleanly through the animation, and Oak approaches on cue. The original save was restored after the comparison. Wider map coverage and frame-time measurements are pending.

@@ -14,8 +14,8 @@
 
 #define SETTINGS_FILE "settings.txt"
 
-/* The voxel overworld is opt-in: the classic 2D field is the default. */
-static bool sVoxel = false;
+/* Start with the voxel overworld until the player saves a preference. */
+static bool sVoxel = true;
 
 /*
  * The voxel camera: a few degrees either way of its 40 degree pitch, and a
@@ -80,7 +80,7 @@ void CtrSettings_Load(void)
 
     if (file == NULL)
     {
-        CtrLog_Write(CTR_LOG_FS, "settings: none yet, defaults (voxel=0 fps=0)");
+        CtrLog_Write(CTR_LOG_FS, "settings: none yet, defaults (voxel=%d fps=%d)", sVoxel, sShowFps);
         return;
     }
     while (fgets(line, sizeof(line), file))

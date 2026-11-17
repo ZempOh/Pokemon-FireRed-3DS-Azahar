@@ -169,6 +169,8 @@ static C3D_Tex sHoldTex;
 static uint16_t sLastUi[CTR_SOFT_WIDTH * CTR_SOFT_HEIGHT];
 static uint16_t sHoldUi[CTR_SOFT_WIDTH * CTR_SOFT_HEIGHT];
 static bool sHoldReady, sHoldValid, sSurfaceClean;
+static uint16_t sUploadedUi[CTR_SOFT_WIDTH * CTR_SOFT_HEIGHT];
+static bool sUiUploaded;
 
 #define UI_TRANSFER_FLAGS \
     (GX_TRANSFER_FLIP_VERT(0) | GX_TRANSFER_OUT_TILED(1) | GX_TRANSFER_RAW_COPY(0) | \
@@ -195,6 +197,7 @@ static bool GpuInit(void)
     if (sUiLinear == NULL || !C3D_TexInit(&sUiTex, TEX_DIM, TEX_DIM, GPU_RGBA5551))
         return false;
     memset(sUiLinear, 0, TEX_DIM * TEX_DIM * sizeof(uint16_t));
+    sUiUploaded = false;
     C3D_TexSetFilter(&sUiTex, GPU_LINEAR, GPU_LINEAR);
 #if CTR_VOXEL_ENABLED
     sVoxelReady = CtrVoxel_Init();
@@ -252,13 +255,18 @@ static void GpuUpload(void)
                             (u32 *)sFrameTex.data, GX_BUFFER_DIM(TEX_DIM, TEX_DIM), TILE_TRANSFER_FLAGS);
 }
 
-static void GpuUploadUi(void)
+static void GpuUploadUi(const uint16_t *pixels)
 {
     uint16_t row[CTR_SOFT_WIDTH];
 
+    /* The overlay is often unchanged across several overworld frames. */
+    if (sUiUploaded && memcmp(sUploadedUi, pixels, sizeof(sUploadedUi)) == 0)
+        return;
+    memcpy(sUploadedUi, pixels, sizeof(sUploadedUi));
+    sUiUploaded = true;
     for (unsigned y = 0; y < CTR_SOFT_HEIGHT; ++y)
     {
-        const uint16_t *src = sUi + y * CTR_SOFT_WIDTH;
+        const uint16_t *src = pixels + y * CTR_SOFT_WIDTH;
 
         for (unsigned x = 0; x < CTR_SOFT_WIDTH; ++x)
         {
@@ -395,19 +403,13 @@ static void GpuPresent(void)
     bool warming = false;
 
     if (held)
-    {
-        const uint16_t *ui = sUi;
-
-        sUi = sHoldUi;
-        GpuUploadUi();
-        sUi = ui;
-    }
+        GpuUploadUi(sHoldUi);
     else if (sFrame && !voxel && sFrameDrawn)
         GpuUpload();
     else if (!voxel && sUi != NULL)
         warming = true;     /* no picture this frame: black under the UI */
     if (voxel || warming)
-        GpuUploadUi();
+        GpuUploadUi(sUi);
     drawStart = svcGetSystemTick();
     /* Begin waits for the previous frame and paces to the screen's 60 Hz. */
     C3D_FrameBegin(C3D_FRAME_SYNCDRAW);

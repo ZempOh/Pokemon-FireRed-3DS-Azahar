@@ -36,7 +36,8 @@ static void *SlowCard(void *unused) {
 }
 int main(int argc, char **argv) {
     fault = argc > 1 ? argv[1][0] - '0' : 0;
-    CtrSettings_SetVoxel(true);
+    assert(CtrSettings_Voxel());
+    CtrSettings_SetVoxel(false);
     pthread_mutex_lock(&diskMutex);
     while (!entered) pthread_cond_wait(&diskCond, &diskMutex);
     pthread_mutex_unlock(&diskMutex);
@@ -48,7 +49,7 @@ int main(int argc, char **argv) {
     assert(releaseDisk);
     if (fault == 1) assert(errors == 2 && writes == 0);
     else {
-        assert(writes == 2 && strstr(saved, "voxel=1\n") && strstr(saved, "voxel_blur=0\n") && strstr(saved, "fps=1\n"));
+        assert(writes == 2 && strstr(saved, "voxel=0\n") && strstr(saved, "voxel_blur=0\n") && strstr(saved, "fps=1\n"));
         assert(errors == (fault == 2 ? 2u : 0u));
     }
     CtrSettings_Shutdown(); /* idempotent, no freed-thread access */

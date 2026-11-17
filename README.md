@@ -20,15 +20,23 @@ executable and data recipe. You supply your own FireRed cartridge dump.
 ### Azahar on Android (including AYN Thor)
 
 1. In Chrome 132 or later on the handheld, open the [Azahar game builder](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/build.html).
-   Close Azahar, tap **Connect Azahar folder**, and grant access to the user
-   folder you selected in Azahar. It contains `sdmc`. Chrome may ask you
-   to reconnect if it loses folder permission.
+   In Azahar, check **Options → Select User Folder**, then close Azahar. Tap
+   **Connect Azahar folder** in the builder, choose that folder or its `sdmc`
+   subfolder, and allow write access. Chrome may ask you to reconnect later.
 2. Select your Pokémon FireRed (USA, Rev 1) ROM as a `.gba` file or a ZIP
    containing it. The build starts automatically. Keep the tab open until
    the builder reports that installation is complete.
-3. In Azahar, add `sdmc/3ds/firered3ds` as a game folder the first time and
-   launch `FireRed3DS.3dsx`. For sound, put the `dspfirm.cdc` you dumped
-   from your 3DS in `sdmc/3ds/`.
+3. To launch alongside your other games, choose your existing **3DS games
+   folder** in the builder before selecting your ROM. Open
+   `FireRed3DS.3dsx` from there in Azahar. You can also move an existing
+   `FireRed3DS.3dsx` there yourself. The game data stays in
+   `sdmc/3ds/firered3ds/`.
+
+Use **HLE** audio emulation in Azahar. Direct installation sets up the
+emulated DSP automatically when `sdmc/3ds/dspfirm.cdc` is absent. For an
+existing install, connect the Azahar folder and tap **Set up sound for an
+existing install**, then fully restart the game. Physical 3DS consoles
+require their own DSP firmware dump.
 
 For later updates, close the game and pick the ROM again. The builder generates
 `firered3ds.pak` locally in your browser and installs it with the matching
@@ -37,15 +45,18 @@ temporary files, and obsolete follower assets in the FireRed install folder.
 It preserves saves and settings and attempts to restore the previous game files
 if a write fails. Cleanup is limited to `sdmc/3ds/firered3ds/`.
 
-**ZIP fallback.** If your browser cannot grant folder access, tap **Build**,
-extract the ZIP, and merge its `3ds` folder into Azahar's `sdmc` folder.
-Replace both the executable and the data pack and keep your existing save.
+If installation fails after the build, reconnect the Azahar folder from the
+results screen to retry without rebuilding.
+
+**ZIP fallback.** Choose **Build ZIP only** and then **Download the ZIP**.
+Extract it and merge its `3ds` folder into Azahar's `sdmc` folder. Replace
+both the executable and the data pack and keep your existing save.
 
 ### Compatibility and troubleshooting
 
 The browser installer and its cleanup and rollback tests have been verified.
 An end-to-end install and gameplay check on the AYN Thor is still pending.
-The reported mirrored title screen remains open.
+Updating Azahar resolved the mirrored title screen on the target AYN Thor.
 
 If the title screen appears mirrored, fully close the game, switch Azahar
 between Vulkan and OpenGL ES, and compare the same screen. To collect the
@@ -196,6 +207,23 @@ The site build requires Pillow and the matching upstream Windows release ZIP.
 The fork serves the assembled site from the `gh-pages` branch.
 
 ### Native 3DS port
+
+#### Standalone cartridge image for Azahar
+
+Build locally with devkitARM, libctru, citro2d, citro3d, the host tools
+required by the decompilation, and Project CTR's `makerom` on PATH.
+
+```sh
+python tools/bootstrap.py --dir build/upstream
+make -C build/upstream tools generated
+make -C build/upstream/3ds_port standalone
+```
+
+The target writes `build/upstream/3ds_port/dist/FireRed3DS.3ds`. Its RomFS
+contains the game data, so no SD data pack is needed. Select **HLE** audio
+emulation in Azahar. The image supplies its own HLE DSP component and uses
+Azahar's virtual SD card for saves and settings. Build the cartridge image
+locally for personal use. The web builder still produces the homebrew release.
 
 The source tree is the pinned decomp plus this project's patches and port:
 

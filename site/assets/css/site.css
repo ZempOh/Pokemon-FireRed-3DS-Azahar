@@ -115,6 +115,7 @@ p { margin: 0 0 1em; }
 .btn-ghost { background: var(--panel); color: var(--ink); border-color: var(--line); }
 .btn-ghost:hover { color: var(--ink); border-color: var(--muted); }
 .btn[disabled] { opacity: .5; cursor: not-allowed; box-shadow: none; }
+.btn[hidden] { display: none; }
 .btn svg { width: 20px; height: 20px; flex: none; }
 .actions { display: flex; flex-wrap: wrap; gap: 12px; margin: 22px 0 14px; }
 

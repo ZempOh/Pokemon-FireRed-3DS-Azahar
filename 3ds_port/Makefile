@@ -34,6 +34,8 @@ EMBED_DATA ?= 1
 # 0 chooses at runtime (loose files, then embedded data, then the data pack);
 # 1 = RomFS, 2 = loose files, 3 = data pack.
 DATA_BACKEND ?= 0
+AZAHAR_HLE ?= 0
+CPPFLAGS += -DCTR_AZAHAR_HLE=$(AZAHAR_HLE)
 PYTHON ?= python
 HOSTCC ?= gcc
 ROOT := ..
@@ -161,6 +163,28 @@ endif
 
 $(TARGET).3dsx: build/$(TARGET)_3dsx.elf $(TARGET).smdh romfs/boot.txt $(ROMFS_DATA_OUTS) romfs/engine/abi.bin $(EMBED_MARKER)
 	$(DEVKITPRO)/tools/bin/3dsxtool $< $@ --smdh=$(TARGET).smdh --romfs=romfs
+
+# Build a private cartridge image with the same RomFS data as the development
+# build. Force RomFS so old loose files on the virtual SD cannot take precedence.
+MAKEROM ?= makerom
+.PHONY: standalone
+standalone:
+	$(MAKE) EMBED_DATA=1 DATA_BACKEND=1 AZAHAR_HLE=1 standalone-image
+
+ifeq ($(EMBED_DATA)$(DATA_BACKEND)$(AZAHAR_HLE),111)
+.PHONY: standalone-image
+standalone-image: $(TARGET).elf $(TARGET).smdh romfs/boot.txt $(ROMFS_DATA_OUTS) romfs/engine/abi.bin $(EMBED_MARKER) build/standalone.rsf
+	@mkdir -p dist
+	$(MAKEROM) -f cci -target t -rsf build/standalone.rsf -elf $(TARGET).elf \
+		-icon $(TARGET).smdh -o dist/$(APP_FILE).partial.3ds
+	mv -f dist/$(APP_FILE).partial.3ds dist/$(APP_FILE).3ds
+
+build/standalone.rsf: forwarder/forwarder.rsf Makefile
+	@mkdir -p build
+	sed -e 's/0xF4ED3/0xF4ED4/' -e 's/CTR-H-FR3D/CTR-P-FR3D/' \
+		-e 's/UseOnSD\( *:\) true/UseOnSD\1 false/' $< > $@
+	printf '\nRomFs:\n  RootPath: "romfs"\n' >> $@
+endif
 
 # Release: the executable with engine files only. Its game data is the data
 # pack the player's builder generates.

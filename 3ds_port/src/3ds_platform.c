@@ -71,6 +71,12 @@ static void ShowNoSound(void)
     consoleInit(GFX_TOP, &console);
     consoleSelect(&console);
     consoleClear();
+#if CTR_AZAHAR_HLE
+    printf("\x1b[2;2HPokemon FireRed 3DS\n\n\x1b[33m No sound\x1b[0m\n\n"
+           " Select HLE audio emulation in Azahar\n"
+           " and restart the game for sound.\n\n"
+           " Press A to continue.");
+#else
     printf("\x1b[2;2HPokemon FireRed 3DS\n\n\x1b[33m No sound\x1b[0m\n\n"
            " This console has no dump of its DSP\n"
            " firmware, which homebrew needs to play\n"
@@ -81,6 +87,7 @@ static void ShowNoSound(void)
            " The game plays on without sound. This is\n"
            " shown only once.\n\n\n"
            " Press A to continue.");
+#endif
     while (aptMainLoop())
     {
         hidScanInput();

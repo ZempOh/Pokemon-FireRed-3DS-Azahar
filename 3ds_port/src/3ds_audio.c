@@ -52,13 +52,17 @@ bool CtrAudio_Init(void)
     if (sReady)
         return true;
 
-    /* NDSP needs the DSP firmware dumped to the SD card. Without it there is
-     * no way to make a sound, and reporting success would hide that. */
+#if CTR_AZAHAR_HLE
+    /* Azahar HLE implements the DSP on the host and logs the component's
+     * hash. Supply a component so libctru starts without an SD firmware file. */
+    static const u8 hleComponent[64] __attribute__((aligned(4))) = {0};
+    ndspUseComponent(hleComponent, sizeof(hleComponent), 0xff, 0xff);
+#endif
     rc = ndspInit();
     if (R_FAILED(rc))
     {
         CtrLog_Write(CTR_LOG_ERROR,
-                     "ndspInit failed (%08lx): no DSP firmware, audio is off",
+                     "ndspInit failed (%08lx): audio is off",
                      (unsigned long)rc);
         return false;
     }

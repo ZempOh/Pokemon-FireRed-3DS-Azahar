@@ -534,6 +534,7 @@ static void GpuPresent(void)
 }
 #endif
 
+#if !CTR_GPU_PRESENT
 static void Blit(uint16_t *fb)
 {
     for (unsigned x = 0; x < OUT_WIDTH; ++x)
@@ -545,6 +546,7 @@ static void Blit(uint16_t *fb)
             column[-(int)y] = sLut[src[sSrcY[y] * CTR_SOFT_WIDTH] & 0x7FFF];
     }
 }
+#endif
 
 void CtrVideo_Present(void)
 {

@@ -1014,7 +1014,7 @@ static void TestExtSpriteDestroy(void)
  * first mon), "fade" (the fade cycle now) and "auto 0/1" (the fade cycle every
  * ten seconds off/on). True when the command takes the player's controls.
  */
-#define TEST_EXT_COMMANDS "sdmc:/3ds/emerald3ds/ext_test.txt"
+#define TEST_EXT_COMMANDS "sdmc:/3ds/pokeclassic-voxel/ext_test.txt"
 static bool8 sTestExtAuto = TRUE;
 
 static bool TestExtCommand(void)
@@ -1167,7 +1167,7 @@ static void TestExtPalette(void)
 /*
  * Measurement aid (-DCTR_MEASURE_AID): measure.txt in the played scenario's
  * folder (a console queue gives each run its own), else
- * sdmc:/3ds/emerald3ds/measure.txt. Read once at boot, one step a line, each
+ * sdmc:/3ds/pokeclassic-voxel/measure.txt. Read once at boot, one step a line, each
  * run in order once its frame has come and the player walks freely: "FRAME
  * warp GROUP NUM X Y" or "FRAME battle" (a wild Zigzagoon). One build reaches
  * every measured place.
@@ -1192,7 +1192,7 @@ static void MeasureAid(void)
             file = fopen(line, "r");
         }
         if (file == NULL)
-            file = fopen("sdmc:/3ds/emerald3ds/measure.txt", "r");
+            file = fopen("sdmc:/3ds/pokeclassic-voxel/measure.txt", "r");
         while (file != NULL && sCount < ARRAY_COUNT(sSteps) && fgets(line, sizeof(line), file))
         {
             if (sscanf(line, "%u warp %u %u %u %u", &f, &g, &n, &x, &y) == 5)

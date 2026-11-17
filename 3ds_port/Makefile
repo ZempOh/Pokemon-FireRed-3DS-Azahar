@@ -25,7 +25,7 @@ GPUMEM_WRAPPED := vramAlloc vramMemAlign vramAllocAt vramMemAlignAt vramRealloc 
 LDFLAGS += $(foreach f,$(GPUMEM_WRAPPED),-Wl,--wrap=$(f))
 LIBS := -lctru -lm
 TARGET := emerald3ds
-APP_TITLE := Emerald 3DS
+APP_TITLE := Pokemon Classic Voxel
 # File names of the release executable (no spaces).
 APP_FILE := Emerald3DS
 APP_DESCRIPTION := Dual-screen port for Nintendo 3DS

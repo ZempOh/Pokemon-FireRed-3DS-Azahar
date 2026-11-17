@@ -64,13 +64,10 @@ static const uint8_t sSupportedRomSha1[20] = {
                              "(Japan, BPEJ) ROM with this client."
 #else
 static const uint8_t sSupportedRomSha1[20] = {
-    0xf3, 0xae, 0x08, 0x81, 0x81, 0xbf, 0x58, 0x3e, 0x55, 0xda,
-    0xf9, 0x62, 0xa9, 0x2b, 0xb4, 0x6f, 0x4f, 0x1d, 0x07, 0xb7,
+    0x7e, 0x27, 0xa7, 0x87, 0x8d, 0x6a, 0xeb, 0x3b, 0x79, 0x87,
+    0x57, 0xf9, 0x8e, 0x60, 0xd1, 0x06, 0x4d, 0x76, 0x2d, 0xbb,
 };
-#define SUPPORTED_ROM_DETAIL CTR_TEXT_PT("Only Pokemon Emerald (USA, Europe) is\n" \
-                                         "supported. Run the builder with that ROM.", \
-                                         "So a ROM de Pokemon Emerald (USA,\n" \
-                                         "Europe) e aceita. Rode o builder com ela.")
+#define SUPPORTED_ROM_DETAIL "Run the builder with Pokemon Classic v1.5.1."
 #endif
 
 typedef struct
@@ -155,15 +152,15 @@ static bool OpenPak(void)
                  CTR_TEXT_PT_DE("Run the builder that came with this\n"
                              "release with your own Pokemon Emerald\n"
                              "ROM and install the data pack to:\n\n"
-                             "  /3ds/emerald3ds/emerald3ds.pak",
+                             "  /3ds/pokeclassic-voxel/emerald3ds.pak",
                              "Rode o builder que veio com esta\n"
                              "versao com a sua ROM de Pokemon\n"
                              "Emerald e instale o pacote em:\n\n"
-                             "  /3ds/emerald3ds/emerald3ds.pak",
+                             "  /3ds/pokeclassic-voxel/emerald3ds.pak",
                              "Starte den Builder dieser Version\n"
                              "mit deinem eigenen Smaragd-ROM und\n"
                              "installiere das Datenpaket nach:\n\n"
-                             "  /3ds/emerald3ds/emerald3ds.pak"));
+                             "  /3ds/pokeclassic-voxel/emerald3ds.pak"));
         return false;
     }
     setvbuf(sPak, NULL, _IOFBF, 64 * 1024);
@@ -175,11 +172,11 @@ static bool OpenPak(void)
         break;
     case CTR_PAK_BAD_MAGIC:
         SetError(CTR_TEXT("This is not a game data pack.", "This is not a game data pack.", "This is not a game data pack.", "This is not a game data pack.", "Isto nao e um pacote de dados.", "Das ist kein Datenpaket des Spiels.", "This is not a game data pack."),
-                 CTR_TEXT_PT_DE("/3ds/emerald3ds/emerald3ds.pak is not a\n"
+                 CTR_TEXT_PT_DE("/3ds/pokeclassic-voxel/emerald3ds.pak is not a\n"
                              "data pack. Run the builder again.",
-                             "/3ds/emerald3ds/emerald3ds.pak nao e um\n"
+                             "/3ds/pokeclassic-voxel/emerald3ds.pak nao e um\n"
                              "pacote de dados. Rode o builder de novo.",
-                             "/3ds/emerald3ds/emerald3ds.pak ist kein\n"
+                             "/3ds/pokeclassic-voxel/emerald3ds.pak ist kein\n"
                              "Datenpaket. Starte den Builder erneut."));
         goto fail;
     case CTR_PAK_BAD_SCHEMA:
@@ -267,7 +264,7 @@ bool CtrData_Init(void)
 
     ReadEngineAbi();
     mkdir("sdmc:/3ds", 0777);
-    mkdir("sdmc:/3ds/emerald3ds", 0777);
+    mkdir("sdmc:/3ds/pokeclassic-voxel", 0777);
     if (choice == 0)
     {
         if (FileExists(CTR_DATA_LOOSE_MARKER))

@@ -114,7 +114,7 @@ void CtrCycle_Input(CtrInputSample *sample)
  * turns play (FIGHT, the first move, the messages). A is pressed through the
  * title too, CONTINUE being the default.
  *
- * sdmc:/3ds/emerald3ds/battletest.txt, optional, one key=value a line, for
+ * sdmc:/3ds/pokeclassic-voxel/battletest.txt, optional, one key=value a line, for
  * measuring one battle over and over: species= level= (the wild one), move=
  * (the lead's first move, its PP and both sides' HP kept full so the battle
  * never ends), trainer= (that trainer's battle instead, a double one for a
@@ -134,7 +134,7 @@ u32 vramSpaceFree(void);
 
 static void BattleTestConfig(void)
 {
-    FILE *file = fopen("sdmc:/3ds/emerald3ds/battletest.txt", "r");
+    FILE *file = fopen("sdmc:/3ds/pokeclassic-voxel/battletest.txt", "r");
     char line[64];
 
     sConfigRead = TRUE;

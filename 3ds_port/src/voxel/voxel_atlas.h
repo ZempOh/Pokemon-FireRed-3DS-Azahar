@@ -195,7 +195,7 @@ typedef struct
 
 typedef struct
 {
-    uint16_t lower, upper;  /* the quadrant's entries; a cut slot's id in `lower` */
+    uint16_t lower, middle, upper; /* a cut slot's id is stored in lower */
     uint8_t pair;           /* the pair it is composed from */
     uint8_t flags;
 } VoxelAnimBlock;

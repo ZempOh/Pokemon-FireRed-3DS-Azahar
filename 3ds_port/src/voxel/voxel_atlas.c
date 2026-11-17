@@ -322,13 +322,14 @@ static void ComposeTile(const struct AtlasSource *src, uint16_t entry, unsigned 
             *black = false;
 }
 
-/* A quadrant of a metatile: both its layers over one 8x8 block. */
-static bool ComposeQuadrant(const struct AtlasSource *src, uint16_t lower, uint16_t upper,
+/* Classic's three tile layers in one 8x8 block. */
+static bool ComposeQuadrant(const struct AtlasSource *src, uint16_t lower, uint16_t middle, uint16_t upper,
                             bool hideUpper, uint16_t *block)
 {
     bool black = true;
 
     ComposeTile(src, lower, 0, false, block, &black);
+    ComposeTile(src, middle, 1, hideUpper, block, &black);
     ComposeTile(src, upper, 1, hideUpper, block, &black);
     return black;
 }
@@ -411,7 +412,7 @@ static bool ComposeAt(const struct AtlasSource *src, const uint16_t *entries,
     {
         uint16_t *block = dest + CtrVideo_Texel(baseX + (quadrant % 2) * SUBTILE_PX,
                                                 baseY + (quadrant / 2) * SUBTILE_PX, width);
-        bool dark = ComposeQuadrant(src, entries[quadrant], entries[4 + quadrant],
+        bool dark = ComposeQuadrant(src, entries[quadrant], entries[4 + quadrant], entries[8 + quadrant],
                                     (hidden >> quadrant) & 1u, block);
 
         black = black && dark;
@@ -901,17 +902,17 @@ static bool AnimOwnEntry(uint16_t entry)
 
 /* The block of a quadrant, found among the pass's or added: its index + 1,
  * 0 when there is no room. */
-static unsigned AnimBlockOf(VoxelAnimPass *pass, unsigned pair, uint16_t lower, uint16_t upper,
+static unsigned AnimBlockOf(VoxelAnimPass *pass, unsigned pair, uint16_t lower, uint16_t middle, uint16_t upper,
                             bool hide)
 {
     unsigned flags = hide ? ANIM_HIDE : 0;
     unsigned h;
 
-    if (!AnimOwnEntry(lower) && (hide || !AnimOwnEntry(upper)))
+    if (!AnimOwnEntry(lower) && (hide || (!AnimOwnEntry(middle) && !AnimOwnEntry(upper))))
         flags |= ANIM_ANY;
     if (hide)
-        upper = 0;
-    h = ((unsigned)lower * 40503u ^ (unsigned)upper * 2654435761u ^ flags
+        middle = upper = 0;
+    h = ((unsigned)lower * 40503u ^ (unsigned)middle * 65599u ^ (unsigned)upper * 2654435761u ^ flags
        ^ ((flags & ANIM_ANY) ? 0u : pair * 97u)) & (VOXEL_ANIM_HASH - 1u);
     for (unsigned probe = 0; probe < VOXEL_ANIM_HASH; ++probe, h = (h + 1u) & (VOXEL_ANIM_HASH - 1u))
     {
@@ -921,14 +922,14 @@ static unsigned AnimBlockOf(VoxelAnimPass *pass, unsigned pair, uint16_t lower, 
         if (index == 0)
             break;
         block = &pass->block[index - 1u];
-        if (block->lower == lower && block->upper == upper
+        if (block->lower == lower && block->middle == middle && block->upper == upper
          && (block->flags & (ANIM_HIDE | ANIM_ANY | ANIM_CUT | ANIM_PART)) == flags
          && ((flags & ANIM_ANY) || block->pair == pair))
             return index;
     }
     if (pass->blocks >= VOXEL_ANIM_BLOCKS || pass->hash[h] != 0)
         return 0;
-    pass->block[pass->blocks] = (VoxelAnimBlock){lower, upper, (uint8_t)pair, (uint8_t)flags};
+    pass->block[pass->blocks] = (VoxelAnimBlock){lower, middle, upper, (uint8_t)pair, (uint8_t)flags};
     pass->hash[h] = (uint16_t)++pass->blocks;
     return pass->blocks;
 }
@@ -956,6 +957,7 @@ static bool AnimCutShows(const VoxelAnimPass *pass, const uint16_t *entries, uns
     for (unsigned q = 0; q < 4; ++q)
     {
         unsigned lower = entries[q] & 0x3FF, upper = entries[4 + q] & 0x3FF;
+        unsigned top = entries[8 + q] & 0x3FF;
         bool hide = (hidden >> q) & 1u;
         bool lowerWritten = (pass->work[lower >> 3] >> (lower & 7)) & 1u;
         bool upperWritten = !hide && ((pass->work[upper >> 3] >> (upper & 7)) & 1u);
@@ -963,6 +965,8 @@ static bool AnimCutShows(const VoxelAnimPass *pass, const uint16_t *entries, uns
         bool flipX = (entries[4 + q] >> 10) & 1;
         unsigned flipY = (entries[4 + q] >> 11) & 1 ? 7 : 0;
 
+        if (!hide && ((pass->work[top >> 3] >> (top & 7)) & 1u))
+            return true;
         if (!lowerWritten && !upperWritten)
             continue;
         for (unsigned y = 0; y < SUBTILE_PX; ++y)
@@ -1027,7 +1031,7 @@ static bool AnimAddTarget(VoxelAnimPass *pass, unsigned pair, unsigned m, unsign
         }
         for (unsigned q = 0; q < 4; ++q)
         {
-            pass->block[pass->blocks] = (VoxelAnimBlock){(uint16_t)m, 0, (uint8_t)pair,
+            pass->block[pass->blocks] = (VoxelAnimBlock){(uint16_t)m, 0, 0, (uint8_t)pair,
                                                          (uint8_t)(q == 0 ? ANIM_CUT : ANIM_PART)};
             target->block[q] = (uint16_t)pass->blocks++;
         }
@@ -1035,7 +1039,8 @@ static bool AnimAddTarget(VoxelAnimPass *pass, unsigned pair, unsigned m, unsign
     else
         for (unsigned q = 0; q < 4; ++q)
         {
-            unsigned index = AnimBlockOf(pass, pair, entries[q], entries[4 + q], (hidden >> q) & 1u);
+            unsigned index = AnimBlockOf(pass, pair, entries[q], entries[4 + q], entries[8 + q],
+                                         (hidden >> q) & 1u);
 
             if (index == 0)
             {
@@ -1294,7 +1299,7 @@ bool VoxelAnim_Compose(VoxelAnimPass *pass, const uint8_t *liveTiles, bool (*sti
         else
         {
             memset(pixels, 0, sizeof(pass->pixels[0]));
-            black = ComposeQuadrant(&src, block->lower, block->upper, (block->flags & ANIM_HIDE) != 0,
+            black = ComposeQuadrant(&src, block->lower, block->middle, block->upper, (block->flags & ANIM_HIDE) != 0,
                                     pixels);
         }
         block->flags = (uint8_t)(black ? block->flags | ANIM_BLACK : block->flags & ~ANIM_BLACK);

@@ -196,8 +196,10 @@ endif
 
 build/standalone.rsf: forwarder/forwarder.rsf Makefile
 	@mkdir -p build
+	# CCI launches use the exheader mappings, unlike the emulator's 3DSX loader.
 	sed -e 's/0xF4ED3/0xF4ED4/' -e 's/CTR-H-FR3D/CTR-P-FR3D/' \
-		-e 's/UseOnSD\( *:\) true/UseOnSD\1 false/' $< > $@
+		-e 's/UseOnSD\( *:\) true/UseOnSD\1 false/' \
+		-e 's/^  FileSystemAccess:/  IORegisterMapping:\n   - 1ff50000-1ff57fff\n   - 1ff70000-1ff77fff\n&/' $< > $@
 	printf '\nRomFs:\n  RootPath: "romfs"\n' >> $@
 
 # Release: the executable with engine files only. Its game data is the data

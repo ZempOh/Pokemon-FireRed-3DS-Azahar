@@ -20,15 +20,20 @@ executable and data recipe. You supply your own FireRed cartridge dump.
 ### One-file cartridge for Azahar
 
 1. Open the [game builder](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/build.html)
-   and select your own Pokémon FireRed (USA, Rev 1) ROM.
-2. Click **Build standalone .3ds**, then download `FireRed3DS.3ds`.
-3. Put that file in the folder Azahar already scans for your other 3DS
-   games. In Azahar, select **HLE** audio emulation and launch FireRed.
+   in Chrome and choose the 3DS games folder that Azahar already scans.
+2. Select your own Pokémon FireRed (USA, Rev 1) ROM. The builder generates
+   and saves `FireRed3DS.3ds` in that folder.
+
+Launch FireRed from your Azahar library. If your browser cannot write to the
+folder, download the built cartridge and move it there manually.
 
 The browser generates the game data on your device and embeds it in the
 cartridge. The standalone build uses the same virtual SD save location
 as the homebrew edition. Optional follower sprites are available in the
 homebrew edition.
+
+Azahar on Android defaults to HLE audio. The cartridge header maps the
+DSP memory used by FireRed. `debug.txt` only enables diagnostics.
 
 ### Azahar on Android (including AYN Thor)
 
@@ -45,7 +50,7 @@ homebrew edition.
    `FireRed3DS.3dsx` there yourself. The game data stays in
    `sdmc/3ds/firered3ds/`.
 
-Use **HLE** audio emulation in Azahar. Direct installation sets up the
+Azahar on Android defaults to **HLE** audio emulation. Direct installation sets up the
 emulated DSP automatically when `sdmc/3ds/dspfirm.cdc` is absent. For an
 existing install, connect the Azahar folder and tap **Set up sound for an
 existing install**, then fully restart the game. Physical 3DS consoles
@@ -240,7 +245,7 @@ locally for personal use. To refresh the browser cartridge, the cartridge
 workflow compiles a template with an empty RomFS data slot and generates
 the extraction recipe for that exact engine. Run
 `tools/build_cartridge_payload.py` on the resulting template and release
-ZIP to assemble the assets under `cartridge/payload/` on the site.
+ZIP to assemble the assets under `cartridge-audio/payload/` on the site.
 
 The source tree is the pinned decomp plus this project's patches and port:
 

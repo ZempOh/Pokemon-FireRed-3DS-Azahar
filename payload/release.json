@@ -1,0 +1,11 @@
+{
+  "tag": "v0.5.1",
+  "version": "0.5.1",
+  "publishedAt": null,
+  "highlights": [],
+  "notesHtml": "",
+  "assets": {
+    "windowsZip": "https://github.com/NachoGonzalez2001/Pokemon-FireRed-3DS/releases/download/v0.5.1/FireRed3DS-v0.5.1-Windows.zip",
+    "cia": "https://github.com/NachoGonzalez2001/Pokemon-FireRed-3DS/releases/download/v0.5.1/FireRed3DS-Forwarder.cia"
+  }
+}

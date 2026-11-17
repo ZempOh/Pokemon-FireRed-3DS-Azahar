@@ -11,7 +11,7 @@
 
 PREPROC := $(abspath $(ROOT)/tools/preproc/preproc$(EXESUFFIX))
 MAPJSON := $(abspath $(ROOT)/tools/mapjson/mapjson$(EXESUFFIX))
-WAV2AGB := $(abspath $(ROOT)/tools/wav2agb/wav2agb$(EXESUFFIX))
+AIF2PCM := $(abspath $(ROOT)/tools/aif2pcm/aif2pcm$(EXESUFFIX))
 SCANINC := $(abspath $(ROOT)/tools/scaninc/scaninc$(EXESUFFIX))
 GAME_ARCH := $(ARCH)
 ASM_PSEUDO_OP_CONV := sed -e 's/\.4byte/\.int/g;s/\.2byte/\.short/g'
@@ -51,8 +51,8 @@ ROOT_DATA_SRCS := $(filter-out $(patsubst %,$(ROOT)/data/%.s,$(SCRIPT_DATA_SRCS)
 ROOT_MID_SRCS := $(patsubst %.mid,%.s,$(wildcard $(ROOT)/sound/songs/midi/*.mid))
 ROOT_SONG_SRCS := $(wildcard $(ROOT)/sound/songs/*.s) $(ROOT_MID_SRCS)
 ROOT_SONG_OBJS := $(patsubst $(ROOT)/%.s,build/root/%.o,$(ROOT_SONG_SRCS))
-ROOT_SOUND_WAV_SRCS := $(wildcard $(ROOT)/sound/direct_sound_samples/*.wav $(ROOT)/sound/direct_sound_samples/*/*.wav)
-ROOT_SOUND_BIN_SRCS := $(patsubst %.wav,%.bin,$(ROOT_SOUND_WAV_SRCS))
+ROOT_SOUND_AIF_SRCS := $(wildcard $(ROOT)/sound/direct_sound_samples/*.aif $(ROOT)/sound/direct_sound_samples/*/*.aif)
+ROOT_SOUND_BIN_SRCS := $(patsubst %.aif,%.bin,$(ROOT_SOUND_AIF_SRCS))
 # Optional: a directory of replacement sample .bin files (same names as
 # sound/direct_sound_samples/*.bin). Each file found there is assembled in place
 # of the original sample. Empty by default: the build uses the original samples.
@@ -339,11 +339,9 @@ build/root/sound/songs/%.o: $(ROOT)/sound/songs/%.s
 	@mkdir -p $(dir $@)
 	$(ASM_PSEUDO_OP_CONV) $< | "$(AS)" $(ASFLAGS) -I$(ROOT)/sound --MD $(@:.o=.d) -o $@
 
-# mid2agb takes per-song options from sound/songs/midi/midi.cfg, which the root
-# Makefile already parses. Duplicating that parsing here would be a second place
-# for the options to drift, so the conversion is delegated to it - in one call
-# for every song, because each recursive make parses the whole root Makefile.
-ROOT_MID_DEPS := $(wildcard $(ROOT)/sound/songs/midi/*.mid) $(ROOT)/sound/songs/midi/midi.cfg
+# Delegate MIDI conversion to Classic's Makefile, which includes its
+# per-song flags from songs.mk.
+ROOT_MID_DEPS := $(wildcard $(ROOT)/sound/songs/midi/*.mid) $(ROOT)/songs.mk
 build/midi.stamp: $(ROOT_MID_DEPS)
 	+$(MAKE) -C $(ROOT) $(patsubst $(ROOT)/%,%,$(ROOT_MID_SRCS))
 	@mkdir -p build
@@ -363,15 +361,15 @@ build/map_includes.stamp: $(wildcard $(ROOT)/data/maps/*/map.json) $(ROOT)/data/
 	@touch $@
 build/root/data/map_events.o build/root/data/maps.o: build/map_includes.stamp
 
-# Sample conversion, with the flags the root audio_rules.mk uses.
-$(WAV2AGB): $(wildcard $(ROOT)/tools/wav2agb/*.cpp $(ROOT)/tools/wav2agb/*.h)
-	$(MAKE) -C $(ROOT)/tools/wav2agb
+# Sample conversion, using the same format and flags as Classic's GBA build.
+$(AIF2PCM): $(wildcard $(ROOT)/tools/aif2pcm/*.c $(ROOT)/tools/aif2pcm/*.h)
+	$(MAKE) -C $(ROOT)/tools/aif2pcm
 
-$(ROOT)/sound/direct_sound_samples/cries/%.bin: $(ROOT)/sound/direct_sound_samples/cries/%.wav | $(WAV2AGB)
-	"$(WAV2AGB)" -b -c -l 1 --no-pad $< $@
+$(ROOT)/sound/direct_sound_samples/cries/%.bin: $(ROOT)/sound/direct_sound_samples/cries/%.aif | $(AIF2PCM)
+	"$(AIF2PCM)" $< $@ --compress
 
-$(ROOT)/sound/direct_sound_samples/%.bin: $(ROOT)/sound/direct_sound_samples/%.wav | $(WAV2AGB)
-	"$(WAV2AGB)" -b $< $@
+$(ROOT)/sound/direct_sound_samples/%.bin: $(ROOT)/sound/direct_sound_samples/%.aif | $(AIF2PCM)
+	"$(AIF2PCM)" $< $@
 
 build/root/data/map_events.o: $(ROOT)/data/map_events.s $(ROOT)/data/maps/events.inc
 build/root/data/event_scripts.o: $(ROOT)/data/script_cmd_table.inc $(ROOT)/data/specials.inc

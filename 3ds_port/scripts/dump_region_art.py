@@ -103,7 +103,7 @@ def metatile_image(entries, ts):
     """16x16 RGBA, layers composed the way voxel_atlas.c composes them."""
     img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
     px = img.load()
-    for layer in range(2):
+    for layer in range(voxel_art.METATILE_ENTRIES // 4):
         for quad in range(4):
             entry = entries[layer * 4 + quad]
             tile_id = entry & 0x3FF

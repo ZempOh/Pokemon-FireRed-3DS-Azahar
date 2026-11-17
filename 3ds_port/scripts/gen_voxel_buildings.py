@@ -31,6 +31,7 @@ import types
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import voxel_building as vb  # noqa: E402
+from classic_building_specs import SPECS
 import voxel_building_specs as specs  # noqa: E402
 import voxel_cells as vc  # noqa: E402
 import voxel_bridge  # noqa: E402
@@ -266,7 +267,7 @@ def kept_by_others(layout_id):
     wall to it."""
     if layout_id not in _KEPT:
         out = set()
-        for s in specs.SPECS:
+        for s in SPECS:
             if s.get("layout") != layout_id or "rect" not in s:
                 continue
             x, y, w, h = s["rect"]
@@ -906,7 +907,7 @@ _REUSED_PIXELS = {}
 def reuse_everywhere():
     """The known furniture in every indoor room no spec models."""
     import voxel_cells as vc
-    modelled = {s["interior"]["layout"] for s in specs.SPECS if "interior" in s}
+    modelled = {s["interior"]["layout"] for s in SPECS if "interior" in s}
     outdoor = vc.MapEvents().outdoor
     entries = json.load(open(os.path.join(vb.ROOT, "data", "layouts", "layouts.json"),
                              encoding="utf-8"))["layouts"]
@@ -2901,7 +2902,7 @@ def build_models(only=None):
     models = []
     layouts = {}
     expanded = []
-    for spec in specs.SPECS:
+    for spec in SPECS:
         if "components" in spec:
             expanded += component_specs(spec, layouts)
         elif "kit" in spec:
@@ -3641,7 +3642,7 @@ def find_placements(model, layouts_json):
 
 def _canonical_at(model):
     """Where the other specs' own copies stand: (layout, x, y)."""
-    return {(s["layout"], s["rect"][0], s["rect"][1]) for s in specs.SPECS
+    return {(s["layout"], s["rect"][0], s["rect"][1]) for s in SPECS
             if "rect" in s and "layout" in s and s["name"] != model.spec["name"]}
 
 
@@ -4735,7 +4736,7 @@ def room_check(models, layout_id, out_dir, draw=None, suffix=""):
     diff = got.copy()
     dpx = diff.load()
     culprits = {}
-    room = next((s["interior"] for s in specs.SPECS
+    room = next((s["interior"] for s in SPECS
                  if s.get("interior", {}).get("layout") == layout_id), {})
     for y in range(H):
         for x in range(W):
@@ -4809,7 +4810,7 @@ def verify(models, out, complete=True):
         failed = failed or bad != 0
         # and as a script leaves it: a puzzle's other state (a room's `draw`)
         for n, draw in enumerate(sorted({id(s["interior"]["draw"]): s["interior"]["draw"]
-                                         for s in specs.SPECS
+                                         for s in SPECS
                                          if s.get("interior", {}).get("layout") == lid
                                          and s["interior"].get("draw")}.items())):
             bad = room_check(models, lid, out, draw[1], "_state%d" % (n + 1))

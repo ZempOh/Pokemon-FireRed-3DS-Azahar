@@ -1,5 +1,5 @@
 diff --git a/Makefile b/Makefile
-index 4a4b927e9643d5b02385fb9ed73f0f272674fbd4..d153a05c6804aec0be69f5b1476d9247145c2d08 100644
+index 4a4b927e9643d5b02385fb9ed73f0f272674fbd4..80b7e90a711da9ee0ad6e123ed1e30c28ce80e14 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -134,7 +134,7 @@ JSONPROC := tools/jsonproc/jsonproc$(EXE)
@@ -19,6 +19,18 @@ index 4a4b927e9643d5b02385fb9ed73f0f272674fbd4..d153a05c6804aec0be69f5b1476d9247
  C_OBJS := $(patsubst $(C_SUBDIR)/%.c,$(C_BUILDDIR)/%.o,$(C_SRCS))
  
  GFLIB_SRCS := $(wildcard $(GFLIB_SUBDIR)/*.c)
+@@ -265,6 +266,11 @@ include spritesheet_rules.mk
+ include json_data_rules.mk
+ include songs.mk
+ 
++.PHONY: generated
++generated: $(AUTO_GEN_TARGETS) $(MAP_CONNECTIONS) $(MAP_EVENTS) $(MAP_HEADERS) \
++    $(MAPS_DIR)/events.inc $(MAPS_DIR)/groups.inc $(MAPS_DIR)/headers.inc \
++    $(LAYOUTS_DIR)/layouts.inc $(LAYOUTS_DIR)/layouts_table.inc
++
+ %.s: ;
+ %.png: ;
+ %.pal: ;
 diff --git a/make_tools.mk b/make_tools.mk
 index 697897a693a6027d232c529bf3f7b2f750de953a..3ecb66c071b7bb5aa8adb2601581cae0f46a2442 100644
 --- a/make_tools.mk
@@ -33,15 +45,11 @@ index 697897a693a6027d232c529bf3f7b2f750de953a..3ecb66c071b7bb5aa8adb2601581cae0
  .PHONY: all $(TOOLDIRS)
  
 diff --git a/map_data_rules.mk b/map_data_rules.mk
-index 626cd47240801d974b352087caaf11c5ecc5d981..6d03f72eccad4186172af7357ed6f51b92387d4c 100755
+index 626cd47240801d974b352087caaf11c5ecc5d981..fd89306e21631d3b635b114f89ac5118c65df93f 100755
 --- a/map_data_rules.mk
 +++ b/map_data_rules.mk
-@@ -29,3 +29,8 @@ $(LAYOUTS_DIR)/layouts.inc: $(LAYOUTS_DIR)/layouts.json
+@@ -29,3 +29,4 @@ $(LAYOUTS_DIR)/layouts.inc: $(LAYOUTS_DIR)/layouts.json
  	$(MAPJSON) layouts emerald $<
  $(LAYOUTS_DIR)/layouts_table.inc: $(LAYOUTS_DIR)/layouts.inc ;
  include/constants/layouts.h: $(LAYOUTS_DIR)/layouts_table.inc ;
 +
-+.PHONY: generated
-+generated: $(AUTO_GEN_TARGETS) $(MAP_CONNECTIONS) $(MAP_EVENTS) $(MAP_HEADERS) \
-+    $(MAPS_DIR)/events.inc $(MAPS_DIR)/groups.inc $(MAPS_DIR)/headers.inc \
-+    $(LAYOUTS_DIR)/layouts.inc $(LAYOUTS_DIR)/layouts_table.inc

@@ -179,8 +179,7 @@ static struct
 };
 
 #define GLYPH_BYTES 0x40
-#if GAME_LANGUAGE != LANGUAGE_JAPANESE && defined(CHAR_A_TILDE) && defined(CHAR_O_TILDE) && defined(CHAR_a_TILDE) && defined(CHAR_o_TILDE)
-#define CTR_COMPOSE_TILDE_GLYPHS 1
+#if GAME_LANGUAGE != LANGUAGE_JAPANESE
 extern const u8 gFontSmallNarrowLatinGlyphWidths[];
 extern const u8 gFontSmallLatinGlyphWidths[];
 extern const u8 gFontNarrowLatinGlyphWidths[];
@@ -191,6 +190,10 @@ static const u8 *const sLatinFontWidths[] = {
     gFontSmallNarrowLatinGlyphWidths, gFontSmallLatinGlyphWidths, gFontNarrowLatinGlyphWidths,
     gFontShortLatinGlyphWidths, gFontNormalLatinGlyphWidths,
 };
+#endif
+
+#if GAME_LANGUAGE != LANGUAGE_JAPANESE && defined(CHAR_A_TILDE) && defined(CHAR_O_TILDE) && defined(CHAR_a_TILDE) && defined(CHAR_o_TILDE)
+#define CTR_COMPOSE_TILDE_GLYPHS 1
 
 /*
  * A glyph is 16x16 pixels of 2 bits in four 8x8 tiles (top left, top right,

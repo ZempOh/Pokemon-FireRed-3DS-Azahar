@@ -161,7 +161,7 @@ static u8 TerrainOf(u16 species)
         if (InTable(h->rockSmashMonsInfo, ROCK_WILD_COUNT, species))
             return BATTLE_TERRAIN_MOUNTAIN;
     }
-    switch (gSpeciesInfo[species].types[0])
+    switch (gBaseStats[species].type1)
     {
     case TYPE_WATER: return BATTLE_TERRAIN_WATER;
     case TYPE_ROCK: case TYPE_GROUND: case TYPE_STEEL: case TYPE_DARK: return BATTLE_TERRAIN_CAVE;

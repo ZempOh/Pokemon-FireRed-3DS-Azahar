@@ -15,18 +15,35 @@ import sys
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 CELL = 16                 # a metatile edge, in pixels
-TILES_PER_TILESET = 512
+PRIMARY_TILES = 640
+PRIMARY_METATILES = 640
+PRIMARY_PALETTES = 7
+METATILE_ENTRIES = 12
 
 
-def _incbin(pattern):
-    text = open(os.path.join(ROOT, "src", "data", "tilesets", "metatiles.h"),
+def _incbins(filename, prefix):
+    text = open(os.path.join(ROOT, "data", "tilesets", filename),
                 encoding="utf-8").read()
-    return {"gTileset_" + n: os.path.join(ROOT, p)
-            for n, p in re.findall(pattern, text)}
+    return dict(re.findall(rf"^({prefix}\w+)::[^\n]*\n\s*\.incbin\s+\"([^\"]+)\"", text, re.M))
 
 
-METATILES = _incbin(r"gMetatiles_(\w+)\[\]\s*=\s*INCBIN_U16\(\"([^\"]+)\"\)")
-ATTRIBUTES = _incbin(r"gMetatileAttributes_(\w+)\[\]\s*=\s*INCBIN_U16\(\"([^\"]+)\"\)")
+with open(os.path.join(ROOT, "data", "tilesets", "headers.inc"), encoding="utf-8") as file:
+    _HEADERS = dict(re.findall(r"^(gTileset_\w+)::(.*?)(?=^gTileset_\w+::|\Z)", file.read(), re.M | re.S))
+
+
+def _tileset_paths(filename, prefix):
+    paths = _incbins(filename, prefix)
+    result = {}
+    for symbol, header in _HEADERS.items():
+        match = re.search(rf"\.4byte\s+({prefix}\w+)", header)
+        if match and match[1] in paths:
+            result[symbol] = os.path.join(ROOT, paths[match[1]])
+    return result
+
+
+METATILES = _tileset_paths("metatiles.inc", "gMetatiles_")
+ATTRIBUTES = _tileset_paths("metatiles.inc", "gMetatileAttributes_")
+GRAPHICS = _tileset_paths("graphics.inc", "gTilesetTiles_")
 
 
 def read_u16(path):
@@ -35,12 +52,8 @@ def read_u16(path):
 
 
 def tileset_dir(symbol):
-    snake = re.sub(r"(?<!^)(?=[A-Z])", "_", symbol[len("gTileset_"):]).lower()
-    for kind in ("primary", "secondary"):
-        path = os.path.join(ROOT, "data", "tilesets", kind, snake)
-        if os.path.isdir(path):
-            return path
-    return None
+    path = GRAPHICS.get(symbol)
+    return os.path.dirname(path) if path else None
 
 
 class Graphics:
@@ -89,33 +102,34 @@ class Pair:
         self._layers = {}     # (metatile, layer) -> layer_pixels, asked again and again
 
     def entries(self, metatile):
-        which = 0 if metatile < TILES_PER_TILESET else 1
-        index = metatile - which * TILES_PER_TILESET
+        which = int(metatile >= PRIMARY_METATILES)
+        index = metatile - which * PRIMARY_METATILES
         table = self.meta[which]
-        if (index + 1) * 8 > len(table):
+        start = index * METATILE_ENTRIES
+        if start + METATILE_ENTRIES > len(table):
             return None
-        return table[index * 8:index * 8 + 8]
+        return table[start:start + METATILE_ENTRIES]
 
     def attribute(self, metatile):
-        which = 0 if metatile < TILES_PER_TILESET else 1
-        index = metatile - which * TILES_PER_TILESET
+        which = int(metatile >= PRIMARY_METATILES)
+        index = metatile - which * PRIMARY_METATILES
         table = self.attr[which]
         return table[index] if index < len(table) else 0
 
     def subtile(self, tile_id, palette_id):
         """8x8 as (rgb, index) pairs, row major, or None where unreadable.
 
-        Tiles split at tile id 512, palettes independently at palette id 6,
+        Tiles split at tile id 640, palettes independently at palette id 7,
         exactly as voxel_atlas.c LookupColor. A primary subtile can use a
         secondary palette (and vice versa).
         """
-        which = 0 if tile_id < TILES_PER_TILESET else 1
-        local = tile_id - which * TILES_PER_TILESET
+        which = int(tile_id >= PRIMARY_TILES)
+        local = tile_id - which * PRIMARY_TILES
         gfx = self.gfx[which]
         base = local * 32
         if base + 32 > len(gfx.tiles):
             return None
-        palettes = self.gfx[0 if palette_id < 6 else 1].palettes
+        palettes = self.gfx[int(palette_id >= PRIMARY_PALETTES)].palettes
         pal = palettes[palette_id] if palette_id < len(palettes) else None
         if pal is None:
             return None

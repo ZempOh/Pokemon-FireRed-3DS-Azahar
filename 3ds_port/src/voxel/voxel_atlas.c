@@ -22,7 +22,7 @@
  * because a compressed payload only declares its size at run time. */
 #define VOXEL_TILE_SCRATCH 0x10000u
 
-#define TILES_PER_TILESET 512u
+#define TILES_PER_TILESET NUM_TILES_IN_PRIMARY
 #define SUBTILE_PX 8u
 
 /* In texels; see VoxelAtlas_SlotUV. */
@@ -852,7 +852,7 @@ static uint16_t (*sAnimStatePixels)[VOXEL_ANIM_BLOCKS][64];
 static unsigned sAnimStateStamp;
 /* The tiles a pass composes from (VoxelAnim_Compose): both tilesets, BG VRAM's
  * first 0x8000 bytes, as they were when it began. */
-static uint8_t sAnimTiles[2u * TILES_PER_TILESET * 32u] __attribute__((aligned(4)));
+static uint8_t sAnimTiles[NUM_TILES_TOTAL * 32u] __attribute__((aligned(4)));
 
 static void AnimKey(const VoxelAnimPass *pass, const uint8_t *liveTiles, uint32_t key[2])
 {

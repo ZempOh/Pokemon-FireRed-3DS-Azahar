@@ -287,9 +287,9 @@ static const struct
     bool (*swapped)(void);
     u16 layoutId;
 } sLayoutSwaps[] = {
-    { MAP_GROUP(MAP_ROUTE111), MAP_NUM(MAP_ROUTE111), MirageTowerHidden, LAYOUT_ROUTE111_NO_MIRAGE_TOWER },
-    { MAP_GROUP(MAP_ROUTE130), MAP_NUM(MAP_ROUTE130), MirageIslandShown, LAYOUT_ROUTE130_MIRAGE_ISLAND },
-    { MAP_GROUP(MAP_ROUTE131), MAP_NUM(MAP_ROUTE131), NULL, LAYOUT_ROUTE131_SKY_PILLAR },
+    { MAP_GROUP(ROUTE111), MAP_NUM(ROUTE111), MirageTowerHidden, LAYOUT_ROUTE111_NO_MIRAGE_TOWER },
+    { MAP_GROUP(ROUTE130), MAP_NUM(ROUTE130), MirageIslandShown, LAYOUT_ROUTE130_MIRAGE_ISLAND },
+    { MAP_GROUP(ROUTE131), MAP_NUM(ROUTE131), NULL, LAYOUT_ROUTE131_SKY_PILLAR },
 };
 
 static u16 NeighbourLayoutId(const struct MapHeader *header, int mapGroup, int mapNum)
@@ -993,9 +993,9 @@ float VoxelWorld_WeatherAmount(void)
 float VoxelWorld_Lightning(void)
 {
 #ifdef PLATFORM_3DS
-    if (GetCurrentWeather() != WEATHER_RAIN_THUNDERSTORM || gWeatherPtr->colorMapIndex <= 3)
+    if (GetCurrentWeather() != WEATHER_RAIN_THUNDERSTORM || gWeatherPtr->gammaIndex <= 3)
         return 0.0f;
-    return gWeatherPtr->colorMapIndex >= 19 ? 1.0f : (float)(gWeatherPtr->colorMapIndex - 3) / 16.0f;
+    return gWeatherPtr->gammaIndex >= 19 ? 1.0f : (float)(gWeatherPtr->gammaIndex - 3) / 16.0f;
 #else
     return 0.0f;
 #endif

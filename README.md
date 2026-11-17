@@ -42,8 +42,9 @@ DSP memory used by FireRed. `debug.txt` only enables diagnostics.
 
 ### Map, 3D, and controller navigation
 
-- Tap **3D OFF** or **3D ON** on the lower-screen map while standing in the
-  overworld to switch between the classic view and the voxel 3D world.
+- Voxel 3D starts enabled with fresh settings. Tap **3D ON** or **3D OFF** on
+  the lower-screen map while standing in the overworld to switch between
+  voxel 3D and the classic view. Your saved preference carries over.
 - Press **Start** in the overworld to focus the lower-screen dock. Use the
   **D-pad** to select Pokédex, Pokémon, Bag, your trainer card, Save, or Options,
   and press **A** to open it. Press **B** or **Start** to leave dock navigation.

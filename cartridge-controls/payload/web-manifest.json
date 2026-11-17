@@ -1,0 +1,217 @@
+{
+  "schemaVersion": 1,
+  "kind": "firered3ds-web-payload",
+  "releaseVersion": "0.5.1",
+  "releaseTag": "v0.5.1",
+  "builderVersion": "0.3.1",
+  "dataAbi": "28d607c0",
+  "packSchema": 1,
+  "supportedRoms": [
+    {
+      "sha1": "dd5945db9b930750cb39d00c84da8571feebf417",
+      "code": "BPRE",
+      "name": "Pokémon FireRed (USA, Rev 1)"
+    }
+  ],
+  "entrypoint": {
+    "pythonPath": "python",
+    "module": "firered3ds_builder.web",
+    "function": "run_web_build",
+    "apiVersion": 1
+  },
+  "install": {
+    "dir": "3ds/firered3ds",
+    "files": [
+      "FireRed3DS.3dsx",
+      "FireRed3DS.smdh",
+      "firered3ds.pak"
+    ]
+  },
+  "assets": {
+    "threeDsx": {
+      "path": "payload/FireRed3DS.3dsx",
+      "sha256": "607a11d87812e65f849156d10c6bb056c7b201f7b52fcb015c20238c0e519628",
+      "size": 4599704,
+      "releaseAsset": "FireRed3DS.3dsx"
+    },
+    "smdh": {
+      "path": "payload/FireRed3DS.smdh",
+      "sha256": "254c8f5e85c1e9ca50249392b3a68fda8d26c2bcf9e2cb81a739faa55a82d095",
+      "size": 14016,
+      "releaseAsset": "FireRed3DS.smdh"
+    },
+    "recipe": {
+      "path": "payload/firered3ds.recipe",
+      "sha256": "1b535c0c719782afc169256b9542ea060a0232dee34c32ac8978b7dc1715e91d",
+      "size": 338936
+    },
+    "ciaForwarder": null
+  },
+  "files": [
+    {
+      "path": "licenses/NOTICE.md",
+      "sha256": "6597d9e63f41f822d72b952ae6bbb82adb3c76c0a8f08e6749e92e265875b654",
+      "size": 6031
+    },
+    {
+      "path": "licenses/voxel-NOTICE.md",
+      "sha256": "22377d367c802b59a045d9b824c033f09b273701b89721985860f6203a095824",
+      "size": 1685
+    },
+    {
+      "path": "payload/FireRed3DS.3dsx",
+      "sha256": "607a11d87812e65f849156d10c6bb056c7b201f7b52fcb015c20238c0e519628",
+      "size": 4599704
+    },
+    {
+      "path": "payload/FireRed3DS.smdh",
+      "sha256": "254c8f5e85c1e9ca50249392b3a68fda8d26c2bcf9e2cb81a739faa55a82d095",
+      "size": 14016
+    },
+    {
+      "path": "payload/firered3ds.recipe",
+      "sha256": "1b535c0c719782afc169256b9542ea060a0232dee34c32ac8978b7dc1715e91d",
+      "size": 338936
+    },
+    {
+      "path": "payload/voxelgen/scripts/fr_art.py",
+      "sha256": "660098c26032bd72ef516b1952def2f030f4369152bc598e6f0176ff085be07f",
+      "size": 8960
+    },
+    {
+      "path": "payload/voxelgen/scripts/fr_building_specs.py",
+      "sha256": "ef7edb85944803d7c5980cb0276965551a5cc9e9ff247b66a28b7e637d2800e0",
+      "size": 98711
+    },
+    {
+      "path": "payload/voxelgen/scripts/fr_export_buildings.py",
+      "sha256": "93781a1ae309029c9d74f4acbfe9aaffdf92defa95213c160b008cf47cf93a38",
+      "size": 1368
+    },
+    {
+      "path": "payload/voxelgen/scripts/fr_gen_buildings.py",
+      "sha256": "63ee5592b29e119a70c6b7608a2604dbab9b18c2593092711b6e189c1cfc3058",
+      "size": 5742
+    },
+    {
+      "path": "payload/voxelgen/scripts/fr_gen_relief.py",
+      "sha256": "21bb8816e8261050758a55b021f83c35a47d4f7df268a7f8dee51f4152cdaed4",
+      "size": 33078
+    },
+    {
+      "path": "payload/voxelgen/scripts/fr_gen_rooms.py",
+      "sha256": "d45322940b2eff784980b9eb4866ad67a0154969fcc06841c5bf9049808e7752",
+      "size": 129239
+    },
+    {
+      "path": "payload/voxelgen/scripts/fr_gen_trees.py",
+      "sha256": "ae1901c5e3a38eda388420b96f4d53e080ec40f363ab7c15c74dfd1234898885",
+      "size": 31926
+    },
+    {
+      "path": "payload/voxelgen/scripts/fr_map_render.py",
+      "sha256": "7575647799f1c51780e114f6a4ad9e6e0fc3d48cf7ebc2af9eeddff86b3ed2fe",
+      "size": 4346
+    },
+    {
+      "path": "payload/voxelgen/scripts/gen_voxel_buildings.py",
+      "sha256": "73edbce72f038103c6ebd8a31198cf7c884db708fee75374d5c6255b443a8885",
+      "size": 80828
+    },
+    {
+      "path": "payload/voxelgen/scripts/voxel_art.py",
+      "sha256": "8c4553d2bca07814ff82c5e62aa66542901d62b958935f6b2440d7d0ea3c94ca",
+      "size": 6401
+    },
+    {
+      "path": "payload/voxelgen/scripts/voxel_building.py",
+      "sha256": "ed777b2868874a3925b9311755bce741ae353b9cccb89800177a669d2d9c5b88",
+      "size": 82121
+    },
+    {
+      "path": "payload/voxelgen/scripts/voxel_building_specs.py",
+      "sha256": "123bb61aefd1ae3e4d61ef6ce35ce78a3ddd607e63fe251fcac78f9fbf18b859",
+      "size": 80774
+    },
+    {
+      "path": "payload/voxelgen/scripts/voxel_cells.py",
+      "sha256": "74f677ab347ae053bce8ba19a63c00f89a6f6e193600007e1b59bd231f1d77a8",
+      "size": 19269
+    },
+    {
+      "path": "payload/voxelgen/scripts/voxel_props.py",
+      "sha256": "5166980e15481d3959781122e3daea02e533393bd6d4964ae8a75afeadf0e927",
+      "size": 9582
+    },
+    {
+      "path": "payload/voxelgen/scripts/voxel_relief_fixes.py",
+      "sha256": "c684ac0cc3d151c718adb11661cb3984293f367b39daa7d3c59c8b844dd18566",
+      "size": 12804
+    },
+    {
+      "path": "payload/voxelgen/src/voxel/voxel_props_table.h",
+      "sha256": "542712b0e60090f54fe19c54b6eaab22b2b9ad701b7253718a88a0251240b885",
+      "size": 21654
+    },
+    {
+      "path": "python/firered3ds_builder/__init__.py",
+      "sha256": "641e8c547625f8066ebd643db02167b7d9d531cc089cdb85f1afe3ca2afcd180",
+      "size": 113
+    },
+    {
+      "path": "python/firered3ds_builder/build.py",
+      "sha256": "060eb5f727e4433e10007e1811b0d5db90f503f7995579d945b33dba87bc462a",
+      "size": 7039
+    },
+    {
+      "path": "python/firered3ds_builder/cartridge.py",
+      "sha256": "423936e01abdc176e2d708cc7db5a641807f0514348125a29a754799475a5a20",
+      "size": 6328
+    },
+    {
+      "path": "python/firered3ds_builder/errors.py",
+      "sha256": "15ea0bdf497317352b7acf87ee8bd410e8c48dc7ffeb094ff27a31a1194f7a50",
+      "size": 702
+    },
+    {
+      "path": "python/firered3ds_builder/followers.py",
+      "sha256": "283eff626d86ed203d22ff672edf3f2f0995e13afbbead307e9f9b4ed03703d8",
+      "size": 11542
+    },
+    {
+      "path": "python/firered3ds_builder/pak.py",
+      "sha256": "915cac74606fb0520977b267a8de494603a18e7d6bff05a8699be9e8cde77423",
+      "size": 7000
+    },
+    {
+      "path": "python/firered3ds_builder/recipe.py",
+      "sha256": "88398db0424b5abe0020e58d89accddfd72c1d6f9d7d7069c4a25c79c52e4a96",
+      "size": 6938
+    },
+    {
+      "path": "python/firered3ds_builder/rom.py",
+      "sha256": "5b35cbcfe74d7cc23b38e439c7ab0fdb999b6145845090b8ff7525f159c7f924",
+      "size": 4227
+    },
+    {
+      "path": "python/firered3ds_builder/voxel.py",
+      "sha256": "7aeeeb70b406d09df48c53d4ebca599fe3cee5d74a9969272af17fc876f3c408",
+      "size": 8655
+    },
+    {
+      "path": "python/firered3ds_builder/vtree.py",
+      "sha256": "e3824c29e644c38360f4f163281d136bf86f3c44eb50fd4bb2608efe4c524278",
+      "size": 6421
+    },
+    {
+      "path": "python/firered3ds_builder/web.py",
+      "sha256": "cda688a15c6ec89cc64f5b7bb4e6d6fa293a1e8f649e22d650cbfcda186d8c60",
+      "size": 7598
+    },
+    {
+      "path": "python/firered3ds_builder/webmanifest.py",
+      "sha256": "3db24fe8e9a3373c315c334304f4bba3f0419eaad9f2e0814c07a49a19b2e0fa",
+      "size": 7943
+    }
+  ]
+}

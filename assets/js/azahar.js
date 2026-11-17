@@ -68,9 +68,18 @@ export async function installAzaharLauncher(games, files) {
 }
 
 export async function installAzaharCartridge(games, image) {
+  const name = "FireRed3DS.3ds";
+  const obsolete = new Set([name.toLowerCase() + ".partial", name.toLowerCase() + ".tmp", required[0].toLowerCase()]);
   const magic = new Uint8Array(image).subarray(0x100, 0x104);
   if (String.fromCharCode(...magic) !== "NCSD") throw new Error("Invalid cartridge image.");
-  await writeFile(games, "FireRed3DS.3ds", image);
+  await writeFile(games, name, image);
+  for await (const [existing, entry] of games.entries()) {
+    if (entry.kind === "file" && obsolete.has(existing.toLowerCase())) {
+      await games.removeEntry(existing).catch((err) => {
+        if (err.name !== "NotFoundError") throw err;
+      });
+    }
+  }
 }
 
 export async function installAzahar(sd, files) {

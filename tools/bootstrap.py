@@ -119,7 +119,7 @@ def main() -> int:
     elif args.japanese_rom:
         locale = ("japanese", args.japanese_rom, "localize_japanese.py", "japanese.json.gz")
     portuguese = args.port_lang == "pt_br"
-    patches = sorted((ROOT / "patches" / "pokeemerald").glob("*.patch"))
+    patches = sorted((ROOT / "patches" / "pokeclassic").glob("*.patch"))
     marker = tree / ".emerald3ds-patches"
     digest = patch_digest(patches)
 

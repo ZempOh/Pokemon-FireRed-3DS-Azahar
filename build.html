@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Silkscreen:wght@400;700&display=swap">
-<link rel="stylesheet" href="assets/css/site.css">
+<link rel="stylesheet" href="assets/css/site.css?v=2">
 </head>
 <body>
 <header class="top">
@@ -35,20 +35,22 @@
   <div class="wrap builder">
     <span class="eyebrow" data-i18n="b.eyebrow">Web builder</span>
     <h1 data-i18n="b.title">Build Pokémon FireRed 3DS</h1>
-    <p class="lead"><span data-i18n="b.lead">Turn your own Pokémon FireRed ROM into a ready-to-copy installation for your Nintendo 3DS.</span> <span data-i18n="b.version">Version:</span> <strong data-release="tag">…</strong></p>
+    <p class="lead"><span data-i18n="b.lead">Install FireRed 3DS into Azahar, or build a ZIP for manual installation.</span> <span data-i18n="b.version">Version:</span> <strong data-release="tag">…</strong></p>
     <p class="privacy">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
       <span data-i18n="b.privacy">Your ROM is processed entirely in your browser and never leaves your device. Nothing is uploaded: the game data is created on this device by the project's own builder.</span>
     </p>
 
     <div class="panel" style="margin-top:26px">
+      <div class="callout" style="margin-bottom:20px" data-azahar-panel>
+        <h2 style="font-size:1.35rem" data-i18n="a.heading">Install directly into Azahar</h2>
+        <p class="small" role="status" data-azahar-status></p>
+        <button class="btn btn-primary" type="button" data-azahar-folder data-i18n="a.choose">Connect Azahar folder</button>
+        <p class="small" role="status" data-azahar-detail></p>
+      </div>
       <!-- 1: the ROM -->
       <div data-view="pick">
-        <div class="callout" style="margin-bottom:20px">
-          <button class="btn btn-ghost" type="button" data-azahar-folder data-i18n="a.choose">Connect Azahar folder</button>
-          <p class="small" role="status" data-azahar-status></p>
-        </div>
-        <h2 style="font-size:1.35rem" data-i18n="b.pick">1. Choose your ROM</h2>
+        <h2 style="font-size:1.35rem" data-i18n="b.pick">Choose your ROM</h2>
         <p class="muted small" data-i18n-html="b.pickhint">Pokémon FireRed (USA, Rev 1): a <code>.gba</code> file, or a <code>.zip</code> with one inside.</p>
         <label class="drop" data-drop>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 6V4h10v2M8 11h3M9.5 9.5v3M15 10h.01M17 12h.01"/></svg>
@@ -67,8 +69,9 @@
         <div class="actions">
           <button class="btn btn-primary" data-start disabled>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8z"/></svg>
-            <span data-i18n="b.start">Build</span>
+            <span data-i18n="b.start">Build and install</span>
           </button>
+          <button class="btn btn-ghost" type="button" data-build-zip data-i18n="b.zip" disabled>Build ZIP only</button>
         </div>
         <p class="small muted" data-i18n="b.time">The first build downloads the builder (about 25 MB, kept by your browser for later) and takes a few minutes. Keep this tab open while it works.</p>
       </div>
@@ -95,10 +98,10 @@
       <!-- 3: done -->
       <div data-view="done" class="hidden">
         <div class="done-box">
-          <span class="eyebrow" data-i18n="d.eyebrow">Ready</span>
-          <h2 data-i18n="d.title">Your game is ready</h2>
+          <h2 data-done-title>Build complete</h2>
           <p class="muted" data-done-summary></p>
           <p class="small" role="status" data-install-result></p>
+          <p class="small" role="status" data-install-detail hidden></p>
           <div class="actions" style="justify-content:center">
             <a class="btn btn-primary" data-download download>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 21h16"/></svg>
@@ -107,8 +110,9 @@
           </div>
           <p class="small muted" data-done-warn></p>
         </div>
-        <details style="margin-top:20px" open>
-          <summary data-i18n="d.azahar">Install in Azahar on Android</summary>
+        <div data-zip-instructions>
+        <details style="margin-top:20px">
+          <summary data-i18n="d.azahar">Install the ZIP manually in Azahar</summary>
           <ol>
             <li data-i18n-html="d.az1">Extract the ZIP from Downloads. Find the <code>sdmc</code> folder inside the user folder you selected in Azahar.</li>
             <li data-i18n-html="d.az2">Copy the extracted <code>3ds</code> folder into <code>sdmc</code>. Merge folders and replace the old game files. Keep your existing <code>firered3ds.sav</code>.</li>
@@ -130,6 +134,7 @@
             <p class="small" data-i18n-html="d.ciad">Install the forwarder once with FBI: <strong>Remote Install → Scan QR Code</strong>. It opens the game installed in <code>sd:/3ds/firered3ds/</code>, so later updates never need it again.</p>
             <a class="small" data-cia-link href="#">FireRed3DS-Forwarder.cia</a>
           </div>
+        </div>
         </div>
         <div class="actions"><button class="btn btn-ghost" data-again data-i18n="d.again">Build again</button></div>
       </div>
@@ -166,8 +171,8 @@
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js" integrity="sha384-mZT2gIty7ZDdOGkxfP6joZcYdMW1Jvj9dRlfpTmaJAKKXTqzygtB22k7FLe+KZC1" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
-<script src="assets/js/i18n.js"></script>
+<script src="assets/js/i18n.js?v=2"></script>
 <script src="assets/js/site.js"></script>
-<script type="module" src="assets/js/build.js"></script>
+<script type="module" src="assets/js/build.js?v=2"></script>
 </body>
 </html>

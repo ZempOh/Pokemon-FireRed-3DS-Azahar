@@ -7,7 +7,7 @@
    time) and gives them to the worker when it is ready for them. Nothing is
    ever sent anywhere: the only requests are downloads. */
 
-import { azaharSd, installAzahar, savedFolder } from "./azahar.js";
+import { writableAzaharSd, installAzahar, savedFolder } from "./azahar.js?v=2";
 
 const { t, release, onLang } = window.FR3DS;
 const $ = (sel) => document.querySelector(sel);
@@ -32,23 +32,23 @@ let started = 0;
 let lastError = null;
 let azahar = null;
 let installing = false;
+let choosingFolder = false;
+let viewName;
 const folderButton = $("[data-azahar-folder]");
 const folderStatus = $("[data-azahar-status]");
-const canConnect = typeof window.showDirectoryPicker === "function" &&
-  typeof window.FileSystemFileHandle?.prototype.createWritable === "function";
+const canConnect = typeof window.showDirectoryPicker === "function";
 let folderStatusKey = canConnect ? "a.setup" : "a.browser";
 
 function showFolderStatus(key = folderStatusKey) {
   folderStatusKey = key;
   folderStatus.textContent = t(key);
+  folderButton.textContent = t(azahar ? "a.change" : "a.choose");
 }
 
 const restoreFolder = canConnect ? savedFolder().then(async (folder) => {
   if (!folder) return;
-  if (await folder.queryPermission({ mode: "readwrite" }) === "granted") {
-    azahar = await azaharSd(folder);
-    showFolderStatus("a.ready");
-  } else showFolderStatus("a.reconnect");
+  azahar = await writableAzaharSd(folder);
+  showFolderStatus("a.ready");
 }).catch(() => showFolderStatus("a.reconnect")) : Promise.resolve();
 
 folderButton.hidden = !canConnect;
@@ -56,21 +56,37 @@ folderButton.disabled = true;
 showFolderStatus();
 restoreFolder.finally(() => { folderButton.disabled = false; });
 folderButton.addEventListener("click", async () => {
+  if (choosingFolder || installing || state.worker) return;
+  choosingFolder = true;
+  folderButton.disabled = true;
+  $("[data-azahar-detail]").textContent = "";
   try {
     const root = await window.showDirectoryPicker({ id: "firered-azahar", mode: "readwrite" });
-    azahar = await azaharSd(root);
-    const remembered = await savedFolder(root).then(() => true, () => false);
-    showFolderStatus(remembered ? "a.ready" : "a.session");
-    if (state.ok) start();
+    azahar = await writableAzaharSd(root);
+    showFolderStatus("a.ready");
+    savedFolder(root).catch(() => {
+      if (folderStatusKey === "a.ready") showFolderStatus("a.session");
+    });
+    if (viewName === "done") await installBuiltFiles();
+    else if (viewName === "pick" && state.ok) start("install");
   } catch (err) {
-    if (err.name !== "AbortError") showFolderStatus("a.invalid");
+    if (err.name !== "AbortError") {
+      showFolderStatus("a.invalid");
+      $("[data-azahar-detail]").textContent = `${err.name}: ${err.message}`;
+    }
+  } finally {
+    choosingFolder = false;
+    folderButton.disabled = false;
+    updateStart();
   }
 });
 
 /* --- views ------------------------------------------------------------- */
 
 function view(name) {
+  viewName = name;
   document.querySelectorAll("[data-view]").forEach((el) => el.classList.toggle("hidden", el.dataset.view !== name));
+  $("[data-azahar-panel]").hidden = name !== "pick" && (name !== "done" || state.done?.install === "a.installed");
 }
 
 function log(line) {
@@ -147,7 +163,9 @@ async function checkRom(file) {
 }
 
 function updateStart() {
-  $("[data-start]").disabled = !(state.ok && state.manifest);
+  const ready = state.ok && state.manifest && !choosingFolder;
+  $("[data-start]").disabled = !ready;
+  $("[data-build-zip]").disabled = !ready;
 }
 
 /* --- the follower's sprites --------------------------------------------- */
@@ -286,8 +304,12 @@ function showError() {
   $("[data-error-hint]").textContent = k && k[1] ? t(k[1]) : (hint || "");
 }
 
-function start() {
+function start(mode) {
   if (!state.ok || !state.manifest || state.worker || installing) return;
+  if (mode === "install" && !azahar) {
+    folderButton.focus();
+    return;
+  }
   if (typeof Worker === "undefined" || !window.crypto || !crypto.subtle) return fail("unsupported_browser");
   followersOn = $("[data-followers]").checked;
   lastError = null;
@@ -300,7 +322,7 @@ function start() {
   timer = setInterval(() => { $("[data-elapsed]").textContent = clock(); }, 500);
   acquireWakeLock();
 
-  const worker = new Worker(new URL("./builder.worker.js", import.meta.url), { type: "module" });
+  const worker = new Worker(new URL("./builder.worker.js?v=2", import.meta.url), { type: "module" });
   state.worker = worker;
   let followerJob = null;
   worker.onerror = (e) => fail("internal_error", t("e.internal"), e.message || "");
@@ -327,16 +349,16 @@ function start() {
         log("followers: " + err);
         worker.postMessage({ type: "followers", failed: true });
       });
-    } else if (m.type === "done") finish(m);
+    } else if (m.type === "done") finish(m, mode);
     else if (m.type === "error") { log("error: " + m.code + " " + (m.message || "") + " " + (m.hint || "")); fail(m.code, m.message, m.hint); }
   };
   // the worker gets its own copy: the page keeps the ROM for "Build again"
   const rom = state.bytes.slice(0);
   worker.postMessage({ type: "start", base: new URL("../../", import.meta.url).href, rom, romName: state.file.name,
-                       followers: followersOn, direct: !!azahar }, [rom]);
+                       followers: followersOn, direct: canConnect }, [rom]);
 }
 
-async function finish(m) {
+async function finish(m, mode) {
   stopRun();
   PHASES.forEach((p) => { if (!document.querySelector('[data-phase="' + p + '"]').classList.contains("skip")) setPhase(p, "done"); frac[p] = 1; });
   render();
@@ -349,28 +371,37 @@ async function finish(m) {
   a.href = state.url;
   a.download = name;
   const mb = (m.zip.byteLength / 1048576).toFixed(1) + " MB";
-  state.done = { name, mb, time: clock(), followers: m.followers };
-  if (m.files?.length && azahar) {
-    installing = true;
-    $("[data-bar-text]").textContent = t("a.installing");
-    try {
-      const sd = azahar;
-      if (navigator.locks) {
-        await navigator.locks.request("firered3ds-azahar-install", () => installAzahar(sd, m.files));
-      } else {
-        await installAzahar(sd, m.files);
-      }
-      state.done.install = "a.installed";
-    } catch (err) {
-      log("Azahar install: " + err);
-      state.done.install = "a.failed";
-    } finally {
-      installing = false;
-    }
-  }
+  state.done = { name, mb, time: clock(), followers: m.followers, files: m.files,
+                 install: canConnect ? "a.zipReady" : "a.manualReady" };
+  if (mode === "install") await installBuiltFiles();
   doneText();
   view("done");
-  if (!state.done.install) a.click();
+}
+
+async function installBuiltFiles() {
+  if (!state.done?.files?.length || !azahar || installing) return;
+  installing = true;
+  folderButton.disabled = true;
+  state.done.install = "a.installing";
+  doneText();
+  $("[data-bar-text]").textContent = t("a.installing");
+  try {
+    const sd = azahar;
+    const write = () => installAzahar(sd, state.done.files);
+    if (navigator.locks) await navigator.locks.request("firered3ds-azahar-install", write);
+    else await write();
+    state.done.install = "a.installed";
+    state.done.files = null;
+  } catch (err) {
+    log("Azahar install: " + err);
+    $("[data-install-detail]").textContent = err.message;
+    state.done.install = "a.failed";
+  } finally {
+    installing = false;
+    folderButton.disabled = false;
+    doneText();
+    view("done");
+  }
 }
 
 function doneText() {
@@ -378,6 +409,9 @@ function doneText() {
   $("[data-done-summary]").textContent = t("d.summary", { name: state.done.name, size: state.done.mb, time: state.done.time });
   $("[data-done-warn]").textContent = followersOn && !state.done.followers ? t("d.nofollowers") : "";
   $("[data-install-result]").textContent = state.done.install ? t(state.done.install) : "";
+  $("[data-install-detail]").hidden = state.done.install !== "a.failed";
+  $("[data-zip-instructions]").hidden = state.done.install === "a.installed";
+  $("[data-done-title]").textContent = t(state.done.install === "a.installed" ? "a.done" : "d.title");
 }
 
 function showCia(info) {
@@ -404,10 +438,14 @@ const input = $("[data-rom]");
 const drop = $("[data-drop]");
 async function selectRom(file) {
   await Promise.all([restoreFolder, checkRom(file)]);
-  if (file === lastRom && azahar) start();
+  if (file === lastRom && azahar && !choosingFolder) start("install");
 }
 
-input.addEventListener("change", () => { if (input.files[0]) selectRom(input.files[0]); });
+input.addEventListener("change", () => {
+  const file = input.files[0];
+  input.value = "";
+  if (file) selectRom(file);
+});
 ["dragenter", "dragover"].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add("over"); }));
 ["dragleave", "drop"].forEach((ev) => drop.addEventListener(ev, () => drop.classList.remove("over")));
 drop.addEventListener("drop", (e) => {
@@ -415,8 +453,18 @@ drop.addEventListener("drop", (e) => {
   const f = e.dataTransfer.files[0];
   if (f) selectRom(f);
 });
-$("[data-start]").addEventListener("click", start);
-document.querySelectorAll("[data-again]").forEach((b) => b.addEventListener("click", () => { view("pick"); updateStart(); }));
+$("[data-start]").hidden = !canConnect;
+$("[data-start]").addEventListener("click", () => {
+  if (azahar) start("install");
+  else folderButton.click();
+});
+$("[data-build-zip]").addEventListener("click", () => start("zip"));
+document.querySelectorAll("[data-again]").forEach((b) => b.addEventListener("click", () => {
+  if (installing || choosingFolder) return;
+  state.done = null;
+  view("pick");
+  updateStart();
+}));
 window.addEventListener("beforeunload", (e) => { if (state.worker || installing) { e.preventDefault(); e.returnValue = ""; } });
 
 onLang(() => {

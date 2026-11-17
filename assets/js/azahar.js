@@ -3,8 +3,15 @@ const optional = ["followers.bin", "followers-credits.txt"];
 const managed = [...required, ...optional].map((name) => name.toLowerCase());
 
 export async function azaharSd(root) {
-  // Require Azahar's existing SD directory before creating any game files.
+  if (root.name === "sdmc") return root;
   return root.getDirectoryHandle("sdmc");
+}
+
+export async function writableAzaharSd(root) {
+  if (root.queryPermission && await root.queryPermission({ mode: "readwrite" }) !== "granted") {
+    throw new DOMException("Allow write access to your Azahar folder.", "NotAllowedError");
+  }
+  return azaharSd(root);
 }
 
 export async function savedFolder(folder) {
@@ -33,6 +40,9 @@ async function writeFile(directory, name, data) {
   try {
     await writer.write(data);
     await writer.close();
+    if ((await handle.getFile()).size !== data.byteLength) {
+      throw new Error(`Could not verify ${name} after writing it.`);
+    }
   } catch (err) {
     await writer.abort().catch(() => {});
     throw err;

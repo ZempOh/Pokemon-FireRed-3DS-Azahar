@@ -32,6 +32,11 @@ jobs:
           python3 tools/bootstrap.py --dir build/upstream
           make -C build/upstream -j2 tools generated
           make -C build/upstream/3ds_port -j2 PYTHON=python3 cartridge-template
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cartridge-engine
+          path: build/upstream/3ds_port/dist/cartridge-template.3ds
+          if-no-files-found: error
       - name: Generate matching ROM extraction recipe
         run: |
           git clone --depth 1 https://github.com/pret/agbcc.git /tmp/agbcc

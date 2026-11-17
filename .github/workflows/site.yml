@@ -35,6 +35,8 @@ concurrency:
 
 jobs:
   build:
+    # This fork publishes its assembled site from the gh-pages branch.
+    if: github.repository != 'ZempOh/Pokemon-FireRed-3DS-Azahar'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

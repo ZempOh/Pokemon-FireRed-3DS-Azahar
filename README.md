@@ -93,6 +93,31 @@ that passes in 24 minutes, or stays off - OPTIONS > DAY/NIGHT):
 
 ## Install (players)
 
+### Azahar on Android (including AYN Thor)
+
+1. In Chrome on the handheld, open the [Azahar game builder](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/build.html).
+   Close Azahar, tap **Connect Azahar folder**, and grant access to the user
+   folder you selected in Azahar. It contains `sdmc`. Chrome may ask you
+   to reconnect if it loses folder permission.
+2. Select your Pokémon FireRed (USA, Rev 1) ROM. Keep the tab open until it
+   reports that installation is complete. The builder replaces the matching
+   executable and data pack, cleans up obsolete FireRed build files in the
+   install folder, and preserves saves and settings.
+3. In Azahar, add `sdmc/3ds/firered3ds` as a game folder the first time and
+   launch `FireRed3DS.3dsx`. For sound, put the `dspfirm.cdc` you dumped
+   from your 3DS in `sdmc/3ds/`.
+
+If your browser cannot grant write access, tap **Build** and use the ZIP.
+Merge its `3ds` folder into Azahar's `sdmc` folder, keeping your save.
+
+If the title screen appears mirrored, fully close the game, switch Azahar
+between Vulkan and OpenGL ES, and compare the same screen. To collect the
+port's startup log, create an empty file named `debug.txt` in
+`sdmc/3ds/firered3ds/` before launching. Reproduce the issue, then collect
+`port.log` from that folder and note the Azahar version and graphics backend.
+
+### Nintendo 3DS hardware
+
 **In your browser (any system).** Open the
 [web builder](https://nachogonzalez2001.github.io/Pokemon-FireRed-3DS/build.html),
 choose your ROM - Pokémon FireRed (USA, Rev 1), SHA-1

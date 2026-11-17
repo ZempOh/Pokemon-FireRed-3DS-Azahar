@@ -44,6 +44,10 @@
     <div class="panel" style="margin-top:26px">
       <!-- 1: the ROM -->
       <div data-view="pick">
+        <div class="callout" style="margin-bottom:20px">
+          <button class="btn btn-ghost" type="button" data-azahar-folder data-i18n="a.choose">Connect Azahar folder</button>
+          <p class="small" role="status" data-azahar-status></p>
+        </div>
         <h2 style="font-size:1.35rem" data-i18n="b.pick">1. Choose your ROM</h2>
         <p class="muted small" data-i18n-html="b.pickhint">Pokémon FireRed (USA, Rev 1): a <code>.gba</code> file, or a <code>.zip</code> with one inside.</p>
         <label class="drop" data-drop>
@@ -94,6 +98,7 @@
           <span class="eyebrow" data-i18n="d.eyebrow">Ready</span>
           <h2 data-i18n="d.title">Your game is ready</h2>
           <p class="muted" data-done-summary></p>
+          <p class="small" role="status" data-install-result></p>
           <div class="actions" style="justify-content:center">
             <a class="btn btn-primary" data-download download>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 21h16"/></svg>
@@ -102,6 +107,15 @@
           </div>
           <p class="small muted" data-done-warn></p>
         </div>
+        <details style="margin-top:20px" open>
+          <summary data-i18n="d.azahar">Install in Azahar on Android</summary>
+          <ol>
+            <li data-i18n-html="d.az1">Extract the ZIP from Downloads. Find the <code>sdmc</code> folder inside the user folder you selected in Azahar.</li>
+            <li data-i18n-html="d.az2">Copy the extracted <code>3ds</code> folder into <code>sdmc</code>. Merge folders and replace the old game files. Keep your existing <code>firered3ds.sav</code>.</li>
+            <li data-i18n-html="d.az3">In Azahar, add <code>sdmc/3ds/firered3ds</code> as a game folder and launch <code>FireRed3DS.3dsx</code>.</li>
+            <li data-i18n-html="d.az4">For sound, copy <code>dspfirm.cdc</code> dumped from your 3DS into <code>sdmc/3ds/</code> and restart the game.</li>
+          </ol>
+        </details>
         <h3 style="margin-top:20px" data-i18n="d.next">Copy it to your SD card</h3>
         <ol>
           <li data-i18n-html="d.s1">Extract the ZIP. It has one folder, <code>3ds</code>.</li>

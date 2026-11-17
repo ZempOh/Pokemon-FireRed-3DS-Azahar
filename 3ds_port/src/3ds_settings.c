@@ -20,7 +20,7 @@
 #define SETTINGS_TEMP "settings.txt.tmp"
 
 /* The voxel overworld is opt-in: the classic 2D field is the default. */
-static bool sVoxel = false;
+static bool sVoxel = true;
 
 /*
  * The voxel camera: a few degrees either way of its 40 degree pitch, and a
@@ -102,7 +102,7 @@ static int Find(const int *values, int count, int value, int fallback)
  */
 void CtrSettings_Defaults(void)
 {
-    sVoxel = false;
+    sVoxel = true;
     sPitch = 2;
     sZoom = 1;
     sBlur = COUNT(sBlurs) - 1;

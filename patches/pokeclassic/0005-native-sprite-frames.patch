@@ -1,16 +1,8 @@
 diff --git a/gflib/sprite.c b/gflib/sprite.c
-index 0fbf81ec52e8bf0c91d4a97d8e2cf749afb1facd..224e512520f50cb4c159ee6c7556cfe7cb58e92d 100644
+index 4a8258d529effdbf22f66b94c236fc2e6cc57f5b..224e512520f50cb4c159ee6c7556cfe7cb58e92d 100644
 --- a/gflib/sprite.c
 +++ b/gflib/sprite.c
-@@ -5,7 +5,6 @@
- 
- #define MAX_SPRITE_COPY_REQUESTS 64
- 
--#define OAM_MATRIX_COUNT 32
- 
- #define sAnchorX data[6]
- #define sAnchorY data[7]
-@@ -804,9 +803,17 @@ void RequestSpriteFrameImageCopy(u16 index, u16 tileNum, const struct SpriteFram
+@@ -803,9 +803,17 @@ void RequestSpriteFrameImageCopy(u16 index, u16 tileNum, const struct SpriteFram
  {
      if (sSpriteCopyRequestCount < MAX_SPRITE_COPY_REQUESTS)
      {
@@ -31,18 +23,10 @@ index 0fbf81ec52e8bf0c91d4a97d8e2cf749afb1facd..224e512520f50cb4c159ee6c7556cfe7
      }
  }
 diff --git a/gflib/sprite.h b/gflib/sprite.h
-index 0064df16c20722eabc4f30602f1a49a1f7b9c821..57fabc05637118f56f5ad341a3e5675e721a69d2 100644
+index 70fe1094f123723eaa692d6cb47a76f8b28d0378..57fabc05637118f56f5ad341a3e5675e721a69d2 100644
 --- a/gflib/sprite.h
 +++ b/gflib/sprite.h
-@@ -2,6 +2,7 @@
- #define GUARD_SPRITE_H
- 
- #define MAX_SPRITES 64
-+#define OAM_MATRIX_COUNT 32
- #define SPRITE_NONE 0xFF
- #define TAG_NONE 0xFFFF
- 
-@@ -26,11 +27,18 @@ struct SpriteFrameImage
+@@ -27,11 +27,18 @@ struct SpriteFrameImage
  {
      const void *data;
      u16 size;
@@ -61,18 +45,6 @@ index 0064df16c20722eabc4f30602f1a49a1f7b9c821..57fabc05637118f56f5ad341a3e5675e
  
  struct SpritePalette
  {
-diff --git a/include/fieldmap.h b/include/fieldmap.h
-index 914e128cd4fbaabf1d1a126cd2f8e3d48ad552ba..41032a150bfaefd1d1043212cf2f30cdd8e25159 100644
---- a/include/fieldmap.h
-+++ b/include/fieldmap.h
-@@ -5,6 +5,7 @@
- #define NUM_TILES_TOTAL 1024
- #define NUM_METATILES_IN_PRIMARY 640
- #define NUM_METATILES_TOTAL 1024
-+#define NUM_TILES_PER_METATILE 12
- #define NUM_PALS_IN_PRIMARY 7
- #define NUM_PALS_TOTAL 13
- #define MAX_MAP_DATA_SIZE 10240
 diff --git a/src/battle_dome.c b/src/battle_dome.c
 index 39a85ede65703400a9549be086a6e9b8a0c1f23e..b2e90f406d3875dcc3110af865bbf04c169f676c 100644
 --- a/src/battle_dome.c
@@ -99,16 +71,3 @@ index a88003196dafcfc816b5a933963f935ab0e01b5a..bccadf7cc5d4ca69c6314c61c9a7c9af
      }
      else
      {
-diff --git a/src/field_camera.c b/src/field_camera.c
-index 8a7071756e279d3bd7b86dd1c4a738729798347c..840b2d88a25cc47d63554e10789edc23b640efbb 100644
---- a/src/field_camera.c
-+++ b/src/field_camera.c
-@@ -237,7 +237,7 @@ static void DrawMetatileAt(const struct MapLayout *mapLayout, u16 offset, int x,
-         metatiles = mapLayout->secondaryTileset->metatiles;
-         metatileId -= NUM_METATILES_IN_PRIMARY;
-     }
--    DrawMetatile(MapGridGetMetatileLayerTypeAt(x, y), metatiles + metatileId * 12, offset);
-+    DrawMetatile(MapGridGetMetatileLayerTypeAt(x, y), metatiles + metatileId * NUM_TILES_PER_METATILE, offset);
- }
- 
- static void DrawMetatile(s32 metatileLayerType, u16 *tiles, u16 offset)

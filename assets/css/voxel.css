@@ -1,0 +1,33 @@
+.voxel-main { padding-block: 56px; }
+.voxel-main h2 { font-size: 1.3rem; }
+.voxel-nav { display: flex; gap: 18px; font-size: .88rem; }
+.voxel-layout { display: grid; grid-template-columns: minmax(230px, 1fr) minmax(0, 1.45fr); gap: 28px; margin-top: 36px; }
+.voxel-games { display: grid; gap: 12px; }
+.voxel-game {
+  display: grid;
+  gap: 3px;
+  width: 100%;
+  padding: 16px;
+  text-align: left;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel);
+  color: var(--ink);
+  font: inherit;
+}
+.voxel-game:enabled { cursor: pointer; }
+.voxel-game:enabled:hover, .voxel-game[aria-pressed="true"] { border-color: var(--red); }
+.voxel-game[aria-pressed="true"] { box-shadow: inset 3px 0 var(--red); }
+.voxel-game:disabled strong { color: var(--ink-2); }
+.voxel-panel { align-self: start; }
+.voxel-panel .drop { margin-block: 20px; }
+.voxel-panel progress { width: 100%; margin-block: 8px; accent-color: var(--red); }
+.voxel-actions { margin-top: 16px; }
+.voxel-install { margin: 18px 0 0; }
+[data-download][hidden], [data-cancel][hidden] { display: none; }
+[data-status][data-error] { color: var(--err); }
+@media (max-width: 690px) {
+  .voxel-main { padding-block: 32px; }
+  .voxel-layout { grid-template-columns: 1fr; gap: 20px; }
+  .voxel-nav { gap: 10px; }
+}

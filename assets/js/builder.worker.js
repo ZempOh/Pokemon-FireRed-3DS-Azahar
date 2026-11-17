@@ -95,11 +95,16 @@ async function loadRuntime() {
 // Unpack the payload into /fr3ds, checking every file against the manifest.
 const UNPACK = `
 import hashlib, json, sys, zipfile
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 root = Path("/fr3ds")
 with zipfile.ZipFile(root / "payload.zip") as zf:
     manifest = json.loads(zf.read("web-manifest.json"))
+    if manifest != json.loads(expected_manifest):
+        raise ValueError("payload manifest does not match this release")
     for item in manifest["files"]:
+        path = PurePosixPath(item["path"])
+        if path.is_absolute() or ".." in path.parts:
+            raise ValueError("invalid payload path: " + item["path"])
         data = zf.read(item["path"])
         if len(data) != item["size"] or hashlib.sha256(data).hexdigest() != item["sha256"]:
             raise ValueError("damaged payload file: " + item["path"])
@@ -132,12 +137,15 @@ async function run({ base, rom, romName, followers, direct, cartridge }) {
   } catch (e) {
     throw e instanceof Failure ? e : new Failure("network", "", String(e));
   }
-  if (manifest.schemaVersion !== 1 || manifest.kind !== "firered3ds-web-payload") {
+  const cartridgeOnly = manifest.kind === "voxel-cartridge-payload";
+  if (manifest.schemaVersion !== 1 ||
+      (manifest.kind !== "firered3ds-web-payload" && !(cartridge && cartridgeOnly))) {
     throw new Failure("payload_missing", "", "unknown web manifest");
   }
   const zip = await download(base + "payload/FireRed3DS-WebPayload.zip?v=" + encodeURIComponent(manifest.releaseTag), "payload");
   py.FS.mkdirTree("/fr3ds");
   py.FS.writeFile("/fr3ds/payload.zip", zip);
+  py.globals.set("expected_manifest", JSON.stringify(manifest));
   post({ type: "log", line: "payload: " + py.runPython(UNPACK) });
 
   if (followers) {
@@ -154,18 +162,23 @@ async function run({ base, rom, romName, followers, direct, cartridge }) {
   post({ type: "phase", phase: "data" });
   py.globals.set("js_progress", (stage, fraction, message) => post({ type: "progress", stage, fraction, message }));
   py.globals.set("rom_path", "/rom/" + name);
-  const built = JSON.parse(py.runPython(`
+  const built = JSON.parse(py.runPython(cartridgeOnly ? `
+from voxel_cartridge import run
+run(rom_path, js_progress)
+` : `
 from firered3ds_builder.web import run_web_build
 run_web_build(rom_path, "/fr3ds/payload", "/sd/3ds/firered3ds/firered3ds.pak", js_progress, "/fr3ds/web-manifest.json")
 `));
   py.FS.unlink("/rom/" + name);
   if (!built.ok) throw new Failure(built.error.code, built.error.message, built.error.hint);
   post({ type: "log", line: "pack: " + JSON.stringify(built.result) });
-  py.globals.set("rom_sha1", built.result.romSha1);
-  py.runPython(`
+  if (!cartridge) {
+    py.globals.set("rom_sha1", built.result.romSha1);
+    py.runPython(`
 from firered3ds_builder.web import copy_executables
 copy_executables("/fr3ds/payload", rom_sha1, "/sd/3ds/firered3ds")
 `);
+  }
 
   let followersOk = false;
   if (followers) {
@@ -192,8 +205,16 @@ _res
   post({ type: "phase", phase: "zip" });
   if (cartridge) {
     const template = await download(base + "payload/cartridge-template.gz", "zip");
+    if (cartridgeOnly) {
+      const digest = new Uint8Array(await crypto.subtle.digest("SHA-256", template));
+      const hex = Array.from(digest, (byte) => byte.toString(16).padStart(2, "0")).join("");
+      if (hex !== manifest.cartridgeSha256) throw new Failure("payload_missing", "The cartridge template failed verification.");
+    }
     py.FS.writeFile("/fr3ds/cartridge-template.gz", template);
-    py.runPython(`
+    py.runPython(cartridgeOnly ? `
+from voxel_cartridge import assemble
+assemble()
+` : `
 from pathlib import Path
 from firered3ds_builder.cartridge import build_cartridge
 build_cartridge(Path("/fr3ds/cartridge-template.gz"),

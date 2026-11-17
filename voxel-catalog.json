@@ -1,0 +1,21 @@
+[
+  {
+    "id": "firered",
+    "name": "Pokémon FireRed 3DS",
+    "input": "Pokémon FireRed (USA, Rev 1)",
+    "base": "cartridge-fps/",
+    "output": "FireRed3DS.3ds"
+  },
+  {
+    "id": "frlg-plus",
+    "name": "FireRed & LeafGreen+",
+    "input": "FireRed & LeafGreen+ v1.5.1",
+    "base": "voxel/frlg-plus/",
+    "output": "FRLGPlusVoxel.3ds"
+  },
+  {
+    "id": "pokeclassic",
+    "name": "Pokémon Classic",
+    "input": "Pokémon Classic v1.5.1"
+  }
+]

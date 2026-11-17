@@ -208,6 +208,23 @@ The fork serves the assembled site from the `gh-pages` branch.
 
 ### Native 3DS port
 
+#### Standalone cartridge image for Azahar
+
+Build locally with devkitARM, libctru, citro2d, citro3d, the host tools
+required by the decompilation, and Project CTR's `makerom` on PATH.
+
+```sh
+python tools/bootstrap.py --dir build/upstream
+make -C build/upstream tools generated
+make -C build/upstream/3ds_port standalone
+```
+
+The target writes `build/upstream/3ds_port/dist/FireRed3DS.3ds`. Its RomFS
+contains the game data, so no SD data pack is needed. Select **HLE** audio
+emulation in Azahar. The image supplies its own HLE DSP component and uses
+Azahar's virtual SD card for saves and settings. Build the cartridge image
+locally for personal use. The web builder still produces the homebrew release.
+
 The source tree is the pinned decomp plus this project's patches and port:
 
 ```sh

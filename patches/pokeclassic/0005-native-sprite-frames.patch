@@ -1,0 +1,114 @@
+diff --git a/gflib/sprite.c b/gflib/sprite.c
+index 0fbf81ec52e8bf0c91d4a97d8e2cf749afb1facd..224e512520f50cb4c159ee6c7556cfe7cb58e92d 100644
+--- a/gflib/sprite.c
++++ b/gflib/sprite.c
+@@ -5,7 +5,6 @@
+ 
+ #define MAX_SPRITE_COPY_REQUESTS 64
+ 
+-#define OAM_MATRIX_COUNT 32
+ 
+ #define sAnchorX data[6]
+ #define sAnchorY data[7]
+@@ -804,9 +803,17 @@ void RequestSpriteFrameImageCopy(u16 index, u16 tileNum, const struct SpriteFram
+ {
+     if (sSpriteCopyRequestCount < MAX_SPRITE_COPY_REQUESTS)
+     {
+-        sSpriteCopyRequests[sSpriteCopyRequestCount].src = images[index].data;
++        const void *src = images[index].data;
++        u32 size = images[index].size;
++#ifdef PORT_BRIDGE
++        size = Port_GetSpriteFrameSize(src, size);
++        src = Port_ResolveSpriteFramePointer(src, size, images[index].offset);
++        if (src == NULL)
++            return;
++#endif
++        sSpriteCopyRequests[sSpriteCopyRequestCount].src = src;
+         sSpriteCopyRequests[sSpriteCopyRequestCount].dest = (u8 *)OBJ_VRAM0 + TILE_SIZE_4BPP * tileNum;
+-        sSpriteCopyRequests[sSpriteCopyRequestCount].size = images[index].size;
++        sSpriteCopyRequests[sSpriteCopyRequestCount].size = size;
+         sSpriteCopyRequestCount++;
+     }
+ }
+diff --git a/gflib/sprite.h b/gflib/sprite.h
+index 0064df16c20722eabc4f30602f1a49a1f7b9c821..57fabc05637118f56f5ad341a3e5675e721a69d2 100644
+--- a/gflib/sprite.h
++++ b/gflib/sprite.h
+@@ -2,6 +2,7 @@
+ #define GUARD_SPRITE_H
+ 
+ #define MAX_SPRITES 64
++#define OAM_MATRIX_COUNT 32
+ #define SPRITE_NONE 0xFF
+ #define TAG_NONE 0xFFFF
+ 
+@@ -26,11 +27,18 @@ struct SpriteFrameImage
+ {
+     const void *data;
+     u16 size;
++#ifdef PORT_BRIDGE
++    u32 offset;
++#endif
+ };
+ 
+ #define obj_frame_tiles(ptr) {.data = (u8 *)ptr, .size = sizeof ptr}
+ 
++#ifdef PORT_BRIDGE
++#define overworld_frame(ptr, width, height, frame) {.data = (ptr), .size = (width) * (height) * 32, .offset = (width) * (height) * (frame) * 32}
++#else
+ #define overworld_frame(ptr, width, height, frame) {.data = (u8 *)ptr + (width * height * frame * 64)/2, .size = (width * height * 64)/2}
++#endif
+ 
+ struct SpritePalette
+ {
+diff --git a/include/fieldmap.h b/include/fieldmap.h
+index 914e128cd4fbaabf1d1a126cd2f8e3d48ad552ba..41032a150bfaefd1d1043212cf2f30cdd8e25159 100644
+--- a/include/fieldmap.h
++++ b/include/fieldmap.h
+@@ -5,6 +5,7 @@
+ #define NUM_TILES_TOTAL 1024
+ #define NUM_METATILES_IN_PRIMARY 640
+ #define NUM_METATILES_TOTAL 1024
++#define NUM_TILES_PER_METATILE 12
+ #define NUM_PALS_IN_PRIMARY 7
+ #define NUM_PALS_TOTAL 13
+ #define MAX_MAP_DATA_SIZE 10240
+diff --git a/src/battle_dome.c b/src/battle_dome.c
+index 39a85ede65703400a9549be086a6e9b8a0c1f23e..b2e90f406d3875dcc3110af865bbf04c169f676c 100644
+--- a/src/battle_dome.c
++++ b/src/battle_dome.c
+@@ -2763,7 +2763,7 @@ static int GetTypeEffectivenessPoints(int move, int targetSpecies, int mode)
+         {
+             typePower = 8;
+         #ifdef BUGFIX
+-            return;
++            return typePower;
+         #endif
+         }
+     }
+diff --git a/src/event_object_movement.c b/src/event_object_movement.c
+index a88003196dafcfc816b5a933963f935ab0e01b5a..bccadf7cc5d4ca69c6314c61c9a7c9af3ca29211 100644
+--- a/src/event_object_movement.c
++++ b/src/event_object_movement.c
+@@ -2341,7 +2341,7 @@ void RemoveFollowingPokemon(void) { // Remove follower object. Idempotent.
+ static bool8 IsFollowerVisible(void) { // Determine whether follower *should* be visible
+     if (gSaveBlock2Ptr->optionsFollowerType == (2))
+     { 
+-        return;
++        return FALSE;
+     }
+     else
+     {
+diff --git a/src/field_camera.c b/src/field_camera.c
+index 8a7071756e279d3bd7b86dd1c4a738729798347c..840b2d88a25cc47d63554e10789edc23b640efbb 100644
+--- a/src/field_camera.c
++++ b/src/field_camera.c
+@@ -237,7 +237,7 @@ static void DrawMetatileAt(const struct MapLayout *mapLayout, u16 offset, int x,
+         metatiles = mapLayout->secondaryTileset->metatiles;
+         metatileId -= NUM_METATILES_IN_PRIMARY;
+     }
+-    DrawMetatile(MapGridGetMetatileLayerTypeAt(x, y), metatiles + metatileId * 12, offset);
++    DrawMetatile(MapGridGetMetatileLayerTypeAt(x, y), metatiles + metatileId * NUM_TILES_PER_METATILE, offset);
+ }
+ 
+ static void DrawMetatile(s32 metatileLayerType, u16 *tiles, u16 offset)

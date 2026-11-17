@@ -280,7 +280,7 @@ $(ROMFS_SOUND_OUTS) &: $(TARGET).elf $(ROOT_SONG_OBJS) scripts/gen_sound_bundle.
 	"$(PYTHON)" scripts/gen_sound_bundle.py --port-dir . --bundle --out-dir romfs/sound
 	"$(PYTHON)" scripts/verify_scripts.py --elf $(TARGET).elf --out-dir romfs/sound \
 		--tag verify_songs --magic C3AB --payload songs.bin --reloc songs.rel \
-		--blob-symbol __ctr_song_blob --require mus_dummy --require mus_pallet
+		--blob-symbol __ctr_song_blob --require mus_dummy --require mus_rg_pallet
 
 # The game's linked read-only data: identical layout in both links, contents
 # from the image, reserved NOLOAD in the executable.

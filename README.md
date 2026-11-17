@@ -56,6 +56,18 @@ DSP memory used by FireRed. `debug.txt` only enables diagnostics.
 - If the overlay Start works and the Thor's physical Start does not, check
   that the Thor button is bound to **Start** under Azahar's **Settings → Gamepad**.
 
+### Compare 2D and 3D performance
+
+1. Tap the bottom-screen gear, open **Settings**, and go to page 2. Turn on
+   **Show FPS**, then go back to the map. The counter appears in the map's
+   upper-right corner. Your choice persists across launches.
+2. Walk the same route in each mode at normal speed. Use the map's **3D ON /
+   3D OFF** switch and allow a few seconds for the scene and counter to settle.
+3. The in-game counter counts presented frames using the emulated 3DS clock.
+   To see how fast emulation is running on your Thor, use Azahar's
+   [performance overlay](https://github.com/azahar-emu/azahar/discussions/1149)
+   under **Layout** and enable **Speed**.
+
 ### Azahar on Android (including AYN Thor)
 
 1. In Chrome 132 or later on the handheld, open the [Azahar game builder](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/build.html).

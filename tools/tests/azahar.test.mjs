@@ -3,7 +3,8 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 const code = await readFile(new URL("../../site/assets/js/azahar.js", import.meta.url));
-const { azaharSd, installAzahar, writableAzaharSd } = await import("data:text/javascript;base64," + code.toString("base64"));
+const { azaharSd, enableAzaharAudio, installAzahar, installAzaharLauncher, writableAzaharSd } =
+  await import("data:text/javascript;base64," + code.toString("base64"));
 
 function directory() {
   const entries = new Map();
@@ -101,4 +102,22 @@ test("requires write access before accepting the folder", async () => {
     },
   });
   await assert.rejects(writableAzaharSd(sd), { name: "NotAllowedError" });
+});
+
+test("writes an HLE DSP stub only if no firmware exists", async () => {
+  const { sd } = await fixture();
+  const apps = await sd.getDirectoryHandle("3ds");
+  await enableAzaharAudio(sd);
+  const dsp = await apps.getFileHandle("dspfirm.cdc");
+  assert.deepEqual(new Uint8Array(dsp.data), new Uint8Array(64));
+  dsp.data = Uint8Array.of(23).buffer;
+  await enableAzaharAudio(sd);
+  assert.deepEqual(new Uint8Array(dsp.data), Uint8Array.of(23));
+});
+
+test("copies only the launchable homebrew file to the existing games folder", async () => {
+  const games = directory();
+  await games.getFileHandle("Existing Game.cci", { create: true });
+  await installAzaharLauncher(games, files);
+  assert.deepEqual([...games.entries()].map(([name]) => name), ["Existing Game.cci", "FireRed3DS.3dsx"]);
 });

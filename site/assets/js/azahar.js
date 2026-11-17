@@ -14,7 +14,7 @@ export async function writableAzaharSd(root) {
   return azaharSd(root);
 }
 
-export async function savedFolder(folder) {
+export async function savedFolder(folder, key = "folder") {
   const db = await new Promise((resolve, reject) => {
     const request = indexedDB.open("firered3ds-azahar", 1);
     request.onupgradeneeded = () => request.result.createObjectStore("settings");
@@ -25,7 +25,7 @@ export async function savedFolder(folder) {
     return await new Promise((resolve, reject) => {
       const transaction = db.transaction("settings", folder ? "readwrite" : "readonly");
       const store = transaction.objectStore("settings");
-      const request = folder ? store.put(folder, "folder") : store.get("folder");
+      const request = folder ? store.put(folder, key) : store.get(key);
       transaction.oncomplete = () => resolve(request.result);
       transaction.onabort = () => reject(transaction.error);
     });
@@ -47,6 +47,24 @@ async function writeFile(directory, name, data) {
     await writer.abort().catch(() => {});
     throw err;
   }
+}
+
+export async function enableAzaharAudio(sd) {
+  const apps = await sd.getDirectoryHandle("3ds", { create: true });
+  try {
+    await apps.getFileHandle("dspfirm.cdc");
+    return;
+  } catch (err) {
+    if (err.name !== "NotFoundError") throw err;
+  }
+  // libctru needs a component to submit. Azahar's HLE DSP logs its hash
+  // and runs its own implementation. Physical consoles need real firmware.
+  await writeFile(apps, "dspfirm.cdc", new Uint8Array(64));
+}
+
+export async function installAzaharLauncher(games, files) {
+  const name = required[0];
+  await writeFile(games, name, new Map(files).get(name));
 }
 
 export async function installAzahar(sd, files) {

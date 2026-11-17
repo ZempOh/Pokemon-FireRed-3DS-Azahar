@@ -26,9 +26,17 @@ executable and data recipe. You supply your own FireRed cartridge dump.
 2. Select your Pokémon FireRed (USA, Rev 1) ROM as a `.gba` file or a ZIP
    containing it. The build starts automatically. Keep the tab open until
    the builder reports that installation is complete.
-3. In Azahar, add `sdmc/3ds/firered3ds` as a game folder the first time and
-   launch `FireRed3DS.3dsx`. For sound, put the `dspfirm.cdc` you dumped
-   from your 3DS in `sdmc/3ds/`.
+3. To launch alongside your other games, choose your existing **3DS games
+   folder** in the builder before selecting your ROM. Open
+   `FireRed3DS.3dsx` from there in Azahar. You can also move an existing
+   `FireRed3DS.3dsx` there yourself. The game data stays in
+   `sdmc/3ds/firered3ds/`.
+
+Use **HLE** audio emulation in Azahar. Direct installation sets up the
+emulated DSP automatically when `sdmc/3ds/dspfirm.cdc` is absent. For an
+existing install, connect the Azahar folder and tap **Set up sound for an
+existing install**, then fully restart the game. Physical 3DS consoles
+require their own DSP firmware dump.
 
 For later updates, close the game and pick the ROM again. The builder generates
 `firered3ds.pak` locally in your browser and installs it with the matching
@@ -48,7 +56,7 @@ both the executable and the data pack and keep your existing save.
 
 The browser installer and its cleanup and rollback tests have been verified.
 An end-to-end install and gameplay check on the AYN Thor is still pending.
-The reported mirrored title screen remains open.
+Updating Azahar resolved the mirrored title screen on the target AYN Thor.
 
 If the title screen appears mirrored, fully close the game, switch Azahar
 between Vulkan and OpenGL ES, and compare the same screen. To collect the

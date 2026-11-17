@@ -171,6 +171,7 @@ static uint16_t sHoldUi[CTR_SOFT_WIDTH * CTR_SOFT_HEIGHT];
 static bool sHoldReady, sHoldValid, sSurfaceClean;
 static uint16_t sUploadedUi[CTR_SOFT_WIDTH * CTR_SOFT_HEIGHT];
 static bool sUiUploaded;
+static uint32_t sUiRevision, sLastUiRevision;
 
 #define UI_TRANSFER_FLAGS \
     (GX_TRANSFER_FLIP_VERT(0) | GX_TRANSFER_OUT_TILED(1) | GX_TRANSFER_RAW_COPY(0) | \
@@ -264,6 +265,7 @@ static void GpuUploadUi(const uint16_t *pixels)
         return;
     memcpy(sUploadedUi, pixels, sizeof(sUploadedUi));
     sUiUploaded = true;
+    ++sUiRevision;
     for (unsigned y = 0; y < CTR_SOFT_HEIGHT; ++y)
     {
         const uint16_t *src = pixels + y * CTR_SOFT_WIDTH;
@@ -470,7 +472,11 @@ static void GpuPresent(void)
         if (sClean)
         {
             sSurfaceClean = true;
-            memcpy(sLastUi, sUi, sizeof(sLastUi));
+            if (sLastUiRevision != sUiRevision)
+            {
+                memcpy(sLastUi, sUploadedUi, sizeof(sLastUi));
+                sLastUiRevision = sUiRevision;
+            }
         }
         /* The world leaves its own shader and state bound, and indoors a
          * blend and fragment mode under which the UI's see-through pixels
@@ -525,7 +531,6 @@ static void GpuPresent(void)
     /* C3D_FrameBegin paces the frames to the screen's 60 Hz (its frame rate
      * limit); a second wait here would halve that. */
     sStats.cpuMs = (drawStart - start) * 1000.0f / SYSCLOCK_ARM11;
-    ++sStats.frames;
 }
 #endif
 
@@ -543,10 +548,12 @@ static void Blit(uint16_t *fb)
 
 void CtrVideo_Present(void)
 {
+    static uint64_t sampleStart;
+    static uint32_t sampleFrames;
+
 #if CTR_GPU_PRESENT
     GpuPresent();
-    return;
-#endif
+#else
     uint64_t start = svcGetSystemTick(), waitStart;
     uint16_t *fb = (uint16_t *)gfxGetFramebuffer(GFX_TOP, GFX_LEFT, NULL, NULL);
 
@@ -558,7 +565,17 @@ void CtrVideo_Present(void)
     gspWaitForVBlank();
     sStats.waitMs = (svcGetSystemTick() - waitStart) * 1000.0f / SYSCLOCK_ARM11;
     sStats.cpuMs = (waitStart - start) * 1000.0f / SYSCLOCK_ARM11;
+#endif
     ++sStats.frames;
+    uint64_t now = CtrPlatform_Milliseconds();
+    uint64_t elapsed = now - sampleStart;
+    if (sStats.frames == 1 || elapsed >= 1000)
+    {
+        if (sStats.frames != 1)
+            sStats.fps = (sStats.frames - sampleFrames) * 1000.0f / elapsed;
+        sampleStart = now;
+        sampleFrames = sStats.frames;
+    }
 }
 
 const CtrVideoStats *CtrVideo_GetStats(void) { return &sStats; }

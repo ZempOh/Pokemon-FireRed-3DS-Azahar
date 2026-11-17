@@ -26,6 +26,7 @@
  * is copied every frame it changes.
  */
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -75,6 +76,7 @@
 #include "3ds_input.h"
 #include "3ds_log.h"
 #include "3ds_platform.h"
+#include "3ds_video.h"
 #include "fr_ui_icons.h"
 
 /* text.c, start_menu.c and region_map.c, under PORT_BRIDGE */
@@ -157,7 +159,7 @@ enum { SCR_MAP, SCR_OPTIONS };
  * the extras (3ds_extras.h). It replaces the game's option menu. */
 enum {
     OPT_TEXT_SPEED, OPT_BATTLE_SCENE, OPT_BATTLE_STYLE, OPT_SOUND, OPT_BUTTON_MODE, OPT_FRAME,
-    OPT_VOXEL, OPT_VOXEL_ANGLE, OPT_VOXEL_ZOOM, OPT_VOXEL_BLUR, OPT_VOXEL_BATTLE, OPT_DAYNIGHT,
+    OPT_VOXEL, OPT_VOXEL_ANGLE, OPT_VOXEL_ZOOM, OPT_FPS, OPT_VOXEL_BATTLE, OPT_DAYNIGHT,
     OPT_RUN, OPT_FREE_MOVE, OPT_FOLLOWER, OPT_SCREEN_FIT,
     OPT_COUNT
 };
@@ -225,6 +227,7 @@ typedef struct {
     u8 pressed;      /* HIT_* under the finger */
     u8 focus;        /* HIT_* selected with buttons */
     u8 world;        /* bit 0 3D enabled, bit 1 toggle is available */
+    u16 fps;         /* tenths of a displayed frame per second, plus one when visible */
     u8 region;
     u8 onMap;        /* the player is placed on the map */
     s16 mapX, mapY;
@@ -482,6 +485,11 @@ static void Snapshot(ViewState *s)
     if (gSaveBlock2Ptr == NULL || gSaveBlock1Ptr == NULL)
         return;
     s->screen = sScreen;
+    if (sScreen == SCR_MAP && CtrSettings_ShowFps())
+    {
+        float fps = CtrVideo_GetStats()->fps;
+        s->fps = 1 + (u16)((fps > 999.9f ? 999.9f : fps) * 10.0f + 0.5f);
+    }
 #if CTR_VOXEL_ENABLED
     s->world = (CtrSettings_Voxel() ? 1 : 0) | (InField() ? 2 : 0);
 #endif
@@ -917,12 +925,13 @@ static void DrawMap(const ViewState *s)
 
 static bool8 OptionLive(int row)
 {
-    if (row < OPT_VOXEL)
-        return TRUE;
-    if (!VOXEL_READY)
-        return FALSE;
-    /* the 3D world's own settings, with the 3D world */
-    return row == OPT_VOXEL || CtrSettings_Voxel();
+    switch (row)
+    {
+    case OPT_VOXEL: return VOXEL_READY;
+    case OPT_VOXEL_ANGLE: case OPT_VOXEL_ZOOM: case OPT_VOXEL_BATTLE: case OPT_DAYNIGHT:
+        return VOXEL_READY && CtrSettings_Voxel();
+    default: return TRUE;
+    }
 }
 
 static u8 OptionCount(int row)
@@ -954,7 +963,7 @@ static u8 OptionGet(int row)
     case OPT_VOXEL:        return CtrSettings_Voxel();
     case OPT_VOXEL_ANGLE:  return CtrSettings_VoxelPitch();
     case OPT_VOXEL_ZOOM:   return CtrSettings_VoxelZoom();
-    case OPT_VOXEL_BLUR:   return CtrSettings_VoxelBlur();
+    case OPT_FPS:          return CtrSettings_ShowFps();
     case OPT_FOLLOWER:     return CtrSettings_GetInt(FOLLOWER_KEY, 1) != 0;
     case OPT_SCREEN_FIT:   return CtrSettings_GetInt(SCREEN_FIT_KEY, 1) != 0;
     case OPT_DAYNIGHT:     return (u8)CtrSettings_GetInt(DAYNIGHT_KEY, 1) % 3;
@@ -980,7 +989,7 @@ static void OptionSet(int row, u8 value)
     case OPT_VOXEL:        CtrSettings_SetVoxel(value); break;
     case OPT_VOXEL_ANGLE:
     case OPT_VOXEL_ZOOM:   break; /* stepped, see OptionStep */
-    case OPT_VOXEL_BLUR:   CtrSettings_SetVoxelBlur(value); break;
+    case OPT_FPS:          CtrSettings_SetShowFps(value); break;
     case OPT_FOLLOWER:     CtrSettings_SetInt(FOLLOWER_KEY, value); break;
     case OPT_SCREEN_FIT:   CtrSettings_SetInt(SCREEN_FIT_KEY, value); break;
     case OPT_DAYNIGHT:     CtrSettings_SetInt(DAYNIGHT_KEY, value); break;
@@ -1019,7 +1028,7 @@ static const u8 *OptionName(int row)
     case OPT_VOXEL:        return Ascii("3D WORLD");
     case OPT_VOXEL_ANGLE:  return Ascii("3D CAMERA ANGLE");
     case OPT_VOXEL_ZOOM:   return Ascii("3D ZOOM");
-    case OPT_VOXEL_BLUR:   return Ascii("3D DEPTH BLUR");
+    case OPT_FPS:          return Ascii("SHOW FPS");
     case OPT_FOLLOWER:     return Ascii("3D FOLLOWER");
     case OPT_SCREEN_FIT:   return Ascii("SCREEN FIT");
     case OPT_DAYNIGHT:     return Ascii("3D DAY/NIGHT");
@@ -1088,7 +1097,7 @@ static u8 RowKind(const OptRow *r)
     if (r->opt >= 0)
         switch (r->opt)
         {
-        case OPT_BATTLE_SCENE: case OPT_RUN: case OPT_FREE_MOVE: case OPT_VOXEL: case OPT_VOXEL_BLUR: case OPT_VOXEL_BATTLE:
+        case OPT_BATTLE_SCENE: case OPT_RUN: case OPT_FREE_MOVE: case OPT_VOXEL: case OPT_FPS: case OPT_VOXEL_BATTLE:
         case OPT_FOLLOWER:
             return ROW_TOGGLE;
         default:
@@ -1498,6 +1507,16 @@ static void RenderPanel(const ViewState *s)
         FillRect(0, HEADER_H, W, DOCK_Y - HEADER_H, C_PAGE);
         RoundBox(MAP_CARD_X, MAP_CARD_Y, MAP_CARD_W, MAP_CARD_H, 6, C_CARD, C_LINE);
         DrawMap(s);
+        if (s->fps)
+        {
+            unsigned fps = s->fps - 1;
+            char label[16] = "-- FPS";
+
+            if (fps)
+                snprintf(label, sizeof(label), "%u.%u FPS", fps / 10, fps % 10);
+            RoundRect(142, 37, 59, 15, 4, C_SLATE);
+            TextCentered(FONT_SMALL, Ascii(label), 171, 39, C_WHITE, C_SLATE);
+        }
         if (s->onMap)
         {
             GetMapName(name, s->mapsec, 0);

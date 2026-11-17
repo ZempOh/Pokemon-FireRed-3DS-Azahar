@@ -42,7 +42,7 @@ ROOT_DATA_SRCS := $(filter-out $(ROOT)/data/multiboot_berry_glitch_fix.s $(ROOT)
 ROOT_DATA_SRCS := $(filter-out $(ROOT)/data/maps.s,$(ROOT_DATA_SRCS))
 # Script sections are assembled but not linked: their pointers are unaligned,
 # so they move to RomFS and land in a reserved region (gen_script_bundle.py).
-SCRIPT_DATA_SRCS := battle_ai_scripts battle_anim_scripts battle_scripts_1 battle_scripts_2 	contest_ai_scripts event_scripts field_effect_scripts
+SCRIPT_DATA_SRCS := battle_anim_scripts battle_scripts_1 battle_scripts_2 	contest_ai_scripts event_scripts field_effect_scripts
 SCRIPT_DATA_OBJS := $(patsubst %,build/root/data/%.o,$(SCRIPT_DATA_SRCS))
 ROOT_DATA_SRCS := $(filter-out $(patsubst %,$(ROOT)/data/%.s,$(SCRIPT_DATA_SRCS)),$(ROOT_DATA_SRCS))
 

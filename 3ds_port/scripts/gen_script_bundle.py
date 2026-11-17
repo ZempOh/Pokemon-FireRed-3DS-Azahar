@@ -28,7 +28,6 @@ PORT = ROOT / "3ds_port"
 
 # Every object whose script_data carries unaligned relocations.
 SCRIPT_OBJECTS = [
-    "data/battle_ai_scripts.o",
     "data/battle_anim_scripts.o",
     "data/battle_scripts_1.o",
     "data/battle_scripts_2.o",

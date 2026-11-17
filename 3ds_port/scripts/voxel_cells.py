@@ -35,7 +35,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import voxel_art  # noqa: E402
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-NUM_PRIMARY = 512
+NUM_PRIMARY = voxel_art.PRIMARY_METATILES
 OUTDOOR_MAP_TYPES = {"MAP_TYPE_ROUTE", "MAP_TYPE_TOWN", "MAP_TYPE_UNDERWATER",
                      "MAP_TYPE_CITY", "MAP_TYPE_OCEAN_ROUTE"}
 NEIGHBOURS = [(0, -1), (0, 1), (-1, 0), (1, 0)]
@@ -94,13 +94,7 @@ HOUSE_DOORS = {v for k, v in MB.items() if k in ("MB_ANIMATED_DOOR", "MB_PETALBU
                                                    "MB_CLOSED_SOOTOPOLIS_DOOR")}
 
 
-def _incbin(pattern):
-    text = open(os.path.join(ROOT, "src", "data", "tilesets", "metatiles.h"),
-                encoding="utf-8").read()
-    return {"gTileset_" + n: os.path.join(ROOT, p) for n, p in re.findall(pattern, text)}
-
-
-ATTRIBUTES = _incbin(r"gMetatileAttributes_(\w+)\[\]\s*=\s*INCBIN_U16\(\"([^\"]+)\"\)")
+ATTRIBUTES = voxel_art.ATTRIBUTES
 
 
 def read_u16(path):

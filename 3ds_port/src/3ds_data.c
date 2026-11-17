@@ -24,14 +24,13 @@
 
 #define ENGINE_ABI_PATH "engine/abi.bin"
 
-/* The ROM the data pack must come from: Pokemon FireRed (USA) rev 1, the
- * one the port is built from (upstream.lock). */
+/* The data pack must be generated from FireRed & LeafGreen+ v1.5.1. */
 static const uint8_t sSupportedRomSha1[20] = {
-    0xdd, 0x59, 0x45, 0xdb, 0x9b, 0x93, 0x07, 0x50, 0xcb, 0x39,
-    0xd0, 0x0c, 0x84, 0xda, 0x85, 0x71, 0xfe, 0xeb, 0xf4, 0x17,
+    0xc3, 0x4a, 0x44, 0x01, 0xf2, 0xfe, 0x86, 0xc5, 0x15, 0xfc,
+    0x6d, 0x9a, 0x6d, 0x23, 0x12, 0x24, 0xa9, 0x8f, 0x55, 0xd5,
 };
-#define SUPPORTED_ROM_DETAIL "Only Pokemon FireRed (USA, Rev 1) is\n" \
-                             "supported. Run the builder with that ROM."
+#define SUPPORTED_ROM_DETAIL "Run the builder with Pokemon FireRed &\n" \
+                             "LeafGreen+ v1.5.1."
 
 typedef struct
 {

@@ -25,7 +25,7 @@
       <a href="#screens" data-i18n="nav.screens">Screenshots</a>
       <a href="#install" data-i18n="nav.install">Install</a>
       <a href="build.html" data-i18n="nav.build">Web builder</a>
-      <a href="https://github.com/NachoGonzalez2001/Pokemon-FireRed-3DS" rel="noopener">GitHub</a>
+      <a href="https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar" rel="noopener">GitHub</a>
       <span class="lang" role="group" aria-label="Language">
         <button type="button" data-lang="en" aria-pressed="true">EN</button>
         <button type="button" data-lang="es" aria-pressed="false">ES</button>
@@ -45,7 +45,7 @@
       <div class="actions">
         <a class="btn btn-primary" href="build.html">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8z"/></svg>
-          <span data-i18n="hero.build">Build in your browser</span>
+          <span data-i18n="hero.build">Open the game builder</span>
         </a>
         <a class="btn btn-ghost" href="#install" data-i18n="hero.howto">How to install</a>
       </div>
@@ -76,7 +76,7 @@
       <div class="actions" style="margin:0; flex-direction:column; min-width:240px">
         <a class="btn btn-primary" href="build.html" data-i18n="rel.build">Web builder</a>
         <a class="btn btn-ghost" data-release="zip" href="https://github.com/NachoGonzalez2001/Pokemon-FireRed-3DS/releases/latest" data-i18n="rel.windows">Windows builder (ZIP)</a>
-        <a class="small" href="https://github.com/NachoGonzalez2001/Pokemon-FireRed-3DS/releases" data-i18n="rel.all">All releases on GitHub</a>
+        <a class="small" href="https://github.com/NachoGonzalez2001/Pokemon-FireRed-3DS/releases" data-i18n="rel.all">Upstream releases</a>
       </div>
     </div>
   </div>
@@ -161,13 +161,13 @@
   <div class="wrap">
     <div class="head">
       <span class="eyebrow" data-i18n="how.eyebrow">How it works</span>
-      <h2 data-i18n="how.title">From your cartridge to your 3DS</h2>
+      <h2 data-i18n="how.title">Install FireRed in Azahar</h2>
       <p class="lead" data-i18n="how.lead">No game content is distributed. The game data is rebuilt from your own dump, on your own device.</p>
     </div>
     <div class="steps">
-      <div class="card step"><h3 data-i18n="how.s1t">Choose your ROM</h3><p data-i18n="how.s1d">A clean dump of your own Pokémon FireRed (USA, Rev 1) cartridge. It is checked right away, on your device.</p></div>
-      <div class="card step"><h3 data-i18n="how.s2t">Build in your browser</h3><p data-i18n="how.s2d">The project's own builder runs on this page and creates the game data. Nothing is uploaded.</p></div>
-      <div class="card step"><h3 data-i18n="how.s3t">Copy it to your SD card</h3><p data-i18n="how.s3d">Download one ZIP, copy its 3ds folder to the root of the SD card and start the game from the Homebrew Launcher.</p></div>
+      <div class="card step"><h3 data-i18n="how.s1t">Choose your 3DS games folder</h3><p data-i18n="how.s1d">In Chrome, select the folder Azahar already scans for 3DS games.</p></div>
+      <div class="card step"><h3 data-i18n="how.s2t">Select your FireRed ROM</h3><p data-i18n="how.s2d">Select your own Pokémon FireRed (USA, Rev 1) ROM. The builder writes FireRed3DS.3ds to your games folder.</p></div>
+      <div class="card step"><h3 data-i18n="how.s3t">Launch from Azahar</h3><p data-i18n="how.s3d">Open FireRed from your library. Tap 3D OFF on the lower map to turn on the 3D world.</p></div>
     </div>
   </div>
 </section>
@@ -181,12 +181,12 @@
         <li data-i18n="ins.r1">A Nintendo 3DS or 2DS family console with custom firmware (Luma3DS) and the Homebrew Launcher.</li>
         <li data-i18n-html="ins.r2">A clean dump of your own Pokémon FireRed (USA, Rev 1) cartridge, SHA-1 <code>dd5945db9b930750cb39d00c84da8571feebf417</code>.</li>
         <li data-i18n="ins.r3">Your console's SD card, connected to your computer.</li>
-        <li data-i18n="ins.r4">No 3DS? It also runs on the Azahar emulator.</li>
+        <li data-i18n="ins.r4">For a console, use the builder's Homebrew and ZIP options.</li>
       </ul>
       <div class="actions">
         <a class="btn btn-primary" href="build.html" data-i18n="ins.build">Open the web builder</a>
       </div>
-      <p class="small muted" data-i18n-html="ins.windows">Prefer to build offline? The Windows ZIP of each <a href="https://github.com/NachoGonzalez2001/Pokemon-FireRed-3DS/releases/latest">release</a> has the same builder as a program, and the <a href="https://github.com/NachoGonzalez2001/Pokemon-FireRed-3DS#install-players">README</a> explains how to run it on Linux and macOS.</p>
+      <p class="small muted" data-i18n-html="ins.windows">Prefer to build offline? The Windows ZIP of each <a href="https://github.com/NachoGonzalez2001/Pokemon-FireRed-3DS/releases/latest">release</a> has the same builder as a program, and the <a href="https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar#nintendo-3ds-hardware">README</a> explains how to run it on Linux and macOS.</p>
     </div>
     <div>
       <h3 data-i18n="ins.sd">On the SD card</h3>
@@ -224,7 +224,7 @@
   <div class="wrap">
     <nav>
       <a href="build.html" data-i18n="nav.build">Web builder</a>
-      <a href="https://github.com/NachoGonzalez2001/Pokemon-FireRed-3DS">GitHub</a>
+      <a href="https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar">GitHub</a>
       <a href="https://github.com/NachoGonzalez2001/Pokemon-FireRed-3DS/releases" data-i18n="foot.releases">Releases</a>
       <a href="https://github.com/NachoGonzalez2001/Pokemon-FireRed-3DS/blob/main/NOTICE.md" data-i18n="foot.credits">Credits and licences</a>
     </nav>
@@ -232,7 +232,7 @@
   </div>
 </footer>
 
-<script src="assets/js/i18n.js"></script>
+<script src="assets/js/i18n.js?v=7"></script>
 <script src="assets/js/site.js"></script>
 </body>
 </html>

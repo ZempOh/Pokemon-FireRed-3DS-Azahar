@@ -36,7 +36,6 @@ static unsigned sNext;
 static unsigned sPrimed;
 static float sRate;
 static bool sReady;
-static Result sInitResult;
 static CtrAudioStats sStats;
 /* The sound engine's worker, at the end of this file. */
 static Thread sWorker;
@@ -44,7 +43,6 @@ static LightEvent sKick, sIdle;
 static volatile bool sWorkerQuit;
 
 bool CtrAudio_Available(void) { return sReady; }
-uint32_t CtrAudio_InitResult(void) { return (uint32_t)sInitResult; }
 CtrAudioStats *CtrAudio_Stats(void) { return &sStats; }
 
 bool CtrAudio_Init(void)
@@ -59,21 +57,8 @@ bool CtrAudio_Init(void)
      * hash. Supply a component so libctru starts without an SD firmware file. */
     static const u8 hleComponent[64] __attribute__((aligned(4))) = {0};
     ndspUseComponent(hleComponent, sizeof(hleComponent), 0xff, 0xff);
-    /* Starting the SD logger yields and runs filesystem/thread work before
-     * this point. Allow the emulator to settle even when logging is off.
-     * libctru unwinds a failed ndspInit, so retry transient failures here. */
-    for (s64 delay = 50000000; delay <= 400000000; delay *= 2)
-    {
-        svcSleepThread(delay);
-        rc = ndspInit();
-        if (R_SUCCEEDED(rc))
-            break;
-        CtrLog_Write(CTR_LOG_AUDIO, "NDSP startup attempt failed: %08lx", (unsigned long)rc);
-    }
-#else
-    rc = ndspInit();
 #endif
-    sInitResult = rc;
+    rc = ndspInit();
     if (R_FAILED(rc))
     {
         CtrLog_Write(CTR_LOG_ERROR,

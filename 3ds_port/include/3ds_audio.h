@@ -30,7 +30,6 @@ typedef struct
 } CtrAudioStats;
 
 bool CtrAudio_Init(void);
-uint32_t CtrAudio_InitResult(void);
 void CtrAudio_Shutdown(void);
 void CtrAudio_Queue(const int32_t *interleaved, int frames);
 CtrAudioStats *CtrAudio_Stats(void);

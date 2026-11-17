@@ -25,8 +25,9 @@ _Static_assert(SPECIES_OLD_UNOWN_B == CTR_RANDOMIZER_SPECIES_LAST_JOHTO + 1, "sp
 _Static_assert(SPECIES_OLD_UNOWN_Z + 1 == CTR_RANDOMIZER_SPECIES_FIRST_HOENN, "species layout");
 _Static_assert(SPECIES_TREECKO == CTR_RANDOMIZER_SPECIES_FIRST_HOENN, "species layout");
 _Static_assert(SPECIES_CHIMECHO == CTR_RANDOMIZER_SPECIES_LAST_HOENN, "species layout");
-_Static_assert(SPECIES_EGG == CTR_RANDOMIZER_SPECIES_LAST_HOENN + 1, "species layout");
-_Static_assert(NATIONAL_DEX_COUNT == CTR_RANDOMIZER_NATIONAL_COUNT, "national dex size");
+/* Extra Classic species stay unchanged. The core only permutes its original dex. */
+_Static_assert(SPECIES_EGG > CTR_RANDOMIZER_SPECIES_LAST_HOENN, "egg outside randomizer range");
+_Static_assert(NATIONAL_DEX_COUNT >= CTR_RANDOMIZER_NATIONAL_COUNT, "original national dex available");
 
 static const char *const sKindKeys[CTR_RANDOMIZE_KINDS] = {"rand_wild", "rand_starters", "rand_trainers"};
 

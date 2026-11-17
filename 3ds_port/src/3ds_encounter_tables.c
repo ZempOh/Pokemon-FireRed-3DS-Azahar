@@ -7,7 +7,7 @@
 #include "3ds_encounters.h"
 
 #define RULE(route, slotIndex, expected, morning, day, night) \
-    {MAP_GROUP(MAP_##route), MAP_NUM(MAP_##route), slotIndex, SPECIES_##expected, \
+    {MAP_GROUP(route), MAP_NUM(route), slotIndex, SPECIES_##expected, \
      {SPECIES_##morning, SPECIES_##day, SPECIES_##night}}
 
 static const CtrTimedEncounterRule sRules[] = {

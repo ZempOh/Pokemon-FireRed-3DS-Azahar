@@ -10,9 +10,9 @@
  *
  *   romfs  the executable's own RomFS, in a development build that embeds
  *          its data;
- *   loose  sdmc:/3ds/firered3ds/devdata/<path>, for iterating on one
+ *   loose  sdmc:/3ds/frlg-plus-voxel/devdata/<path>, for iterating on one
  *          generated file without rebuilding anything else;
- *   pak    sdmc:/3ds/firered3ds/firered3ds.pak, the single data pack the
+ *   pak    sdmc:/3ds/frlg-plus-voxel/firered3ds.pak, the single data pack the
  *          Pokemon FireRed 3DS Builder generates from the player's own ROM.
  *
  * Files that only describe the executable (asset index, relocation tables,
@@ -26,7 +26,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define CTR_DATA_DIR "sdmc:/3ds/firered3ds/"
+#define CTR_DATA_DIR "sdmc:/3ds/frlg-plus-voxel/"
 #define CTR_DATA_PAK_PATH CTR_DATA_DIR "firered3ds.pak"
 #define CTR_DATA_LOOSE_DIR CTR_DATA_DIR "devdata/"
 #define CTR_DATA_LOOSE_MARKER CTR_DATA_LOOSE_DIR ".firered3ds-dev"

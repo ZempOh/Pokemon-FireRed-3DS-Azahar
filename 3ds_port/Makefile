@@ -17,7 +17,7 @@ LDFLAGS := $(ARCH) -L$(CTRULIB)/lib
 # the software presenter needs none of it.)
 LIBS := -lctru -lm
 TARGET := firered3ds
-APP_TITLE := Pokemon FireRed 3DS
+APP_TITLE := Pokemon FireRed and LeafGreen Plus
 # File names of the release executable (no spaces).
 APP_FILE := FireRed3DS
 APP_DESCRIPTION := Native port for Nintendo 3DS
@@ -26,7 +26,7 @@ APP_VERSION := 0.5.1
 # The FireRed build the game units are compiled as (pokefirered's Makefile:
 # GAME_VERSION, GAME_REVISION, GAME_LANGUAGE). upstream.lock pins rev 1.
 GAME_VERSION ?= FIRERED
-GAME_REVISION ?= 1
+GAME_REVISION ?= 0
 GAME_LANGUAGE ?= ENGLISH
 # 1: this 3DSX carries its game data in its own RomFS (development builds).
 # The release target always builds an executable without it.
@@ -197,7 +197,7 @@ endif
 build/standalone.rsf: forwarder/forwarder.rsf Makefile
 	@mkdir -p build
 	# CCI launches use the exheader mappings, unlike the emulator's 3DSX loader.
-	sed -e 's/0xF4ED3/0xF4ED4/' -e 's/CTR-H-FR3D/CTR-P-FR3D/' \
+	sed -e 's/0xF4ED3/0xF4ED5/' -e 's/CTR-H-FR3D/CTR-P-FRLP/' \
 		-e 's/UseOnSD\( *:\) true/UseOnSD\1 false/' \
 		-e 's/^  FileSystemAccess:/  IORegisterMapping:\n   - 1ff50000-1ff57fff\n   - 1ff70000-1ff77fff\n&/' $< > $@
 	printf '\nRomFs:\n  RootPath: "romfs"\n' >> $@

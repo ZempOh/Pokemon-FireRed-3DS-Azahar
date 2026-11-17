@@ -175,7 +175,7 @@ bool CtrData_Init(void)
 
     ReadEngineAbi();
     mkdir("sdmc:/3ds", 0777);
-    mkdir("sdmc:/3ds/firered3ds", 0777);
+    mkdir("sdmc:/3ds/frlg-plus-voxel", 0777);
     if (choice == 0)
     {
         if (FileExists(CTR_DATA_LOOSE_MARKER))

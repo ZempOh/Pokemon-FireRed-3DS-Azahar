@@ -4,6 +4,10 @@
 
 # Pokémon FireRed 3DS for Azahar
 
+> This development branch targets FireRed & LeafGreen+ v1.5.1. The installer
+> links below refer to the existing FireRed build. The FRLG+ native executable
+> and matching extraction recipe need verification before an install is offered.
+
 **Proudly vibe coded.** This fork brings FireRed 3DS to Azahar on Android, with
 the AYN Thor as the target handheld. Choose your 3DS games folder and your
 FireRed ROM to build and install one standalone cartridge.

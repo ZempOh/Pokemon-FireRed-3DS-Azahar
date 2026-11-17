@@ -1,6 +1,6 @@
 # makerom spec of the HOME Menu forwarder (see Makefile).
 BasicInfo:
-  Title                   : "FireRed3DS"
+  Title                   : "FRLG Plus Voxel"
   ProductCode             : "CTR-H-FR3D"
   Logo                    : Homebrew
 

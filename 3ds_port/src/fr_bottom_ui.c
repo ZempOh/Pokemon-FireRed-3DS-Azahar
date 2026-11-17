@@ -37,8 +37,6 @@
 #include "battle_anim.h"
 #include "battle_controllers.h"
 #include "battle_main.h"
-#include "battle_mega.h"
-#include "move_split.h"
 #include "bg.h"
 #include "data.h"
 #include "decompress.h"
@@ -461,8 +459,6 @@ static void SnapshotBattle(ViewState *s)
                     : s->b.choose == PORT_BATTLE_MOVE ? gMoveSelectionCursor[battler] : gMultiUsePlayerCursor;
         if (s->b.choose == PORT_BATTLE_SWITCH)
             s->b.picked = gMoveSelectionCursor[battler];
-        if (s->b.choose == PORT_BATTLE_MOVE && Mega_CanToggle(battler))
-            s->b.mega = Mega_IsToggled(battler) ? 2 : 1;
     }
     for (int i = 0; i < PARTY_SIZE; i++)
     {
@@ -719,12 +715,9 @@ static void DrawUiIcon(const UiIcon *icon, int x, int y, bool8 on)
 /* A move's category under ENHANCEMENTS > MOVE SPLIT (move_split.c). */
 static const UiIcon *CategoryIcon(u16 move)
 {
-    switch (MoveSplit_Category(move))
-    {
-    case MOVE_CATEGORY_PHYSICAL: return &sIconPhys14;
-    case MOVE_CATEGORY_SPECIAL:  return &sIconSpec14;
-    default:                     return &sIconStat14;
-    }
+    if (move == MOVE_NONE || gBattleMoves[move].power == 0)
+        return &sIconStat14;
+    return IS_TYPE_PHYSICAL(gBattleMoves[move].type) ? &sIconPhys14 : &sIconSpec14;
 }
 
 static void Shell(int x, int y, int w, int h)

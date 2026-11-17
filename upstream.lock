@@ -1,11 +1,11 @@
 [pokefirered]
-repository = "https://github.com/pret/pokefirered.git"
-commit = "037335f4c725d7c9aecdac87066f2002b4bd7e14"
-target = "firered_rev1"
+repository = "https://github.com/Deokishisu/FRLG-Plus.git"
+commit = "5d81c49c383d1197fcde608d304ed233def3bda2"
+target = "firered"
 
 [rom]
-name = "Pokemon - FireRed Version (USA, Europe) (Rev 1)"
-sha1 = "dd5945db9b930750cb39d00c84da8571feebf417"
+name = "Pokemon FireRed & LeafGreen+ v1.5.1"
+sha1 = "c34a4401f2fe86c515fc6d9a6d231224a98f55d5"
 
 [pack]
 schema = 1

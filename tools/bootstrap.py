@@ -94,7 +94,7 @@ def main() -> int:
     up = lock["pokefirered"]
     repo, commit, target = up["repository"], up["commit"], up.get("target", "firered")
     tree = args.dir.resolve()
-    patches = sorted((ROOT / "patches" / "pokefirered").glob("*.patch"))
+    patches = sorted((ROOT / "patches" / "frlg-plus").glob("*.patch"))
     marker = tree / ".firered3ds-patches"
     digest = patch_digest(patches)
 

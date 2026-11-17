@@ -18,10 +18,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install host build tools
-        run: apt-get update && apt-get install -y build-essential git libpng-dev python3 python3-pil
+        run: |
+          apt-get update
+          apt-get install -y build-essential curl git libpng-dev python3 python3-pil unzip
+          curl -fsSL https://github.com/3DSGuy/Project_CTR/releases/download/makerom-v0.18.4/makerom-v0.18.4-ubuntu_x86_64.zip -o /tmp/makerom.zip
+          unzip -q /tmp/makerom.zip -d /tmp/makerom
+          find /tmp/makerom -type f -name makerom -exec install -m 755 {} /usr/local/bin/makerom \;
       - name: Prepare FRLG Plus source
         run: |
           python3 tools/bootstrap.py --dir build/upstream
           make -C build/upstream -j2 tools generated
-      - name: Compile game code and link native executable
-        run: make -C build/upstream/3ds_port -kj2 PYTHON=python3 release
+      - name: Compile native cartridge template
+        run: make -C build/upstream/3ds_port -kj2 PYTHON=python3 cartridge-template
+      - uses: actions/upload-artifact@v4
+        with:
+          name: frlg-plus-cartridge-template
+          path: build/upstream/3ds_port/dist/cartridge-template.3ds
+          if-no-files-found: error

@@ -13,7 +13,7 @@
 
 PREPROC := $(abspath $(ROOT)/tools/preproc/preproc$(EXESUFFIX))
 MAPJSON := $(abspath $(ROOT)/tools/mapjson/mapjson$(EXESUFFIX))
-WAV2AGB := $(abspath $(ROOT)/tools/wav2agb/wav2agb$(EXESUFFIX))
+AIF2PCM := $(abspath $(ROOT)/tools/aif2pcm/aif2pcm$(EXESUFFIX))
 GAME_ARCH := $(ARCH)
 SHELL := /bin/bash
 .SHELLFLAGS := -o pipefail -c
@@ -62,8 +62,8 @@ ROOT_DATA_SRCS := $(filter-out $(patsubst %,$(ROOT)/data/%.s,$(SCRIPT_DATA_SRCS)
 ROOT_MID_SRCS := $(patsubst %.mid,%.s,$(wildcard $(ROOT)/sound/songs/midi/*.mid))
 ROOT_SONG_SRCS := $(wildcard $(ROOT)/sound/songs/*.s) $(ROOT_MID_SRCS)
 ROOT_SONG_OBJS := $(patsubst $(ROOT)/%.s,build/root/%.o,$(ROOT_SONG_SRCS))
-ROOT_SOUND_WAV_SRCS := $(wildcard $(ROOT)/sound/direct_sound_samples/*.wav $(ROOT)/sound/direct_sound_samples/*/*.wav)
-ROOT_SOUND_BIN_SRCS := $(patsubst %.wav,%.bin,$(ROOT_SOUND_WAV_SRCS))
+ROOT_SOUND_AIF_SRCS := $(wildcard $(ROOT)/sound/direct_sound_samples/*.aif $(ROOT)/sound/direct_sound_samples/*/*.aif)
+ROOT_SOUND_BIN_SRCS := $(patsubst %.aif,%.bin,$(ROOT_SOUND_AIF_SRCS))
 
 FULL_C_OBJS := $(patsubst $(ROOT)/%.c,build/root/%.o,$(ROOT_C_SRCS))
 FULL_DATA_OBJS := $(patsubst $(ROOT)/%.s,build/root/%.o,$(ROOT_DATA_SRCS)) build/root/data/maps.o
@@ -189,15 +189,15 @@ build/map_includes.stamp: $(wildcard $(ROOT)/data/maps/*/map.json) $(ROOT)/data/
 	@touch $@
 build/root/data/map_events.o build/root/data/maps.o: build/map_includes.stamp
 
-# Sample conversion, with the flags the root audio_rules.mk uses.
-$(WAV2AGB): $(wildcard $(ROOT)/tools/wav2agb/*.cpp $(ROOT)/tools/wav2agb/*.h)
-	$(MAKE) -C $(ROOT)/tools/wav2agb
+# Sample conversion, with the flags the FRLG+ Game Boy Advance build uses.
+$(AIF2PCM): $(wildcard $(ROOT)/tools/aif2pcm/*.c $(ROOT)/tools/aif2pcm/*.h)
+	$(MAKE) -C $(ROOT)/tools/aif2pcm
 
-$(ROOT)/sound/direct_sound_samples/cries/%.bin: $(ROOT)/sound/direct_sound_samples/cries/%.wav | $(WAV2AGB)
-	"$(WAV2AGB)" -b -c -l 1 --no-pad $< $@
+$(ROOT)/sound/direct_sound_samples/cries/%.bin: $(ROOT)/sound/direct_sound_samples/cries/%.aif | $(AIF2PCM)
+	"$(AIF2PCM)" $< $@ --compress
 
-$(ROOT)/sound/direct_sound_samples/%.bin: $(ROOT)/sound/direct_sound_samples/%.wav | $(WAV2AGB)
-	"$(WAV2AGB)" -b $< $@
+$(ROOT)/sound/direct_sound_samples/%.bin: $(ROOT)/sound/direct_sound_samples/%.aif | $(AIF2PCM)
+	"$(AIF2PCM)" $< $@
 
 build/root/data/map_events.o: $(ROOT)/data/map_events.s $(ROOT)/data/maps/events.inc
 build/root/data/event_scripts.o: $(ROOT)/data/script_cmd_table.inc $(ROOT)/data/specials.inc

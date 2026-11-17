@@ -7,7 +7,7 @@
    time) and gives them to the worker when it is ready for them. Nothing is
    ever sent anywhere: the only requests are downloads. */
 
-import { enableAzaharAudio, installAzaharLauncher, writableAzaharSd, installAzahar, savedFolder } from "./azahar.js?v=3";
+import { enableAzaharAudio, installAzaharLauncher, installAzaharCartridge, writableAzaharSd, installAzahar, savedFolder } from "./azahar.js?v=4";
 
 const { t, release, onLang } = window.FR3DS;
 const $ = (sel) => document.querySelector(sel);
@@ -40,6 +40,8 @@ let viewName;
 const folderButton = $("[data-azahar-folder]");
 const folderStatus = $("[data-azahar-status]");
 const gamesButton = $("[data-games-folder]");
+const gamesPanel = $("[data-games-panel]");
+const homebrew = $("[data-azahar-panel]");
 const audioButton = $("[data-azahar-audio]");
 const canConnect = typeof window.showDirectoryPicker === "function";
 let folderStatusKey = canConnect ? "a.setup" : "a.browser";
@@ -59,6 +61,7 @@ const restoreFolder = canConnect ? savedFolder().then(async (folder) => {
 
 folderButton.hidden = !canConnect;
 gamesButton.hidden = audioButton.hidden = !canConnect;
+gamesButton.disabled = true;
 folderButton.disabled = true;
 showFolderStatus();
 restoreFolder.finally(() => { folderButton.disabled = false; });
@@ -68,13 +71,16 @@ const restoreGames = canConnect ? savedFolder(undefined, "games").then(async (fo
     $("[data-games-status]").textContent = folder.name;
   }
 }).catch(() => {}) : Promise.resolve();
+restoreGames.finally(() => { gamesButton.disabled = false; });
 
 gamesButton.addEventListener("click", async () => {
   gamesButton.disabled = true;
   try {
     games = await window.showDirectoryPicker({ id: "firered-azahar-games", mode: "readwrite" });
     $("[data-games-status]").textContent = games.name;
-    await savedFolder(games, "games");
+    savedFolder(games, "games").catch(() => {});
+    if (viewName === "done" && state.done?.cartridgeBytes) await saveCartridge();
+    else if (viewName === "pick" && cartridgeAvailable && !homebrew.open) start("cartridge");
   } catch (err) {
     if (err.name !== "AbortError") $("[data-games-status]").textContent = err.message;
   } finally {
@@ -128,6 +134,7 @@ function view(name) {
   document.querySelectorAll("[data-view]").forEach((el) => el.classList.toggle("hidden", el.dataset.view !== name));
   $("[data-azahar-panel]").hidden = name !== "pick" &&
     (name !== "done" || state.done?.install === "a.installed" || state.done?.cartridge);
+  gamesPanel.hidden = !canConnect || (name !== "pick" && (name !== "done" || !state.done?.cartridgeBytes));
 }
 
 function log(line) {
@@ -354,8 +361,9 @@ function start(mode) {
   }
   if (typeof Worker === "undefined" || !window.crypto || !crypto.subtle) return fail("unsupported_browser");
   buildMode = mode;
-  $("[data-phase='zip'] [data-i18n]").textContent = t(mode === "cartridge" ? "p.cartridge" : "p.zip");
-  followersOn = mode !== "cartridge" && $("[data-followers]").checked;
+  const cartridge = mode === "cartridge" || mode === "cartridge-download";
+  $("[data-phase='zip'] [data-i18n]").textContent = t(cartridge ? "p.cartridge" : "p.zip");
+  followersOn = !cartridge && $("[data-followers]").checked;
   lastError = null;
   $("[data-log]").textContent = "";
   PHASES.forEach((p) => { frac[p] = 0; detail(p, ""); setPhase(p, ""); });
@@ -398,9 +406,9 @@ function start(mode) {
   };
   // the worker gets its own copy: the page keeps the ROM for "Build again"
   const rom = state.bytes.slice(0);
-  const base = new URL(mode === "cartridge" ? "../../cartridge/" : "../../", import.meta.url).href;
+  const base = new URL(cartridge ? "../../cartridge-audio/" : "../../", import.meta.url).href;
   worker.postMessage({ type: "start", base, rom, romName: state.file.name,
-                       followers: followersOn, direct: canConnect, cartridge: mode === "cartridge" }, [rom]);
+                       followers: followersOn, direct: canConnect, cartridge }, [rom]);
 }
 
 async function finish(m, mode) {
@@ -419,10 +427,40 @@ async function finish(m, mode) {
   const mb = (bytes.byteLength / 1048576).toFixed(1) + " MB";
   state.done = { name, mb, time: clock(), followers: m.followers, files: m.files, cartridge: !!m.cartridge,
                  install: canConnect ? "a.zipReady" : "a.manualReady" };
-  if (m.cartridge) state.done.install = "a.cartridgeReady";
+  if (m.cartridge) {
+    state.done.install = "a.cartridgeReady";
+    if (canConnect) state.done.cartridgeBytes = m.cartridge;
+    if (games && mode === "cartridge") await saveCartridge();
+  }
   if (mode === "install") await installBuiltFiles();
   doneText();
   view("done");
+}
+
+async function saveCartridge() {
+  const done = state.done;
+  const target = games;
+  if (installing || !done?.cartridgeBytes || !target) return;
+  installing = true;
+  gamesButton.disabled = true;
+  $("[data-bar-text]").textContent = t("a.installing");
+  try {
+    const write = () => installAzaharCartridge(target, done.cartridgeBytes);
+    if (navigator.locks) await navigator.locks.request("firered3ds-azahar-install", write);
+    else await write();
+    done.cartridgeBytes = null;
+    done.games = target.name;
+    done.install = "a.cartridgeInstalled";
+  } catch (err) {
+    log("Azahar cartridge: " + err);
+    $("[data-install-detail]").textContent = err.message;
+    done.install = "a.cartridgeFailed";
+  } finally {
+    installing = false;
+    gamesButton.disabled = false;
+    doneText();
+    view("done");
+  }
 }
 
 async function installBuiltFiles() {
@@ -464,12 +502,12 @@ function doneText() {
   $("[data-done-summary]").textContent = t("d.summary", { name: state.done.name, size: state.done.mb, time: state.done.time });
   $("[data-done-warn]").textContent = followersOn && !state.done.followers ? t("d.nofollowers") : "";
   $("[data-install-result]").textContent = state.done.games
-    ? t("a.installedGames", { folder: state.done.games })
+    ? t(state.done.cartridge ? "a.cartridgeInstalled" : "a.installedGames", { folder: state.done.games })
     : state.done.install ? t(state.done.install) : "";
-  $("[data-install-detail]").hidden = state.done.install !== "a.failed";
+  $("[data-install-detail]").hidden = !["a.failed", "a.cartridgeFailed"].includes(state.done.install);
   $("[data-zip-instructions]").hidden = state.done.install === "a.installed" || state.done.cartridge;
   $("[data-download] span").textContent = t(state.done.cartridge ? "d.downloadCartridge" : "d.download");
-  $("[data-done-title]").textContent = t(state.done.install === "a.installed" ? "a.done" : "d.title");
+  $("[data-done-title]").textContent = t(["a.installed", "a.cartridgeInstalled"].includes(state.done.install) ? "a.done" : "d.title");
 }
 
 function showCia(info) {
@@ -495,8 +533,12 @@ function showCia(info) {
 const input = $("[data-rom]");
 const drop = $("[data-drop]");
 async function selectRom(file) {
-  await Promise.all([restoreFolder, checkRom(file)]);
-  if (file === lastRom && azahar && !choosingFolder && !cartridgeAvailable) start("install");
+  await Promise.all([restoreFolder, restoreGames, cartridgeProbe, checkRom(file)]);
+  if (file !== lastRom || choosingFolder) return;
+  if (cartridgeAvailable && !homebrew.open) {
+    if (games || !canConnect) start("cartridge");
+    else $("[data-games-status]").textContent = t("a.chooseGamesNext");
+  } else if (azahar && !cartridgeAvailable) start("install");
 }
 
 input.addEventListener("change", () => {
@@ -517,8 +559,8 @@ $("[data-start]").addEventListener("click", () => {
   else folderButton.click();
 });
 $("[data-build-zip]").addEventListener("click", () => start("zip"));
-$("[data-build-cartridge]").addEventListener("click", () => start("cartridge"));
-fetch("cartridge/payload/web-manifest.json", { cache: "no-cache" })
+$("[data-build-cartridge]").addEventListener("click", () => start("cartridge-download"));
+const cartridgeProbe = fetch("cartridge-audio/payload/web-manifest.json", { cache: "no-cache" })
   .then((response) => response.ok ? response.json() : null)
   .then((manifest) => {
     if (manifest?.kind !== "firered3ds-web-payload") return;
@@ -538,7 +580,7 @@ document.querySelectorAll("[data-again]").forEach((b) => b.addEventListener("cli
 window.addEventListener("beforeunload", (e) => { if (state.worker || installing) { e.preventDefault(); e.returnValue = ""; } });
 
 onLang(() => {
-  $("[data-phase='zip'] [data-i18n]").textContent = t(buildMode === "cartridge" ? "p.cartridge" : "p.zip");
+  $("[data-phase='zip'] [data-i18n]").textContent = t(buildMode.startsWith("cartridge") ? "p.cartridge" : "p.zip");
   showFolderStatus();
   if (lastRom && !state.worker) checkRom(lastRom);
   showError();

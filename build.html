@@ -39,7 +39,7 @@
     <details class="callout" style="margin-top:20px">
       <summary data-i18n="b.standalone">Standalone .3ds cartridge for Azahar</summary>
       <p data-standalone-local-help data-i18n-html="b.standaloneHelp">The cartridge currently builds on a computer with the 3DS toolchain. Follow the <a href="https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar#standalone-cartridge-image-for-azahar">local build instructions</a>, copy <code>FireRed3DS.3ds</code> to your Azahar games folder, and select <strong>HLE</strong> audio emulation.</p>
-      <p data-standalone-browser-help data-i18n="b.cartHelp" hidden>Choose your ROM and click Build standalone .3ds. Put the downloaded file in your Azahar games folder and use HLE audio emulation. The cartridge includes the game data. Optional follower sprites are available in the homebrew build.</p>
+      <p data-standalone-browser-help data-i18n="b.cartHelp" hidden>Choose your 3DS games folder and your FireRed ROM. The builder writes FireRed3DS.3ds to that folder automatically.</p>
     </details>
     <p class="privacy">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
@@ -47,17 +47,28 @@
     </p>
 
     <div class="panel" style="margin-top:26px">
-      <div class="callout" style="margin-bottom:20px" data-azahar-panel>
-        <h2 style="font-size:1.35rem" data-i18n="a.heading">Install directly into Azahar</h2>
+      <div class="callout" style="margin-bottom:20px" data-games-panel>
+        <button class="btn btn-primary" type="button" data-games-folder data-i18n="a.games">Choose your 3DS games folder</button>
+        <p class="small" role="status" data-games-status></p>
+      </div>
+      <details class="callout" style="margin:20px 0" data-azahar-panel>
+        <summary data-i18n="b.homebrew">Homebrew and ZIP options</summary>
         <p class="small" role="status" data-azahar-status></p>
         <button class="btn btn-primary" type="button" data-azahar-folder data-i18n="a.choose">Connect Azahar folder</button>
         <p class="small" role="status" data-azahar-detail></p>
         <button class="btn btn-ghost" type="button" data-azahar-audio data-i18n="a.audio" disabled>Set up sound for an existing install</button>
         <p class="small" role="status" data-audio-status></p>
-        <button class="btn btn-ghost" type="button" data-games-folder data-i18n="a.games">Choose your 3DS games folder</button>
-        <p class="small" data-i18n="a.gamesHelp">Optional. FireRed3DS.3dsx goes in this folder. Its game data stays in Azahar.</p>
-        <p class="small" role="status" data-games-status></p>
-      </div>
+        <label class="option">
+          <input type="checkbox" checked data-followers>
+          <span><strong data-i18n="b.fol">Include the Pokémon that follows you</strong><br>
+          <span class="muted small" data-i18n-html="b.folsub">Downloads its sprites from PMD SpriteCollab.</span></span>
+        </label>
+        <div class="actions">
+          <button class="btn btn-primary" type="button" data-start data-i18n="b.start" disabled>Build and install</button>
+          <button class="btn btn-ghost" type="button" data-build-zip data-i18n="b.zip" disabled>Build ZIP only</button>
+          <button class="btn btn-ghost" type="button" data-build-cartridge data-i18n="b.buildCartridge" hidden disabled>Build standalone .3ds for download</button>
+        </div>
+      </details>
       <!-- 1: the ROM -->
       <div data-view="pick">
         <h2 style="font-size:1.35rem" data-i18n="b.pick">Choose your ROM</h2>
@@ -70,20 +81,6 @@
         </label>
         <div class="status hidden" data-rom-status></div>
 
-        <label class="option">
-          <input type="checkbox" checked data-followers>
-          <span><strong data-i18n="b.fol">Include the Pokémon that follows you</strong><br>
-          <span class="muted small" data-i18n-html="b.folsub">Downloads its sprites (about 12 MB) from <a href="https://github.com/PMDCollab/SpriteCollab" rel="noopener">PMD SpriteCollab</a> while it builds. Without them the game works the same, without its follower.</span></span>
-        </label>
-
-        <div class="actions">
-          <button class="btn btn-primary" data-start disabled>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8z"/></svg>
-            <span data-i18n="b.start">Build and install</span>
-          </button>
-          <button class="btn btn-ghost" type="button" data-build-zip data-i18n="b.zip" disabled>Build ZIP only</button>
-          <button class="btn btn-ghost" type="button" data-build-cartridge data-i18n="b.buildCartridge" hidden disabled>Build standalone .3ds</button>
-        </div>
         <p class="small muted" data-i18n="b.time">The first build downloads the builder (about 25 MB, kept by your browser for later) and takes a few minutes. Keep this tab open while it works.</p>
       </div>
 
@@ -182,8 +179,8 @@
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js" integrity="sha384-mZT2gIty7ZDdOGkxfP6joZcYdMW1Jvj9dRlfpTmaJAKKXTqzygtB22k7FLe+KZC1" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
-<script src="assets/js/i18n.js?v=5"></script>
+<script src="assets/js/i18n.js?v=6"></script>
 <script src="assets/js/site.js"></script>
-<script type="module" src="assets/js/build.js?v=4"></script>
+<script type="module" src="assets/js/build.js?v=5"></script>
 </body>
 </html>

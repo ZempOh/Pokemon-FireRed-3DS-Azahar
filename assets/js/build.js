@@ -7,7 +7,7 @@
    time) and gives them to the worker when it is ready for them. Nothing is
    ever sent anywhere: the only requests are downloads. */
 
-import { writableAzaharSd, installAzahar, savedFolder } from "./azahar.js?v=2";
+import { enableAzaharAudio, installAzaharLauncher, writableAzaharSd, installAzahar, savedFolder } from "./azahar.js?v=3";
 
 const { t, release, onLang } = window.FR3DS;
 const $ = (sel) => document.querySelector(sel);
@@ -31,11 +31,14 @@ let wakeLock = null;
 let started = 0;
 let lastError = null;
 let azahar = null;
+let games = null;
 let installing = false;
 let choosingFolder = false;
 let viewName;
 const folderButton = $("[data-azahar-folder]");
 const folderStatus = $("[data-azahar-status]");
+const gamesButton = $("[data-games-folder]");
+const audioButton = $("[data-azahar-audio]");
 const canConnect = typeof window.showDirectoryPicker === "function";
 let folderStatusKey = canConnect ? "a.setup" : "a.browser";
 
@@ -43,6 +46,7 @@ function showFolderStatus(key = folderStatusKey) {
   folderStatusKey = key;
   folderStatus.textContent = t(key);
   folderButton.textContent = t(azahar ? "a.change" : "a.choose");
+  audioButton.disabled = !azahar;
 }
 
 const restoreFolder = canConnect ? savedFolder().then(async (folder) => {
@@ -52,9 +56,43 @@ const restoreFolder = canConnect ? savedFolder().then(async (folder) => {
 }).catch(() => showFolderStatus("a.reconnect")) : Promise.resolve();
 
 folderButton.hidden = !canConnect;
+gamesButton.hidden = audioButton.hidden = !canConnect;
 folderButton.disabled = true;
 showFolderStatus();
 restoreFolder.finally(() => { folderButton.disabled = false; });
+const restoreGames = canConnect ? savedFolder(undefined, "games").then(async (folder) => {
+  if (folder && await folder.queryPermission({ mode: "readwrite" }) === "granted") {
+    games = folder;
+    $("[data-games-status]").textContent = folder.name;
+  }
+}).catch(() => {}) : Promise.resolve();
+
+gamesButton.addEventListener("click", async () => {
+  gamesButton.disabled = true;
+  try {
+    games = await window.showDirectoryPicker({ id: "firered-azahar-games", mode: "readwrite" });
+    $("[data-games-status]").textContent = games.name;
+    await savedFolder(games, "games");
+  } catch (err) {
+    if (err.name !== "AbortError") $("[data-games-status]").textContent = err.message;
+  } finally {
+    gamesButton.disabled = false;
+  }
+});
+
+audioButton.addEventListener("click", async () => {
+  if (!azahar || audioButton.disabled) return;
+  audioButton.disabled = true;
+  const status = $("[data-audio-status]");
+  try {
+    await enableAzaharAudio(azahar);
+    status.textContent = t("a.audioReady");
+  } catch (err) {
+    status.textContent = err.message;
+  } finally {
+    audioButton.disabled = false;
+  }
+});
 folderButton.addEventListener("click", async () => {
   if (choosingFolder || installing || state.worker) return;
   choosingFolder = true;
@@ -387,7 +425,15 @@ async function installBuiltFiles() {
   $("[data-bar-text]").textContent = t("a.installing");
   try {
     const sd = azahar;
-    const write = () => installAzahar(sd, state.done.files);
+    const write = async () => {
+      await enableAzaharAudio(sd);
+      await installAzahar(sd, state.done.files);
+      await restoreGames;
+      if (games) {
+        await installAzaharLauncher(games, state.done.files);
+        state.done.games = games.name;
+      }
+    };
     if (navigator.locks) await navigator.locks.request("firered3ds-azahar-install", write);
     else await write();
     state.done.install = "a.installed";
@@ -408,7 +454,9 @@ function doneText() {
   if (!state.done) return;
   $("[data-done-summary]").textContent = t("d.summary", { name: state.done.name, size: state.done.mb, time: state.done.time });
   $("[data-done-warn]").textContent = followersOn && !state.done.followers ? t("d.nofollowers") : "";
-  $("[data-install-result]").textContent = state.done.install ? t(state.done.install) : "";
+  $("[data-install-result]").textContent = state.done.games
+    ? t("a.installedGames", { folder: state.done.games })
+    : state.done.install ? t(state.done.install) : "";
   $("[data-install-detail]").hidden = state.done.install !== "a.failed";
   $("[data-zip-instructions]").hidden = state.done.install === "a.installed";
   $("[data-done-title]").textContent = t(state.done.install === "a.installed" ? "a.done" : "d.title");

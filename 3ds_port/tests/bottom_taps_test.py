@@ -3,11 +3,11 @@
 Extracts by name, and compiles on the host with minimal stubs:
 - src/menu.c: the tap slot (CtrMenu_PostTap/TakeTap/PostAck/TakeAck) and its
   30-frame life on gMain.vblankCounter1;
-- src/text.c: CtrText_PrinterPage, with the real GetExtCtrlCodeLength from
-  src/string_util.c and the TextPrinter structs from include/text.h;
+- gflib/text.c: CtrText_PrinterPage, with the real GetExtCtrlCodeLength from
+  gflib/string_util.c and the TextPrinter structs from gflib/text.h;
 - src/item_menu.c: CtrBag_LastPage;
 - src/party_menu.c: CtrParty_MessagePage, over a stubbed printer page.
-Character values come from include/constants/characters.h itself.
+Character values come from gflib/characters.h itself.
 """
 import argparse
 from pathlib import Path
@@ -57,7 +57,7 @@ typedef uint16_t bool16;
 #define FALSE 0
 #define ARRAY_COUNT(a) (sizeof(a) / sizeof((a)[0]))
 
-#include "constants/characters.h"
+#include "characters.h"
 
 #define WINDOWS_MAX @WINDOWS_MAX@
 #define CTR_VIEW_TEXT @CTR_VIEW_TEXT@
@@ -71,11 +71,10 @@ static struct { u32 vblankCounter1; } gMain;
 
 static struct TextPrinter sTextPrinters[WINDOWS_MAX];
 
-/* An alias the port resolves to the real string, as Port_ResolveTextPointer
-   does for ROM addresses. */
+/* An alias the Classic port resolves to the real string. */
 static const u8 sAlias[1];
 static const u8 *sAliasTarget;
-static const u8 *ResolveTextString(const u8 *str)
+static const void *Port_ResolveAssetPointer(const void *str)
 {
     return str == sAlias ? sAliasTarget : str;
 }
@@ -407,19 +406,19 @@ def main():
     parser.add_argument("--cc", default="gcc")
     args = parser.parse_args()
     menu = (REPO / "src/menu.c").read_text(encoding="utf-8")
-    text = (REPO / "src/text.c").read_text(encoding="utf-8")
-    string_util = (REPO / "src/string_util.c").read_text(encoding="utf-8")
+    text = (REPO / "gflib/text.c").read_text(encoding="utf-8")
+    string_util = (REPO / "gflib/string_util.c").read_text(encoding="utf-8")
     item_menu = (REPO / "src/item_menu.c").read_text(encoding="utf-8")
     party_menu = (REPO / "src/party_menu.c").read_text(encoding="utf-8")
-    text_h = (REPO / "include/text.h").read_text(encoding="utf-8")
-    window_h = (REPO / "include/window.h").read_text(encoding="utf-8")
+    text_h = (REPO / "gflib/text.h").read_text(encoding="utf-8")
+    window = (REPO / "gflib/window.c").read_text(encoding="utf-8")
     views_h = (PORT / "include/3ds_game_views.h").read_text(encoding="utf-8")
 
     msg_size = re.search(r'\bsCtrMessage\[(0x[0-9A-Fa-f]+|\d+)\]', party_menu).group(1)
     message_page = block(party_menu, r'^static void CtrParty_MessagePage\(u8 \*dst\)')
     message_page = message_page.replace("CtrText_PrinterPage(", "StubPrinterPage(")
     parts = {
-        "WINDOWS_MAX": define(window_h, "WINDOWS_MAX"),
+        "WINDOWS_MAX": define(window, "WINDOWS_MAX"),
         "CTR_VIEW_TEXT": define(views_h, "CTR_VIEW_TEXT"),
         "RENDER_STATES": block(text_h, r'^enum \{\s*RENDER_STATE_HANDLE_CHAR'),
         "TEMPLATE": block(text_h, r'^struct TextPrinterTemplate\s*$'),
@@ -444,7 +443,7 @@ def main():
         executable = Path(directory) / "test"
         harness.write_text(source, encoding="utf-8")
         subprocess.run([args.cc, "-std=c99", "-O2", "-Wall", "-Wextra", "-Werror",
-                        "-Wno-unused-function", "-I", str(REPO / "include"),
+                        "-Wno-unused-function", "-iquote", str(REPO / "gflib"),
                         str(harness), "-o", str(executable)], check=True)
         subprocess.run([str(executable)], check=True)
     print("PASS bottom taps: tap slot, printer page, bag last page, party message page")

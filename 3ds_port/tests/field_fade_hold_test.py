@@ -44,7 +44,7 @@ def function(source, signature):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--cc', default='gcc')
-    parser.add_argument('--tree', type=Path, default=DEFAULT_TREE, help='patched pokeemerald tree')
+    parser.add_argument('--tree', type=Path, default=DEFAULT_TREE, help='patched game source tree')
     args = parser.parse_args()
     upstream = args.tree
     game = (ROOT / 'src/3ds_game_full.c').read_text(encoding='utf-8')
@@ -71,7 +71,7 @@ typedef uint16_t bool16;
 #include "3ds_video.h"
 
 /* What palette.c has around the functions taken from it. */
-enum { NORMAL_FADE, FAST_FADE, HARDWARE_FADE };
+enum { NORMAL_FADE, FAST_FADE, HARDWARE_FADE, TIME_OF_DAY_FADE };
 static u16 sPltt[PLTT_SIZE / 2];
 #define PLTT sPltt
 #define DmaCopy16(channel, src, dest, size) memcpy((dest), (src), (size))
@@ -85,6 +85,7 @@ static u8 UpdateNormalPaletteFade(void);
 static bool8 IsSoftwarePaletteFadeFinishing(void);
 static u8 UpdateFastPaletteFade(void) { return PALETTE_FADE_STATUS_DONE; }
 static u8 UpdateHardwarePaletteFade(void) { return PALETTE_FADE_STATUS_DONE; }
+static u8 UpdateTimeOfDayPaletteFade(void) { return PALETTE_FADE_STATUS_DONE; }
 static void UpdateBlendRegisters(void) {}
 /* util.c's BlendPalette: the unfaded colours `coeff`/16 of the way to `color`. */
 static void BlendPalette(u16 offset, u16 count, u8 coeff, u32 color)

@@ -1,0 +1,60 @@
+diff --git a/include/palette.h b/include/palette.h
+index 987ad348..8521f1ed 100644
+--- a/include/palette.h
++++ b/include/palette.h
+@@ -101,6 +101,9 @@ extern const struct BlendSettings gTimeOfDayBlend[];
+ extern struct PaletteFadeControl gPaletteFade;
+ extern u32 gPlttBufferTransferPending;
+ extern u8 ALIGNED(4) gPaletteDecompressionBuffer[];
++#ifdef PORT_BRIDGE
++bool8 Port_HoldPaletteFade(void);
++#endif
+ extern u16 ALIGNED(4) gPlttBufferUnfaded[PLTT_BUFFER_ALLOC];
+ extern u16 ALIGNED(4) gPlttBufferFaded[PLTT_BUFFER_ALLOC];
+ 
+diff --git a/src/palette.c b/src/palette.c
+index 170d160b..ce3375f6 100644
+--- a/src/palette.c
++++ b/src/palette.c
+@@ -78,6 +78,14 @@ EWRAM_DATA struct PaletteFadeControl gPaletteFade = {0};
+ static EWRAM_DATA u32 sFiller = 0;
+ static EWRAM_DATA u32 sPlttBufferTransferPending = 0;
+ EWRAM_DATA u8 ALIGNED(2) gPaletteDecompressionBuffer[PLTT_BUFFER_ALLOC_BYTES] = {0};
++#ifdef PORT_BRIDGE
++static bool8 sPortFadeStarting;
++
++bool8 __attribute__((weak)) Port_HoldPaletteFade(void)
++{
++    return FALSE;
++}
++#endif
+ 
+ static const struct PaletteStructTemplate sDummyPaletteStructTemplate = {
+     .id = 0xFFFF,
+@@ -332,7 +340,14 @@ bool8 BeginNormalPaletteFade(u32 selectedPalettes, s8 delay, u8 startY, u8 targe
+         else
+             gPaletteFade.yDec = 1;
+ 
++#ifdef PORT_BRIDGE
++        // The first step presents the initial fade color even during a hold.
++        sPortFadeStarting = TRUE;
++#endif
+         UpdatePaletteFade();
++#ifdef PORT_BRIDGE
++        sPortFadeStarting = FALSE;
++#endif
+ 
+         temp = gPaletteFade.bufferTransferDisabled;
+         gPaletteFade.bufferTransferDisabled = FALSE;
+@@ -729,6 +744,11 @@ static u8 UpdateNormalPaletteFade(void)
+     {
+         if (!gPaletteFade.objPaletteToggle)
+         {
++#ifdef PORT_BRIDGE
++            // Pause only between complete background and sprite fade steps.
++            if (!sPortFadeStarting && Port_HoldPaletteFade())
++                return PALETTE_FADE_STATUS_DELAY;
++#endif
+             if (gPaletteFade.delayCounter < gPaletteFade_delay)
+             {
+                 gPaletteFade.delayCounter++;

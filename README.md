@@ -6,7 +6,7 @@ This branch ports FireRed & LeafGreen+ v1.5.1 to native Nintendo 3DS with a voxe
 
 Use a locally patched FireRed & LeafGreen+ v1.5.1 GBA ROM. The matching ROM SHA-1 is `c34a4401f2fe86c515fc6d9a6d231224a98f55d5`. The cartridge builder reads the ROM locally.
 
-1. From a successful [FRLG+ native build](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/actions/workflows/frlg-port.yml?query=branch%3Avoxel-frlg-plus), download `frlg-plus-cartridge-template` and `frlg-plus-cartridge-recipe` from the same run.
+1. From a successful [FRLG+ native build](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/actions/workflows/frlg-port.yml?query=branch%3Agraphics%2Fazahar-frlg), download `frlg-plus-cartridge-template` and `frlg-plus-cartridge-recipe` from the same run.
 2. Unzip the template artifact. Open the release ZIP inside the recipe artifact and extract its `payload` directory.
 3. From this branch checkout, assemble a cartridge with Python 3.12 or later.
 
@@ -23,6 +23,36 @@ Use a locally patched FireRed & LeafGreen+ v1.5.1 GBA ROM. The matching ROM SHA-
 Voxel 3D starts enabled with fresh settings. Tap **3D** on the lower-screen map to switch views. The lower-screen gear opens camera and battle presentation settings. Open Party or Bag on the lower-screen dock, or press **Start** and select one with the D-pad and **A**.
 
 The [Thor test notes](docs/frlg-plus-thor-testing.md) cover the cold launch, first rival battle, lower-screen controls, and Pallet Town sprite fix.
+
+## Bag pocket correction — Thor verified
+
+The native Bag now follows FRLG+'s five main pockets: **Items**, **Medicine**,
+**Key Items**, **Held Items**, and **Balls**. Five compact touch tabs replace
+the inherited three-pocket layout. The scroll-state array and touch-ID ranges
+cover all five pockets, with a bounds check before indexing pocket state.
+The TM Case and Berry Pouch keep their existing separate screens.
+
+The new build passed the affected AYN Thor checks: all five tabs could be
+selected without a crash; Medicine showed Potion ×1 with the correct icon
+and description; Key Items showed Berry Pouch and TM Case; Held Items and
+Balls were empty. The live Party showed Bulbasaur level 6 at 22/22 HP before
+battle. Bulbasaur defeated a level 3 Pidgey using Tackle and returned to Route
+1. Using the Potion after battle at 16/22 HP consumed it, leaving Medicine
+empty. The host regression also passes label/order and touch-boundary checks.
+
+Use the [native fixes bundle](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/VoxelGraphics-Native-Fixes-2026-11-18.zip)
+for the matching ROM-free source, recipe and blank template. The original
+`VoxelGraphics-Public-Build-Kit.zip` and `VoxelGraphics-Source.zip` are the
+initial preview snapshots; their FRLG+ contents predate this correction.
+Do not mix a new template with an older recipe. Use your own matching local
+ROM. See the [follow-up report](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/native-fixes-report-2026-11-18.md)
+and [exact build hashes](docs/graphics-upgrade.md#frlg-bag-follow-up--thor-verified).
+
+The verified binary was built from `cf8ffae795e54800373f627821cfdb24e3642274`
+in [run 44362744670](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/actions/runs/44362744670).
+This is a focused Bag and battle-return retest, not certification of every
+item action or later-game scene. Existing native battle pacing limitations
+remain separate from the pocket correction.
 
 ## Build from source
 

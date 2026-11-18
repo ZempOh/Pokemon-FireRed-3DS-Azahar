@@ -1,5 +1,45 @@
 # Graphics upgrade validation (2026-11-18)
 
+## FRLG+ Bag follow-up — Thor verified
+
+The November 18 follow-up corrects the main Bag to five pockets: Items,
+Medicine, Key Items, Held Items and Balls. Its state arrays, touch IDs and
+bounds checks now match those five pockets; TM Case and Berry Pouch retain
+their separate screens.
+
+On the AYN Thor, every tab was selected without a crash. Medicine displayed
+Potion ×1 with the correct icon and description. Key Items displayed Berry
+Pouch and TM Case; Held Items and Balls were empty. Party displayed Bulbasaur
+level 6 at 22/22 HP before battle. A level 3 Pidgey was defeated with Tackle,
+and the game returned to Route 1. The Potion was then used at 16/22 HP and
+consumed, leaving Medicine empty. Host label/order and touch-boundary tests
+also passed. These results cover the affected Bag and battle-return flow;
+they do not certify every item action or every map. The prior battle-pacing
+limitation remains.
+
+| Follow-up artifact | Provenance |
+| --- | --- |
+| Binary-producing commit | `cf8ffae795e54800373f627821cfdb24e3642274` |
+| Build workflow | [44362744670](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/actions/runs/44362744670) |
+| Raw blank cartridge engine SHA-256 | `6187341598230e975a3fdff6f04641a142a0cca5e1196afa29355836955042bf` |
+| Private Thor-tested cartridge SHA-256 | `0243012eb9a584625f97cfddace53a85ed83082b5a156f4d7d8528d4432a5bc8` |
+
+Use [VoxelGraphics-Native-Fixes-2026-11-18.zip](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/VoxelGraphics-Native-Fixes-2026-11-18.zip)
+and the [follow-up test report](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/native-fixes-report-2026-11-18.md).
+The original build-kit/source ZIPs and their hashes remain the initial
+preview snapshot. Their FRLG+ contents are superseded by this follow-up.
+FireRed and the Android APK are unchanged by this correction. The private
+cartridge hash is provided for local comparison only; no ROM, save or
+generated game-data pack is published.
+
+## Initial preview validation — historical
+
+Everything below records the initial graphics-preview builds, including
+the original Medicine-label and Classic forest/PP observations, timings,
+commits and hashes. Those tables are preserved as an as-built record; use
+the follow-up results and hashes above for the corrected FRLG+ build. The
+Classic follow-up result is documented separately in the follow-up report.
+
 ## Rendering paths
 
 PokéDaisy reads the CRC-selected live mGBA session: map grid/VMap and connected-map layouts, tileset metatiles, VRAM tile pixels and palette RAM, then camera-matched snapshots and gSprites/OAM. `pk_wide.c` selects the eligible field projection; `pk_wide_voxel.h` projects textured terrain and depth-tested sprite pixels. `EmulatorEngine` applies the game's settings on the emulation thread through `MgbaCore` and JNI. The existing compositor handles battle, text, menu, unsupported effects, and transitions. Companion telemetry still reads this same core; no secondary emulator or imported companion snapshot was introduced.

@@ -1,0 +1,76 @@
+diff --git a/src/tileset_anims.c b/src/tileset_anims.c
+--- a/src/tileset_anims.c
++++ b/src/tileset_anims.c
+@@ -6,6 +6,18 @@
+ #include "task.h"
+ #include "battle_transition.h"
+ #include "fieldmap.h"
++#ifdef PLATFORM_3DS
++#include "3ds_video.h"
++#endif
++
++#ifdef PORT_BRIDGE
++#include "port_platform.h"
++
++// Kanto's largest primary update is 48 tiles; the largest secondary is 96.
++// Stage complete frames before VBlank, outside the resettable game heap.
++static EWRAM_DATA u16 sTilesetAnimData[0x900] = {0};
++static u16 sTilesetAnimDataSize;
++#endif
+ 
+ static EWRAM_DATA struct {
+     const u16 *src;
+@@ -666,13 +678,29 @@
+ static void ResetTilesetAnimBuffer(void)
+ {
+     sTilesetDMA3TransferBufferSize = 0;
++#ifdef PORT_BRIDGE
++    sTilesetAnimDataSize = 0;
++#endif
+     CpuFill32(0, sTilesetDMA3TransferBuffer, sizeof sTilesetDMA3TransferBuffer);
+ }
+ 
+ static void AppendTilesetAnimToBuffer(const u16 *src, u16 *dest, u16 size)
+ {
+-    if (sTilesetDMA3TransferBufferSize < 20)
++    if (sTilesetDMA3TransferBufferSize < ARRAY_COUNT(sTilesetDMA3TransferBuffer))
+     {
++#ifdef PORT_BRIDGE
++        if (Port_IsAssetStub(src))
++        {
++            void *data = (u8 *)sTilesetAnimData + sTilesetAnimDataSize;
++
++            // Never enqueue the marker itself, a failed read, or a partial frame.
++            if (size > sizeof(sTilesetAnimData) - sTilesetAnimDataSize
++             || !Port_LoadAssetPointerToBufferSized(src, data, size))
++                return;
++            src = data;
++            sTilesetAnimDataSize += size;
++        }
++#endif
+         sTilesetDMA3TransferBuffer[sTilesetDMA3TransferBufferSize].src = src;
+         sTilesetDMA3TransferBuffer[sTilesetDMA3TransferBufferSize].dest = dest;
+         sTilesetDMA3TransferBuffer[sTilesetDMA3TransferBufferSize].size = size;
+@@ -685,9 +713,21 @@
+     int i;
+ 
+     for (i = 0; i < sTilesetDMA3TransferBufferSize; i ++)
++#ifdef PORT_BRIDGE
++        memcpy(sTilesetDMA3TransferBuffer[i].dest, sTilesetDMA3TransferBuffer[i].src, sTilesetDMA3TransferBuffer[i].size);
++#else
+         DmaCopy16(3, sTilesetDMA3TransferBuffer[i].src, sTilesetDMA3TransferBuffer[i].dest, sTilesetDMA3TransferBuffer[i].size);
+-
++#endif
++
++#ifdef PLATFORM_3DS
++    for (i = 0; i < sTilesetDMA3TransferBufferSize; ++i)
++        CtrVideo_NotifyTilesetAnimWrite(sTilesetDMA3TransferBuffer[i].dest,
++                                        sTilesetDMA3TransferBuffer[i].size);
++#endif
+     sTilesetDMA3TransferBufferSize = 0;
++#ifdef PORT_BRIDGE
++    sTilesetAnimDataSize = 0;
++#endif
+ }
+ 
+ void InitTilesetAnimations(void)

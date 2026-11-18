@@ -71,6 +71,7 @@ jobs:
           python3 builder/tests/test_asset_table_compatibility.py
           python3 tools/bootstrap.py
           python3 3ds_port/tests/classic_battle_split_icon_test.py --tree build/upstream --cc gcc
+          python3 3ds_port/tests/classic_tileset_animation_test.py --tree build/upstream --cc gcc
           make -C build/upstream -j4 tools
           make -C build/upstream -j4 generated
           make -C build/upstream/3ds_port -kj4 PYTHON=python3
@@ -138,6 +139,7 @@ jobs:
         run: |
           python3 tools/bootstrap.py
           python3 3ds_port/tests/classic_battle_split_icon_test.py --tree build/upstream
+          python3 3ds_port/tests/classic_tileset_animation_test.py --tree build/upstream
           make -C build/upstream -j4 tools
           make -C build/upstream -j4 generated
           make -C build/upstream/3ds_port -j4 PYTHON=python3

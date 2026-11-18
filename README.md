@@ -5,8 +5,8 @@
 # Pokémon FireRed 3DS for Azahar
 
 **Proudly vibe coded.** This fork brings FireRed 3DS to Azahar on Android, with
-the AYN Thor as the target handheld. Choose your 3DS games folder and your
-FireRed ROM to build and install one standalone cartridge.
+the AYN Thor as the target handheld. Choose your game and matching local
+ROM in the shared builder, then download and install the result.
 
 The game is a native Nintendo 3DS port with a dual-screen interface and a
 voxel-styled 3D world. The builder uses this fork's cartridge engine and a
@@ -14,30 +14,39 @@ matching data recipe based on upstream v0.5.1. You supply your own FireRed
 cartridge dump.
 
 **[Project website](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/)**
-· **[Game builder](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/build.html)**
+· **[Shared voxel builder](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/voxel.html)**
 
-## Battle pacing follow-up — further Thor retest pending
+## Battle pacing follow-up — Thor verified
 
-The scanline-only candidate `39f698b` improved steady move selection:
-the median of reported 300-frame work averages fell from **12.645 to 9.440 ms**,
-and all five retained idle cadence windows measured 59.8 game/drawn FPS.
-Subsequent active checks still dipped to **58.6 drawn FPS**, so this
-candidate was withheld from the release.
+Build `5c31e6e` reduces scanline and lower-screen redraw work, queues top
+uploads inside the GPU frame, converts only changed UI rows and caches
+repeated lower-screen glyph decoding. Fonts, colours, spacing, rendering
+detail, the game clock and automatic frame-skip policy are preserved.
 
-The queued-upload/lower-redraw v2 reached 59.2 minimum drawn FPS during
-controlled Fight/Back input. Dirty-row UI conversion in v3 improved that
-minimum to 59.5, still below the unchanged 59.6 gate. Both were withheld.
-The remaining input spikes include 6.6–6.7 ms of lower-screen work; every
-character was rebuilding the font lookup table, including width measurement.
+| Scene | PROF / PACE windows | Before minimum drawn FPS | Candidate minimum drawn FPS | Candidate game FPS range |
+| --- | --- | ---: | ---: | ---: |
+| Steady move selection | 12 / 5 | 58.6 | 59.8 | 59.8–59.9 |
+| Held blinking battle text | 6 / 3 | 59.5 | 59.8 | 59.8–59.9 |
+| Controlled Fight/Back input | 12 / 5 | 58.0 | 59.7 | 59.8 |
 
-The next candidate caches indexed glyph pixels and dimensions for repeated
-labels, preserving fonts, colours, spacing and the printer's scratch state.
-The game clock, frame-skip policy and image quality are unchanged. Publication
-requires another Thor retest of steady selection, blinking battle text,
-menu interaction and actual moves.
+Steady reported work-window median: **12.645 → 9.100 ms**. This is 28.0% lower reported elapsed work.
+The profiler excludes a wait whose boundary changed, so this statistic is
+not an equal-percentage CPU speedup. The independent cadence counters
+establish presentation rates. Before means the original published build for
+idle and the withheld scanline-only v1 for the controlled blink/input scenes.
 
-See [test evidence and current status](docs/graphics-upgrade.md). The earlier
-published build remains available while this candidate is evaluated.
+- Fresh full V4 cartridge installed and pulled back from Thor; SHA-256 matches the exact same-run candidate.
+- Charmander level 6 at 21/21 HP versus Rattata level 3: held Wild appeared text, repeated Fight/Back and steady selection pass quantitative gates.
+- Growl selected and PP reduced to 39/40; opponent Tail Whip text displayed; move labels, types and PP remain clear.
+- Three Scratch turns showed progressive opponent damage and own HP changes from 21/21 to 16/21 then 11/21, followed by Rattata fainting and return to Route 1.
+- Party screen agrees at 11/21 HP; standard three-pocket Bag and empty Items/Cancel screen render correctly after battle.
+- Active Azahar audio tracks advanced with zero endpoint underruns across all four measured phases.
+
+Earlier V1–V3 FireRed candidates were withheld after active/menu cadence
+failed the unchanged gate. See the [exact measured tests and limitations](docs/graphics-upgrade.md).
+The [shared voxel builder](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/voxel.html), [follow-up report](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/ground-pacing.html)
+and [ROM-free bundle](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/VoxelGraphics-Ground-Pacing-Fixes-2026-11-18.zip) identify published payloads. These targeted
+early-game checks do not establish zero stutter for every move or map.
 
 ## Ports and companion builds
 
@@ -55,27 +64,23 @@ uses those games' GBA ROMs in its own emulator.
 
 ## Install and update
 
-### One-file cartridge for Azahar
+### Current native builds for Azahar
 
-1. Open the [game builder](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/build.html)
-   in Chrome and choose the 3DS games folder that Azahar already scans.
-2. Select your own Pokémon FireRed (USA, Rev 1) ROM. The builder generates
-   and saves `FireRed3DS.3ds` in that folder.
+1. Open the [shared voxel builder](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/voxel.html) and choose the game profile.
+2. Select the matching local ROM shown by that profile, choose **Build .3ds
+   cartridge** for FireRed or FRLG+, and download the result.
+3. Fully close the game in Azahar, copy the cartridge into the folder Azahar
+   scans and launch it. For updates, replace the existing cartridge; saves
+   and settings stay in Azahar's virtual SD folder.
 
-Launch FireRed from your Azahar library. If your browser cannot write to the
-folder, download the built cartridge and move it there manually.
-To update, fully close the game, pick the same folder and ROM, and let the
-builder replace `FireRed3DS.3ds`. After installation it removes the old
-FireRed homebrew launcher and FireRed cartridge temporary files from the
-selected games folder. Saves stay in Azahar's virtual SD folder.
+Classic produces a homebrew ZIP on the same page. Extract it and copy its
+`3ds` folder into Azahar's `sdmc` folder, then launch `PokeClassicVoxel.3dsx`.
+Each ROM is processed locally in the browser. The current native payloads
+are also in the [matching ROM-free follow-up bundle](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/VoxelGraphics-Ground-Pacing-Fixes-2026-11-18.zip). Keep engines
+and recipes paired; earlier archives remain historical snapshots.
 
-The browser generates the game data on your device and embeds it in the
-cartridge. The standalone build uses the same virtual SD save location
-as the homebrew edition. Optional follower sprites are available in the
-homebrew edition.
-
-Azahar on Android defaults to HLE audio. The cartridge header maps the
-DSP memory used by FireRed. `debug.txt` only enables diagnostics.
+Azahar on Android defaults to HLE audio. The FireRed cartridge header maps
+the required DSP memory; `debug.txt` only enables diagnostics.
 
 ### Map, 3D, and controller navigation
 
@@ -105,7 +110,11 @@ DSP memory used by FireRed. `debug.txt` only enables diagnostics.
    [performance overlay](https://github.com/azahar-emu/azahar/discussions/1149)
    under **Layout** and enable **Speed**.
 
-### Azahar on Android (including AYN Thor)
+### Earlier FireRed homebrew installer
+
+These instructions document the separate older `.3dsx` installer. Use the
+[shared voxel builder](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/voxel.html) above for the current qualified cartridges.
+
 
 1. In Chrome 132 or later on the handheld, open the [Azahar game builder](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/build.html).
    In Azahar, check **Options → Select User Folder**, then close Azahar. Tap
@@ -142,8 +151,8 @@ both the executable and the data pack and keep your existing save.
 
 ### Compatibility and troubleshooting
 
-The browser installer's cleanup and rollback are covered by automated tests.
-The installed standalone cartridge was tested on an AYN Thor running Azahar
+The older browser installer's cleanup and rollback are covered by automated tests.
+The earlier standalone cartridge was tested on an AYN Thor running Azahar
 2126.2 (Google Play) with the stock Adreno driver. The title rendered in the
 correct orientation, an existing save loaded into Pallet Town, and the
 lower-screen map responded to touch when switching between 2D and voxel 3D.
@@ -182,7 +191,10 @@ port's startup log, create an empty file named `debug.txt` in
 `sdmc/3ds/firered3ds/` before launching. Reproduce the issue, then collect
 `port.log` from that folder and note the Azahar version and graphics backend.
 
-### Nintendo 3DS hardware
+### Upstream Nintendo 3DS homebrew
+
+This separate upstream distribution is outside the Thor qualification above.
+
 
 **In your browser (any system).** Open the
 [web builder](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/build.html),

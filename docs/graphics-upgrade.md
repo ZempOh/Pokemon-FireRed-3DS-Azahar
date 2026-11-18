@@ -1,38 +1,141 @@
 # Graphics upgrade validation (2026-11-18)
 
-## FireRed battle pacing follow-up — further Thor retest pending
+## FireRed battle pacing follow-up — Thor verified
 
-The three earlier FireRed pacing candidates are **withheld from publication**.
-The scanline-only v1 passed idle selection but reached 58.6 drawn FPS during
-active battle checks. Queued uploads and lower-screen dirty bands in v2
-reached 59.2 minimum drawn FPS in controlled Fight/Back input. V3 added
-dirty-row UI conversion and reached 59.5, below the unchanged 59.6 gate.
+### Cadence and scope
 
-The V3 interaction used Charmander level 6 at 21/21 HP versus Rattata level 3,
-with 52 alternating A/B inputs 1.5 seconds apart and no screenshots or attacks.
-The first potentially partial aggregates were excluded, then 12 complete
-PROF and five PACE windows retained. Drawn median was 59.7, game median 59.8;
-reported work-window median was 9.360 ms and its largest peak 18.21 ms.
-Six logged work frames exceeded the LCD budget; these are not dropped-frame
-counts. Repeated menu changes spent 6.6–6.7 ms in lower-screen work even when
-there was no top upload. Each glyph, including width-only measurements,
-regenerated and restored the printer's lookup table.
+The baseline is the original published build for steady selection and the
+withheld scanline-only V1 for the controlled blink and input scenes.
 
-The next candidate adds a bounded glyph cache keyed by font and character.
-It stores canonical indexed pixels and dimensions, with live RGB colours and
-letter spacing. It retains the original small-font partial scratch writes,
-keeps no pointers into evictable assets, and clears at initialization/reset.
-Fresh Thor steady, blinking-text, menu-interaction and actual-move checks are
-required. Qualified FRLG+ V3 is separate; this is FireRed-only development.
+| Scene | PROF / PACE windows | Before minimum drawn FPS | Candidate minimum drawn FPS | Candidate game FPS range |
+| --- | --- | ---: | ---: | ---: |
+| Steady move selection | 12 / 5 | 58.6 | 59.8 | 59.8–59.9 |
+| Held blinking battle text | 6 / 3 | 59.5 | 59.8 | 59.8–59.9 |
+| Controlled Fight/Back input | 12 / 5 | 58.0 | 59.7 | 59.8 |
 
-The glyph regression passes 9,572 full-canvas, width, entire glyph-scratch
-and palette comparisons using existing upstream Latin font PNGs and the
-production conversion/decompression/text functions. It covers four fonts,
-all 256 byte glyphs, cold/warm hits, clipping, controls, collisions and reset.
-Temporary font data is generated only while testing; no ROM is needed.
-A twelve-character centered label makes 24 uncached decompressions, eight
-on a cold cache and zero across 100 warm repeats. These are call counts,
-not a Thor speedup claim. Existing lower-screen and upload regressions pass.
+Steady reported work-window median: **12.645 → 9.100 ms**. This is 28.0% lower reported elapsed work.
+
+The first potentially partial aggregate is excluded independently for each
+counter, then the first requested complete windows are retained. Steady and
+interaction each use 12 PROF/5 PACE windows; blink uses 6/3. PROF spans 300
+logical game frames and PACE spans 600. Blink holds the encounter text for
+45 seconds without input/screenshots. Interaction uses 52 alternating A/B
+inputs 1.5 seconds apart over 78 seconds, opening Fight and returning, with
+no attacks or screenshots. The unchanged gate requires every candidate PACE
+window to reach at least 59.6 drawn FPS, game FPS between 59.6 and 60.0, and
+at least 10% lower steady reported work.
+
+Same Thor/Azahar setup and Route 1 fixture, with voxel field/battle enabled. V4 uses Charmander level 6 at 21 HP versus Rattata level 3, matching the original steady baseline and V1 controlled blink/interaction matchup. Retain first 12 complete 300-frame PROF and 5 complete 600-frame PACE windows for idle/interaction, 6/3 for 45-second blink. First potentially partial aggregates independently excluded. Fixed 52 alternating A/B inputs every 1.5 seconds over 78 seconds, with no screenshots or attacks in controlled intervals. Actual moves and field return independently reviewed.
+
+### Actual gameplay, audio and installed bytes
+
+- Fresh full V4 cartridge installed and pulled back from Thor; SHA-256 matches the exact same-run candidate.
+- Charmander level 6 at 21/21 HP versus Rattata level 3: held Wild appeared text, repeated Fight/Back and steady selection pass quantitative gates.
+- Growl selected and PP reduced to 39/40; opponent Tail Whip text displayed; move labels, types and PP remain clear.
+- Three Scratch turns showed progressive opponent damage and own HP changes from 21/21 to 16/21 then 11/21, followed by Rattata fainting and return to Route 1.
+- Party screen agrees at 11/21 HP; standard three-pocket Bag and empty Items/Cancel screen render correctly after battle.
+- Active Azahar audio tracks advanced with zero endpoint underruns across all four measured phases.
+
+Inspected all 14 raw PACE rows, including the first potentially partial one: drawn 59.7-59.8, game 59.8-59.9. Thirteen complete retained PACE windows have drawn minimum 59.7, median 59.8 and game 59.8 throughout. The 139.33-second capture includes Growl, opponent Tail Whip, three Scratch turns, HP damage, knockout, UI screenshots and field return. Its mixed callbacks are not used as the steady comparison. Audio endpoint counters remain zero with advancing stable track identity. No retained reported-work frame exceeds 16.715 ms; work counts are not dropped-frame counts. No blanket locked-60 claim.
+
+After all three retests, the original 18 save/settings/diagnostic paths were restored and reverified with binary-safe checks. All four installed executable/data files were pulled back and matched their qualified candidates.
+These are limited Thor scene checks, not full-playthrough or physical-console
+certification.
+
+### Measurement and implementation scope
+
+PROF work is elapsed BeginFrame-to-EndFrame time minus the soft presenter's
+recorded FrameBegin wait, clamped to zero. It is elapsed work, not pure CPU
+execution time or GPU duration. Each PROF value averages 300 logical game
+frames; the summary is the median of those window averages. The queued-upload
+change moves FrameBegin before texture uploads. Some synchronization that
+previously counted as work can therefore fall inside the excluded wait or
+queued GPU execution. The formula is unchanged, but the wait boundary moved:
+a dynamic-UI work reduction is not an equal-percentage CPU speedup. Unchanged
+steady selection isolates the scanline benefit more closely. Independent
+PACE counters measure game and drawn frames over 600 logical frames and
+establish cadence; their counting and the frame-skip policy are unchanged.
+Sections are inclusive and must not be summed. Hidden frames retain the
+pre-existing limitation of subtracting the last renderer wait measurement.
+Reported work above the LCD budget is not a count of missed presentations.
+
+The renderer snapshots display/window/blend registers per scanline, builds
+a sparse object-window list alongside the existing sprite lists, and uses
+the existing constant-mask path for uniform mode-0 windows. Split windows,
+affine backgrounds and live HBlank effects retain their general paths.
+The lower screen repaints changed header/body/footer bands and copies their
+rows; cache flushes still cover whole affected framebuffer columns. Rounded
+shapes preserve their pixels while writing contiguous vertical spans.
+
+Top texture uploads run after a successful FrameBegin. UI conversion now
+compares source rows, converts only changed rows and coalesces adjacent
+dirty-row cache flushes. The full queued 512×512 transfer, texture format,
+alpha, filtering and 2× expansion are preserved. Upload buffers are reused
+only after FrameBegin completes the preceding GPU work. The game clock,
+automatic frame-skip policy, image quality and gameplay are unchanged.
+
+Host checks compare 600 full-only, UI-only and combined scanline passes,
+including normal/affine sprites, split/wrapped/object windows, blending,
+sprite mosaic and simulated HBlank/VCount register changes. The DMA stub
+checks all 160 HBlank dispatch calls; actual destinations were source-audited.
+The harness does not execute fully hidden frames, background mosaic or DMA
+writes. A separate 602-case review includes live HBlank OAM affine updates.
+
+The lower-screen oracle compares 1,200 old/new rounded-raster cases and 2,003
+battle-state transitions against a full repaint. Shapes/layout/dirty decisions
+are production code; fonts and icons are deterministic stand-ins. Actual
+page/menu invalidation was reviewed in source. The real upload functions
+are tested with an asynchronous queue model, exact colour/alpha/expansion/
+padding, edge/adjacent/disjoint dirty rows, transparent clear/restore, 100
+alternating source buffers, unchanged frames, failed FrameBegin, held UI and
+voxel fallback. One changed source row flushes 2,048 upload-buffer bytes;
+two separated rows flush 4,096, versus 327,680 for all used rows. These host
+checks complement Thor testing; they do not emulate PICA or certify physical
+Nintendo 3DS hardware.
+
+FireRed additionally caches 128 glyphs keyed by font and character, storing
+canonical indexed pixels/dimensions rather than asset pointers or RGB colours.
+Font spacing remains live. Small-font hits reproduce only the two left-tile
+scratch writes; the other bytes retain their previous contents. The cache
+clears at initialization and game reset. Upstream font assets are immutable.
+
+The dedicated regression compares 9,572 full canvases, widths, complete
+glyph-scratch states and printer palettes against uncached rendering. It uses
+existing upstream Latin font PNGs and extracted production conversion,
+decompression and text functions; temporary arrays are never published.
+All 256 byte glyphs in four fonts, cold/warm hits, clipping, controls,
+collisions and resets are covered. Japanese rendering is outside this path;
+the wrapper always selects Latin. A twelve-character centered label needs
+24 uncached decompressions, eight cold cached and zero across 100 warm
+repeats. These call counts are not a Thor speedup measurement. Deliberate
+mutations that overwrite the untouched small-font scratch bytes or disable
+cache hits fail the test. Both native build CI and graphics CI run it.
+
+### Exact build provenance
+
+| Artifact | Identity |
+| --- | --- |
+| Binary-producing commit | `5c31e6edc68a9baeee4fec5c51a7ca8386d6fa20` |
+| Raw blank engine SHA-256 | `b24047b350b4ec1790271cc17ebd79ea03414880dd3a777de58fa6f133ef4701` |
+| Web payload ZIP SHA-256 | `328819dfded9fa21b15571f00927821600b85ead56fdb13ade1ab9e91fa66a7b` |
+| Private cartridge SHA-256 | `4093854f7506d14a599d9da40a3bbf62f3bfde09ded6f0ca23e72650ed453f19` |
+| Data ABI | `fd2785b3` |
+| Matching engine and recipe run | [44398302950](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/actions/runs/44398302950) |
+
+The cartridge was freshly generated from this matching same-run recipe
+and compared with the installed bytes. Private hashes identify local test
+cartridges; ROMs, saves and generated packs are not published. Current browser
+installs use the [shared voxel builder](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/voxel.html).
+
+### Withheld V2 and V3 history
+
+Queued uploads/lower redraws in V2 (`a2c0963`) reached 59.2 minimum drawn FPS
+in controlled Fight/Back input. V3 dirty-row UI conversion (`59768aa`) reached
+59.5, with median 59.7; both failed the unchanged 59.6 gate and were withheld.
+The V3 work-window median was 9.360 ms, peak 18.21 ms. Repeated input spent
+6.6–6.7 ms in the lower screen even without top uploads, leading to the glyph
+cache change. Six logged work frames exceeded the LCD budget; that is not a
+dropped-presentation count. The scanline-only V1 history follows.
 
 ### Scanline-only v1 evidence — historical
 
@@ -107,13 +210,12 @@ the slot-machine HBlank affine updates remain live per scanline.
 
 The installed cartridge was pulled back and matched the candidate exactly.
 The hashes above identify a local test candidate, not a published pacing fix.
-The next candidate has different code and will need fresh build hashes and
-device qualification. ROMs, saves and generated game data are not published.
+The later follow-up and its separate build identities are documented above. ROMs, saves and generated game data are not published.
 
 ## Initial preview validation — historical
 
 The sections below preserve the initial graphics-preview observations,
-limitations and artifact hashes. The pending follow-up above records newer
+limitations and artifact hashes. The qualified follow-up above records newer
 test evidence; the published build has not yet been replaced.
 
 ## Rendering paths

@@ -50,6 +50,8 @@ jobs:
         run: |
           cc -std=c11 -Wall -Wextra -Werror -Wno-unused-function -I pokedaisy/app/src/main/cpp tools/test_voxel_projection.c -o /tmp/test-voxel
           /tmp/test-voxel
+          cc -std=c11 -Wall -Wextra -Werror -Wno-unused-function -I pokedaisy/app/src/main/cpp tools/test_voxel_climate.c -o /tmp/test-climate
+          /tmp/test-climate
       - name: Validate wrappers
         uses: gradle/actions/wrapper-validation@748248ddd2a24f49513d8f472f81c3a07d4d50e1
         with:

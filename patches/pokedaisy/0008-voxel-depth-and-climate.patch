@@ -189,7 +189,7 @@ index b93a924..3d8f9cc 100644
  
  /** Instead of pk_wide_view, for a frame that won't be shown (fast-forward runs several per screen refresh): keeps the
 diff --git a/app/src/main/cpp/pk_wide_voxel.h b/app/src/main/cpp/pk_wide_voxel.h
-index ccc2d8e..a8796e8 100644
+index ccc2d8e..5654da2 100644
 --- a/app/src/main/cpp/pk_wide_voxel.h
 +++ b/app/src/main/cpp/pk_wide_voxel.h
 @@ -10,7 +10,7 @@
@@ -233,6 +233,22 @@ index ccc2d8e..a8796e8 100644
          }
      }
  
+@@ -106,7 +116,14 @@ static void voxelTerrain(const struct VoxelView* v) {
+                 int worldY = voxelWorldY(v, y, rise);
+                 int x = voxelX(v, x0, worldY);
+                 const uint32_t* src = v->texture + (worldY - v->top) * v->stride + col * VOXEL_TILE;
+-                for (int i = 0; i < VOXEL_TILE; i++) voxelPixel(v, x + i, y, worldY, src[i]);
++                for (int i = 0; i < VOXEL_TILE; i++) {
++                    // Small contact shadows at a higher neighbor; keep the live texel crisp.
++                    unsigned shade = 256;
++                    if (i < 2 && left > rise) shade = i == 0 ? 220 : 240;
++                    if (worldY - y0 < 2 && voxelRise(v, col, row - 1) > rise)
++                        shade = shade * (worldY == y0 ? 220u : 240u) / 256u;
++                    voxelPixel(v, x + i, y, worldY, voxelShade(src[i], shade));
++                }
+             }
+         }
+     }
 diff --git a/app/src/main/cpp/pokedaisy_jni.c b/app/src/main/cpp/pokedaisy_jni.c
 index 6ee3d56..9ada018 100644
 --- a/app/src/main/cpp/pokedaisy_jni.c

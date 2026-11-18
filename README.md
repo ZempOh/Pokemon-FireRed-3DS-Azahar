@@ -16,6 +16,23 @@ cartridge dump.
 **[Project website](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/)**
 · **[Game builder](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/build.html)**
 
+## Battle pacing follow-up — further Thor retest pending
+
+The scanline-only candidate `39f698b` improved steady move selection:
+the median of reported 300-frame work averages fell from **12.645 to 9.440 ms**,
+and all five retained idle cadence windows measured 59.8 game/drawn FPS.
+Subsequent active checks still dipped to **58.6 drawn FPS**, so this
+candidate was withheld from the release.
+
+The next candidate reduces lower-screen battle redraws and queues changed
+top-screen textures inside the GPU frame. Pixel-differential rendering and
+upload-order tests cover the changes. The game clock, frame-skip policy and
+image quality are unchanged. Publication requires another Thor retest of
+steady selection, blinking battle text, menu interaction and actual moves.
+
+See [test evidence and current status](docs/graphics-upgrade.md). The earlier
+published build remains available while this candidate is evaluated.
+
 ## Ports and companion builds
 
 | Project | Source and build instructions |

@@ -104,7 +104,7 @@ int main(void) {
     RefgPortDrawLines=NewgPortDrawLines=2;
     clock_t begin=clock(); for(unsigned n=0;n<300;++n) RefDrawFrame(frameA); double before=(double)(clock()-begin)/CLOCKS_PER_SEC;
     begin=clock(); for(unsigned n=0;n<300;++n) NewDrawFrame(frameB); double after=(double)(clock()-begin)/CLOCKS_PER_SEC;
-    printf("PASS: 600 pixel-identical full/UI frames including split/wrapped/object windows, blend, mosaic, hidden frames, HBlank/VCount register changes.\n");
+    printf("PASS: 600 pixel-identical full/UI frames including split/wrapped/object windows, blending, sprite mosaic, full/UI/both passes, simulated HBlank/VCount register changes; 160 DMA dispatches.\n");
     printf("Synthetic battle UI benchmark (host only): reference %.3fs optimized %.3fs ratio %.3f\n",before,after,after/before);
     return 0;
 }

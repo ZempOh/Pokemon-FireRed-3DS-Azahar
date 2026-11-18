@@ -25,7 +25,7 @@ static uintptr_t sScene;
 
 static const char *const sNames[PORT_PROF_COUNT] = {
     "task", "spr", "fade", "vbl", "vcb", "dma3", "mix",
-    "io", "lz", "copy", "lines", "pal", "lay", "draw", "end",
+    "io", "lz", "copy", "lines", "pal", "lay", "draw", "end", "bottom", "upload",
 };
 
 /* Only when there is a log to report to: every section is two tick reads,

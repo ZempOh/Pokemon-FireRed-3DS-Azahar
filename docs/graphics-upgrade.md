@@ -1,5 +1,97 @@
 # Graphics upgrade validation (2026-11-18)
 
+## FireRed battle pacing follow-up — further Thor retest pending
+
+The scanline-only build below is **withheld from publication**. Its idle
+selection result passed, but active battle checks still reached 58.6
+drawn FPS at 59.8 game FPS. The next candidate adds lower-screen dirty-band
+redraws, contiguous rounded raster fills and top texture uploads queued
+after FrameBegin. Host differential and upload-order tests pass; Thor
+steady, blinking-text, menu-interaction and actual-move checks are pending.
+No new ground/pacing bundle has been published.
+
+### Scanline-only v1 evidence — historical
+
+The software scanline compositor snapshots display/window/blend registers
+per scanline, builds a sparse object-window sprite list alongside the
+existing normal-sprite lists, and uses the existing constant-mask path for
+uniform mode-0 windows. Split windows, affine backgrounds and live HBlank
+effects retain their general rendering paths. Image quality, game logic,
+the game clock and the automatic frame-skip policy are unchanged.
+
+The scanline-only candidate was tested on AYN Thor with Azahar
+2126.2-googleplay. Both steady samples used the same Route 1 save, Charmander
+level 6 at 21/21 HP, settings, voxel battle mode and move-selection phase.
+The opponent was Rattata level 3 before and Zigzagoon level 3 after; this is
+a comparison of the same scene type, not an identical replay. The first
+potentially partial aggregate was discarded independently for each counter,
+then the first 12 complete PROF windows and five complete PACE windows were
+retained in both revisions. Each PROF window spans 300 logical game frames;
+each PACE window spans 600.
+
+| Retained steady-selection metric | Before | Scanline-only v1 |
+| --- | ---: | ---: |
+| Median of reported work-window averages | 12.645 ms | 9.440 ms |
+| Median of scanline-window averages | 9.58 ms | 6.24 ms |
+| Largest reported work peak in retained windows | 20.07 ms | 15.59 ms |
+| Median drawn FPS | 58.7 | 59.8 |
+| Minimum drawn FPS | 58.6 | 59.8 |
+| Game FPS in every retained PACE window | 59.8 | 59.8 |
+
+Reported work decreased 25.3%; every retained candidate PACE window reached
+59.8 drawn FPS. This passed the idle thresholds of 10% lower reported
+work and at least 59.6 drawn FPS in every retained window, but the later
+active dips mean the broader pacing fix is not qualified. Active battle
+coverage was a separate visual/gameplay check: Growl executed and reduced
+its PP to 39/40, Scratch damaged Zigzagoon, the battle Bag opened and closed,
+and Run displayed “Got away safely” before returning to Route 1. Party then
+showed Charmander at 10/21 HP, matching the battle. Move categories and PP
+remained readable. This candidate check did not include a knockout. The
+active Azahar track advanced with 0→0 underruns during both idle and active
+segments; system-wide mixer counters were excluded. Original device state
+was restored and checked with binary-safe hashes after all three retests.
+
+`work` is elapsed BeginFrame-to-EndFrame time minus the renderer's recorded
+FrameBegin wait in `3ds_soft_video.c`, clamped to zero. It includes
+FrameEnd, synchronous uploads before FrameBegin in v1, and other blocking
+inside presentation, so it is not pure CPU or GPU execution time. Hidden
+frames use the renderer's most recent wait measurement; both revisions use
+the same profiler code. Section timings are inclusive and must not be
+summed. `lines` covers software scanline composition and HBlank callbacks/
+DMA. Cadence comes from the independent PACE counters, not a count of work
+values above 15 ms. These results do not establish zero stutter in every
+move, map or later-game scene; no active-phase timing improvement is claimed.
+
+The build workflow runs 600 pixel-differential cases against the original
+compositor: full-only, UI-only and combined passes, normal/affine sprites,
+wrapped/split/object windows, blending, sprite mosaic and simulated
+HBlank/VCount register updates. The DMA stub checks 160 HBlank dispatches;
+actual DMA destinations were reviewed in source. This harness does not
+exercise fully hidden frames, background mosaic or DMA writes. A separate
+602-case review also checked live HBlank OAM affine-parameter writes,
+including normal and object-window sprites whose output visibly changed.
+Both renderers matched byte for byte. OAM geometry is populated in VBlank;
+the slot-machine HBlank affine updates remain live per scanline.
+
+| Withheld scanline-only artifact | Provenance |
+| --- | --- |
+| Binary-producing commit | `39f698b5a47a2278f2088596af6b2e0a7df09dd3` |
+| Matching build and recipe | [44377144384](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/actions/runs/44377144384) |
+| Raw blank engine SHA-256 | `7c3e70e968c68a5b7c19883d7f6d2cdc4b2adea76eecfa67a57c640b20039284` |
+| Web payload ZIP SHA-256 | `9c43076daa1ae1ff53a9acb4d3c1c5eae165bd40b284a72286e0f36abe5eec26` |
+| Private Thor cartridge SHA-256 | `df81d7d09868424b6a49db0427b0723ce3a6282508a0a0d1a01bc0e96d272a3d` |
+
+The installed cartridge was pulled back and matched the candidate exactly.
+The hashes above identify a local test candidate, not a published pacing fix.
+The next candidate has different code and will need fresh build hashes and
+device qualification. ROMs, saves and generated game data are not published.
+
+## Initial preview validation — historical
+
+The sections below preserve the initial graphics-preview observations,
+limitations and artifact hashes. The pending follow-up above records newer
+test evidence; the published build has not yet been replaced.
+
 ## Rendering paths
 
 PokéDaisy reads the CRC-selected live mGBA session: map grid/VMap and connected-map layouts, tileset metatiles, VRAM tile pixels and palette RAM, then camera-matched snapshots and gSprites/OAM. `pk_wide.c` selects the eligible field projection; `pk_wide_voxel.h` projects textured terrain and depth-tested sprite pixels. `EmulatorEngine` applies the game's settings on the emulation thread through `MgbaCore` and JNI. The existing compositor handles battle, text, menu, unsupported effects, and transitions. Companion telemetry still reads this same core; no secondary emulator or imported companion snapshot was introduced.

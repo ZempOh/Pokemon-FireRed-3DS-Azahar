@@ -70,6 +70,7 @@
 #include "constants/trainers.h"
 #include "constants/region_map_sections.h"
 #include "port_platform.h"
+#include "port_prof.h"
 
 #include "3ds_bottom.h"
 #include "3ds_extras.h"
@@ -640,15 +641,18 @@ static int CornerInset(int j, int r)
 
 static void RoundRect(int x, int y, int w, int h, int r, u16 c)
 {
-    if (r * 2 > h)
-        r = h / 2;
-    if (r * 2 > w)
-        r = w / 2;
-    for (int j = 0; j < h; j++)
+    if (w <= 0 || h <= 0) return;
+    if (r * 2 > h) r = h / 2;
+    if (r * 2 > w) r = w / 2;
+    /* The framebuffer is column-major: fill contiguous vertical spans.
+     * Use the original row/corner predicate, including its edge rounding. */
+    int x0 = x < 0 ? 0 : x, x1 = x + w < W ? x + w : W;
+    for (int px = x0; px < x1; ++px)
     {
-        int in = CornerInset(j < h - j - 1 ? j : h - j - 1, r);
-
-        FillRect(x + in, y + j, w - 2 * in, 1, c);
+        int inset = px - x < x + w - 1 - px ? px - x : x + w - 1 - px;
+        int top = 0;
+        while (top < h && CornerInset(top, r) > inset) ++top;
+        FillRect(px, y + top, 1, h - 2 * top, c);
     }
 }
 
@@ -662,14 +666,25 @@ static void RoundBox(int x, int y, int w, int h, int r, u16 fill, u16 edge)
 /* A rounded box whose upper rows shade from `top` down to its colour. */
 static void RoundGradient(int x, int y, int w, int h, int r, u16 top, u16 c, int shadeRows)
 {
-    if (r * 2 > h)
-        r = h / 2;
-    for (int j = 0; j < h; j++)
+    u16 rows[H];
+    if (w <= 0 || h <= 0) return;
+    if (r * 2 > h) r = h / 2;
+    int y0 = y < 0 ? 0 : y, y1 = y + h < H ? y + h : H;
+    for (int py = y0; py < y1; ++py)
     {
-        int in = CornerInset(j < h - j - 1 ? j : h - j - 1, r);
-        u16 row = j < shadeRows ? Mix(top, c, j, shadeRows) : c;
-
-        FillRect(x + in, y + j, w - 2 * in, 1, row);
+        int j = py - y;
+        rows[H - 1 - py] = j < shadeRows ? Mix(top, c, j, shadeRows) : c;
+    }
+    int x0 = x < 0 ? 0 : x, x1 = x + w < W ? x + w : W;
+    for (int px = x0; px < x1; ++px)
+    {
+        int inset = px - x < x + w - 1 - px ? px - x : x + w - 1 - px;
+        int first = 0;
+        while (first < h && CornerInset(first, r) > inset) ++first;
+        int begin = y + first > y0 ? y + first : y0;
+        int end = y + h - first < y1 ? y + h - first : y1;
+        if (begin < end)
+            memcpy(sCanvas + px * H + H - end, rows + H - end, (end - begin) * sizeof(u16));
     }
 }
 
@@ -1738,43 +1753,94 @@ static void DrawFighter(const FighterView *f, int x, int w)
     HpBar(x, FOOTER_Y + 20, w, f->hp, f->maxHp);
 }
 
+static bool8 BattleHeaderChanged(const ViewState *a, const ViewState *b)
+{
+    if (a->b.choose != b->b.choose) return TRUE;
+    if (a->b.choose == PORT_BATTLE_SWITCH)
+        return a->b.moves[a->b.picked] != b->b.moves[b->b.picked];
+    if (a->b.choose)
+        return a->b.player.present != b->b.player.present
+            || memcmp(a->b.player.name, b->b.player.name, sizeof(a->b.player.name)) != 0;
+    return FALSE;
+}
+
+static bool8 BattleBodyChanged(const ViewState *a, const ViewState *b)
+{
+    if (a->b.choose != b->b.choose || a->pressed != b->pressed) return TRUE;
+    if (a->b.choose == PORT_BATTLE_MOVE || a->b.choose == PORT_BATTLE_SWITCH)
+        return a->b.cursor != b->b.cursor || a->b.picked != b->b.picked
+            || memcmp(a->b.moves, b->b.moves, sizeof(a->b.moves)) != 0
+            || memcmp(a->b.pp, b->b.pp, sizeof(a->b.pp)) != 0
+            || memcmp(a->b.maxPp, b->b.maxPp, sizeof(a->b.maxPp)) != 0;
+    return a->b.cursor != b->b.cursor
+        || memcmp(a->b.balls, b->b.balls, sizeof(a->b.balls)) != 0;
+}
+
+static bool8 BattleFooterChanged(const ViewState *a, const ViewState *b)
+{
+    if (a->b.choose != b->b.choose
+        || memcmp(&a->b.player, &b->b.player, sizeof(a->b.player)) != 0) return TRUE;
+    if (a->b.choose == PORT_BATTLE_MOVE || a->b.choose == PORT_BATTLE_SWITCH)
+        return a->b.mega != b->b.mega || a->pressed != b->pressed;
+    return memcmp(&a->b.opponent, &b->b.opponent, sizeof(a->b.opponent)) != 0;
+}
+
 static void RenderBattle(const ViewState *s)
 {
-    FillRect(0, HEADER_H, W, FOOTER_Y - HEADER_H, C_PAGE);
-    if (s->b.choose == PORT_BATTLE_SWITCH)
+    bool8 full = !sDrawn || !sShown.battle;
+    bool8 header = full || BattleHeaderChanged(s, &sShown);
+    bool8 body = full || BattleBodyChanged(s, &sShown);
+    bool8 footer = full || BattleFooterChanged(s, &sShown);
+    if (header)
     {
-        u8 title[32], *p = StringCopy(title, Ascii("Swap "));
-
-        p = StringCopy(p, gMoveNames[s->b.moves[s->b.picked]]);
-        StringCopy(p, Ascii(" with?"));
-        Header(title);
+        if (s->b.choose == PORT_BATTLE_SWITCH)
+        {
+            u8 title[32], *p = StringCopy(title, Ascii("Swap "));
+            p = StringCopy(p, gMoveNames[s->b.moves[s->b.picked]]);
+            StringCopy(p, Ascii(" with?"));
+            Header(title);
+        }
+        else if (s->b.choose && s->b.player.present)
+        {
+            u8 title[32], *p = StringCopy(title, Ascii("What will "));
+            p = StringCopy(p, s->b.player.name);
+            StringCopy(p, Ascii(" do?"));
+            Header(title);
+        }
+        else Header(NULL);
     }
-    else if (s->b.choose && s->b.player.present)
+    if (body)
     {
-        u8 title[32], *p = StringCopy(title, Ascii("What will "));
-
-        p = StringCopy(p, s->b.player.name);
-        StringCopy(p, Ascii(" do?"));
-        Header(title);
+        FillRect(0, HEADER_H, W, FOOTER_Y - HEADER_H, C_PAGE);
+        if (s->b.choose == PORT_BATTLE_MOVE || s->b.choose == PORT_BATTLE_SWITCH)
+            DrawMoves(s);
+        else DrawActions(s);
     }
+    if (footer)
+    {
+        Footer();
+        if (s->b.choose == PORT_BATTLE_MOVE || s->b.choose == PORT_BATTLE_SWITCH)
+        {
+            DrawFighter(&s->b.player, 10, s->b.mega ? MEGA_X - 18 : 150);
+            BackKey(s->pressed == HIT_BATTLE + 4);
+            if (s->b.mega) MegaKey(s->b.mega == 2, s->pressed == HIT_BATTLE + 5);
+        }
+        else
+        {
+            DrawFighter(&s->b.player, 10, 142);
+            DrawFighter(&s->b.opponent, 168, 142);
+        }
+    }
+    /* Coalesce adjacent changed bands into one framebuffer copy/flush. */
+    if (header && body && footer) CtrBottom_Blit(sCanvas, 0, W);
+    else if (header && body) CtrBottom_BlitRect(sCanvas, 0, 0, W, FOOTER_Y);
+    else if (body && footer) CtrBottom_BlitRect(sCanvas, 0, HEADER_H, W, H);
     else
-        Header(NULL);
-    Footer();
-    if (s->b.choose == PORT_BATTLE_MOVE || s->b.choose == PORT_BATTLE_SWITCH)
     {
-        DrawMoves(s);
-        DrawFighter(&s->b.player, 10, s->b.mega ? MEGA_X - 18 : 150);
-        BackKey(s->pressed == HIT_BATTLE + 4);
-        if (s->b.mega)
-            MegaKey(s->b.mega == 2, s->pressed == HIT_BATTLE + 5);
+        if (header) CtrBottom_BlitRect(sCanvas, 0, 0, W, HEADER_H);
+        if (body) CtrBottom_BlitRect(sCanvas, 0, HEADER_H, W, FOOTER_Y);
+        if (footer) CtrBottom_BlitRect(sCanvas, 0, FOOTER_Y, W, H);
     }
-    else
-    {
-        DrawActions(s);
-        DrawFighter(&s->b.player, 10, 142);
-        DrawFighter(&s->b.opponent, 168, 142);
-    }
-    CtrBottom_Blit(sCanvas, 0, W);
 }
 
 /* ------------------------------------------------------------------------ */
@@ -4645,7 +4711,7 @@ void CtrBottom_Init(void)
     sDrawn = FALSE;
 }
 
-void CtrBottom_Frame(void)
+static void BottomFrame(void)
 {
     ViewState now;
     u16 x, y;
@@ -4732,6 +4798,13 @@ void CtrBottom_Frame(void)
         RenderPanel(&now);
     sShown = now;
     sDrawn = TRUE;
+}
+
+void CtrBottom_Frame(void)
+{
+    PORT_PROF_BEGIN(bottom);
+    BottomFrame();
+    PORT_PROF_END(bottom, PORT_PROF_BOTTOM);
 }
 
 /* field_player_avatar.c: free movement (the options screen's FREE MOVE). */

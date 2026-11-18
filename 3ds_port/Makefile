@@ -335,6 +335,11 @@ verify: verify-battle-hud-fill
 verify-battle-hud-fill:
 	"$(PYTHON)" tests/battle_hud_fill_test.py --cc "$(HOSTCC)" --python "$(PYTHON)"
 
+.PHONY: verify-classic-ability-popup
+verify: verify-classic-ability-popup
+verify-classic-ability-popup:
+	"$(PYTHON)" tests/classic_ability_popup_test.py --cc "$(HOSTCC)" --tree "$(ROOT)"
+
 .PHONY: verify-rng-seeding
 verify: verify-rng-seeding
 .PHONY: verify-battle-speed

@@ -12,8 +12,10 @@ def main():
     parser.add_argument("--cc", default="gcc")
     args = parser.parse_args()
     source = (args.tree / "src/battle_controller_player.c").read_text(encoding="utf-8")
-    start = source.index("static void MoveSelectionDisplaySplitIcon(void){")
-    implementation = source[start:source.index("\n}", start) + 2]
+    start = source.index("static const u16 sSplitIcons_Pal[]")
+    body = source.index("static void MoveSelectionDisplaySplitIcon(void){")
+    assert start < body, "asset stubs need file scope for native asset indexing"
+    implementation = source[start:source.index("\n}", body) + 2]
     harness = r'''
 #include <assert.h>
 #include <stdint.h>

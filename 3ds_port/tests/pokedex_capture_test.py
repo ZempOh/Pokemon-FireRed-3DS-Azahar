@@ -3,6 +3,7 @@ import argparse
 import os
 from pathlib import Path
 import subprocess
+import sys
 import tempfile
 
 
@@ -510,6 +511,9 @@ def sanitizers(cc, folder):
     """The address and undefined-behaviour checks, when the host compiler can
     link them (MinGW's gcc has neither): said, not dropped silently."""
     flags = ["-fsanitize=address,undefined", "-fno-sanitize-recover=all", "-fno-omit-frame-pointer"]
+    if sys.platform == "linux":
+        # Keep the test image clear of ASan's shadow range on randomized runners.
+        flags += ["-fno-pie", "-no-pie"]
     probe = folder / "sanitizer_probe.c"
     probe.write_text("int main(void) { return 0; }\n", encoding="utf-8")
     result = subprocess.run([cc, *flags, str(probe), "-o", str(folder / "sanitizer_probe")],

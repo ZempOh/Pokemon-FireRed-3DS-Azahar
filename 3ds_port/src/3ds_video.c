@@ -3675,10 +3675,10 @@ static void DrawBattleText(unsigned bg)
     uint32_t before = sStats.tiles;
     DrawBattleCut(bg, 0, 240, 0, BATTLE_BAND_TOP, 0);
     if (sStats.tiles != before) sTextAbove = true;
-    /* Classic's action prompt starts in the tile the stretch normally repeats. */
-    if (scrollX == 0 && scrollY == 160
-        && (MapEntry(map, size, 1, 35) & 1023) == 0x1C0
-        && (MapEntry(map, size, 17, 35) & 1023) == 0x190)
+    /* Stretching repeats an action glyph and cuts off the move panel's PP and type. */
+    if (scrollX == 0 && (scrollY == 320
+        || (scrollY == 160 && (MapEntry(map, size, 1, 35) & 1023) == 0x1C0
+            && (MapEntry(map, size, 17, 35) & 1023) == 0x190)))
     {
         DrawBattleCut(bg, 0, 240, BATTLE_BAND_TOP, 160, 0);
         return;

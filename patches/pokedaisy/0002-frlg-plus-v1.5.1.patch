@@ -1,0 +1,174 @@
+diff --git a/app/src/main/kotlin/com/pokedaisy/app/GameTitles.kt b/app/src/main/kotlin/com/pokedaisy/app/GameTitles.kt
+index c22389abd52bd4ff5be257707b2a9fa38351710e..35737a5a9cf1baf3b1f681ecdb7a6cbe948c530e 100644
+--- a/app/src/main/kotlin/com/pokedaisy/app/GameTitles.kt
++++ b/app/src/main/kotlin/com/pokedaisy/app/GameTitles.kt
+@@ -179,6 +179,7 @@ object GameTitles {
+         "20dfaea1d5317cf95fe0b493208edce7d50b865f" to "Pokémon Ghost Grey",
+         "74337272566a74625d6dedefe47d2d153eb48ec1" to "Pokémon Ghost Grey",
+         "0dafc0116b74406a2df491e26ccb40dd362fb0b7" to "Pokémon Ghost Grey",
++        "c34a4401f2fe86c515fc6d9a6d231224a98f55d5" to "Pokémon FireRed & LeafGreen+ (v1.5.1)",
+         "62bb900925118796fb963b7df92d02cb548c404e" to "Pokémon Let's Go Pikachu",
+         "11f6ee3890a0aaeb95903471ec73413c846e86fc" to "Pokémon Let's Go Pikachu (Translation Only)",
+         "4a41d539cbf6108cfe3344db5ba997fc5660d77d" to "Pokémon Let's Go Eevee",
+diff --git a/app/src/main/kotlin/com/pokedaisy/app/companion/data/ActiveTables.kt b/app/src/main/kotlin/com/pokedaisy/app/companion/data/ActiveTables.kt
+index 2727071d6f4228a86d16052c53a88c5131926f5e..c2153248d707664180f506a56249b1b6ab2cd7ed 100644
+--- a/app/src/main/kotlin/com/pokedaisy/app/companion/data/ActiveTables.kt
++++ b/app/src/main/kotlin/com/pokedaisy/app/companion/data/ActiveTables.kt
+@@ -217,9 +217,18 @@ val fireRedHackUltraViolet: HackText by lazy {
+     HackText(speciesNamesUltraViolet, speciesTypesUltraViolet, moveDataUltraViolet, itemNamesUltraViolet, mapSecNamesUltraViolet)
+ }
+ 
++private val fireRedHackFrlgPlus: HackText by lazy {
++    HackText(
++        emptyMap(), emptyMap(), emptyMap(),
++        mapOf(112 to "Link Bracelet", 375 to "Magma Emblem", 376 to "Old Sea Map"),
++        emptyMap(), ownRegionMap = true,
++    )
++}
++
+ /** The FireRed hack edited in place [cfg] is, or null. */
+ fun fireRedHackFor(cfg: NativeConfig?): HackText? = when {
+     cfg === NATIVE_ULTRA_VIOLET -> fireRedHackUltraViolet
++    cfg === NATIVE_FRLG_PLUS_V1_5_1 -> fireRedHackFrlgPlus
+     cfg === NATIVE_ROCKET_EDITION -> fireRedHackRocketEdition
+     cfg === NATIVE_ASH_GRAY -> fireRedHackAshGray
+     cfg === NATIVE_GHOST_GREY -> fireRedHackGhostGrey
+@@ -237,6 +246,8 @@ var fireRedHack: HackText? = null
+ /** The running game is a FireRed hack edited in place ([fireRedHack]), its text laid over FireRed's. */
+ val runningFireRedHack: HackText? get() = fireRedHack?.takeIf { activeGame == GameKind.FIRERED }
+ 
++val runningFrlgPlus: Boolean get() = runningFireRedHack === fireRedHackFrlgPlus
++
+ /** The running game's bag counts its items (Elite Redux's keeps one "owned" bit per item: [ItemFlagsBag]). */
+ val bagHasCounts: Boolean get() = activeGame != GameKind.ELITE_REDUX
+ 
+diff --git a/app/src/main/kotlin/com/pokedaisy/app/companion/data/NativeReader.kt b/app/src/main/kotlin/com/pokedaisy/app/companion/data/NativeReader.kt
+index e98d4c4ec9be0ff0f7235330407f314b02d4a899..942397fda06ef983a3d8dd7d1e8153f5aa6794e0 100644
+--- a/app/src/main/kotlin/com/pokedaisy/app/companion/data/NativeReader.kt
++++ b/app/src/main/kotlin/com/pokedaisy/app/companion/data/NativeReader.kt
+@@ -352,6 +352,9 @@ private const val BATTLE_TYPE_TRAINER = 0x0008
+  * constants/battle.h): the catching lesson, someone else's Pokémon. Read only where the game runs as one of those. */
+ private const val BATTLE_TYPE_CATCH_TUTORIAL = 0x0200
+ private const val BAG_POCKET_STRIDE = 8
++val FRLG_PLUS_BAG_POCKET_ORDER = listOf(
++    POCKET_ITEMS, POCKET_MEDICINE, POCKET_KEY_ITEMS, POCKET_HELD_ITEMS, POCKET_POKE_BALLS, POCKET_TM_HM, POCKET_BERRIES,
++)
+ private const val BAG_POCKET_SLOTS = 255 // a pocket's u8 capacity (SoulGold's Items pocket holds 150)
+ private const val BAG_MAX_ITEMS = 300
+ 
+diff --git a/app/src/main/kotlin/com/pokedaisy/app/companion/data/Poller.kt b/app/src/main/kotlin/com/pokedaisy/app/companion/data/Poller.kt
+index 9b2feeea4fee0059985008cd73cb100fb03097e3..ebe79a085b5e2633221ce798ce0a7d0018149f2e 100644
+--- a/app/src/main/kotlin/com/pokedaisy/app/companion/data/Poller.kt
++++ b/app/src/main/kotlin/com/pokedaisy/app/companion/data/Poller.kt
+@@ -1122,6 +1122,8 @@ class TelemetrySampler {
+         const val GHOST_GREY_V1_0_1_SHA1 = "20dfaea1d5317cf95fe0b493208edce7d50b865f"
+         const val GHOST_GREY_V1_0_2_SHA1 = "74337272566a74625d6dedefe47d2d153eb48ec1"
+         const val GHOST_GREY_V1_0_4_SHA1 = "0dafc0116b74406a2df491e26ccb40dd362fb0b7"
++        // English FireRed & LeafGreen+ v1.5.1, official BPS applied to FireRed rev 0.
++        const val FRLG_PLUS_V1_5_1_SHA1 = "c34a4401f2fe86c515fc6d9a6d231224a98f55d5"
+         // Pokémon Let's Go Pikachu / Eevee (BPRE rev 0, 32 MB; Kevin Pokefan, English translation, no version in the game),
+         // each with a "Translation Only" build - host-side masked hashes (GPIO bytes zero, so a plain `shasum`).
+         const val LETS_GO_PIKACHU_UNVERSIONED_SHA1 = "62bb900925118796fb963b7df92d02cb548c404e"
+@@ -1136,6 +1138,7 @@ class TelemetrySampler {
+             ASH_GRAY_V4_5_3_SHA1, ASH_GRAY_FORK_BUG_FIX_V1_0_SHA1 -> NATIVE_ASH_GRAY
+             GHOST_GREY_V1_0_2_SHA1, GHOST_GREY_V1_0_4_SHA1 -> NATIVE_GHOST_GREY
+             GHOST_GREY_V1_0_1_SHA1 -> NATIVE_GHOST_GREY_V1_0_1
++            FRLG_PLUS_V1_5_1_SHA1 -> NATIVE_FRLG_PLUS_V1_5_1
+             LETS_GO_PIKACHU_UNVERSIONED_SHA1, LETS_GO_PIKACHU_TRANSLATION_ONLY_UNVERSIONED_SHA1 -> NATIVE_LETS_GO_PIKACHU
+             LETS_GO_EEVEE_UNVERSIONED_SHA1, LETS_GO_EEVEE_TRANSLATION_ONLY_UNVERSIONED_SHA1 -> NATIVE_LETS_GO_EEVEE
+             else -> null
+diff --git a/app/src/main/kotlin/com/pokedaisy/app/companion/data/Telemetry.kt b/app/src/main/kotlin/com/pokedaisy/app/companion/data/Telemetry.kt
+index 1fc6d7ee6d6aeb762d9e1dd1ed60910e419185ca..eaaf6ccdc9c9ac16db2adf626185e986a310cb87 100644
+--- a/app/src/main/kotlin/com/pokedaisy/app/companion/data/Telemetry.kt
++++ b/app/src/main/kotlin/com/pokedaisy/app/companion/data/Telemetry.kt
+@@ -35,6 +35,7 @@ const val POCKET_MAIL = 6
+ const val POCKET_BATTLE_ITEMS = 7
+ // Team Rocket Edition 2026's own pocket (its bag's MEGAPIEDRAS): Mega Stones. It folds into ITEMS too.
+ const val POCKET_MEGA_STONES = 8
++const val POCKET_HELD_ITEMS = 9
+ 
+ /** [pocket] as one of the five pockets every game has: Gen 4's MEDICINE / MAIL / BATTLE ITEMS ride with ITEMS. */
+ fun basePocket(pocket: Int): Int = if (pocket >= POCKET_MEDICINE) POCKET_ITEMS else pocket
+diff --git a/app/src/main/kotlin/com/pokedaisy/app/companion/data/TypeChartUtil.kt b/app/src/main/kotlin/com/pokedaisy/app/companion/data/TypeChartUtil.kt
+index 9dfa4eab1d52cdade9a517c96abb8f59352eb411..0502f9bca2e2a4e64c577e65aeb8a68740f1e01b 100644
+--- a/app/src/main/kotlin/com/pokedaisy/app/companion/data/TypeChartUtil.kt
++++ b/app/src/main/kotlin/com/pokedaisy/app/companion/data/TypeChartUtil.kt
+@@ -217,8 +217,11 @@ val pocketOrder: List<Int> = listOf(POCKET_ITEMS, POCKET_POKE_BALLS, POCKET_TM_H
+ 
+ /** The running game's bag tabs: [pocketOrder], or a game's own pockets where its bag shows more of them apart (Team Rocket
+  * Edition 2026's eight, in its gBagPockets' order: [TEAM_ROCKET_V3_BAG_POCKET_ORDER]). */
+-val activePocketOrder: List<Int> get() =
+-    if (activeGame == GameKind.TEAM_ROCKET && teamRocketV3) TEAM_ROCKET_V3_BAG_POCKET_ORDER else pocketOrder
++val activePocketOrder: List<Int> get() = when {
++    activeGame == GameKind.TEAM_ROCKET && teamRocketV3 -> TEAM_ROCKET_V3_BAG_POCKET_ORDER
++    runningFrlgPlus -> FRLG_PLUS_BAG_POCKET_ORDER
++    else -> pocketOrder
++}
+ 
+ fun pocketLabel(pocket: Int): String = when (pocket) {
+     POCKET_ITEMS -> "Items"
+@@ -230,6 +233,7 @@ fun pocketLabel(pocket: Int): String = when (pocket) {
+     POCKET_MAIL -> "Mail"
+     POCKET_BATTLE_ITEMS -> "Battle Items"
+     POCKET_MEGA_STONES -> "Mega Stones"
++    POCKET_HELD_ITEMS -> "Held Items"
+     else -> "Items"
+ }
+ 
+diff --git a/gamedata/gen3/area_maps.toml b/gamedata/gen3/area_maps.toml
+index f7ee60bcb440cda8c38a0bddf5a0517573072342..cc6f71b25d4ff4ded9555245b2c0b6f549266413 100644
+--- a/gamedata/gen3/area_maps.toml
++++ b/gamedata/gen3/area_maps.toml
+@@ -1298,6 +1298,17 @@ floorNumOff = -1
+ metatileSize = 16
+ metatileMask = 0x3FF
+ 
++[rom.964763c0]
++name = "FireRed and LeafGreen Plus v1.5.1.gba"
++mapGroups = 0x083A716C
++mapGroupSizes = [5, 126, 72, 69, 4, 6, 8, 10, 6, 8, 20, 10, 8, 2, 10, 4, 2, 2, 2, 1, 1, 2, 2, 3, 2, 3, 2, 1, 1, 1, 1, 7, 6, 5, 8, 10, 5, 5, 1, 1, 1, 2, 1, 22]
++primaryTiles = 640
++primaryMetatiles = 640
++primaryPalettes = 7
++floorNumOff = 26
++metatileSize = 16
++metatileMask = 0x3FF
++
+ # Not yet (scripts/gen_area_maps.py --scan says why):
+ #   Pokemon Epsilon Emerald (v1.0.0).gba: its tilesets are compressed some other way (not LZ77 or smol)
+ #   Pokemon GS Chronicles (v2.7.6).gba: where secondary tiles start is unclear (best: 512, 86.5% of 66249 tile entries fit): its tilesets are laid out its own way
+diff --git a/gamedata/gen3/hacks/frlg_plus.toml b/gamedata/gen3/hacks/frlg_plus.toml
+new file mode 100644
+index 0000000000000000000000000000000000000000..648732258e01def75872d198cd529ac46b1d261c
+--- /dev/null
++++ b/gamedata/gen3/hacks/frlg_plus.toml
+@@ -0,0 +1,29 @@
++# English FireRed & LeafGreen+ v1.5.1, source tag 5d81c49c.
++# Addresses are from the rebuilt ELF. The official BPS output differs in
++# linker veneers but the ROM tables at these addresses match. The RAM
++# pointers, starter, battle state and map were checked on the official ROM.
++[config.frlg_plus_v1_5_1]
++playerParty = 0x02024204
++playerPartyCount = 0x02023FA9
++battleMons = 0x02023B64
++battlerPositions = 0x02023B56
++battlersCount = 0x02023B4C
++battleTypeFlags = 0x02022ACC
++gMain = 0x030030F0
++saveBlock1Ptr = 0x0300500C
++saveBlock2Ptr = 0x03005010
++objectEvents = 0x02036F58
++mapHeader = 0x02036F18
++bagPockets = 0x020394EC
++bagPocketCount = 7
++bagPocketOrder = 'FRLG_PLUS_BAG_POCKET_ORDER'
++encryptionKeyOff = 0xF20
++moneyOff = 0x290
++monPalettes = 0x0825B0D0
++monIconTable = 0x0845CA68
++monIconPaletteIndices = 0x0845D148
++monIconPaletteTable = 0x0845D300
++itemIconTable = 0x0845D60C
++itemDescs = { preset = 'vanilla', base = 0x08464448, count = 377 }
++enemyParty = 0x02023FAC
++battlerPartyIndexes = 0x02023B4E

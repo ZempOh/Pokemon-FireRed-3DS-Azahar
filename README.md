@@ -4,13 +4,15 @@ This branch ports Pokémon Classic v1.5.1 to Nintendo 3DS with a voxel overworld
 
 ## Build status
 
-The native build runs in Azahar on the AYN Thor. Device checks covered a cold launch, Pallet Town, Route 1, Oak’s capture of Pikachu, the first rival battle, and the three touchscreen panels. [Thor test notes](docs/pokeclassic-thor-testing.md)
+Build `e6531b5` passed the November 18 AYN Thor retest in Azahar. Route 1's repeated forest now has continuous ground and canopy, and the move-category icons render cleanly beside PP. The retest covered cold Continue, walking along the forest edges, special and status move selection, a completed wild battle, return to Route 1, and the live Party panel. [Thor results and exact build hashes](docs/pokeclassic-thor-testing.md)
+
+The physical category passed the host regression; it was not available on the device test Pokémon. The earlier climate survey was not repeated in this focused retest. Historical tests also covered Oak's capture, the first rival battle, and the other touchscreen panels.
 
 ## Build and install
 
 Use your local Pokémon Classic v1.5.1 GBA ROM, SHA-1 `7e27a7878d6aeb3b798757f98e60d1064d762dbb`. The game data pack is rebuilt from that ROM on your device.
 
-1. In a successful [Classic Actions run](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/actions/workflows/ci.yml?query=branch%3Avoxel-pokeclassic), download `pokeclassic-voxel-engine` and `pokeclassic-voxel-recipe` from the same run. Extract the two engine files, `emerald3ds.recipe`, and the `voxelgen` directory together into `payload`.
+1. From [Thor-tested build 44364733602](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/actions/runs/44364733602), download `pokeclassic-voxel-engine` and `pokeclassic-voxel-recipe`. Always pair artifacts from the same [Classic Actions run](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/actions/workflows/ci.yml?query=branch%3Agraphics%2Fazahar-classic). Extract the two engine files, `emerald3ds.recipe`, and the `voxelgen` directory together into `payload`.
 2. Run the builder from the branch checkout with Python 3.13 and Pillow.
 
    ```sh
@@ -44,4 +46,4 @@ PokéDaisy reads the GBA edition inside its own emulator. The Azahar port provid
 
 ## Graphics upgrade
 
-See [rendering paths, controls and validation status](docs/graphics-upgrade.md). The graphics preview passed the documented early-game Thor checks. Climate remains opt-in; see the per-game limitations and exact tested build hashes.
+See the [initial graphics report and Classic followup](docs/graphics-upgrade.md). Its original tables preserve the earlier builds, performance samples, and limitations; the followup records the forest and PP corrections. Climate remains opt-in. These early-game checks do not certify every map or effect.

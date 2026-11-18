@@ -1,5 +1,19 @@
 # Graphics upgrade validation (2026-11-18)
 
+## Classic followup — November 18
+
+Classic build `e6531b5` passed a focused AYN Thor retest after correcting the Kanto forest quadrants and the move-category artwork beside PP. Cold Continue loaded Route 1; walking along its east, west, and south forest edges showed continuous ground and canopy without the old gaps or sign-textured trunks. ThunderShock's special icon and Tail Whip's status icon each appeared cleanly beside `PP 30/30`. Level 6 Pikachu defeated level 3 Rattata, gained 23 EXP, returned to Route 1, and appeared in the live Party panel with 21/21 HP.
+
+All jobs in [build 44364733602](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/actions/runs/44364733602) passed. A full rebuild from the staged web archive regenerated all four scenery outputs and verified the pack; the public archive passed its strict publication audit and ROM scan. The physical move category passed the host test only. This followup did not repeat the full climate survey. [Detailed results, scope, and hashes](pokeclassic-thor-testing.md)
+
+| Followup artifact | SHA-256 |
+| --- | --- |
+| Classic engine, source `e6531b540784832d074cf444a2dfb37e0d8dc172` | `0984e9581a4683bbdcae170d62a6335e4dde05f194b7e8ae54d0c1bb6111ed02` |
+| Classic web payload | `d4901996de839248abeb9038a428f09acb218d8c503f13eb2f976b01bfcb370a` |
+| Private Classic pack, comparison hash only | `8286f09d248e6268325302b70c97fdb773d6c4d7f16e093964241da484abf432` |
+
+**Historical initial report:** the remaining sections preserve the original multi-game survey, tables, performance samples, limitations, and build hashes. Their Classic forest-gap and PP-overlap entries describe the earlier build, before this followup. They are not fresh results for `e6531b5`.
+
 ## Rendering paths
 
 PokéDaisy reads the CRC-selected live mGBA session: map grid/VMap and connected-map layouts, tileset metatiles, VRAM tile pixels and palette RAM, then camera-matched snapshots and gSprites/OAM. `pk_wide.c` selects the eligible field projection; `pk_wide_voxel.h` projects textured terrain and depth-tested sprite pixels. `EmulatorEngine` applies the game's settings on the emulation thread through `MgbaCore` and JNI. The existing compositor handles battle, text, menu, unsupported effects, and transitions. Companion telemetry still reads this same core; no secondary emulator or imported companion snapshot was introduced.

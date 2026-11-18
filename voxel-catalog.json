@@ -3,7 +3,7 @@
     "id": "firered",
     "name": "Pokémon FireRed 3DS",
     "input": "Pokémon FireRed (USA, Rev 1)",
-    "base": "cartridge-fps/",
+    "base": "voxel/firered/",
     "output": "FireRed3DS.3ds"
   },
   {

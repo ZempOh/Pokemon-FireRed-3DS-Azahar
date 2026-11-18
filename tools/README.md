@@ -2,9 +2,12 @@
 
 The catalog is at `voxel.html`. `voxel-catalog.json` lists each game's display name and required ROM. An entry becomes buildable when it has both a `base` directory and an `output` filename.
 
-The original FireRed entry uses the existing `cartridge-fps` payload. For a port with a compatible recipe and cartridge format, use the matching recipe ZIP and blank template from the same build.
+The original FireRed and FRLG+ entries use the matching recipe ZIP and blank cartridge template from the same build.
 
 ```powershell
+$fireRed = '../engine-and-recipe'
+python tools/prepare-cartridge.py --source ../FireRed3DS --template "$fireRed/cartridge-template.3ds" --recipe-zip "$fireRed/FireRed3DS-v0.5.1-Windows.zip" --out voxel/firered/payload --name 'Pokémon FireRed (USA, Rev 1)' --code BPRE
+
 $release = '../frlg-color-test'
 python tools/prepare-cartridge.py --source ../voxel-frlg-plus --template "$release/cartridge-template.3ds" --recipe-zip "$release/FireRed3DS-v1.5.1-Windows.zip" --out voxel/frlg-plus/payload --name 'FireRed & LeafGreen+ v1.5.1' --code BPRE
 ```

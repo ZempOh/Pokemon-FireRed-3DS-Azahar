@@ -42,6 +42,6 @@ PokéDaisy reads the GBA edition inside its own emulator. The Azahar port provid
 
 [Pokémon Classic](https://github.com/DaniRainbow/pokeclassic) by danenders/LazyDev, DaniRainbow, and contributors. The native engine and voxel renderer come from [ZallaxDev's Pokémon Emerald 3DS Dual Screen](https://github.com/ZallaxDev/pokeemerald-3Ds-dualscreen). See [NOTICE.md](NOTICE.md) for the port's source and licenses.
 
-## Graphics upgrade candidate
+## Graphics upgrade
 
-See [rendering paths, controls and validation status](docs/graphics-upgrade.md). The climate effects remain opt-in; candidate builds are not releases until their Thor checks pass.
+See [rendering paths, controls and validation status](docs/graphics-upgrade.md). The graphics preview passed the documented early-game Thor checks. Climate remains opt-in; see the per-game limitations and exact tested build hashes.

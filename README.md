@@ -10,6 +10,8 @@ The physical category passed the host regression; it was not available on the de
 
 ## Build and install
 
+Use the [shared builder](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/voxel.html) or download the [native fixes bundle](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/VoxelGraphics-Native-Fixes-2026-11-18.zip). This bundle supersedes the initial graphics-preview downloads' FRLG+ and Classic contents. Keep each engine together with its matching recipe.
+
 Use your local Pokémon Classic v1.5.1 GBA ROM, SHA-1 `7e27a7878d6aeb3b798757f98e60d1064d762dbb`. The game data pack is rebuilt from that ROM on your device.
 
 1. From [Thor-tested build 44364733602](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/actions/runs/44364733602), download `pokeclassic-voxel-engine` and `pokeclassic-voxel-recipe`. Always pair artifacts from the same [Classic Actions run](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/actions/workflows/ci.yml?query=branch%3Agraphics%2Fazahar-classic). Extract the two engine files, `emerald3ds.recipe`, and the `voxelgen` directory together into `payload`.

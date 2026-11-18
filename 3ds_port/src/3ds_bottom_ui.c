@@ -608,11 +608,11 @@ static void LoadResources(void)
     for (int i = 0; i < (int)ARRAY_COUNT(sRes.monIconPal); ++i)
         PalSymbol(gMonIconPaletteTable[i].data, &sRes.monIconPal[i], 1);
 
-    sRes.mapTiles = UnlzFile("pokenav/region_map/map.8bpp.lz", &size);
+    sRes.mapTiles = UnlzFile("pokenav/region_map.8bpp.lz", &size);
     sRes.mapTileCount = size / 64;
-    sRes.mapMap = UnlzFile("pokenav/region_map/map.bin.lz", NULL);
+    sRes.mapMap = UnlzFile("pokenav/region_map_map.bin.lz", NULL);
     {
-        u16 *raw = ReadRomfs("pokenav/region_map/map.gbapal", &size);
+        u16 *raw = ReadRomfs("pokenav/region_map.gbapal", &size);
         if (raw)
         {
             for (u32 i = 0; i < 32 && i < size / 2; ++i)
@@ -620,10 +620,10 @@ static void LoadResources(void)
             free(raw);
         }
     }
-    sRes.playerIcon[MALE] = ReadRomfs("pokenav/region_map/brendan_icon.4bpp", NULL);
-    sRes.playerIcon[FEMALE] = ReadRomfs("pokenav/region_map/may_icon.4bpp", NULL);
-    PalFile("pokenav/region_map/brendan_icon.gbapal", &sRes.playerIconPal[MALE], 1, FALSE);
-    PalFile("pokenav/region_map/may_icon.gbapal", &sRes.playerIconPal[FEMALE], 1, FALSE);
+    sRes.playerIcon[MALE] = ReadRomfs("pokenav/region_map/icons/red_icon.4bpp", NULL);
+    sRes.playerIcon[FEMALE] = ReadRomfs("pokenav/region_map/icons/leaf_icon.4bpp", NULL);
+    PalFile("pokenav/region_map/icons/red_icon.gbapal", &sRes.playerIconPal[MALE], 1, FALSE);
+    PalFile("pokenav/region_map/icons/leaf_icon.gbapal", &sRes.playerIconPal[FEMALE], 1, FALSE);
     sRes.cursorTiles = UnlzFile("pokenav/region_map/cursor_small.4bpp.lz", NULL);
     PalFile("pokenav/region_map/cursor.gbapal", &sRes.cursorPal, 1, FALSE);
 

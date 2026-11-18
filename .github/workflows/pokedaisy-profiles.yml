@@ -44,6 +44,8 @@ jobs:
           done
           python3 scripts/gen_gamedata.py
           python3 scripts/gen_gamedata.py --check
+          python3 scripts/gen_area_maps.py
+          python3 scripts/gen_area_maps.py --check
       - name: Validate wrappers
         uses: gradle/actions/wrapper-validation@748248ddd2a24f49513d8f472f81c3a07d4d50e1
         with:

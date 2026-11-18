@@ -1,0 +1,34 @@
+diff --git a/app/src/main/kotlin/com/pokedaisy/app/companion/data/Poller.kt b/app/src/main/kotlin/com/pokedaisy/app/companion/data/Poller.kt
+index 6788051d1b854006cc2e0b02cacf52313a410178..f43a7d8ed67904f3e8fa67ddbb933f715857143b 100644
+--- a/app/src/main/kotlin/com/pokedaisy/app/companion/data/Poller.kt
++++ b/app/src/main/kotlin/com/pokedaisy/app/companion/data/Poller.kt
+@@ -1359,6 +1359,7 @@ class TelemetrySampler {
+             MOEMON_QUETZAL_V0_8_4_ALPHA_ES_Hotfix_SHA1,
+             ORANGE_ISLANDS_V5_7_BETA_SHA1, ORANGE_ISLANDS_UNVERSIONED_SHA1,
+             FIRERED_ROCKET_EDITION_UNVERSIONED_SHA1, ASH_GRAY_V4_5_3_SHA1, ASH_GRAY_FORK_BUG_FIX_V1_0_SHA1,
++            FRLG_PLUS_V1_5_1_SHA1,
+             GHOST_GREY_V1_0_1_SHA1, GHOST_GREY_V1_0_2_SHA1, GHOST_GREY_V1_0_4_SHA1,
+             LETS_GO_PIKACHU_UNVERSIONED_SHA1, LETS_GO_PIKACHU_TRANSLATION_ONLY_UNVERSIONED_SHA1,
+             LETS_GO_EEVEE_UNVERSIONED_SHA1, LETS_GO_EEVEE_TRANSLATION_ONLY_UNVERSIONED_SHA1,
+diff --git a/gamedata/gen3/area_maps.toml b/gamedata/gen3/area_maps.toml
+index cc6f71b25d4ff4ded9555245b2c0b6f549266413..dba0a767150f497be1a7ae3e1de27e1ed2c2155e 100644
+--- a/gamedata/gen3/area_maps.toml
++++ b/gamedata/gen3/area_maps.toml
+@@ -1298,6 +1298,17 @@ floorNumOff = -1
+ metatileSize = 16
+ metatileMask = 0x3FF
+ 
++[rom.e4deb9be]
++name = "Pokémon Classic v1.5.1"
++mapGroups = 0x085A3534
++mapGroupSizes = [57, 107, 103, 100, 38, 61, 38, 82, 59, 4, 6, 8, 10, 6, 8, 20, 10, 9, 10, 10, 6, 4, 2, 2, 1, 1, 1, 2, 2, 3, 2, 3, 2, 1, 1]
++primaryTiles = 640
++primaryMetatiles = 640
++primaryPalettes = 7
++floorNumOff = -1
++metatileSize = 24
++metatileMask = 0x3FF
++
+ [rom.964763c0]
+ name = "FireRed and LeafGreen Plus v1.5.1.gba"
+ mapGroups = 0x083A716C

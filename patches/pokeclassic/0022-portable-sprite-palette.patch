@@ -1,0 +1,27 @@
+diff --git a/gflib/sprite.c b/gflib/sprite.c
+index 8dbfa0e02e2a809bd8769ac040c8ae68481db252..6eb6336b8c692166d1f758700f70b0c86a19cafa 100644
+--- a/gflib/sprite.c
++++ b/gflib/sprite.c
+@@ -1824,8 +1824,10 @@ void FreeAllSpritePalettes(void)
+ u8 LoadSpritePalette(const struct SpritePalette *palette)
+ {
+     u8 index = IndexOfSpritePaletteTag(palette->tag);
++#ifndef PORTABLE
+     u8 i;
+     u16 *debugPtr = (u16*) 0x0203d800;
++#endif
+ 
+     if (index != 0xFF)
+         return index;
+@@ -1839,9 +1841,11 @@ u8 LoadSpritePalette(const struct SpritePalette *palette)
+     else
+     {
+         sSpritePaletteTags[index] = palette->tag;
++#ifndef PORTABLE
+         for (i = 0; i < 16; i++) {
+           debugPtr[i] = sSpritePaletteTags[i];
+         }
++#endif
+         DoLoadSpritePalette(palette->data, index * 16);
+         return index;
+     }

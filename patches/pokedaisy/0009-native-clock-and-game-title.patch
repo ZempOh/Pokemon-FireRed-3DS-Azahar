@@ -1,17 +1,18 @@
 diff --git a/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt b/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt
-index 02e83e3..5514c3b 100644
+index 02e83e3..f3dce89 100644
 --- a/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt
 +++ b/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt
-@@ -83,6 +83,8 @@ class EmulatorEngine(
+@@ -83,6 +83,9 @@ class EmulatorEngine(
      @Volatile var wideGame = WideScreen.OFF
      @Volatile var voxelClimateConfig = 0
      @Volatile var wideVoxelGame = WideScreen.OFF
 +    /** Keep supported voxel profiles on the cartridge clock in both 2D and 3D. */
 +    @Volatile var voxelNativeClock = false
++    val preserveNativeVideoFrame: Boolean get() = voxelNativeClock && gba && effectiveSpeed() == 1f
      /** A Game Boy game pk_wide_gb.c knows (its [WideScreen.gameFor]), EXPAND on or not: with EXPAND off it's configured
       * anyway with nothing drawn, for its scene (the FIELD HUD's field read: a Game Boy game has no FfMenuWatch). */
      @Volatile var gbSceneGame = WideScreen.OFF
-@@ -1215,7 +1217,8 @@ class EmulatorEngine(
+@@ -1215,7 +1218,8 @@ class EmulatorEngine(
  
          val scratch = ShortArray(4096)
          val tap = AudioTap()
@@ -21,7 +22,7 @@ index 02e83e3..5514c3b 100644
          var next = System.nanoTime()
          var fpsFrames = 0
          var fpsSince = System.nanoTime()
-@@ -1833,7 +1836,10 @@ class EmulatorEngine(
+@@ -1833,7 +1837,10 @@ class EmulatorEngine(
                  trouble = AudioTroubleWatch()
                  Log.i("pokedaisy", "audio: trying vsync pacing again")
              }
@@ -33,7 +34,7 @@ index 02e83e3..5514c3b 100644
              pacedPerFrame = perFrame
              val ffPer = ffFramesPerRefresh(speed, vsyncsPerFrame())
              if (ffPer != ffPerTick) {
-@@ -1863,7 +1869,7 @@ class EmulatorEngine(
+@@ -1863,7 +1870,7 @@ class EmulatorEngine(
              // The timer fallback keeps the whole buffer: it's there for devices that ran dry. So does a DS game's
              // STEADY copy, which fills it to the top on purpose (a track starts once its buffer is full).
              if (!trackStarted && !paused && track != null) trackStarted = track.playbackHeadPosition != 0
@@ -42,7 +43,7 @@ index 02e83e3..5514c3b 100644
              if (half != trackHalf && track != null) {
                  trackHalf = half
                  runCatching { track.bufferSizeInFrames = if (half) bufferFrames / 2 else bufferFrames }
-@@ -1928,7 +1934,7 @@ class EmulatorEngine(
+@@ -1928,7 +1935,7 @@ class EmulatorEngine(
                      dsMusicFrames += w / 2
                  }
              } else if (n > 0 && !paused && track != null) {
@@ -51,7 +52,7 @@ index 02e83e3..5514c3b 100644
                      // The play head wraps as an unsigned int; the difference doesn't care.
                      val played = track.playbackHeadPosition
                      var queued = framesWritten.toInt() - played
-@@ -1952,7 +1958,11 @@ class EmulatorEngine(
+@@ -1952,7 +1959,11 @@ class EmulatorEngine(
                      // Samples per emulated second so that a frame's worth lasts one frame of the
                      // display's, nudged towards a half-full buffer (dynamic rate control).
                      val fill = queued.toDouble() / bufferFrames
@@ -64,8 +65,60 @@ index 02e83e3..5514c3b 100644
                      val drc = 1.0 + DRC_MAX * (1.0 - 2.0 * fill).coerceIn(-1.0, 1.0)
                      // The core's own frame rate: a DS makes 59.83 frames a second, not the GBA's 59.73 (0.17% that DRC
                      // otherwise spent a third of its range on, GitHub #215).
+diff --git a/app/src/main/kotlin/com/pokedaisy/app/EmulatorView.kt b/app/src/main/kotlin/com/pokedaisy/app/EmulatorView.kt
+index 9945163..9fe591e 100644
+--- a/app/src/main/kotlin/com/pokedaisy/app/EmulatorView.kt
++++ b/app/src/main/kotlin/com/pokedaisy/app/EmulatorView.kt
+@@ -336,6 +336,10 @@ class EmulatorView(context: Context) : GLSurfaceView(context) {
+         get() = renderer.onVsync
+         set(v) { renderer.onVsync = v }
+ 
++    var preserveFrames: () -> Boolean
++        get() = renderer.preserveFrames
++        set(v) { renderer.preserveFrames = v }
++
+     /** New game frames put on screen so far, and refreshes whose due frame came too late to wait for
+      * (it showed a refresh later) - for FPS / CPU's performance panel. */
+     val framesShown: Long get() = renderer.framesShown
+@@ -450,6 +454,7 @@ class EmulatorView(context: Context) : GLSurfaceView(context) {
+          * judder a log line reads (a steady 1x shows neither). */
+         @Volatile var repeatedDraws = 0L
+         @Volatile var unshownFrames = 0L
++        @Volatile var preserveFrames: () -> Boolean = { false }
+ 
+         /** Ticks the engine; returns how long this draw may wait for the game frame that tick starts (0 = none due). */
+         @Volatile var onVsync: (() -> Long)? = null
+@@ -514,6 +519,12 @@ class EmulatorView(context: Context) : GLSurfaceView(context) {
+         /** Emu thread, between frames (so [buffer] is whole): copies it - or, with [win], the WIDE window
+          * [wideW] x [wideH] - into [ready]. */
+         fun publish(wideW: Int, wideH: Int, win: WideCamera.Window?) = synchronized(frameLock) {
++            // A delayed Android draw must consume the previous native-clock frame
++            // before its single pending slot is reused. Bounded for paused surfaces;
++            // fast-forward and held frames retain the existing overwrite behavior.
++            if (preserveFrames() && !holdFrame()) {
++                VoxelFrameClock.awaitPresentation(frameLock as Object) { fresh }
++            }
+             readyGpu = false
+             val wideSrc = wideBuffer?.takeIf { wideW > 0 && wideH > 0 && win != null }
+             val src = wideSrc ?: buffer ?: return
+@@ -573,6 +584,7 @@ class EmulatorView(context: Context) : GLSurfaceView(context) {
+                 wideBuffer = null   // pkDeinit frees it too: the next core's wide frames read it until its bind
+                 fresh = false
+                 readyGpu = false
++                (frameLock as Object).notifyAll()
+             }
+         }
+ 
+@@ -751,6 +763,7 @@ class EmulatorView(context: Context) : GLSurfaceView(context) {
+                     shownWin = readyWin
+                     framesShown++
+                 }
++                if (!fresh) (frameLock as Object).notifyAll()
+             }
+             if (dirtyGeometry) {
+                 recomputeQuad()
 diff --git a/app/src/main/kotlin/com/pokedaisy/app/PokeDaisyActivity.kt b/app/src/main/kotlin/com/pokedaisy/app/PokeDaisyActivity.kt
-index f3fc9b3..b950d1f 100644
+index f3fc9b3..c3ed3c7 100644
 --- a/app/src/main/kotlin/com/pokedaisy/app/PokeDaisyActivity.kt
 +++ b/app/src/main/kotlin/com/pokedaisy/app/PokeDaisyActivity.kt
 @@ -2617,7 +2617,9 @@ class PokeDaisyActivity : Activity() {
@@ -79,7 +132,15 @@ index f3fc9b3..b950d1f 100644
          override val gameBlocked get() = romBlocked != null
          override val romFileName get() = rom?.name ?: "(none)"
          override val companionTabs get() = Prefs(this@PokeDaisyActivity).companionTabs
-@@ -4498,6 +4500,7 @@ class PokeDaisyActivity : Activity() {
+@@ -3158,6 +3160,7 @@ class PokeDaisyActivity : Activity() {
+             // The game screen's fastest mode, which no tick that waits for the refresh can outrun (VsyncCheck, GitHub #350).
+             displayMaxHz = { view.display?.supportedModes?.maxOfOrNull { it.refreshRate } ?: 0f }
+             drawStatsSource = { view.repeatedDraws to view.unshownFrames }
++            view.preserveFrames = { preserveNativeVideoFrame }
+             if (BuildConfig.DEBUG) audioTapDir = getExternalFilesDir("debug")
+             this.gba = gba
+             this.nds = nds
+@@ -4498,6 +4501,7 @@ class PokeDaisyActivity : Activity() {
          if (::engine.isInitialized) {
              engine.wideGame = if (aspect == GameAspect.WIDE) wideGame else WideScreen.OFF
              engine.voxelClimateConfig = prefs.voxelClimateFor(romKey)
@@ -89,29 +150,67 @@ index f3fc9b3..b950d1f 100644
              } else {
 diff --git a/app/src/main/kotlin/com/pokedaisy/app/VoxelFrameClock.kt b/app/src/main/kotlin/com/pokedaisy/app/VoxelFrameClock.kt
 new file mode 100644
-index 0000000..6839619
+index 0000000..8a7e5a6
 --- /dev/null
 +++ b/app/src/main/kotlin/com/pokedaisy/app/VoxelFrameClock.kt
-@@ -0,0 +1,6 @@
+@@ -0,0 +1,16 @@
 +package com.pokedaisy.app
 +
 +/** A GBA frame is 280896 cycles of its 16777216 Hz clock, independent of Android's refresh. */
 +internal object VoxelFrameClock {
 +    const val FRAME_NANOS = 280896L * 1_000_000_000L / 16777216L
++
++    /** Caller holds the pending-frame monitor; wait at most one cartridge frame. */
++    fun awaitPresentation(monitor: Object, pending: () -> Boolean) {
++        val end = System.nanoTime() + FRAME_NANOS
++        while (pending()) {
++            val left = end - System.nanoTime()
++            if (left <= 0) return
++            monitor.wait(left / 1_000_000L, (left % 1_000_000L).toInt())
++        }
++    }
 +}
 diff --git a/app/src/test/kotlin/com/pokedaisy/app/VoxelFrameClockTest.kt b/app/src/test/kotlin/com/pokedaisy/app/VoxelFrameClockTest.kt
 new file mode 100644
-index 0000000..68f02c3
+index 0000000..f2d16a6
 --- /dev/null
 +++ b/app/src/test/kotlin/com/pokedaisy/app/VoxelFrameClockTest.kt
-@@ -0,0 +1,17 @@
+@@ -0,0 +1,45 @@
 +package com.pokedaisy.app
 +
 +import org.junit.Assert.assertEquals
 +import org.junit.Assert.assertTrue
 +import org.junit.Test
++import java.util.concurrent.CountDownLatch
++import java.util.concurrent.TimeUnit
 +
 +class VoxelFrameClockTest {
++    @Test fun presentationWaitReleasesTheMonitorForTheConsumer() {
++        val monitor = Object()
++        var pending = true
++        val published = CountDownLatch(1)
++        val consumed = CountDownLatch(1)
++        val consumer = Thread {
++            published.await()
++            synchronized(monitor) { pending = false; monitor.notifyAll() }
++            consumed.countDown()
++        }
++        consumer.start()
++        synchronized(monitor) {
++            published.countDown()
++            VoxelFrameClock.awaitPresentation(monitor) { pending }
++        }
++        assertTrue(consumed.await(2, TimeUnit.SECONDS))
++        consumer.join()
++    }
++
++    @Test(timeout = 2000) fun missingRendererCannotStallTheCore() {
++        val monitor = Object()
++        val start = System.nanoTime()
++        synchronized(monitor) { VoxelFrameClock.awaitPresentation(monitor) { true } }
++        assertTrue(System.nanoTime() - start >= VoxelFrameClock.FRAME_NANOS)
++    }
++
 +    @Test fun tenMinutesStayOnTheCartridgeClock() {
 +        val frames = 35836L
 +        val actualSeconds = frames * VoxelFrameClock.FRAME_NANOS / 1e9

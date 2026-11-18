@@ -25,6 +25,8 @@ def sanitize(cc):
         temporary = Path(directory)
         (temporary / "probe.c").write_text("int main(void) { return 0; }\n", encoding="utf-8")
         flags = ["-fsanitize=address,undefined"]
+        if sys.platform == "linux":
+            flags += ["-fno-pie", "-no-pie"]
         probe = subprocess.run([cc, *flags, str(temporary / "probe.c"), "-o", str(temporary / "probe")],
                                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         return flags if probe.returncode == 0 else []

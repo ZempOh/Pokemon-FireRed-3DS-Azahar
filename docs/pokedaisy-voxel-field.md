@@ -15,13 +15,34 @@ Party, Bag and Map use the GBA session's existing companion profiles.
 
 ## Install the test build
 
-1. Open the [voxel preview workflow](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/actions/workflows/pokedaisy-profiles.yml?query=branch%3Apokedaisy-voxel-field).
-2. Download the `pokedaisy-voxel-preview` ZIP from a successful run and extract
-   the APK. The package ID is `com.pokedaisy.app.voxelpreview`. The app has
-   its own library and save directory.
-3. Install and open **PokéDaisy Voxel Preview**. Import your ROM and, if
+1. Download the [tested Android APK](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/tag/pokedaisy-voxel-preview-v1).
+   The package ID is `com.pokedaisy.app.voxelpreview`, with its own library
+   and save directory.
+2. Install and open **PokéDaisy Voxel Preview**. Import your ROM and, if
    desired, a copy of your battery save. Turn on **Voxel 3D** in Settings.
-4. Walk a few tiles to activate the companion. On the lower screen, check
+3. Walk a few tiles to activate the companion. On the lower screen, check
    the starter in Party, a known item in Bag, and the location in Map.
    Enter a building and a battle, then return to the overworld. Toggle the
    setting off to compare the original Expand view.
+
+If Android reports a signing mismatch with an earlier test APK, back up
+the preview app’s saves before replacing that preview package. The workflow
+uses a debug signing key generated on its runner.
+
+## AYN Thor validation
+
+The [successful Android build](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/actions/runs/44322760489)
+was installed and tested using the Thor’s built-in screens. Each game
+loaded into projected terrain and displayed its party, one Potion, and its
+live location on the lower screen.
+
+| Game | Party | Map |
+| --- | --- | --- |
+| Let’s Go Pikachu | Pikachu | Pallet Town and Route 1 |
+| Radical Red | Chikorita | Route 1 |
+| Pokémon Unbound | Beldum | Shadow Base and Frozen Heights |
+
+During preview testing, Radical Red returned to the voxel overworld after
+a wild encounter, and Unbound’s first double battle was completed. On the
+release APK, switching from an enabled game to one with the toggle off
+correctly returned to the standard Expand view in the same app process.

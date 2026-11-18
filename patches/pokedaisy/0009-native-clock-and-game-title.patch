@@ -1,5 +1,5 @@
 diff --git a/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt b/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt
-index 02e83e3..65c95a6 100644
+index 02e83e3..5514c3b 100644
 --- a/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt
 +++ b/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt
 @@ -83,6 +83,8 @@ class EmulatorEngine(
@@ -11,16 +11,17 @@ index 02e83e3..65c95a6 100644
      /** A Game Boy game pk_wide_gb.c knows (its [WideScreen.gameFor]), EXPAND on or not: with EXPAND off it's configured
       * anyway with nothing drawn, for its scene (the FIELD HUD's field read: a Game Boy game has no FfMenuWatch). */
      @Volatile var gbSceneGame = WideScreen.OFF
-@@ -1215,7 +1217,7 @@ class EmulatorEngine(
+@@ -1215,7 +1217,8 @@ class EmulatorEngine(
  
          val scratch = ShortArray(4096)
          val tap = AudioTap()
 -        val frameNanos = 1_000_000_000L / 60L
 +        val frameNanos get() = if (voxelNativeClock && gba) VoxelFrameClock.FRAME_NANOS else 1_000_000_000L / 60L
++        val nativeClockAudio get() = voxelNativeClock && gba && speed == 1f
          var next = System.nanoTime()
          var fpsFrames = 0
          var fpsSince = System.nanoTime()
-@@ -1833,7 +1835,10 @@ class EmulatorEngine(
+@@ -1833,7 +1836,10 @@ class EmulatorEngine(
                  trouble = AudioTroubleWatch()
                  Log.i("pokedaisy", "audio: trying vsync pacing again")
              }
@@ -32,6 +33,37 @@ index 02e83e3..65c95a6 100644
              pacedPerFrame = perFrame
              val ffPer = ffFramesPerRefresh(speed, vsyncsPerFrame())
              if (ffPer != ffPerTick) {
+@@ -1863,7 +1869,7 @@ class EmulatorEngine(
+             // The timer fallback keeps the whole buffer: it's there for devices that ran dry. So does a DS game's
+             // STEADY copy, which fills it to the top on purpose (a track starts once its buffer is full).
+             if (!trackStarted && !paused && track != null) trackStarted = track.playbackHeadPosition != 0
+-            val half = (!vsyncMode || !trackStarted) && !vsyncFallback && vsyncUnreliable == null && !dsMusicOn
++            val half = ((!vsyncMode && !nativeClockAudio) || !trackStarted) && !vsyncFallback && vsyncUnreliable == null && !dsMusicOn
+             if (half != trackHalf && track != null) {
+                 trackHalf = half
+                 runCatching { track.bufferSizeInFrames = if (half) bufferFrames / 2 else bufferFrames }
+@@ -1928,7 +1934,7 @@ class EmulatorEngine(
+                     dsMusicFrames += w / 2
+                 }
+             } else if (n > 0 && !paused && track != null) {
+-                if (vsyncMode) {
++                if (vsyncMode || nativeClockAudio) {
+                     // The play head wraps as an unsigned int; the difference doesn't care.
+                     val played = track.playbackHeadPosition
+                     var queued = framesWritten.toInt() - played
+@@ -1952,7 +1958,11 @@ class EmulatorEngine(
+                     // Samples per emulated second so that a frame's worth lasts one frame of the
+                     // display's, nudged towards a half-full buffer (dynamic rate control).
+                     val fill = queued.toDouble() / bufferFrames
+-                    val frameHz = 1e9 / ((audioPeriodNanos.takeIf { it > 0.0 } ?: vsyncPeriodNanos) * perFrame)
++                    // Native-clock profiles must not block on the audio mixer's 20 ms bursts:
++                    // timer pacing owns cadence, while the existing bounded rate control keeps
++                    // the audio buffer near half full without depending on display refresh.
++                    val frameHz = if (nativeClockAudio) 1e9 / VoxelFrameClock.FRAME_NANOS
++                        else 1e9 / ((audioPeriodNanos.takeIf { it > 0.0 } ?: vsyncPeriodNanos) * perFrame)
+                     val drc = 1.0 + DRC_MAX * (1.0 - 2.0 * fill).coerceIn(-1.0, 1.0)
+                     // The core's own frame rate: a DS makes 59.83 frames a second, not the GBA's 59.73 (0.17% that DRC
+                     // otherwise spent a third of its range on, GitHub #215).
 diff --git a/app/src/main/kotlin/com/pokedaisy/app/PokeDaisyActivity.kt b/app/src/main/kotlin/com/pokedaisy/app/PokeDaisyActivity.kt
 index f3fc9b3..b950d1f 100644
 --- a/app/src/main/kotlin/com/pokedaisy/app/PokeDaisyActivity.kt

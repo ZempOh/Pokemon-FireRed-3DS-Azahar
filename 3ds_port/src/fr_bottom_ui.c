@@ -1979,12 +1979,12 @@ void CtrBottom_ShowGameFrame(const u16 *frame)
 #define BAG_ROW_H 26
 #define BAG_LIST_X 62
 #define BAG_LIST_W 252
-#define BAG_TAB_H 58
+#include "fr_bag_layout.h"
 #define FOOT_KEY_W 62
 #define FOOT_KEY_STEP 67
 
 enum { PAGE_HIT_BACK = 1, PAGE_HIT_SLOT, PAGE_HIT_ACTION = PAGE_HIT_SLOT + PARTY_SIZE,
-       PAGE_HIT_POCKET = PAGE_HIT_ACTION + PORT_MENU_MAX_ACTIONS, PAGE_HIT_ROW = PAGE_HIT_POCKET + 3,
+       PAGE_HIT_POCKET = PAGE_HIT_ACTION + PORT_MENU_MAX_ACTIONS, PAGE_HIT_ROW = PAGE_HIT_POCKET + NATIVE_BAG_POCKETS,
        PAGE_HIT_UP = PAGE_HIT_ROW + PAGE_MAX_ROWS, PAGE_HIT_DOWN, PAGE_HIT_FOOT, PAGE_HIT_MENU = PAGE_HIT_FOOT + 4,
        PAGE_HIT_DIALOG = PAGE_HIT_MENU + 16, PAGE_HIT_MOVE, PAGE_HIT_RAIL = PAGE_HIT_MOVE + 5,
        PAGE_HIT_BOX_CELL, PAGE_HIT_BOX_PARTY = PAGE_HIT_BOX_CELL + 30, PAGE_HIT_BOX_TITLE = PAGE_HIT_BOX_PARTY + PARTY_SIZE,
@@ -2021,7 +2021,7 @@ static u8 sPage;
 static u32 sPageFrame = 0xFFFFFFF0;
 static PageView sPageShown;
 static u32 sPageHash;
-static u8 sBagTop[3];
+static u8 sBagTop[NATIVE_BAG_POCKETS];
 static s8 sBagWantPocket = -1;
 static u8 sBagPocketTries;
 static s8 sWantPage = -1;      /* the summary's page chosen by touch */
@@ -2366,23 +2366,20 @@ static void TextLines(u8 font, const u8 *str, int x, int y, int step, u16 ink, u
 
 static void DrawBagBase(const PageView *v)
 {
-    static const char *const names[] = { "ITEMS", "KEY", "BALLS" };
-    static const u16 icons[] = { ITEM_POTION, ITEM_TOWN_MAP, ITEM_POKE_BALL };
     const struct PortBagView *b = &v->bag;
     u16 current = b->cursor < b->nItems ? BagGetItemIdByPocketPosition(b->pocket + 1, b->cursor) : ITEM_NONE;
 
     Header(gText_MenuBag);
     FillRect(BAG_LIST_X, HEADER_H, W - BAG_LIST_X, FOOTER_Y - HEADER_H, C_PAGE);
     FillRect(0, HEADER_H, BAG_LIST_X, FOOTER_Y - HEADER_H, C_BAND);
-    /* the pockets */
-    for (int i = 0; i < 3; i++)
+    /* Compact tabs expose all five FRLG+ pockets without clipping the footer. */
+    for (int i = 0; i < NATIVE_BAG_POCKETS; i++)
     {
-        int y = 30 + i * BAG_TAB_H;
+        int y = BAG_TAB_Y + i * BAG_TAB_H;
         bool8 on = i == b->pocket, pressed = v->pressed == PAGE_HIT_POCKET + i;
 
         RoundBox(4, y, on ? BAG_LIST_X : BAG_LIST_X - 8, BAG_TAB_H - 4, 6, on ? C_CARD : pressed ? C_BAND_DK : C_FLAT, on ? C_LINE : C_BAND_DK);
-        DrawItemIcon(icons[i], 19, y + 5);
-        TextCentered(FONT_SMALL, Ascii(names[i]), 31, y + 33, on ? C_TEXT : C_WHITE, on ? C_TEXT_SH : C_BAND_DK);
+        TextCentered(FONT_SMALL, Ascii(sNativeBagPocketNames[i]), 31, y + 9, on ? C_TEXT : C_WHITE, on ? C_TEXT_SH : C_BAND_DK);
     }
     /* the list */
     RoundBox(BAG_LIST_X, 30, BAG_LIST_W, 132, 6, C_CARD, C_LINE);
@@ -3795,6 +3792,8 @@ static bool8 SnapshotPage(PageView *v)
         return FALSE;
     {
         struct PortBagView *b = &v->bag;
+        if (b->pocket >= NATIVE_BAG_POCKETS)
+            return FALSE;
         int count = b->nItems + 1, top = sBagTop[b->pocket];
 
         if (b->cursor < top)
@@ -3914,9 +3913,9 @@ static u8 PageHitTest(const PageView *v, int x, int y)
         return HIT_NONE;
     if (x < BAG_LIST_X)
     {
-        int i = (y - 30) / BAG_TAB_H;
+        int i = NativeBagPocketAt(y);
 
-        return y >= 30 && i < 3 ? PAGE_HIT_POCKET + i : HIT_NONE;
+        return i >= 0 ? PAGE_HIT_POCKET + i : HIT_NONE;
     }
     if (x >= 303 && y < 162 && v->bag.nItems + 1 > BAG_ROWS)
         return y < 96 ? PAGE_HIT_UP : PAGE_HIT_DOWN;
@@ -3969,7 +3968,7 @@ static void PageActivate(const PageView *v, u8 hit)
         else if (hit == PAGE_HIT_FOOT)
             Inject(v->party.slot == PARTY_SIZE ? A_BUTTON : START_BUTTON);
     }
-    else if (hit >= PAGE_HIT_POCKET && hit < PAGE_HIT_POCKET + 3)
+    else if (hit >= PAGE_HIT_POCKET && hit < PAGE_HIT_POCKET + NATIVE_BAG_POCKETS)
     {
         sBagWantPocket = hit - PAGE_HIT_POCKET;
         sBagPocketTries = 0;

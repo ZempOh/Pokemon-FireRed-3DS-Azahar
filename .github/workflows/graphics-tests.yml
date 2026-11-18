@@ -17,3 +17,7 @@ jobs:
           python3 3ds_port/tests/voxel_weather_gate_test.py
       - name: Connected-map camera framing
         run: python3 3ds_port/tests/voxel_camera_boundary_test.py
+      - name: FRLG main Bag pocket labels and touch bounds
+        run: |
+          gcc -std=c99 -Wall -Wextra -Werror -I3ds_port/src 3ds_port/tests/fr_bag_layout_test.c -o /tmp/fr-bag-test
+          /tmp/fr-bag-test

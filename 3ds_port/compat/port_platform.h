@@ -35,6 +35,7 @@ bool Port_IsAssetStub(const void *ptr);
 const char *Port_GetAssetPath(const void *ptr);
 u32 Port_GetAssetSize(const void *ptr);
 u32 Port_GetAssetSizeExact(const void *base);
+u32 Port_GetLinkedGameDataAvailable(const void *base);
 u32 Port_GetAssetSizeSized(const void *ptr, u32 size);
 bool Port_LoadAssetToBuffer(const char *path, void *dest, u32 maxSize);
 bool Port_LoadAssetPointerToBuffer(const void *ptr, void *dest, u32 maxSize);

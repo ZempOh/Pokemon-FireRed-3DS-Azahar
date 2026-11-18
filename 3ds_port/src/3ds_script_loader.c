@@ -56,6 +56,15 @@ static u32 sScriptBytes;
 static u32 sSongBytes;
 static u32 sGameDataBytes;
 
+u32 Port_GetLinkedGameDataAvailable(const void *base)
+{
+    uintptr_t start = (uintptr_t)__ctr_gamedata;
+    uintptr_t address = (uintptr_t)base;
+    if (address < start || address - start >= sGameDataBytes)
+        return 0;
+    return sGameDataBytes - (u32)(address - start);
+}
+
 static void *ReadFile(const char *path, u32 *outSize)
 {
     FILE *file = fopen(path, "rb");

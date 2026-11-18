@@ -179,6 +179,23 @@ bool Voxel_LoadTilesStep(const void *tilesetPtr, uint8_t *dest, uint32_t destSiz
     if (!load->initialized)
     {
         load->packedSize = Port_GetAssetSizeExact(tileset->tiles);
+        if (!load->packedSize && src == tileset->tiles)
+        {
+            /* Assembly tilesets keep their graphics in linked game data. */
+            load->packedSize = Port_GetLinkedGameDataAvailable(src);
+            if (!tileset->isCompressed)
+            {
+                /* Classic's raw assembly banks end at the following palette. */
+                uintptr_t start = (uintptr_t)src;
+                uintptr_t end = (uintptr_t)tileset->palettes;
+                if (end <= start || end - start > load->packedSize
+                    || !Port_GetLinkedGameDataAvailable(tileset->palettes))
+                    goto failed;
+                load->packedSize = end - start;
+                if (load->packedSize > destSize)
+                    load->packedSize = destSize;
+            }
+        }
         if (!load->packedSize) goto failed;
         load->size = load->packedSize;
         if (tileset->isCompressed)

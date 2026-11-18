@@ -40,6 +40,9 @@ const void *Port_ResolveAssetPointer(const void *p) { return p; }
 static const void *sSizedAsset;
 static u32 sSizedBytes;
 u32 Port_GetAssetSizeExact(const void *p) { return p == sSizedAsset ? sSizedBytes : 0; }
+static const void *sLinkedAsset;
+static u32 sLinkedBytes;
+u32 Port_GetLinkedGameDataAvailable(const void *p) { return p == sLinkedAsset ? sLinkedBytes : 0; }
 void LZDecompressWram(const u32 *src, void *dst) { (void)src; (void)dst; }
 void CB2_Overworld(void) {}
 void CB2_OverworldBasic(void) {}
@@ -147,6 +150,18 @@ static void TileLoadTests(void)
         assert(load.written == i + 1 && dest[i] == 'A' && dest[i + 1] == 0xCA);
     }
     assert(load.ok);
+
+    sSizedAsset = NULL;
+    load = (VoxelTileLoad){0};
+    assert(Voxel_LoadTilesStep(&tileset, dest, 19, &load, 512) && !load.ok);
+    sLinkedAsset = packed; sLinkedBytes = sizeof(packed);
+    load = (VoxelTileLoad){0};
+    assert(Voxel_LoadTilesStep(&tileset, dest, 19, &load, 512) && load.ok);
+    sLinkedBytes = sizeof(packed) - 1;
+    load = (VoxelTileLoad){0};
+    assert(Voxel_LoadTilesStep(&tileset, dest, 19, &load, 512) && !load.ok);
+    sLinkedAsset = NULL;
+    sSizedAsset = packed;
     load = (VoxelTileLoad){0};
     assert(Voxel_LoadTilesStep(&tileset, dest, 18, &load, 512) && !load.ok);
     load = (VoxelTileLoad){0}; sSizedBytes = 7;

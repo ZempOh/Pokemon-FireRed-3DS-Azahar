@@ -6,7 +6,7 @@ PokéDaisy reads the CRC-selected live mGBA session: map grid/VMap and connected
 
 The native FireRed/FRLG+ ports use `voxel_world.c` to resolve current and connected maps through the asset pack; atlas, relief, building and mesh modules turn these into GPU geometry. `voxel_entities.c` supplies live sprites; `voxel_camera.c` supplies the follow camera. `ctr_voxel.c` draws terrain, depth-ordered entities, shadows, lighting and particles through Citro3D. The ordinary video compositor and bottom UI continue to own text, menus and transitions. Classic uses the Emerald-derived variant with its own camera edge handling, weather and day/night implementation. Its runtime structures are not interchangeable with FireRed's.
 
-## Candidate changes
+## Changes
 
 - PokéDaisy resolves sprite overlap after projection, with original OAM order as an equal-foot tie-breaker, instead of discarding pixels against a pre-projection sprite mask. Terrain-contact shading preserves nearest-neighbor samples.
 - FireRed and FRLG+ use a constant camera distance across connected maps, matching Classic's existing boundary policy. Unconnected interiors retain their size-dependent framing.
@@ -14,22 +14,55 @@ The native FireRed/FRLG+ ports use `voxel_world.c` to resolve current and connec
 - Settings are stored by ROM CRC in PokéDaisy and in each native title's separate settings directory. No encounters, collision, scripts, battle rules or save layouts were changed.
 - Interiors, underground native maps, battles and native weather suppress added effects. PokéDaisy's existing field eligibility guards preserve text and scripted display effects. Preset changes fade out before the next preset fades in.
 
-## Baseline and release gate
+## Thor verification and scope
 
-The connected device is AYN Thor `fa17bd72`; Azahar is `2126.2-googleplay` (package `io.github.lime3ds.android`). The Android preview is `com.pokedaisy.app.voxelpreview`. Original saves/states and settings were copied locally before testing. ROMs and saves must never be staged or attached to releases.
+Tested on AYN Thor with Azahar 2126.2-googleplay and Android package `com.pokedaisy.app.voxelpreview`. All six passed the early-game graphics smoke checks listed below. These results do not certify every map, bridge, reflection, scripted effect, or late-game scene. Climate defaults to Original and effect detail to Reduced. No gameplay or save-format changes were made.
 
-Initial short PokéDaisy samples, before changes: Let's Go 58.7-59.3 FPS, 3.6-3.9 ms average frame work; Radical Red 59.0 FPS, 4.0-4.2 ms; Unbound 59.0-59.1 FPS, 4.2-4.5 ms. All logged zero audio underruns in these samples. Unbound logged late draws (31 and 22 in two 120-frame intervals) and activated its slow-frame pacing guard. These are short baseline observations, not complete movement/battle certification. Thor's display runs at approximately 120 Hz; presentation refresh counts must not be reported as game FPS.
+| Game | Device coverage | Live lower-screen coverage | Remaining limitations |
+| --- | --- | --- | --- |
+| FireRed 3DS | Cold Continue; Pallet/Route 1; home entry/exit; Sentret battle and return; voxel off/on; all 20 manual season/weather combinations, Automatic, Original and persistent settings | Charmander level 7; Potion x1; Pallet/Route 1 map | Battle draw pacing is below a locked 60 FPS in some samples; no complete bridge/reflection survey |
+| FRLG+ 1.5.1 | Cold Continue; Pallet/Route 1; lab entry/exit; Rattata level 3 defeated with Bulbasaur; voxel off/on; all 20 combinations, Automatic, Original and persistent Winter/Snow/Full | Bulbasaur level 6; newly obtained Potion x1; map changes to Route 1 | Inherited native Bag labels use FireRed's three-pocket layout: Medicine appears under Key. Wider pocket compatibility is not certified. Battle draw pacing has dips |
+| Classic 1.5.1 | Cold Continue; Pallet/Route 1; lab entry/exit; Rattata defeated, Pikachu level 6 to 7, return; voxel off/on; all 20 combinations, Automatic, Original and persistence | Pikachu level 7; Potion x1 in Medicine; map | Existing forest gaps, occasional 2D ground speckles and PP-label overlap remain |
+| Let's Go Pikachu English | Cold load; Pallet/Route 1; home entry/exit; Pidgey level 3 defeated and return; voxel off/on; all 20 combinations, Automatic, Original and persistence | Pikachu level 5; Potion x1; live Pallet/Route 1 | Settings header uses inherited FireRed profile name. Expanded art uses the existing inferred geometry; no full-map certification |
+| Radical Red 4.10 | Cold load; Route 1/Pallet; home entry/exit; final APK Rattata level 3 defeated and return; voxel off/on; all 20 combinations, Automatic and Original | Chikorita level 5, live HP/PP; Potion x1; live route/town map | Occasional late draws; no claim that every hacked display effect projects correctly |
+| Unbound 2.1.1.1 | Cold load; Frozen Heights/Route 1; lab/home entry/exit; Gible level 10 rival battle completed and return; voxel off/on; Automatic, Original, persistence and all manual presets | Beldum level 10; Potion x1 in Cube; actual Frozen Heights/Route 1 boundary | Native snow takes precedence. Outdoor preset sweep used the same renderer with diagnostic logging; final APK repeated indoor sweep, Auto outdoors, battle and boundary |
 
-FireRed's initial release presentation sample contained 517 intervals averaging 16.714 ms. Native cold boot, field, transition and battle counters must be compared separately: boot-time asset loading otherwise dominates worst-frame timing.
+Android same-process switches verified CRC-specific settings: Unbound Manual Winter/Rain did not replace Radical Red Original or Let's Go Automatic. Unbound's incidental map selection of Route 4 was excluded from location evidence; the recorded Route 1 transition is an actual player movement. Native titles use separate native interfaces, not PokéDaisy telemetry.
 
-No candidate is approved for publication until all requested device checks pass. Build success and host tests alone are insufficient. The shared site remains on the previous verified releases until a matching artifact hash is recorded here.
+## Performance
 
-## Companion coverage
+The baseline samples were collected before modifying the renderer. Durations, locations, menus and battle phases differ, so these are observations rather than a controlled benchmark or an improvement claim. Game FPS is distinct from the roughly 118–120 Hz screen refresh. Initial loading and user-paused gaps are not gameplay worst-frame measurements.
 
-PokéDaisy profiles: Let's Go Pikachu English translation, Radical Red 4.10, Unbound 2.1.1.1 — Party, Bag/Cube and Map read the live GBA session. Verify an actual party member, Potion (or another known item), and a location change on the lower screen in each game, including a same-process switch.
+| Game | Before | Candidate observations |
+| --- | --- | --- |
+| FireRed | 517 presentation intervals, mean 16.714 ms | Field typically 59.8 game/drawn FPS; field callback median 2.73 ms (includes transitions); battle callback median 11.69 ms, peak 25.80 ms, draw samples around 59.1–59.8 |
+| FRLG+ | Field callback median 2.55 ms, 59.8 game/drawn FPS | Field callback median 2.56 ms, 59.8 game/drawn; battle median 12.05 ms, peak 25.03 ms; drawn 56.9–59.6 while game stayed 59.8 |
+| Classic | Field callback median 2.61 ms; field/menu mix, not matched battle | Final field median 2.35 ms; battle median 5.34 ms, peak 13.82 ms; game samples roughly 59.7–59.9 |
+| Let's Go | 58.7–59.3 FPS, average work 3.6–3.9 ms | Final Route 1 sample median 59.0 FPS, work 4.8 ms; 58.8–59.5 FPS, peak work 20.7 ms; 29 late draws across 31 logged intervals |
+| Radical Red | About 59.0 FPS, work 4.0–4.2 ms | Final field median 59.0 FPS / 4.35 ms; battle 59.1 FPS / 2.7 ms; peak work 24.2 ms; 32 field late draws across 84 intervals, zero across 29 battle intervals |
+| Unbound | 59.0–59.1 FPS, work 4.2–4.5 ms; short baseline had 31 and 22 late draws in two intervals | Final retained field log: median 59.0 FPS / 3.8 ms, range 58.7–59.7, peak 26.8 ms; 4 late draws across 589 intervals |
 
-Azahar titles use their native lower-screen interfaces rather than PokéDaisy telemetry. FireRed/FRLG+ and Classic expose native Party, Bag and Map; coverage and regression results must be recorded separately.
+All retained Android gameplay samples reported zero audio underruns. Native active audio-track counters remained zero before/after the sampled runs (FireRed track 1102, FRLG+ 1122, Classic 1108); system-wide idle mixer counters are not attributed to the games. Native logs include slow frames during startup, transitions and battle; no locked-60 or zero-stutter claim is made. Original is the default; Reduced bounds cosmetic particle cost. Full was exercised on the device, but use Reduced if pacing degrades.
 
-## Repeatable checks
+## Exact build provenance
 
-For each title: disposable save copy, cold boot, movement through adjacent maps, building entry/exit, battle and return, voxel off/on, every manual season and weather, Original restoration, per-game settings isolation, and representative before/after screenshots. Capture game FPS, frame-work/slow-frame counters, presentation intervals and audio-underrun deltas for the same route. Keep failures associated with the title and location. Only verified binaries may replace site artifacts.
+| Runtime | Built code | Successful workflow | Public binary SHA-256 |
+| --- | --- | --- | --- |
+| FireRed | `a091bf9` | [44339347416](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/actions/runs/44339347416) | Blank template `b679acc8239de17c871e38bda3d92e1908ae5dff6533dfae7158de4a4f533955` |
+| FRLG+ | `3ef95df` | [44339473321](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/actions/runs/44339473321) | Blank template `c63e2d4fddf129ffbdc4d3bbaa2975403dec3c40d099f71727b3ad2cf9d0e258` |
+| Classic | `36225ee` | [44342010430](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/actions/runs/44342010430) | 3DSX `fbbd64dc0ac9891a746889510f2451f2ebc3840f29ca08d1ab934543d1123041` |
+| PokéDaisy | `9b26ce4` | [44341672959](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/actions/runs/44341672959) | APK `d0bd911ee83c9e7bc5d4d79e1fa4d2b5df1ee001bcc5ccdfad0ce56079b541a6` |
+
+Later source commits add test wiring and documentation only. The incorrect generic FireRed workflow on the FRLG branch was canceled, and its branch trigger removed. Its artifacts were never used for the staged site.
+
+The staged shared builder was served on a fresh local port and all three games were built in Chrome from local ROMs. FireRed and FRLG+ cartridges matched the installed candidates byte for byte; Classic's engine and data pack both matched. A separate full host rebuild from each web archive produced the same results. A stale server on an older port was detected by its ABI/hash and excluded.
+
+Private comparison hashes (no game data is published): FireRed cartridge `2cc1f058b24462f2c71a8b2a3debcc14108dc6f5e10a3b26ae3aca59e9d6360b`; FRLG+ cartridge `ef052cff9d9a97ca370e64adf2fc51cbf4b9dd481b06f7f6180f911aaba3a8ed`; Classic pack `ac693e3c972bfde9b82ed5576b02073abda8b39767730b0a710812e076d2d4b3`.
+
+## Reproduce and regression checks
+
+Native branches contain `graphics-tests.yml`: it compiles the actual climate header against all presets, tests native-weather precedence and, for FireRed/FRLG+, extracts and exercises the actual camera distance function. All pass locally. Existing native build workflows reproduce the pinned upstream trees, templates and matching extraction recipes. Classic's separate Emerald-derived layout remains isolated.
+
+PokéDaisy's workflow pins upstream `79bd00e155fcc7d4373f23f5386d6e67c8c423eb`, applies patches 0001–0008, checks generated profiles and maps, and runs projection-depth/OAM-tie, terrain contact, bounds and climate tests before assembling the APK. The final patch contains no diagnostic climate logging. JNI settings changes run on the emulation thread.
+
+Use the recipes with your own matching ROMs. The shared site's public packages contain generators, recipes and blank engines, never ROMs, saves or generated game-data packs. Local playable packages must not be uploaded. The preview APK uses a cached debug signing key, explicitly supplied to Gradle; cache retention is not a durable production signing guarantee. Back up/export saves before replacing an older preview that has a different signer. No signing key is included in source or release assets.

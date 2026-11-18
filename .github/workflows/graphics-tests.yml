@@ -1,0 +1,19 @@
+name: Graphics host regression tests
+on:
+  push:
+    branches: [graphics/azahar-frlg]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  graphics:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Climate presets and weather precedence
+        run: |
+          gcc -std=c99 -Wall -Wextra -Werror -I3ds_port/src/voxel 3ds_port/tests/voxel_climate_test.c -lm -o /tmp/voxel-climate-test
+          /tmp/voxel-climate-test
+          python3 3ds_port/tests/voxel_weather_gate_test.py
+      - name: Connected-map camera framing
+        run: python3 3ds_port/tests/voxel_camera_boundary_test.py

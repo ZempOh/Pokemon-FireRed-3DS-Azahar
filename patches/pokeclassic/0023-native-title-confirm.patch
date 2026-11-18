@@ -1,18 +1,36 @@
 diff --git a/src/title_screen.c b/src/title_screen.c
-index 388ddc9baf39bc010799d6a50a1f397507c0133b..32c0b09d34b366f7a4df5c47a81f55abf51f94fa 100644
+index 388ddc9baf39bc010799d6a50a1f397507c0133b..288c3f94abb47d25dc08d301198fa46b4c865f4d 100644
 --- a/src/title_screen.c
 +++ b/src/title_screen.c
-@@ -22,6 +22,9 @@
+@@ -22,6 +22,10 @@
  #include "graphics.h"
  #include "constants/rgb.h"
  #include "constants/songs.h"
 +#ifdef PLATFORM_3DS
 +#include "port_log.h"
++#include "3ds_platform.h"
 +#endif
  
  #define TITLE_SCREEN_WIDTH DISPLAY_WIDTH
  #define TITLE_BG_MODE DISPCNT_MODE_1
-@@ -643,9 +646,27 @@ static void MainCB2(void)
+@@ -524,6 +528,16 @@ static void VBlankCB(void)
+ 
+ void CB2_InitTitleScreen(void)
+ {
++#ifdef PLATFORM_3DS
++    // Run the regular menu without the animated title when isolating boot issues.
++    if (gMain.state == 0 && CtrSettings_GetInt("classic_skip_title", 0))
++    {
++        CtrLog_Write(CTR_LOG_BOOT, "Classic title: bypassing animation for menu test");
++        SetMainCallback2(CB2_InitMainMenu);
++        return;
++    }
++#endif
++
+     switch (gMain.state)
+     {
+     default:
+@@ -643,9 +657,27 @@ static void MainCB2(void)
      UpdatePaletteFade();
  }
  
@@ -21,7 +39,7 @@ index 388ddc9baf39bc010799d6a50a1f397507c0133b..32c0b09d34b366f7a4df5c47a81f55ab
 +    if (!(JOY_NEW(A_BUTTON)) && !(JOY_NEW(START_BUTTON)))
 +        return FALSE;
 +#ifdef PLATFORM_3DS
-+    PORT_LOG("Classic title: opening main menu, new=%04x held=%04x", gMain.newKeys, gMain.heldKeys);
++    CtrLog_Write(CTR_LOG_BOOT, "Classic title: opening main menu, new=%04x held=%04x", gMain.newKeys, gMain.heldKeys);
 +#endif
 +    FadeOutBGM(4);
 +    BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 0x10, RGB_WHITEALPHA);
@@ -40,7 +58,7 @@ index 388ddc9baf39bc010799d6a50a1f397507c0133b..32c0b09d34b366f7a4df5c47a81f55ab
      // Skip to next phase when A, B, Start, or Select is pressed
      if ((gMain.newKeys & A_B_START_SELECT) || gTasks[taskId].data[1] != 0)
      {
-@@ -693,6 +714,10 @@ static void Task_TitleScreenPhase2(u8 taskId)
+@@ -693,6 +725,10 @@ static void Task_TitleScreenPhase2(u8 taskId)
  {
      u32 yPos;
  
@@ -51,7 +69,7 @@ index 388ddc9baf39bc010799d6a50a1f397507c0133b..32c0b09d34b366f7a4df5c47a81f55ab
      // Skip to next phase when A, B, Start, or Select is pressed
      if ((gMain.newKeys & A_B_START_SELECT) || gTasks[taskId].tSkipToNext)
      {
-@@ -718,6 +743,9 @@ static void Task_TitleScreenPhase2(u8 taskId)
+@@ -718,6 +754,9 @@ static void Task_TitleScreenPhase2(u8 taskId)
                                      | DISPCNT_OBJ_ON);
          CreatePressStartBanner(START_BANNER_X, 108);
          CreateCopyrightBanner(START_BANNER_X, 148);
@@ -61,7 +79,7 @@ index 388ddc9baf39bc010799d6a50a1f397507c0133b..32c0b09d34b366f7a4df5c47a81f55ab
          gTasks[taskId].data[4] = 0;
          gTasks[taskId].func = Task_TitleScreenPhase3;
      }
-@@ -742,13 +770,10 @@ static void Task_TitleScreenPhase2(u8 taskId)
+@@ -742,13 +781,10 @@ static void Task_TitleScreenPhase2(u8 taskId)
  // Show Rayquaza silhouette and process main title screen input
  static void Task_TitleScreenPhase3(u8 taskId)
  {
@@ -79,13 +97,13 @@ index 388ddc9baf39bc010799d6a50a1f397507c0133b..32c0b09d34b366f7a4df5c47a81f55ab
      {
          SetMainCallback2(CB2_GoToClearSaveDataScreen);
      }
-@@ -790,7 +815,12 @@ static void Task_TitleScreenPhase3(u8 taskId)
+@@ -790,7 +826,12 @@ static void Task_TitleScreenPhase3(u8 taskId)
  static void CB2_GoToMainMenu(void)
  {
      if (!UpdatePaletteFade())
 +    {
 +#ifdef PLATFORM_3DS
-+        PORT_LOG("Classic title: main menu fade finished");
++        CtrLog_Write(CTR_LOG_BOOT, "Classic title: main menu fade finished");
 +#endif
          SetMainCallback2(CB2_InitMainMenu);
 +    }

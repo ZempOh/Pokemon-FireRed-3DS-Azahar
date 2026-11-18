@@ -4,6 +4,9 @@
 
 # Pokémon FireRed 3DS for Azahar
 
+This branch builds the Android companion for Pokémon Classic and FireRed &
+LeafGreen+. [PokéDaisy setup, verification, and build instructions](docs/pokedaisy-profiles.md)
+
 **Proudly vibe coded.** This fork brings FireRed 3DS to Azahar on Android, with
 the AYN Thor as the target handheld. Choose your 3DS games folder and your
 FireRed ROM to build and install one standalone cartridge.

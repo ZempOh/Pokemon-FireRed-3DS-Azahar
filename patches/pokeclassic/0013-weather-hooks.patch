@@ -1,0 +1,94 @@
+diff --git a/gflib/sprite.h b/gflib/sprite.h
+index efcb39e060ddeea8faba5835f50b21d529ddbf9e..42df2a9c119821317e3b5951817c4b11a0e6302c 100644
+--- a/gflib/sprite.h
++++ b/gflib/sprite.h
+@@ -321,6 +321,10 @@ void FreeAllSpritePalettes(void);
+ u8 LoadSpritePalette(const struct SpritePalette *palette);
+ void LoadSpritePalettes(const struct SpritePalette *palettes);
+ u8 AllocSpritePalette(u16 tag);
++#ifdef PLATFORM_3DS
++u8 AllocSpritePaletteExt(u16 tag);
++u8 IndexOfSpritePaletteExtTag(u16 tag);
++#endif
+ u8 IndexOfSpritePaletteTag(u16 tag);
+ u16 GetSpritePaletteTagByPaletteNum(u8 paletteNum);
+ void FreeSpritePaletteByTag(u16 tag);
+diff --git a/include/field_weather.h b/include/field_weather.h
+index 8f5ec268290434dc843c528a191e1d6f4288b243..ca7a3122abd718d87a694aaae7b466f9546e4502 100644
+--- a/include/field_weather.h
++++ b/include/field_weather.h
+@@ -4,6 +4,18 @@
+ #include "sprite.h"
+ #include "constants/field_weather.h"
+ 
++#ifdef PLATFORM_3DS
++enum
++{
++    WEATHER_TILING_NONE,
++    WEATHER_TILING_LATTICE,
++    WEATHER_TILING_PARTICLES,
++};
++bool8 Weather_IsFogSpriteTemplate(const struct SpriteTemplate *template);
++bool8 Weather_IsBubbleSpriteTemplate(const struct SpriteTemplate *template);
++u8 Weather_SpriteTiling(const struct Sprite *sprite);
++#endif
++
+ #define TAG_WEATHER_START 0x1200
+ enum {
+     GFXTAG_CLOUD = TAG_WEATHER_START,
+diff --git a/src/field_effect.c b/src/field_effect.c
+index ccd70a0f0f07aae3d672e4491ff492c348061fac..aa7ed4af2755f96ef010e2443fc53b1034f57d22 100644
+--- a/src/field_effect.c
++++ b/src/field_effect.c
+@@ -1253,8 +1253,7 @@ bool8 FieldEffect_IsMachineSprite(const struct Sprite *sprite)
+ {
+     return sprite->template == &sSpriteTemplate_PokeballGlow
+         || sprite->template == &sSpriteTemplate_PokecenterMonitor
+-        || sprite->template == &sSpriteTemplate_HofMonitorBig
+-        || sprite->template == &sSpriteTemplate_HofMonitorSmall;
++        || sprite->template == &sSpriteTemplate_HofMonitor;
+ }
+ 
+ 
+diff --git a/src/field_weather_effect.c b/src/field_weather_effect.c
+index 79a14cc02f42025e5281afd63c04932dc4689fe7..4bad661e2a0d726e955d65bb5df7ebbf697111b0 100644
+--- a/src/field_weather_effect.c
++++ b/src/field_weather_effect.c
+@@ -2644,3 +2644,37 @@ static void UpdateRainCounter(u8 newWeather, u8 oldWeather)
+      && (newWeather == WEATHER_RAIN || newWeather == WEATHER_RAIN_THUNDERSTORM))
+         IncrementGameStat(GAME_STAT_GOT_RAINED_ON);
+ }
++
++
++#ifdef PLATFORM_3DS
++// The fog's and the underwater bubbles' sprites, by their template (sprite.c).
++// Compared, never read: a map object's template pointer is left to the stack
++// frame that spawned it.
++bool8 Weather_IsFogSpriteTemplate(const struct SpriteTemplate *template)
++{
++    return template == &sFogHorizontalSpriteTemplate || template == &sFogDiagonalSpriteTemplate;
++}
++
++bool8 Weather_IsBubbleSpriteTemplate(const struct SpriteTemplate *template)
++{
++    return template == &sBubbleSpriteTemplate;
++}
++
++// How a weather sprite carries over the 3DS's wide view (sprite.c): the ash
++// and the sandstorm's sand are one picture on a 64-pixel lattice, like the
++// fog; the rain, snow, the sandstorm's swirls (its template at 32x32) and the
++// bubbles are particles that wrap round the GBA's screen.
++u8 Weather_SpriteTiling(const struct Sprite *sprite)
++{
++    const struct SpriteTemplate *template = sprite->template;
++
++    if (template == &sAshSpriteTemplate)
++        return WEATHER_TILING_LATTICE;
++    if (template == &sSandstormSpriteTemplate)
++        return sprite->oam.size == SPRITE_SIZE(64x64) ? WEATHER_TILING_LATTICE : WEATHER_TILING_PARTICLES;
++    if (template == &sRainSpriteTemplate || template == &sSnowflakeSpriteTemplate
++     || template == &sBubbleSpriteTemplate)
++        return WEATHER_TILING_PARTICLES;
++    return WEATHER_TILING_NONE;
++}
++#endif

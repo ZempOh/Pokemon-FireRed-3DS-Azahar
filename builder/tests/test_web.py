@@ -5,9 +5,11 @@ data only: no ROM is needed and none may ever be committed.
 Run: python -m unittest discover -s builder/tests
 """
 
+import hashlib
 import io
 import json
 import os
+import random
 import sys
 import tempfile
 import unittest
@@ -370,6 +372,23 @@ class WebPayloadContentsTests(SyntheticPayloadMixin, unittest.TestCase):
     def test_release_audit_accepts_the_payload(self):
         findings = release_audit.audit_web_payload(release_audit.zip_files(self.synthetic["zip"]))
         self.assertEqual(findings, [])
+
+    def test_rom_signature_requires_the_exact_run_in_the_named_web_file(self):
+        rom = random.Random(42).randbytes(576)
+        known_run = rom[:264]
+        index = release_audit.RomIndex(rom)
+        name = "payload/Emerald3DS.3dsx"
+        allow = release_audit.Allow(web_rom_signatures={name: {hashlib.sha256(known_run).hexdigest()}})
+
+        def rules(path, data, web_payload=True):
+            entries = [(path, lambda: data)]
+            return {f.rule for f in release_audit.audit(entries, allow, [], index, "zip", web_payload=web_payload)}
+
+        self.assertNotIn("rom-content", rules(name, b"prefix" + known_run))
+        self.assertIn("rom-content", rules(name, known_run, web_payload=False))
+        self.assertIn("rom-content", rules("payload/other.3dsx", known_run))
+        self.assertIn("rom-content", rules(name, rom[:272]))
+        self.assertIn("rom-content", rules(name, known_run + b"separator" + rom[280:560]))
 
     def test_release_audit_catches_tampering_and_packs(self):
         bad = self.tmp / "bad.zip"

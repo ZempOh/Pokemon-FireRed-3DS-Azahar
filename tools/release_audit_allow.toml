@@ -80,6 +80,15 @@ paths = ["tools/release_audit.py"]
 [skip]
 globs = []
 
+[web_rom_signatures]
+# The exact matching run from Classic's software text decoder: four trailing
+# bytes of the dummy window initializer and 252 bytes of the base-3
+# sFontHalfRowOffsets lookup (ROM offsets 0x31f110–0x31f210). It holds no
+# font pixels. Longer matches and all other payload entries remain scanned.
+"payload/Emerald3DS.3dsx" = [
+    "5d48664e91f436dc33a93522da96276c899b1447d1ee7e7d40f8cc74000edaf7",
+]
+
 [runtime]
 # The builder's PyInstaller runtime: Python, Tcl/Tk, Pillow and their DLLs,
 # shipped unmodified under their own licenses. Checked for ROMs, data packs

@@ -46,6 +46,7 @@ import tomllib
 import zipfile
 from dataclasses import dataclass, field
 from pathlib import Path, PurePosixPath
+from typing import AbstractSet
 
 HERE = Path(__file__).resolve().parent
 DEFAULT_ALLOW = HERE / "release_audit_allow.toml"
@@ -107,6 +108,7 @@ class Allow:
     local_paths: set[str] = field(default_factory=set)
     skip: list[str] = field(default_factory=list)
     runtime: list[str] = field(default_factory=list)
+    web_rom_signatures: dict[str, set[str]] = field(default_factory=dict)
 
     @classmethod
     def load(cls, path: Path | None) -> "Allow":
@@ -117,7 +119,9 @@ class Allow:
                    media={k: v for k, v in data.get("media", {}).items()},
                    local_paths=set(data.get("local_paths", {}).get("paths", [])),
                    skip=list(data.get("skip", {}).get("globs", [])),
-                   runtime=list(data.get("runtime", {}).get("globs", [])))
+                   runtime=list(data.get("runtime", {}).get("globs", [])),
+                   web_rom_signatures={path: set(signatures) for path, signatures in
+                                       data.get("web_rom_signatures", {}).items()})
 
     def matches(self, patterns, path: str) -> bool:
         return any(fnmatch.fnmatchcase(path, p) for p in patterns)
@@ -148,18 +152,27 @@ class RomIndex:
             return False
         return len(set(window)) >= 10
 
-    def copied_bytes(self, data: bytes) -> int:
+    def copied_bytes(self, data: bytes, signatures: AbstractSet[str] = frozenset()) -> int:
         hits = 0
         last = -self.K
+        start = 0
         view = data
         hashes = self.hashes
         k = self.K
         for off in range(0, len(view) - k + 1):
             window = view[off:off + k]
             if hash(window) in hashes and self.interesting(window):
-                hits += min(k, off - last)
+                if off > last + k:
+                    hits += self.run_bytes(view, start, last + k, signatures)
+                    start = off
                 last = off
-        return hits
+        return hits + self.run_bytes(view, start, last + k, signatures)
+
+    @staticmethod
+    def run_bytes(data: bytes, start: int, end: int, signatures: AbstractSet[str]) -> int:
+        if signatures and hashlib.sha256(data[start:end]).hexdigest() in signatures:
+            return 0
+        return max(0, end - start)
 
 
 def load_denylist(path: Path | None) -> list[re.Pattern]:
@@ -203,7 +216,7 @@ def agent_skill(parts: list[str], suffix: str) -> bool:
 
 
 def audit(entries, allow: Allow, denylist, rom_index: RomIndex | None,
-          context: str) -> list[Finding]:
+          context: str, *, web_payload: bool = False) -> list[Finding]:
     findings: list[Finding] = []
     third_party_dirs: set[str] = set()
     names = {name for name, _ in entries}
@@ -269,7 +282,8 @@ def audit(entries, allow: Allow, denylist, rom_index: RomIndex | None,
                 import lzma
                 size = int.from_bytes(data[8:12], "little")
                 scanned = lzma.decompress(data[12:12 + size]) + lzma.decompress(data[12 + size:])
-            copied = rom_index.copied_bytes(scanned)
+            signatures = allow.web_rom_signatures.get(name, set()) if web_payload else set()
+            copied = rom_index.copied_bytes(scanned, signatures)
             if copied > ROM_TOLERANCE and not runtime:
                 findings.append(Finding(name, "rom-content", "%d bytes match the ROM" % copied))
             elif copied:
@@ -395,7 +409,7 @@ def main(argv: list[str] | None = None) -> int:
         print("release_audit: indexing ROM windows...", flush=True)
         rom_index = RomIndex(args.rom.read_bytes())
 
-    findings = audit(entries, allow, denylist, rom_index, context)
+    findings = audit(entries, allow, denylist, rom_index, context, web_payload=args.web_payload)
     if args.web_payload:
         findings += audit_web_payload(entries)
     label = str(args.repo or args.zip)

@@ -25,6 +25,8 @@ cartridge dump.
 | Pokémon Classic v1.5.1 | [Native port and build status](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/tree/voxel-pokeclassic). |
 | PokéDaisy | [GBA companion development builds](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/tree/pokedaisy-hack-profiles). |
 
+[Decompilation and native port workflow](docs/decomp-recomp-workflow.md)
+
 The Azahar ports have their own touchscreen Party, Bag, and Map. PokéDaisy
 uses those games' GBA ROMs in its own emulator.
 

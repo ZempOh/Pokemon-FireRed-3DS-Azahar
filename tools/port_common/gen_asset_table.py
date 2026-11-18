@@ -56,8 +56,8 @@ def parse_incbins_by_source() -> list[tuple[Path, str, list[str], bool]]:
     incbin_pattern = re.compile(r"INCBIN_[A-Z0-9]+\s*\([^)]*\)")
 
     result: list[tuple[Path, str, list[str], bool]] = []
-    src_root = ROOT / "src"
-    files = sorted(list(src_root.rglob("*.c")) + list(src_root.rglob("*.h")))
+    files = sorted(path for directory in ("src", "gflib") for pattern in ("*.c", "*.h")
+                   for path in (ROOT / directory).rglob(pattern))
     for src_path in files:
         text = src_path.read_text(encoding="utf-8", errors="ignore")
         seen: set[str] = set()

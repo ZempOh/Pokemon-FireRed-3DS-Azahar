@@ -3675,6 +3675,14 @@ static void DrawBattleText(unsigned bg)
     uint32_t before = sStats.tiles;
     DrawBattleCut(bg, 0, 240, 0, BATTLE_BAND_TOP, 0);
     if (sStats.tiles != before) sTextAbove = true;
+    /* Classic's action prompt starts in the tile the stretch normally repeats. */
+    if (scrollX == 0 && scrollY == 160
+        && (MapEntry(map, size, 1, 35) & 1023) == 0x1C0
+        && (MapEntry(map, size, 17, 35) & 1023) == 0x190)
+    {
+        DrawBattleCut(bg, 0, 240, BATTLE_BAND_TOP, 160, 0);
+        return;
+    }
     /* The box from its left cap, on the left edge of the screen... */
     DrawBattleCut(bg, VIEW_LEFT, fill0, BATTLE_BAND_TOP, 160, VIEW_LEFT);
     /* ...its right cap on the right edge... */

@@ -55,6 +55,7 @@ BUNDLES = {
     "sound/songs.bin": "sound/songs.rel",
     "gamedata/gamedata.bin": "gamedata/gamedata.rel",
 }
+GBA_ROM_BASE = 0x08000000
 MIN_FIND = 8
 FILL_MIN = 16
 SEARCH_STRIDE = 4
@@ -81,7 +82,7 @@ def nm(tool: str, elf: Path) -> dict[str, list[int]]:
     return result
 
 
-def gamedata_hints(nm_tool: str, elf3: Path, elfgba: Path) -> dict[int, int]:
+def gamedata_hints(nm_tool: str, elf3: Path, elfgba: Path, rom_size: int) -> dict[int, int]:
     """Payload offset -> ROM offset for every symbol both builds define once."""
     s3, sg = nm(nm_tool, elf3), nm(nm_tool, elfgba)
     start = s3["__ctr_gamedata"][0]
@@ -90,9 +91,9 @@ def gamedata_hints(nm_tool: str, elf3: Path, elfgba: Path) -> dict[int, int]:
     for name, addrs in s3.items():
         if len(addrs) != 1 or not start <= addrs[0] < end:
             continue
-        g = [a for a in sg.get(name, []) if 0x08000000 <= a < 0x09000000]
+        g = [a for a in sg.get(name, []) if GBA_ROM_BASE <= a < GBA_ROM_BASE + rom_size]
         if len(g) == 1:
-            hints[addrs[0] - start] = g[0] - 0x08000000
+            hints[addrs[0] - start] = g[0] - GBA_ROM_BASE
     return hints
 
 
@@ -223,7 +224,7 @@ def gamedata_remaps(nm_tool: str, elf3: Path, elfgba: Path, rom: bytes, data: by
             continue
         (a, size), (ga, gsize) = entries[0], sg[name][0]
         off = a - start
-        if not (0 <= off < len(data)) or size < 2 or not 0x08000000 <= ga < 0x09000000:
+        if not (0 <= off < len(data)) or size < 2 or not GBA_ROM_BASE <= ga < GBA_ROM_BASE + len(rom):
             continue
         if size < 16:
             small.append((off, size, ga, gsize))
@@ -771,7 +772,7 @@ def main() -> None:
     hints = {}
     remaps = {}
     if args.elf and args.gba_elf:
-        hints = gamedata_hints(args.nm, args.elf, args.gba_elf)
+        hints = gamedata_hints(args.nm, args.elf, args.gba_elf, len(rom))
         gd = (args.romfs / "gamedata" / "gamedata.bin").read_bytes()
         remaps = gamedata_remaps(args.nm, args.elf, args.gba_elf, rom, gd,
                                  pointer_mask(args.romfs, "gamedata/gamedata.bin", len(gd)))

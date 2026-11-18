@@ -173,7 +173,7 @@ class SharedRomPayloadTests(unittest.TestCase):
             code = cli.main(["--payload", str(self.root), "build", "--rom", str(self.synthetic["rom"]),
                              "--output", str(output), "--language", "pt"])
             self.assertEqual(code, 0, err.getvalue())
-            app = output / "3ds" / "emerald3ds"
+            app = output / "3ds" / "pokeclassic-voxel"
             for name in EXECUTABLE_NAMES:
                 self.assertEqual((app / name).read_bytes(), (self.pt_dir / name).read_bytes(), name)
             self.assertEqual(cli.main(["--payload", str(self.root), "verify", "--pak",

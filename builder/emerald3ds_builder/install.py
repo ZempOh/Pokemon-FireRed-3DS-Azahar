@@ -14,7 +14,7 @@ from pathlib import Path
 
 from .errors import BuilderError
 
-APP_DIR = Path("3ds") / "emerald3ds"
+APP_DIR = Path("3ds") / "pokeclassic-voxel"
 
 # The player's save, real-time clock and Nuzlocke tracker, in the app folder.
 SAVE_NAME = "emerald3ds.sav"
@@ -210,7 +210,7 @@ def _warn_missing_dsp(sd_root: Path, warn) -> None:
 
 
 def install(sd_root: Path, files: dict[str, Path], progress=None, warn=None) -> Path:
-    """Copy `files` ({name: source}) into <sd_root>/3ds/emerald3ds/.
+    """Copy `files` ({name: source}) into <sd_root>/3ds/pokeclassic-voxel/.
 
     Every file is first copied (and synced) under a new, unique temporary name.
     Only when all of them are copied are they renamed into place, so a failed

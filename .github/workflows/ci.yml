@@ -116,19 +116,35 @@ jobs:
           name: pokeclassic-gba-symbols
           path: classic-gba-symbols.txt
           if-no-files-found: error
-      - name: Rebuild native staging and write the extraction recipe
+      - name: Rebuild native staging
         run: |
           python3 tools/bootstrap.py
           make -C build/upstream -j4 tools
           make -C build/upstream -j4 generated
           make -C build/upstream/3ds_port -j4 PYTHON=python3
+      - name: Write the extraction recipe
+        run: |
           port=build/upstream/3ds_port
           mkdir -p ship/payload
-          python3 tools/gen_recipe.py --decomp build/upstream --romfs "$port/romfs" \
+          python3 -u tools/gen_recipe.py --decomp build/upstream --romfs "$port/romfs" \
             --rom build/stock/pokeClassic.gba --gba-elf build/stock/pokeClassic.elf \
             --out ship/payload/emerald3ds.recipe --release v0.5.0 \
             --elf "$port/emerald3ds.elf" --image-elf "$port/build/gamedata_image.elf" \
             --image-map "$port/build/gamedata_image.map" --nm "$DEVKITARM/bin/arm-none-eabi-nm"
+      - name: Stage the generator sources and verify the rebuilt pack
+        run: |
+          PYTHONPATH=tools:builder python3 -u - <<'PY'
+          from pathlib import Path
+          from emerald3ds_builder.build import Payload, build_pack
+          from voxel_precompile import stage_voxelgen
+          payload = Path("ship/payload").resolve()
+          stage_voxelgen(Path("3ds_port"), payload / "voxelgen")
+          info = build_pack(Path("build/stock/pokeClassic.gba"), Payload(payload),
+                            Path("build/classic-verify.pak"),
+                            lambda fraction, message: print(f"{fraction:.0%} {message}"),
+                            follower_fetcher=False)
+          print(f"Verified Classic pack with {info['entries']} entries")
+          PY
       - name: Audit the recipe before uploading
         run: |
           python3 -c "from shutil import make_archive; make_archive('recipe', 'zip', 'ship')"
@@ -136,5 +152,5 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: pokeclassic-voxel-recipe
-          path: ship/payload/emerald3ds.recipe
+          path: ship/payload/
           if-no-files-found: error

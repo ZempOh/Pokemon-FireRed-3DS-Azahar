@@ -47,7 +47,7 @@ API_VERSIONS = (1, 2)
 LANGUAGE_API = 2
 # A cartridge's own language, from the last letter of its game code.
 CARTRIDGE_LANGUAGES = {"E": "en", "S": "es", "F": "fr", "I": "it", "D": "de", "J": "ja"}
-INSTALL_DIR = "3ds/emerald3ds"
+INSTALL_DIR = "3ds/pokeclassic-voxel"
 INSTALL_FILES = ["Emerald3DS.3dsx", "Emerald3DS.smdh", "emerald3ds.pak"]
 # Files that may never be inside a web payload, whatever their name says.
 FORBIDDEN_SUFFIXES = (".gba", ".agb", ".pak", ".sav", ".pyc", ".pyo")

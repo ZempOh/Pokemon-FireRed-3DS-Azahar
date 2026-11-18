@@ -121,7 +121,7 @@ def main(argv=None) -> int:
     ap.add_argument("--payload", type=Path, default=default_payload(),
                     help="folder with the release payload (default: next to the builder)")
     sub = ap.add_subparsers(dest="cmd", required=True)
-    b = sub.add_parser("build", help="write 3ds/emerald3ds/ into a folder")
+    b = sub.add_parser("build", help="write 3ds/pokeclassic-voxel/ into a folder")
     b.add_argument("--rom", required=True)
     b.add_argument("--output", required=True)
     b.add_argument("--language", help=LANGUAGE_HELP)

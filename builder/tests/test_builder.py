@@ -257,7 +257,7 @@ class InstallTests(unittest.TestCase):
             sd.mkdir()
             dest = install(sd, {"Emerald3DS.3dsx": src, "emerald3ds.pak": src})
             self.assertEqual(sorted(p.name for p in dest.iterdir()), ["Emerald3DS.3dsx", "emerald3ds.pak"])
-            self.assertEqual(dest, sd / "3ds" / "emerald3ds")
+            self.assertEqual(dest, sd / "3ds" / "pokeclassic-voxel")
 
 
 class VtreeTests(unittest.TestCase):

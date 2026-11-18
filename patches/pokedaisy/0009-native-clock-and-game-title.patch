@@ -1,0 +1,91 @@
+diff --git a/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt b/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt
+index 02e83e3..ec1796d 100644
+--- a/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt
++++ b/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt
+@@ -83,6 +83,8 @@ class EmulatorEngine(
+     @Volatile var wideGame = WideScreen.OFF
+     @Volatile var voxelClimateConfig = 0
+     @Volatile var wideVoxelGame = WideScreen.OFF
++    /** Keep supported voxel profiles on the cartridge clock in both 2D and 3D. */
++    @Volatile var voxelNativeClock = false
+     /** A Game Boy game pk_wide_gb.c knows (its [WideScreen.gameFor]), EXPAND on or not: with EXPAND off it's configured
+      * anyway with nothing drawn, for its scene (the FIELD HUD's field read: a Game Boy game has no FfMenuWatch). */
+     @Volatile var gbSceneGame = WideScreen.OFF
+@@ -1067,6 +1069,10 @@ class EmulatorEngine(
+ 
+     /** Refreshes per game frame while the display paces 1x, or 0 for timer pacing. */
+     private fun vsyncsPerFrame(): Int {
++        // Thor's nominal 120 Hz ticks can settle near 118 Hz. Dividing those by two
++        // slows the game, and waiting within a refresh gives projection <5 ms to finish.
++        // The existing timer/audio path presents completed frames without that deadline.
++        if (voxelNativeClock && gba && !probeOnly) return 0
+         val p = vsyncPeriodNanos
+         if (p == 0.0 || System.nanoTime() - lastVsyncNanos > 100_000_000L || vsyncUnreliable != null) return 0
+         val hz = 1e9 / p
+@@ -1215,7 +1221,7 @@ class EmulatorEngine(
+ 
+         val scratch = ShortArray(4096)
+         val tap = AudioTap()
+-        val frameNanos = 1_000_000_000L / 60L
++        val frameNanos get() = if (voxelNativeClock && gba) VoxelFrameClock.FRAME_NANOS else 1_000_000_000L / 60L
+         var next = System.nanoTime()
+         var fpsFrames = 0
+         var fpsSince = System.nanoTime()
+diff --git a/app/src/main/kotlin/com/pokedaisy/app/PokeDaisyActivity.kt b/app/src/main/kotlin/com/pokedaisy/app/PokeDaisyActivity.kt
+index f3fc9b3..b950d1f 100644
+--- a/app/src/main/kotlin/com/pokedaisy/app/PokeDaisyActivity.kt
++++ b/app/src/main/kotlin/com/pokedaisy/app/PokeDaisyActivity.kt
+@@ -2617,7 +2617,9 @@ class PokeDaisyActivity : Activity() {
+             cheatCache = romKey to now
+             syncCheats()
+         }
+-        override val gameName get() = romBlocked?.title ?: com.pokedaisy.app.companion.data.activeGame.displayName()
++        override val gameName get() = romBlocked?.title
++            ?: rom?.let { GameTitles.defaultLabel(this@PokeDaisyActivity, it) }
++            ?: com.pokedaisy.app.companion.data.activeGame.displayName()
+         override val gameBlocked get() = romBlocked != null
+         override val romFileName get() = rom?.name ?: "(none)"
+         override val companionTabs get() = Prefs(this@PokeDaisyActivity).companionTabs
+@@ -4498,6 +4500,7 @@ class PokeDaisyActivity : Activity() {
+         if (::engine.isInitialized) {
+             engine.wideGame = if (aspect == GameAspect.WIDE) wideGame else WideScreen.OFF
+             engine.voxelClimateConfig = prefs.voxelClimateFor(romKey)
++            engine.voxelNativeClock = companionSettings.voxelFieldSupported
+             engine.wideVoxelGame = if (companionSettings.voxelFieldSupported && companionSettings.voxelField) {
+                 wideGame
+             } else {
+diff --git a/app/src/main/kotlin/com/pokedaisy/app/VoxelFrameClock.kt b/app/src/main/kotlin/com/pokedaisy/app/VoxelFrameClock.kt
+new file mode 100644
+index 0000000..6839619
+--- /dev/null
++++ b/app/src/main/kotlin/com/pokedaisy/app/VoxelFrameClock.kt
+@@ -0,0 +1,6 @@
++package com.pokedaisy.app
++
++/** A GBA frame is 280896 cycles of its 16777216 Hz clock, independent of Android's refresh. */
++internal object VoxelFrameClock {
++    const val FRAME_NANOS = 280896L * 1_000_000_000L / 16777216L
++}
+diff --git a/app/src/test/kotlin/com/pokedaisy/app/VoxelFrameClockTest.kt b/app/src/test/kotlin/com/pokedaisy/app/VoxelFrameClockTest.kt
+new file mode 100644
+index 0000000..68f02c3
+--- /dev/null
++++ b/app/src/test/kotlin/com/pokedaisy/app/VoxelFrameClockTest.kt
+@@ -0,0 +1,17 @@
++package com.pokedaisy.app
++
++import org.junit.Assert.assertEquals
++import org.junit.Assert.assertTrue
++import org.junit.Test
++
++class VoxelFrameClockTest {
++    @Test fun tenMinutesStayOnTheCartridgeClock() {
++        val frames = 35836L
++        val actualSeconds = frames * VoxelFrameClock.FRAME_NANOS / 1e9
++        val cartridgeSeconds = frames * 280896.0 / 16777216.0
++        assertEquals(cartridgeSeconds, actualSeconds, 0.00004)
++        // The old 118 Hz / 2 pacing loses more than seven seconds over this run.
++        assertTrue(frames / 59.0 - actualSeconds > 7.0)
++        assertTrue(1e9 / VoxelFrameClock.FRAME_NANOS in 59.72..59.73)
++    }
++}

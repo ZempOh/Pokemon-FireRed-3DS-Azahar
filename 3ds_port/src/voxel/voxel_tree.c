@@ -172,12 +172,16 @@ int VoxelTree_Part(const void *secondaryTileset, int metatileId)
     }
     switch (metatileId)
     {
-    /* The secret base's tree: its upper row, and the lower closed (026-027)
-     * or opened (036-037, set by secret_base.c). */
-    case 0x01E: return 0;
-    case 0x01F: return 1;
-    case 0x026: case 0x036: return 2;
-    case 0x027: case 0x037: return 3;
+    /* Classic's Kanto General bank uses the FireRed tree layout. The
+     * repeated forest is 01C/01D over 014/015, not Emerald's 1D4/1D5 over
+     * 1DC/1DD. Treat every quadrant as the same tree: interpreting 015 as
+     * Emerald's long grass left a low, open cell in every border repeat. */
+    case 0x01C: case 0x01E: return 0;
+    case 0x01D: case 0x01F: return 1;
+    case 0x014: case 0x016: case 0x024: case 0x026: return 2;
+    case 0x015: case 0x017: case 0x025: case 0x027: return 3;
+    case 0x036: return 2;
+    case 0x037: return 3;
     case 0x1D4: case 0x1D6: return 0; /* upper left, including forest edge */
     case 0x1D5: case 0x1D7: return 1;
     case 0x1DC: case 0x1DE: case 0x1E4: case 0x1E6: return 2;
@@ -194,9 +198,8 @@ int VoxelTree_Part(const void *secondaryTileset, int metatileId)
     case 0x1FD: return 1;
     /* Small trees: the edge of a wood, and inside it where the next crown
      * overlaps the trunk. 1F4-1F5 also carry a neighbour's leaves. */
-    case 0x016: case 0x017: case 0x0C6: case 0x0C7:
+    case 0x0C6: case 0x0C7:
     case 0x1F4: case 0x1F5: return VOXEL_TREE_SMALL;
-    case 0x015: return VOXEL_TREE_GRASS; /* long grass */
     default: return -1;
     }
 }
@@ -251,8 +254,6 @@ int VoxelTree_GroundMetatile(const void *secondaryTileset, int metatileId)
     /* A small tree's canopy top, over whatever it stood in front of. The
      * fence feet under 040 have no metatile of their own: grass. */
     case 0x00E: case 0x00F: case 0x040: return 0x001;
-    case 0x01D: return 0x002; /* ledge edge */
-    case 0x025: return 0x00D; /* tall grass */
     case 0x02D: return 0x0A1; /* reflective water */
     case 0x035: case 0x193: return 0x170; /* calm water */
     case 0x0CE: return 0x091; /* rock wall, sand base */
@@ -352,11 +353,9 @@ static void EmitSmallCell(VoxelBuilder *builder, const VoxelMapInstance *inst, i
 
 /* A 2x2 tree's art: its crown (rows of `rowPx` texels), its trunk's ground,
  * and how far into the trunk row the crown's foot stands (`foot`, cells
- * from its north edge): on its trunk's shadow. The General's large tree,
- * and the secret base's, closed or open: their upper rows are the same
- * drawing. The secret base's shadow is drawn further south and its crown
- * has no margin under the trunk: at the large tree's foot it stood on the
- * shadow's north rim, the tree floating over the ground. */
+ * from its north edge): on its trunk's shadow. Classic's standalone and
+ * forest trees share the General art so their crown rows join. The retained
+ * open secret-base art has its shadow further south and no bottom margin. */
 typedef struct
 {
     uint8_t crownX, crownY, rowPx, groundX, groundY;
@@ -367,7 +366,6 @@ typedef struct
 } LargeArt;
 
 static const LargeArt kLargeTree = { 0, 0, 18, 32, 0, 0.35f, false };
-static const LargeArt kBaseTree = { 0, 64, 16, 96, 0, 0.66f, false };
 static const LargeArt kBaseTreeOpen = { 32, 64, 16, 96, 0, 0.66f, false };
 /* A secondary tileset's own 2x2 trees: a 32x32 crown, trunk included, and
  * only the trunk row's ground (32x16); groundY is 16 texels above it, as the
@@ -388,7 +386,6 @@ static const LargeArt *LargeArtOf(const void *secondaryTileset, int metatileId)
         return &kOwnTrees[ground];
     switch (metatileId)
     {
-    case 0x01E: case 0x01F: case 0x026: case 0x027: return &kBaseTree;
     case 0x036: case 0x037: return &kBaseTreeOpen;
     default: return &kLargeTree;
     }

@@ -26,7 +26,8 @@ const struct Tileset gTileset_Fallarbor = {0};
 
 static VoxelMapInstance sMap = {.originX = 7, .originY = 7, .width = 2, .height = 2};
 static bool sGeneral = true;
-static int sTiles[] = {0x1D6, 0x1D7, 0x1E6, 0x1E7};
+/* Actual Pallet Town / Route 1 forest quadrants from Classic's bank. */
+static int sTiles[] = {0x01C, 0x01D, 0x014, 0x015};
 static VoxelAtlasMap sAtlas;
 static VoxelVertex sWhole[1024], sParts[1024];
 
@@ -59,7 +60,7 @@ VoxelVisualShape VoxelWorld_ClassifyTile(int x, int y)
 
 int VoxelWorld_BorderMetatile(int x, int y)
 {
-    const int pattern[] = {0x1D4, 0x1D5, 0x1DC, 0x1DD};
+    const int pattern[] = {0x01C, 0x01D, 0x014, 0x015};
     return pattern[((x - sMap.originX) & 1) + 2 * ((y - sMap.originY) & 1)];
 }
 
@@ -160,6 +161,15 @@ int main(void)
     assert(parts.count == 0); /* no raised belt under the replacement */
     VoxelTree_EmitBorder(&parts, -5, -7, 1, 1);
     assert(parts.count == (6 * 8 - 4) * 12 && parts.dropped == 0);
+    /* Each repeated cell supplies one opaque ground quad and one crown,
+     * even across a chunk edge. No alternating grass/empty cell remains. */
+    for (unsigned i = 0; i < parts.count; i += 12)
+    {
+        for (unsigned j = 0; j < 6; ++j)
+            assert(parts.vertices[i + j].y == 0);
+        assert(parts.vertices[i + 6].y > parts.vertices[i + 8].y);
+        assert(parts.vertices[i + 6].u < 32.0f / VOXEL_TREE_TEXTURE_DIM);
+    }
 
     unsigned borderCount = parts.count;
     memcpy(sWhole, sParts, borderCount * sizeof(VoxelVertex));
@@ -194,9 +204,9 @@ int main(void)
     /* Small trees: the canopy top keeps its ground; each trunk cell - edge of
      * a wood or inside it - lays the trunk and stands the whole crown on it. */
     sTiles[0] = 0x00E; sTiles[1] = 0x00F;
-    sTiles[2] = 0x016; sTiles[3] = 0x0C7;
+    sTiles[2] = 0x0C6; sTiles[3] = 0x0C7;
     assert(VoxelTree_GroundMetatile(NULL, 0x00E) == 0x001);
-    assert(VoxelTree_Part(NULL, 0x016) == VOXEL_TREE_SMALL);
+    assert(VoxelTree_Part(NULL, 0x0C6) == VOXEL_TREE_SMALL);
     assert(VoxelTree_Part(NULL, 0x1EC) == 2 && VoxelTree_Part(NULL, 0x1ED) == 3);
     assert(VoxelTree_Part(&gTileset_Dewford, 0x23A) == VOXEL_TREE_SMALL);
     assert(VoxelTree_Part(&gTileset_Dewford, 0x243) == VOXEL_TREE_SMALL);
@@ -211,7 +221,13 @@ int main(void)
     assert(VoxelTree_Part(&gTileset_Lavaridge, 0x253) == -1 && VoxelTree_Part(NULL, 0x226) == -1);
     assert(VoxelTree_GroundMetatile(&gTileset_Rustboro, 0x2C0) == 0x079);
     assert(VoxelTree_GroundMetatile(&gTileset_Lilycove, 0x2C0) == 0x2C0);
-    /* The secret base's tree, closed or opened, is a 2x2 tree. */
+    /* Kanto's standalone, edge and repeated trees share paired quadrants. */
+    assert(VoxelTree_Part(NULL, 0x01C) == 0 && VoxelTree_Part(NULL, 0x01D) == 1);
+    assert(VoxelTree_Part(NULL, 0x014) == 2 && VoxelTree_Part(NULL, 0x015) == 3);
+    assert(VoxelTree_Part(NULL, 0x016) == 2 && VoxelTree_Part(NULL, 0x017) == 3);
+    assert(VoxelTree_Part(NULL, 0x024) == 2 && VoxelTree_Part(NULL, 0x025) == 3);
+    assert(VoxelTree_GroundMetatile(NULL, 0x01D) == 0x01D);
+    assert(VoxelTree_GroundMetatile(NULL, 0x025) == 0x025);
     assert(VoxelTree_Part(NULL, 0x01E) == 0 && VoxelTree_Part(NULL, 0x01F) == 1);
     assert(VoxelTree_Part(NULL, 0x026) == 2 && VoxelTree_Part(NULL, 0x027) == 3);
     assert(VoxelTree_Part(NULL, 0x036) == 2 && VoxelTree_Part(NULL, 0x037) == 3);

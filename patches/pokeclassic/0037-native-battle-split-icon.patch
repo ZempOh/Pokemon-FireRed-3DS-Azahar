@@ -1,0 +1,29 @@
+diff --git a/src/battle_controller_player.c b/src/battle_controller_player.c
+--- a/src/battle_controller_player.c
++++ b/src/battle_controller_player.c
+@@ -3732,12 +3732,24 @@ static void MoveSelectionDisplaySplitIcon(void){
+     static const u16 sSplitIcons_Pal[] = INCBIN_U16("graphics/interface/split_icons_battle.gbapal");
+     static const u8 sSplitIcons_Gfx[] = INCBIN_U8("graphics/interface/split_icons_battle.4bpp");
+     struct ChooseMoveStruct *moveInfo;
++    const u8 *graphics = sSplitIcons_Gfx;
+     int icon;
+ 
+     moveInfo = (struct ChooseMoveStruct*)(&gBattleResources->bufferA[gActiveBattler][4]);
+     icon = GetBattleMoveSplit(moveInfo->moves[gMoveSelectionCursor[gActiveBattler]]);
+     LoadPalette(sSplitIcons_Pal, 10 * 0x10, 0x20);
+-    BlitBitmapToWindow(B_WIN_DUMMY, sSplitIcons_Gfx + 0x80 * icon, 0, 0, 16, 16);
++#ifdef PORT_BRIDGE
++    // Native INCBIN symbols identify packed assets; resolve before offsetting.
++    // Reading the marker itself drew garbage beside the PP label.
++    graphics = Port_GetAssetSizeExact(sSplitIcons_Gfx) >= 3 * 0x80
++             ? Port_ResolveAssetPointer(sSplitIcons_Gfx) : NULL;
++    if (graphics == sSplitIcons_Gfx)
++        graphics = NULL;
++#endif
++    if (graphics != NULL && icon >= 0 && icon < 3)
++        BlitBitmapToWindow(B_WIN_DUMMY, graphics + 0x80 * icon, 0, 0, 16, 16);
++    else
++        FillWindowPixelBuffer(B_WIN_DUMMY, PIXEL_FILL(7));
+     PutWindowTilemap(B_WIN_DUMMY);
+     CopyWindowToVram(B_WIN_DUMMY, 3);
+ }

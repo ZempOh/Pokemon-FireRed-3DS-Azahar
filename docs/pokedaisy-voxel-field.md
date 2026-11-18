@@ -15,7 +15,7 @@ Party, Bag and Map use the GBA session's existing companion profiles.
 
 ## Install the test build
 
-1. Download the [tested Android APK](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/tag/pokedaisy-voxel-preview-v1).
+1. Download the [tested Android APK](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/tag/graphics-upgrade-2026-11-18).
    The package ID is `com.pokedaisy.app.voxelpreview`, with its own library
    and save directory.
 2. Install and open **PokéDaisy Voxel Preview**. Import your ROM and, if
@@ -25,24 +25,24 @@ Party, Bag and Map use the GBA session's existing companion profiles.
    Enter a building and a battle, then return to the overworld. Toggle the
    setting off to compare the original Expand view.
 
-If Android reports a signing mismatch with an earlier test APK, back up
-the preview app’s saves before replacing that preview package. The workflow
-uses a debug signing key generated on its runner.
+If Android reports a signing mismatch with an earlier preview, export/back up
+its battery saves and desired states before replacing that preview package.
+This tested APK uses an explicit debug signing identity cached by the build
+workflow. Cache retention is not a permanent production-key guarantee.
+Do not uninstall an old preview before making a usable backup.
+
+## Graphics controls
+
+Settings → Screen exposes Voxel 3D, Visual Climate (Original, Automatic,
+Manual), four seasons, Original/Clear/Rain/Snow/Fog and Reduced/Full detail.
+Original and Reduced are the defaults. Settings are stored separately for
+each ROM CRC. Indoor maps and native weather take precedence; these are
+cosmetic effects and do not change battle weather, encounters or saves.
 
 ## AYN Thor validation
 
-The [successful Android build](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/actions/runs/44322760489)
-was installed and tested using the Thor’s built-in screens. Each game
-loaded into projected terrain and displayed its party, one Potion, and its
-live location on the lower screen.
-
-| Game | Party | Map |
-| --- | --- | --- |
-| Let’s Go Pikachu | Pikachu | Pallet Town and Route 1 |
-| Radical Red | Chikorita | Route 1 |
-| Pokémon Unbound | Beldum | Shadow Base and Frozen Heights |
-
-During preview testing, Radical Red returned to the voxel overworld after
-a wild encounter, and Unbound’s first double battle was completed. On the
-release APK, switching from an enabled game to one with the toggle off
-correctly returned to the standard Expand view in the same app process.
+The [final build](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/actions/runs/44341672959)
+was installed and checked on the Thor with all three listed ROMs. See the
+[per-game checks, measured performance, limitations and exact hashes](graphics-upgrade.md).
+The shared [voxel builder](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/voxel.html)
+also provides the three separately tested native Azahar titles.

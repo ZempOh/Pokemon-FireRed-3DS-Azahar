@@ -331,6 +331,6 @@ See [NOTICE.md](NOTICE.md) for credits and licences. Pokémon FireRed 3DS is an
 unofficial fan project, not affiliated with or endorsed by Nintendo, Game
 Freak, Creatures or The Pokémon Company.
 
-## Graphics upgrade candidate
+## Graphics upgrade
 
-See [rendering paths, controls and validation status](docs/graphics-upgrade.md). The climate effects remain opt-in; candidate builds are not releases until their Thor checks pass.
+See [rendering paths, controls and validation status](docs/graphics-upgrade.md). The graphics preview passed the documented early-game Thor checks. Climate remains opt-in; see the per-game limitations and exact tested build hashes.

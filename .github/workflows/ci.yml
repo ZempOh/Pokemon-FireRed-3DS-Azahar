@@ -84,6 +84,22 @@ jobs:
         with:
           name: pokeclassic-voxel-engine
           path: ship/
+        - name: Export runtime symbol addresses
+          if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[classic-recipe]')
+          run: |
+            port=build/upstream/3ds_port
+            elf="$port/build/emerald3ds_3dsx.elf"
+            mkdir -p native-symbols
+            "$DEVKITARM/bin/arm-none-eabi-nm" -n -S --defined-only "$elf" > native-symbols/symbols.txt
+            "$DEVKITARM/bin/arm-none-eabi-readelf" -W -S "$elf" > native-symbols/sections.txt
+            printf '%s\n' "$GITHUB_SHA" > native-symbols/commit.txt
+            (cd "$port/dist" && sha256sum Emerald3DS.3dsx) > native-symbols/engine.sha256
+        - uses: actions/upload-artifact@v4
+          if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[classic-recipe]')
+          with:
+            name: pokeclassic-voxel-native-symbols
+            path: native-symbols/
+            if-no-files-found: error
       - name: Host tests and link audit
         run: make -C build/upstream/3ds_port verify PYTHON=python3
 

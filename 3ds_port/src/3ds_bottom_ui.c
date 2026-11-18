@@ -599,12 +599,8 @@ static void LoadResources(void)
 
     sRes.typeTiles = UnlzFile("types/move_types.4bpp.lz", NULL);
     PalFile("types/move_types.gbapal.lz", sRes.typePal, 3, TRUE);
-    {
-        const u16 *pal;
-
-        sRes.categoryTiles = GetMoveCategoryIconGfx(&pal);
-        ToPals(&sRes.categoryPal, pal, 1);
-    }
+    sRes.categoryTiles = UnlzFile("summary_screen/split_icons.4bpp.lz", NULL);
+    PalFile("summary_screen/split_icons.gbapal", &sRes.categoryPal, 1, FALSE);
     for (int i = 0; i < (int)ARRAY_COUNT(sRes.monIconPal); ++i)
         PalSymbol(gMonIconPaletteTable[i].data, &sRes.monIconPal[i], 1);
 
@@ -3816,7 +3812,7 @@ static Rgb Shade(Rgb c, int keep)
  * it: only with ENHANCEMENTS' PHYS/SPEC SPLIT on. */
 static void DrawCategoryIcon(u16 move, int x, int y)
 {
-    if (sRes.categoryTiles && move < MOVES_COUNT && MoveSplitEnabled())
+    if (sRes.categoryTiles && move < MOVES_COUNT && (B_PHYSICAL_SPECIAL_SPLIT >= GEN_4))
         DrawSprite(sRes.categoryTiles + gBattleMoves[move].split * 8 * 32, 4, 2, x, y, sRes.categoryPal.c);
 }
 
@@ -4475,7 +4471,7 @@ static void DrawMovePlate(const ViewState *s, int i)
     int pid = (s->isDouble && GetBattlerPosition(s->battler) == B_POSITION_PLAYER_RIGHT ? CP_MOVE_RIGHT0 : CP_MOVE0) + i;
     u16 move = s->moves4.moves[i];
     /* The category icon follows ENHANCEMENTS' PHYS/SPEC SPLIT. */
-    u32 stamp = Mix(Mix(Mix(Mix(Mix(4, move), s->moves4.currentPp[i]), s->moves4.maxPp[i]), i), MoveSplitEnabled());
+    u32 stamp = Mix(Mix(Mix(Mix(Mix(4, move), s->moves4.currentPp[i]), s->moves4.maxPp[i]), i), (B_PHYSICAL_SPECIAL_SPLIT >= GEN_4));
 
     if (move == MOVE_NONE)
         MoveBody(s, i);

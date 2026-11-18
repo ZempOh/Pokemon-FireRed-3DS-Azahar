@@ -371,3 +371,7 @@ pokefirered decompilation.
 See [NOTICE.md](NOTICE.md) for credits and licences. Pokémon FireRed 3DS is an
 unofficial fan project, not affiliated with or endorsed by Nintendo, Game
 Freak, Creatures or The Pokémon Company.
+
+## Graphics upgrade candidate
+
+See [rendering paths, controls and validation status](docs/graphics-upgrade.md). The climate effects remain opt-in; candidate builds are not releases until their Thor checks pass.

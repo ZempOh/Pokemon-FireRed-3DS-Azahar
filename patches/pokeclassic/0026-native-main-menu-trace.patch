@@ -1,5 +1,5 @@
 diff --git a/src/main_menu.c b/src/main_menu.c
-index 8fb152c119263c1965817fd6c80a6dc639c74b31..3bd0242bfc5dfa3dc1599999146b01711da3eceb 100644
+index 8fb152c119263c1965817fd6c80a6dc639c74b31..777841e8144ed95b0a883467d6d38f18bbde6149 100644
 --- a/src/main_menu.c
 +++ b/src/main_menu.c
 @@ -38,6 +38,14 @@
@@ -93,7 +93,7 @@ index 8fb152c119263c1965817fd6c80a6dc639c74b31..3bd0242bfc5dfa3dc1599999146b0171
  {
      if (!gPaletteFade.active)
      {
-+        MAIN_MENU_TRACE("checking clock");
++        MAIN_MENU_TRACE("checking clock, RTC status=%04x", RtcGetErrorStatus());
          SetGpuReg(REG_OFFSET_WIN0H, 0);
          SetGpuReg(REG_OFFSET_WIN0V, 0);
          SetGpuReg(REG_OFFSET_WININ, WININ_WIN0_BG0 | WININ_WIN0_OBJ);
@@ -113,3 +113,11 @@ index 8fb152c119263c1965817fd6c80a6dc639c74b31..3bd0242bfc5dfa3dc1599999146b0171
      }
  }
  
+@@ -1074,6 +1103,7 @@ static void Task_HandleMainMenuAPressed(u8 taskId)
+         }
+         ChangeBgY(0, 0, BG_COORD_SET);
+         ChangeBgY(1, 0, BG_COORD_SET);
++        MAIN_MENU_TRACE("confirmed item=%u action=%u", gTasks[taskId].tCurrItem, action);
+         switch (action)
+         {
+             case ACTION_NEW_GAME:

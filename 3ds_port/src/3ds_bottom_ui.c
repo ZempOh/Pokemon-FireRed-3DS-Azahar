@@ -626,8 +626,8 @@ static void LoadResources(void)
     sRes.holdTiles = ReadRomfs("party_menu/hold_icons.4bpp", NULL);
     PalFile("party_menu/hold_icons.gbapal", &sRes.holdPal, 1, FALSE);
 
-    PalFile("trainer_card/badges.gbapal", &sRes.badgePal, 1, FALSE);
-    sRes.badgeTiles = UnlzFile("trainer_card/badges.4bpp.lz", NULL);
+    PalFile("trainer_card/badges_fr.gbapal", &sRes.badgePal, 1, FALSE);
+    sRes.badgeTiles = UnlzFile("trainer_card/badges_fr.4bpp.lz", NULL);
 
     LoadGenderResources();
     LoadBattleArt();

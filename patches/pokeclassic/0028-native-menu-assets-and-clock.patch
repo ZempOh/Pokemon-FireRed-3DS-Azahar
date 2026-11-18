@@ -1,0 +1,456 @@
+diff --git a/gflib/dma3_manager.c b/gflib/dma3_manager.c
+index d774efe8cef23b955bb5d9950370f32b7303dadc..e5b7b0bb7bbe2b867ad1c0592a247ca3daf3bbd8 100644
+--- a/gflib/dma3_manager.c
++++ b/gflib/dma3_manager.c
+@@ -1,6 +1,10 @@
+ #include "global.h"
+ #include "dma3.h"
+ 
++#ifdef PORT_BRIDGE
++#include "port_platform.h"
++#endif
++
+ #define MAX_DMA_REQUESTS 128
+ 
+ #define DMA_REQUEST_COPY32 1
+@@ -41,22 +45,24 @@ void ClearDma3Requests(void)
+ 
+ void ProcessDma3Requests(void)
+ {
+-    u16 bytesTransferred;
++#ifndef PORT_BRIDGE
++    u32 bytesTransferred = 0;
++#endif
+ 
+     if (sDma3ManagerLocked)
+         return;
+ 
+-    bytesTransferred = 0;
+-
+     // as long as there are DMA requests to process (unless size or vblank is an issue), do not exit
+     while (sDma3Requests[sDma3RequestCursor].size != 0)
+     {
++#ifndef PORT_BRIDGE
+         bytesTransferred += sDma3Requests[sDma3RequestCursor].size;
+ 
+         if (bytesTransferred > 40 * 1024)
+             return; // don't transfer more than 40 KiB
+         if (*(u8 *)REG_ADDR_VCOUNT > 224)
+             return; // we're about to leave vblank, stop
++#endif
+ 
+         switch (sDma3Requests[sDma3RequestCursor].mode)
+         {
+@@ -100,6 +106,10 @@ s16 RequestDma3Copy(const void *src, void *dest, u16 size, u8 mode)
+     int cursor;
+     int i = 0;
+ 
++#ifdef PORT_BRIDGE
++    src = Port_ResolveAssetPointerSized(src, size);
++#endif
++
+     sDma3ManagerLocked = TRUE;
+     cursor = sDma3RequestCursor;
+ 
+diff --git a/gflib/text.c b/gflib/text.c
+index 1f6caf3b8fc0b24f2204724306fcb91619f73bb0..9bf7427f6fbb9799a8a7fd42ab947680b362a3fe 100644
+--- a/gflib/text.c
++++ b/gflib/text.c
+@@ -13,6 +13,18 @@
+ #include "dynamic_placeholder_text_util.h"
+ #include "fonts.h"
+ 
++#ifdef PORT_BRIDGE
++#include "port_platform.h"
++
++static const u16 *ResolveFontAssetBase(const u16 *glyphs)
++{
++    const void *resolved = Port_ResolveFontPointer(glyphs);
++    return resolved == glyphs ? Port_ResolveAssetPointer(glyphs) : resolved;
++}
++#else
++#define ResolveFontAssetBase(glyphs) (glyphs)
++#endif
++
+ static u16 RenderText(struct TextPrinter *);
+ static u32 RenderFont(struct TextPrinter *);
+ static u16 FontFunc_Small(struct TextPrinter *);
+@@ -345,8 +357,6 @@ void RunTextPrinters(void)
+ }
+ 
+ #ifdef PLATFORM_3DS
+-#include "port_platform.h"
+-
+ s16 CtrText_PrinterPage(u8 windowId, const u8 *str)
+ {
+     const struct TextPrinter *printer;
+@@ -1731,7 +1741,7 @@ static void DecompressGlyph_Small(u16 glyphId, bool32 isJapanese)
+ 
+     if (isJapanese == 1)
+     {
+-        glyphs = gFontSmallJapaneseGlyphs + (0x100 * (glyphId >> 0x4)) + (0x8 * (glyphId & 0xF));
++        glyphs = ResolveFontAssetBase(gFontSmallJapaneseGlyphs) + (0x100 * (glyphId >> 0x4)) + (0x8 * (glyphId & 0xF));
+         DecompressGlyphTile(glyphs, gCurGlyph.gfxBufferTop);
+         DecompressGlyphTile(glyphs + 0x80, gCurGlyph.gfxBufferBottom);
+         gCurGlyph.width = 8;
+@@ -1739,7 +1749,7 @@ static void DecompressGlyph_Small(u16 glyphId, bool32 isJapanese)
+     }
+     else
+     {
+-        glyphs = gFontSmallLatinGlyphs + (0x20 * glyphId);
++        glyphs = ResolveFontAssetBase(gFontSmallLatinGlyphs) + (0x20 * glyphId);
+         gCurGlyph.width = gFontSmallLatinGlyphWidths[glyphId];
+ 
+         if (gCurGlyph.width <= 8)
+@@ -1773,7 +1783,7 @@ static void DecompressGlyph_Narrow(u16 glyphId, bool32 isJapanese)
+ 
+     if (isJapanese == TRUE)
+     {
+-        glyphs = gFontNormalJapaneseGlyphs + (0x100 * (glyphId >> 0x4)) + (0x8 * (glyphId % 0x10));
++        glyphs = ResolveFontAssetBase(gFontNormalJapaneseGlyphs) + (0x100 * (glyphId >> 0x4)) + (0x8 * (glyphId % 0x10));
+         DecompressGlyphTile(glyphs, gCurGlyph.gfxBufferTop);
+         DecompressGlyphTile(glyphs + 0x80, gCurGlyph.gfxBufferBottom);
+         gCurGlyph.width = 8;
+@@ -1781,7 +1791,7 @@ static void DecompressGlyph_Narrow(u16 glyphId, bool32 isJapanese)
+     }
+     else
+     {
+-        glyphs = gFontNarrowLatinGlyphs + (0x20 * glyphId);
++        glyphs = ResolveFontAssetBase(gFontNarrowLatinGlyphs) + (0x20 * glyphId);
+         gCurGlyph.width = gFontNarrowLatinGlyphWidths[glyphId];
+ 
+         if (gCurGlyph.width <= 8)
+@@ -1815,7 +1825,7 @@ static void DecompressGlyph_SmallNarrow(u16 glyphId, bool32 isJapanese)
+ 
+     if (isJapanese == TRUE)
+     {
+-        glyphs = gFontSmallJapaneseGlyphs + (0x100 * (glyphId >> 0x4)) + (0x8 * (glyphId & 0xF));
++        glyphs = ResolveFontAssetBase(gFontSmallJapaneseGlyphs) + (0x100 * (glyphId >> 0x4)) + (0x8 * (glyphId & 0xF));
+         DecompressGlyphTile(glyphs, gCurGlyph.gfxBufferTop);
+         DecompressGlyphTile(glyphs + 0x80, gCurGlyph.gfxBufferBottom);
+         gCurGlyph.width = 8;
+@@ -1823,7 +1833,7 @@ static void DecompressGlyph_SmallNarrow(u16 glyphId, bool32 isJapanese)
+     }
+     else
+     {
+-        glyphs = gFontSmallNarrowLatinGlyphs + (0x20 * glyphId);
++        glyphs = ResolveFontAssetBase(gFontSmallNarrowLatinGlyphs) + (0x20 * glyphId);
+         gCurGlyph.width = gFontSmallNarrowLatinGlyphWidths[glyphId];
+ 
+         if (gCurGlyph.width <= 8)
+@@ -1857,7 +1867,7 @@ static void DecompressGlyph_Short(u16 glyphId, bool32 isJapanese)
+ 
+     if (isJapanese == TRUE)
+     {
+-        glyphs = gFontShortJapaneseGlyphs + (0x100 * (glyphId >> 0x3)) + (0x10 * (glyphId & 0x7));
++        glyphs = ResolveFontAssetBase(gFontShortJapaneseGlyphs) + (0x100 * (glyphId >> 0x3)) + (0x10 * (glyphId & 0x7));
+         DecompressGlyphTile(glyphs, gCurGlyph.gfxBufferTop);
+         DecompressGlyphTile(glyphs + 0x8, gCurGlyph.gfxBufferTop + 8);
+         DecompressGlyphTile(glyphs + 0x80, gCurGlyph.gfxBufferBottom);    // gCurGlyph + 0x20
+@@ -1867,7 +1877,7 @@ static void DecompressGlyph_Short(u16 glyphId, bool32 isJapanese)
+     }
+     else
+     {
+-        glyphs = gFontShortLatinGlyphs + (0x20 * glyphId);
++        glyphs = ResolveFontAssetBase(gFontShortLatinGlyphs) + (0x20 * glyphId);
+         gCurGlyph.width = gFontShortLatinGlyphWidths[glyphId];
+ 
+         if (gCurGlyph.width <= 8)
+@@ -1901,7 +1911,7 @@ static void DecompressGlyph_Normal(u16 glyphId, bool32 isJapanese)
+ 
+     if (isJapanese == TRUE)
+     {
+-        glyphs = gFontNormalJapaneseGlyphs + (0x100 * (glyphId >> 0x4)) + (0x8 * (glyphId % 0x10));
++        glyphs = ResolveFontAssetBase(gFontNormalJapaneseGlyphs) + (0x100 * (glyphId >> 0x4)) + (0x8 * (glyphId % 0x10));
+         DecompressGlyphTile(glyphs, gCurGlyph.gfxBufferTop);
+         DecompressGlyphTile(glyphs + 0x80, gCurGlyph.gfxBufferBottom);
+         gCurGlyph.width = 8;
+@@ -1909,7 +1919,7 @@ static void DecompressGlyph_Normal(u16 glyphId, bool32 isJapanese)
+     }
+     else
+     {
+-        glyphs = gFontNormalLatinGlyphs + (0x20 * glyphId);
++        glyphs = ResolveFontAssetBase(gFontNormalLatinGlyphs) + (0x20 * glyphId);
+         gCurGlyph.width = gFontNormalLatinGlyphWidths[glyphId];
+ 
+         if (gCurGlyph.width <= 8)
+@@ -1941,7 +1951,7 @@ static void DecompressGlyph_Bold(u16 glyphId)
+ {
+     const u16* glyphs;
+ 
+-    glyphs = sFontBoldJapaneseGlyphs + (0x100 * (glyphId >> 4)) + (0x8 * (glyphId & 0xF));
++    glyphs = ResolveFontAssetBase(sFontBoldJapaneseGlyphs) + (0x100 * (glyphId >> 4)) + (0x8 * (glyphId & 0xF));
+     DecompressGlyphTile(glyphs, gCurGlyph.gfxBufferTop);
+     DecompressGlyphTile(glyphs + 0x80, gCurGlyph.gfxBufferBottom);
+     gCurGlyph.width = 8;
+diff --git a/src/overworld.c b/src/overworld.c
+index 6f138dd560931c7c052fc14dd06bdd77e4d9abd3..ae3182be42d8da6ca4bdc15911b5a8d2cdd3129f 100644
+--- a/src/overworld.c
++++ b/src/overworld.c
+@@ -1,5 +1,11 @@
+ #include "global.h"
+ #include "overworld.h"
++#ifdef PLATFORM_3DS
++#include "3ds_log.h"
++#define CONTINUE_TRACE(...) CtrLog_Write(CTR_LOG_BOOT, "Classic continue: " __VA_ARGS__)
++#else
++#define CONTINUE_TRACE(...) ((void)0)
++#endif
+ #include "battle_pyramid.h"
+ #include "battle_setup.h"
+ #include "berry.h"
+@@ -1853,6 +1859,7 @@ void CB2_ContinueSavedGame(void)
+ {
+     u8 trainerHillMapId;
+ 
++    CONTINUE_TRACE("entered, save status=%u", gSaveFileStatus);
+     FieldClearVBlankHBlankCallbacks();
+     StopMapMusic();
+     ResetSafariZoneFlag_();
+@@ -1860,6 +1867,7 @@ void CB2_ContinueSavedGame(void)
+         ResetWinStreaks();
+ 
+     LoadSaveblockMapHeader();
++    CONTINUE_TRACE("loaded map header, layout=%u", gMapHeader.mapLayoutId);
+     ClearDiveAndHoleWarps();
+     trainerHillMapId = GetCurrentTrainerHillMapId();
+     if (gMapHeader.mapLayoutId == LAYOUT_BATTLE_FRONTIER_BATTLE_PYRAMID_FLOOR)
+@@ -1869,8 +1877,10 @@ void CB2_ContinueSavedGame(void)
+     else
+         LoadSaveblockObjEventScripts();
+ 
++    CONTINUE_TRACE("loaded object scripts");
+     UnfreezeObjectEvents();
+     DoTimeBasedEvents();
++    CONTINUE_TRACE("updated RTC and time-based events");
+     UpdateMiscOverworldStates();
+     if (gMapHeader.mapLayoutId == LAYOUT_BATTLE_FRONTIER_BATTLE_PYRAMID_FLOOR)
+         InitBattlePyramidMap(TRUE);
+@@ -1879,6 +1889,7 @@ void CB2_ContinueSavedGame(void)
+     else
+         InitMapFromSavedGame();
+ 
++    CONTINUE_TRACE("initialized saved map");
+     PlayTimeCounter_Start();
+     ScriptContext1_Init();
+     ScriptContext2_Disable();
+@@ -1899,6 +1910,7 @@ void CB2_ContinueSavedGame(void)
+         SetMainCallback1(CB1_Overworld);
+         CB2_ReturnToField();
+     }
++    CONTINUE_TRACE("handed control to map loader");
+ }
+ 
+ static void FieldClearVBlankHBlankCallbacks(void)
+diff --git a/src/siirtc.c b/src/siirtc.c
+index 0e598f717225db915ffc0910169f058be22b1984..090f2456c114c4edcf168b98467f173dce682fd9 100644
+--- a/src/siirtc.c
++++ b/src/siirtc.c
+@@ -4,7 +4,8 @@
+ 
+ #include "gba/gba.h"
+ #include "siirtc.h"
+-#include "config.h"
++#include "global.h"
++#include "platform.h"
+ 
+ #define STATUS_INTFE  0x02 // frequency interrupt enable
+ #define STATUS_INTME  0x08 // per-minute interrupt enable
+@@ -60,11 +61,13 @@
+ #define DIR_ALL_IN  (DIR_0_IN | DIR_1_IN | DIR_2_IN)
+ #define DIR_ALL_OUT (DIR_0_OUT | DIR_1_OUT | DIR_2_OUT)
+ 
++#ifndef PORTABLE
+ #define GPIO_PORT_DATA        (*(vu16 *)0x80000C4)
+ #define GPIO_PORT_DIRECTION   (*(vu16 *)0x80000C6)
+ #define GPIO_PORT_READ_ENABLE (*(vu16 *)0x80000C8)
+ 
+ extern vu16 GPIOPortDirection;
++#endif
+ 
+ static u16 sDummy; // unused variable
+ static bool8 sLocked;
+@@ -80,13 +83,17 @@ static const char AgbLibRtcVersion[] = "SIIRTC_V001";
+ 
+ void SiiRtcUnprotect(void)
+ {
++#ifndef PORTABLE
+     EnableGpioPortRead();
++#endif
+     sLocked = FALSE;
+ }
+ 
+ void SiiRtcProtect(void)
+ {
++#ifndef PORTABLE
+     DisableGpioPortRead();
++#endif
+     sLocked = TRUE;
+ }
+ 
+@@ -145,6 +152,7 @@ bool8 SiiRtcReset(void)
+ 
+     sLocked = TRUE;
+ 
++#ifndef PORTABLE
+     GPIO_PORT_DATA = SCK_HI;
+     GPIO_PORT_DATA = SCK_HI | CS_HI;
+ 
+@@ -154,6 +162,7 @@ bool8 SiiRtcReset(void)
+ 
+     GPIO_PORT_DATA = SCK_HI;
+     GPIO_PORT_DATA = SCK_HI;
++#endif
+ 
+     sLocked = FALSE;
+ 
+@@ -172,7 +181,9 @@ bool8 SiiRtcGetStatus(struct SiiRtcInfo *rtc)
+         return FALSE;
+ 
+     sLocked = TRUE;
+-
++#ifdef PORTABLE
++    Platform_GetStatus(rtc);
++#else
+     GPIO_PORT_DATA = SCK_HI;
+     GPIO_PORT_DATA = SCK_HI | CS_HI;
+ 
+@@ -191,7 +202,7 @@ bool8 SiiRtcGetStatus(struct SiiRtcInfo *rtc)
+ 
+     GPIO_PORT_DATA = SCK_HI;
+     GPIO_PORT_DATA = SCK_HI;
+-
++#endif
+     sLocked = FALSE;
+ 
+     return TRUE;
+@@ -205,7 +216,9 @@ bool8 SiiRtcSetStatus(struct SiiRtcInfo *rtc)
+         return FALSE;
+ 
+     sLocked = TRUE;
+-
++#ifdef PORTABLE
++    Platform_SetStatus(rtc);
++#else
+     GPIO_PORT_DATA = SCK_HI;
+     GPIO_PORT_DATA = SCK_HI | CS_HI;
+ 
+@@ -222,7 +235,7 @@ bool8 SiiRtcSetStatus(struct SiiRtcInfo *rtc)
+ 
+     GPIO_PORT_DATA = SCK_HI;
+     GPIO_PORT_DATA = SCK_HI;
+-
++#endif
+     sLocked = FALSE;
+ 
+     return TRUE;
+@@ -236,7 +249,9 @@ bool8 SiiRtcGetDateTime(struct SiiRtcInfo *rtc)
+         return FALSE;
+ 
+     sLocked = TRUE;
+-
++#ifdef PORTABLE
++    Platform_GetDateTime(rtc);
++#else
+     GPIO_PORT_DATA = SCK_HI;
+     GPIO_PORT_DATA = SCK_HI | CS_HI;
+ 
+@@ -253,7 +268,7 @@ bool8 SiiRtcGetDateTime(struct SiiRtcInfo *rtc)
+ 
+     GPIO_PORT_DATA = SCK_HI;
+     GPIO_PORT_DATA = SCK_HI;
+-
++#endif
+     sLocked = FALSE;
+ 
+     return TRUE;
+@@ -267,7 +282,9 @@ bool8 SiiRtcSetDateTime(struct SiiRtcInfo *rtc)
+         return FALSE;
+ 
+     sLocked = TRUE;
+-
++#ifdef PORTABLE
++    Platform_SetDateTime(rtc);
++#else
+     GPIO_PORT_DATA = SCK_HI;
+     GPIO_PORT_DATA = SCK_HI | CS_HI;
+ 
+@@ -280,7 +297,7 @@ bool8 SiiRtcSetDateTime(struct SiiRtcInfo *rtc)
+ 
+     GPIO_PORT_DATA = SCK_HI;
+     GPIO_PORT_DATA = SCK_HI;
+-
++#endif
+     sLocked = FALSE;
+ 
+     return TRUE;
+@@ -294,7 +311,10 @@ bool8 SiiRtcGetTime(struct SiiRtcInfo *rtc)
+         return FALSE;
+ 
+     sLocked = TRUE;
+-
++#ifdef PORTABLE
++    Platform_GetTime(rtc);
++    INFO_BUF(rtc, OFFSET_HOUR) &= 0x7F;
++#else
+     GPIO_PORT_DATA = SCK_HI;
+     GPIO_PORT_DATA = SCK_HI | CS_HI;
+ 
+@@ -311,7 +331,7 @@ bool8 SiiRtcGetTime(struct SiiRtcInfo *rtc)
+ 
+     GPIO_PORT_DATA = SCK_HI;
+     GPIO_PORT_DATA = SCK_HI;
+-
++#endif
+     sLocked = FALSE;
+ 
+     return TRUE;
+@@ -325,7 +345,9 @@ bool8 SiiRtcSetTime(struct SiiRtcInfo *rtc)
+         return FALSE;
+ 
+     sLocked = TRUE;
+-
++#ifdef PORTABLE
++    Platform_SetTime(rtc);
++#else
+     GPIO_PORT_DATA = SCK_HI;
+     GPIO_PORT_DATA = SCK_HI | CS_HI;
+ 
+@@ -338,6 +360,7 @@ bool8 SiiRtcSetTime(struct SiiRtcInfo *rtc)
+ 
+     GPIO_PORT_DATA = SCK_HI;
+     GPIO_PORT_DATA = SCK_HI;
++#endif
+ 
+     sLocked = FALSE;
+ 
+@@ -365,6 +388,9 @@ bool8 SiiRtcSetAlarm(struct SiiRtcInfo *rtc)
+         alarmData[0] = rtc->alarmHour | ALARM_PM;
+ 
+     alarmData[1] = rtc->alarmMinute;
++#ifdef PORTABLE
++    Platform_SetAlarm(alarmData);
++#else
+ 
+     GPIO_PORT_DATA = SCK_HI;
+     GPIO_PORT_DATA = SCK_HI | CS_HI;
+@@ -378,12 +404,13 @@ bool8 SiiRtcSetAlarm(struct SiiRtcInfo *rtc)
+ 
+     GPIO_PORT_DATA = SCK_HI;
+     GPIO_PORT_DATA = SCK_HI;
+-
++#endif
+     sLocked = FALSE;
+ 
+     return TRUE;
+ }
+ 
++#ifndef PORTABLE
+ static int WriteCommand(u8 value)
+ {
+     u8 i;
+@@ -461,3 +488,4 @@ static void DisableGpioPortRead()
+ {
+     GPIO_PORT_READ_ENABLE = FALSE;
+ }
++#endif

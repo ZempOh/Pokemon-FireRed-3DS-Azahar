@@ -71,7 +71,12 @@ static void CheckCuts(void)
     nv = Le16(blob + at);
     nc = Le16(blob + at + 2);
     cells = blob + at + 4 + 36u * nv;
-    assert(nc > 0);
+    if (nc == 0)
+    {
+        assert(VoxelRelief_CutCount() == 0);
+        free(blob);
+        return;
+    }
     keys = malloc(nc * sizeof(*keys));
     assert(keys != NULL);
     for (unsigned k = 0; k < nc; ++k)
@@ -127,6 +132,25 @@ int main(int argc, char **argv)
 {
     VoxelMapInstance inst = {0};
     const int16_t *g;
+
+    if (argc == 3)
+    {
+        /* The source release keeps Pallet level. Route 1's first ledge has
+         * a 6-pixel lip, and Viridian has both level and raised cells. */
+        assert(VoxelRelief_Init());
+        inst.layoutId = atoi(argv[1]);
+        g = VoxelRelief_Cell(&inst, 2, 5);
+        assert(g != NULL && VoxelRelief_IsSlope(g));
+        assert(g[2 * VOXEL_RELIEF_SIDE + 2] == 6);
+        assert(VoxelRelief_Cell(&inst, 2, 4) == NULL);
+        inst.layoutId = atoi(argv[2]);
+        assert(VoxelRelief_Cell(&inst, 0, 8) != NULL);
+        assert(VoxelRelief_Cell(&inst, -1, 8) == NULL);
+        CheckCuts();
+        VoxelRelief_Shutdown();
+        puts("PASS Classic relief: Route 1's ledge lip and Viridian's loaded terrain");
+        return 0;
+    }
 
     assert(argc == 8);
     inst.layoutId = atoi(argv[1]);

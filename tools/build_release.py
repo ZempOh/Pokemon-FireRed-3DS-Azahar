@@ -61,7 +61,7 @@ PORT = ROOT / "3ds_port"
 DIST = ROOT / "dist"
 CIA_NAME = "Emerald3DS-Forwarder.cia"
 GENERATORS = ["gen_voxel_regions.py", "gen_voxel_sign_masks.py",
-              "gen_voxel_relief.py", "gen_voxel_buildings.py", "gen_intro_margins.py"]
+              "gen_voxel_relief.py", "gen_voxel_buildings.py"]
 VOXELGEN_FILES = ["src/voxel/voxel_regions.h", "assets/voxel/relief_fixes.json"]
 
 

@@ -26,7 +26,7 @@ from emerald3ds_builder import pak, voxel, web, webmanifest  # noqa: E402
 from emerald3ds_builder.errors import BuilderError  # noqa: E402
 
 # Two generators shaped like the real ones: ROOT from __file__, a sibling module
-# holding state, argparse --output. The second one depends on the first's output.
+# holding state, argparse --output. The two jobs are independent.
 GEN_A = '''import os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import shared_state
@@ -52,9 +52,9 @@ def main():
     shared_state.RUNS.append("b")
     if os.path.realpath(os.getcwd()) != os.path.realpath(PORT):
         raise SystemExit("wrong working directory")
-    data = open(os.path.join(PORT, "romfs", "voxel", "regions.bin"), "rb").read()
+    data = open(os.path.join(PORT, "..", "data", "in.bin"), "rb").read()
     os.makedirs(os.path.dirname(args.output), exist_ok=True)
-    open(args.output, "wb").write(data[::-1] + bytes([len(shared_state.RUNS)]))
+    open(args.output, "wb").write(bytes(b ^ 1 for b in reversed(data)) + bytes([len(shared_state.RUNS)]))
 if __name__ == "__main__":
     main()
 '''

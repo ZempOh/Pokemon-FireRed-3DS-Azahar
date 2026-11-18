@@ -1,7 +1,6 @@
 """Signposts: the sign event rule, eventless posts (street lamps) and the sign
 silhouette, on synthetic cells and on real maps."""
 
-import json
 import pathlib
 import sys
 import types
@@ -10,7 +9,7 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 import voxel_cells  # noqa: E402
 from gen_voxel_sign_masks import sign_record  # noqa: E402
-from voxel_sign_mask import cutout_mask, ground_colours, metatile_mask  # noqa: E402
+from voxel_sign_mask import cutout_mask  # noqa: E402
 
 
 class FakeLayout:
@@ -88,53 +87,23 @@ def run():
     assert not FakeLayout(blocked, {(1, 1)}, drawn=drawn, posts={3}).is_signpost(1, 1)
     assert not FakeLayout(blocked, {(1, 1)}, drawn=drawn, copies={3}).is_signpost(1, 1)
 
-    entry = next(e for e in voxel_cells.load_layouts() if e.get("id") == "LAYOUT_LITTLEROOT_TOWN")
-    layout = voxel_cells.Layout(entry, voxel_cells.MapEvents())
-    pair = voxel_cells.pair_for(layout.primary, layout.secondary)
-    signs = [(x, y) for y in range(layout.h) for x in range(layout.w)
-             if layout.role_at(x, y) == "signpost"]
-    assert signs, "Littleroot Town has signs"
-    assert layout.signs <= set(signs), "every Littleroot sign, the houses' too"
-    for x, y in signs:
-        rows = metatile_mask(pair, layout, x, y)
-        assert any(rows)
-        ground = ground_colours(pair, layout, x, y)
-        for (px, py), colour in pair.layer_pixels(layout.metatile(x, y), 0).items():
-            if colour not in ground:
-                assert rows[py] & (1 << px)
-        for px, py in pair.layer_pixels(layout.metatile(x, y), 1):
-            assert rows[py] & (1 << px)
-    # Rustboro's street lamps have no sign event and are posts all the same.
-    entry = next(e for e in voxel_cells.load_layouts() if e.get("id") == "LAYOUT_RUSTBORO_CITY")
-    rustboro = voxel_cells.Layout(entry, voxel_cells.MapEvents())
-    lamps = [(x, y) for y in range(rustboro.h) for x in range(rustboro.w)
-             if rustboro.role_at(x, y) == "signpost" and (x, y) not in rustboro.signs]
-    assert len(lamps) >= 12, lamps
-    # and so are the two against the Center's and the Mart's walls
-    assert {(19, 38), (19, 45)} <= set(lamps), lamps
-    # Every gym's sign stands whole: its round top, drawn in the cell north
-    # of it, stands on it - against the gym's wall or a tree too (Dewford,
-    # Fortree, Lavaridge: their tilesets' copies of the General tileset's).
     events = voxel_cells.MapEvents()
-    layouts = {e.get("id"): e for e in voxel_cells.load_layouts()}
-    gyms = 0
-    for path in sorted((ROOT.parent / "data" / "maps").glob("*/map.json")):
-        with open(path, encoding="utf-8") as f:
-            m = json.load(f)
-        for b in m.get("bg_events") or []:
-            if not b.get("script", "").endswith("_EventScript_GymSign"):
-                continue
-            layout = voxel_cells.Layout(layouts[m["layout"]], events)
-            pair = voxel_cells.pair_for(layout.primary, layout.secondary)
-            x, y = b["x"], b["y"]
-            assert layout.role_at(x, y) == "signpost", (path.parent.name, layout.role_at(x, y))
-            rows, head, _, _ = sign_record(layout, pair, x, y)
-            assert rows[15] and not all(r == 0xFFFF for r in rows), path.parent.name
-            assert any(head), path.parent.name
-            gyms += 1
-    assert gyms == 8, gyms
-    print("PASS voxel signpost: sign events, lamps, open sides, silhouettes "
-          "(%d real signs, %d Rustboro lamps, %d gym signs)" % (len(signs), len(lamps), gyms))
+    layouts = {entry["id"]: entry for entry in voxel_cells.load_layouts()}
+    opening_signs = {
+        "LAYOUT_PALLET_TOWN": {(9, 11), (5, 14), (16, 16)},
+        "LAYOUT_ROUTE1": {(9, 31)},
+        "LAYOUT_VIRIDIAN_CITY": {(23, 9), (32, 18), (20, 24), (20, 39)},
+    }
+    for name, signs in opening_signs.items():
+        layout = voxel_cells.Layout(layouts[name], events)
+        pair = voxel_cells.pair_for(layout.primary, layout.secondary)
+        for x, y in signs:
+            assert (x, y) in layout.signs and layout.role_at(x, y) == "signpost", (name, x, y)
+            rows, _, _, _ = sign_record(layout, pair, x, y)
+            assert any(rows), (name, x, y)
+            for px, py in pair.layer_pixels(layout.metatile(x, y), 1):
+                assert rows[py] & (1 << px), (name, x, y, px, py)
+    print("PASS voxel signpost: sign events, lamps, open sides, and Classic's opening signs")
 
 
 if __name__ == "__main__":

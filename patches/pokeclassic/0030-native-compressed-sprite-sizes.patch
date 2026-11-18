@@ -1,0 +1,63 @@
+diff --git a/src/decompress.c b/src/decompress.c
+index 92c840a6..e7af0777 100644
+--- a/src/decompress.c
++++ b/src/decompress.c
+@@ -4,6 +4,9 @@
+ #include "decompress.h"
+ #include "pokemon.h"
+ #include "text.h"
++#ifdef PORT_BRIDGE
++#include "port_platform.h"
++#endif
+ 
+ EWRAM_DATA ALIGNED(4) u8 gDecompressionBuffer[0x4000] = {0};
+ 
+@@ -259,6 +262,12 @@ static void StitchObjectsOn8x8Canvas(s32 object_size, s32 object_count, u8 *src_
+ 
+ u32 GetDecompressedDataSize(const u32 *ptr)
+ {
++#ifdef PORT_BRIDGE
++    if (ptr == NULL)
++        return 0;
++    if (Port_IsAssetStub(ptr))
++        return Port_GetDecompressedAssetSize(ptr);
++#endif
+     const u8 *ptr8 = (const u8 *)ptr;
+     return (ptr8[3] << 16) | (ptr8[2] << 8) | (ptr8[1]);
+ }
+@@ -268,7 +277,18 @@ bool8 LoadCompressedSpriteSheetUsingHeap(const struct CompressedSpriteSheet* src
+     struct SpriteSheet dest;
+     void* buffer;
+ 
++#ifdef PORT_BRIDGE
++    u32 size = GetDecompressedDataSize(src->data);
++    if (size == 0)
++        return FALSE;
++    if (size < src->size)
++        size = src->size;
++    buffer = AllocZeroed(size);
++    if (buffer == NULL)
++        return FALSE;
++#else
+     buffer = AllocZeroed(*((u32*)(&src->data[0])) >> 8);
++#endif
+     LZ77UnCompWram(src->data, buffer);
+ 
+     dest.data = buffer;
+@@ -285,7 +305,16 @@ bool8 LoadCompressedSpritePaletteUsingHeap(const struct CompressedSpritePalette
+     struct SpritePalette dest;
+     void* buffer;
+ 
++#ifdef PORT_BRIDGE
++    u32 size = GetDecompressedDataSize(src->data);
++    if (size < PLTT_SIZE_4BPP)
++        return FALSE;
++    buffer = AllocZeroed(size);
++    if (buffer == NULL)
++        return FALSE;
++#else
+     buffer = AllocZeroed(*((u32*)(&src->data[0])) >> 8);
++#endif
+     LZ77UnCompWram(src->data, buffer);
+     dest.data = buffer;
+     dest.tag = src->tag;

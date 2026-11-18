@@ -1,0 +1,17 @@
+diff --git a/src/trainer_pokemon_sprites.c b/src/trainer_pokemon_sprites.c
+index 748fb84..42e0c84 100644
+--- a/src/trainer_pokemon_sprites.c
++++ b/src/trainer_pokemon_sprites.c
+@@ -153,8 +153,10 @@ u16 CreatePicSprite(u16 species, u32 otId, u32 personality, bool8 isFrontPic, s1
+     }
+     for (j = 0; j < 4; j ++)
+     {
+-        images[j].data = framePics + 0x800 * j;
+-        images[j].size = 0x800;
++        images[j] = (struct SpriteFrameImage){
++            .data = framePics + 0x800 * j,
++            .size = 0x800,
++        };
+     }
+     sCreatingSpriteTemplate.tileTag = TAG_NONE;
+     sCreatingSpriteTemplate.oam = &sOamData_Normal;

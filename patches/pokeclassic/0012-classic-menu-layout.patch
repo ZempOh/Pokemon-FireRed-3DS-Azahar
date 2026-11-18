@@ -1,0 +1,296 @@
+diff --git a/src/fieldmap.c b/src/fieldmap.c
+index 3a1f533847bd03c79e16a3950fecf943b36433c6..5e2af1dcce782f8b023c5a4ded5e6130aa4caf76 100644
+--- a/src/fieldmap.c
++++ b/src/fieldmap.c
+@@ -645,7 +645,7 @@ static u16 GetNearestBorderBlockAt(int x, int y)
+     u8 index;
+     const u16 *border = Port_ResolveAssetPointer(MapGridGetCameraBorderAt(x, y, &index));
+ 
+-    return border[index] | MAPGRID_IMPASSABLE;
++    return border[index] | MAPGRID_COLLISION_MASK;
+ }
+ 
+ #ifdef PLATFORM_3DS
+diff --git a/src/item_menu.c b/src/item_menu.c
+index 4bb14e772e267bb27aa037ac2560f594c3530a5e..b6248c9c9eee08fc14b135b35b01db4e928615a3 100644
+--- a/src/item_menu.c
++++ b/src/item_menu.c
+@@ -1964,6 +1964,9 @@ static void CancelToss(u8 taskId)
+ static void Task_ChooseHowManyToToss(u8 taskId)
+ {
+     s16* data = gTasks[taskId].data;
++#ifdef PLATFORM_3DS
++    u8 ctrTouch = CtrBag_QuantityTouch(&tItemCount, tQuantity, ITEMWIN_QUANTITY);
++#endif
+ 
+     if (AdjustQuantityAccordingToDPadInput(&tItemCount, tQuantity) == TRUE || BAG_TOUCHED(CHANGED))
+     {
+@@ -2299,6 +2302,9 @@ static void InitSellHowManyInput(u8 taskId)
+ static void Task_ChooseHowManyToSell(u8 taskId)
+ {
+     s16* data = gTasks[taskId].data;
++#ifdef PLATFORM_3DS
++    u8 ctrTouch = CtrBag_QuantityTouch(&tItemCount, tQuantity, ITEMWIN_QUANTITY_WIDE);
++#endif
+ 
+     if (AdjustQuantityAccordingToDPadInput(&tItemCount, tQuantity) == TRUE || BAG_TOUCHED(CHANGED))
+     {
+@@ -2383,6 +2389,9 @@ static void Task_ItemContext_Deposit(u8 taskId)
+ static void Task_ChooseHowManyToDeposit(u8 taskId)
+ {
+     s16* data = gTasks[taskId].data;
++#ifdef PLATFORM_3DS
++    u8 ctrTouch = CtrBag_QuantityTouch(&tItemCount, tQuantity, ITEMWIN_QUANTITY);
++#endif
+ 
+     if (AdjustQuantityAccordingToDPadInput(&tItemCount, tQuantity) == TRUE || BAG_TOUCHED(CHANGED))
+     {
+@@ -3248,7 +3257,7 @@ static void CtrBag_ViewRows(struct CtrBagView *view)
+         {
+             if (pocket == BERRIES_POCKET || (pocket != KEYITEMS_POCKET && GetItemImportance(item) == FALSE))
+                 view->flags[i] |= CTR_BAG_ROW_COUNT;
+-            else if (gSaveBlock1Ptr->registeredItem == item)
++            else if (gSaveBlock1Ptr->registeredItemL == item)
+                 view->flags[i] |= CTR_BAG_ROW_REGISTERED;
+         }
+         CtrBag_RowName(view->names[i], sListBuffer2->name[index], item);
+diff --git a/src/party_menu.c b/src/party_menu.c
+index 04bbbcef6ddd5e1ed4c061050495cbed584536a4..e9e28e305fd14394ce81e95bae3df9aa0f42e790 100644
+--- a/src/party_menu.c
++++ b/src/party_menu.c
+@@ -1368,7 +1368,7 @@ static void CtrParty_CopyText(u8 *dst, const u8 *src, u16 size)
+ // one is the question over a yes/no.
+ static void CtrParty_MessagePage(u8 *dst)
+ {
+-    s16 page = CtrText_PrinterPage(WIN_MSG, sCtrMessageSrc);
++    s16 page = CtrText_PrinterPage(6, sCtrMessageSrc);
+     u16 i, j, start = 0, size = sizeof(sCtrMessage);
+ 
+     for (i = 0; i < size && sCtrMessage[i] != EOS && page != 0; i++)
+diff --git a/src/pokemon_storage_system.c b/src/pokemon_storage_system.c
+index f2ffc37c428956985fcb9229a3275d2550675076..2bfa043217bafc83b5e28a0ca0546431ce09b3e9 100644
+--- a/src/pokemon_storage_system.c
++++ b/src/pokemon_storage_system.c
+@@ -7424,7 +7424,7 @@ static void CtrStorage_Prefetch(void)
+         }
+         else
+         {
+-            u16 species = GetBoxMonDataAt(boxId, slot, MON_DATA_SPECIES_OR_EGG);
++            u16 species = GetBoxMonDataAt(boxId, slot, MON_DATA_SPECIES2);
+ 
+             read = species != SPECIES_NONE && CtrStorage_Touch(GetMonIconTiles(species, TRUE));
+         }
+diff --git a/src/pokemon_summary_screen.c b/src/pokemon_summary_screen.c
+index 3a157c02ddc48d0af289d8282bcd1d1ac2cdf798..2af449a39e46abbfb7abcee3690f2ab291d20564 100644
+--- a/src/pokemon_summary_screen.c
++++ b/src/pokemon_summary_screen.c
+@@ -1,9 +1,11 @@
+ #include "global.h"
++#include "overworld.h"
+ #include "main.h"
+ #include "battle.h"
+ #include "battle_anim.h"
+ #ifdef PLATFORM_3DS
+ #include "3ds_game_views.h"
++static bool8 sCtrLeave;
+ #endif
+ #include "frontier_util.h"
+ #include "battle_message.h"
+@@ -1921,7 +1923,7 @@ bool8 CtrSummary_GetView(struct CtrSummaryView *view)
+         view->movesMode = CTR_SUM_MOVES_CHOOSE;
+     else if (FuncIsActiveTask(Task_HandleInput_MovePositionSwitch))
+         view->movesMode = CTR_SUM_MOVES_SWITCH;
+-    else if (FuncIsActiveTask(Task_HandleInputCantForgetHMsMoves))
++    else if (FuncIsActiveTask(Task_ConfirmHMCantForget))
+         view->movesMode = CTR_SUM_MOVES_HM;
+     else if (sMonSummaryScreen->mode == SUMMARY_MODE_SELECT_MOVE)
+         view->movesMode = CTR_SUM_MOVES_REPLACE;
+@@ -1940,7 +1942,7 @@ bool8 CtrSummary_GetView(struct CtrSummaryView *view)
+     view->otId = sum->OTID & 0xFFFF;
+     view->exp = sum->exp;
+     if (sum->level < MAX_LEVEL && !sum->isEgg)
+-        view->toNextLevel = gExperienceTables[gSpeciesInfo[sum->species].growthRate][sum->level + 1] - sum->exp;
++        view->toNextLevel = gExperienceTables[gBaseStats[sum->species].growthRate][sum->level + 1] - sum->exp;
+     view->hp = sum->currentHP;
+     view->maxHp = sum->maxHP;
+     view->stats[0] = sum->atk;
+@@ -1948,9 +1950,7 @@ bool8 CtrSummary_GetView(struct CtrSummaryView *view)
+     view->stats[2] = sum->spatk;
+     view->stats[3] = sum->spdef;
+     view->stats[4] = sum->speed;
+-    memcpy(view->ivs, sum->ivs, sizeof(view->ivs));
+-    memcpy(view->evs, sum->evs, sizeof(view->evs));
+-    view->statsMode = sMonSummaryScreen->statsMode;
++    view->statsMode = 0;
+     view->ppBonuses = sum->ppBonuses;
+     for (i = 0; i < MAX_MON_MOVES; i++)
+     {
+diff --git a/src/pokenav_menu_handler.c b/src/pokenav_menu_handler.c
+index 6af1c0c6bad23d1be730ffaef076dcea4e6cbb20..69210cde8f6843c8111447bcc52ce8a9ce1032f3 100644
+--- a/src/pokenav_menu_handler.c
++++ b/src/pokenav_menu_handler.c
+@@ -59,13 +59,13 @@ static const u8 sMenuItems[][MAX_POKENAV_MENUITEMS] =
+         POKENAV_MENUITEM_CONDITION,
+         [1 ... MAX_POKENAV_MENUITEMS - 1] = POKENAV_MENUITEM_SWITCH_OFF
+     },
+-    [POKENAV_MENU_TYPE_UNLOCK_MC] =
++    [POKENAV_MENU_TYPE_UNLOCK_DEXNAV] =
+     {
+         POKENAV_MENUITEM_CONDITION,
+         POKENAV_MENUITEM_MATCH_CALL,
+         [2 ... MAX_POKENAV_MENUITEMS - 1] = POKENAV_MENUITEM_SWITCH_OFF
+     },
+-    [POKENAV_MENU_TYPE_UNLOCK_MC_RIBBONS] =
++    [POKENAV_MENU_TYPE_UNLOCK_DEXNAV_RIBBONS] =
+     {
+         POKENAV_MENUITEM_CONDITION,
+         POKENAV_MENUITEM_MATCH_CALL,
+diff --git a/src/pokenav_menu_handler_gfx.c b/src/pokenav_menu_handler_gfx.c
+index 6d4adba0242ab1a55ae06bff28e9634c390e3a89..3b48bdae21c5672229be3653202e675d5631a4ad 100644
+--- a/src/pokenav_menu_handler_gfx.c
++++ b/src/pokenav_menu_handler_gfx.c
+@@ -220,6 +220,7 @@ struct
+             sOptionsLabelGfx_MatchCall,
+             sOptionsLabelGfx_Condition,
+             sOptionsLabelGfx_SwitchOff
++#endif
+         }
+     },
+     [POKENAV_MENU_TYPE_UNLOCK_DEXNAV] =
+@@ -233,6 +234,7 @@ struct
+             sOptionsLabelGfx_DexNav,
+             sOptionsLabelGfx_Condition,
+             sOptionsLabelGfx_SwitchOff
++#endif
+         }
+     },
+     [POKENAV_MENU_TYPE_UNLOCK_DEXNAV_RIBBONS] =
+@@ -247,6 +249,7 @@ struct
+             sOptionsLabelGfx_Condition,
+             sOptionsLabelGfx_Ribbons,
+             sOptionsLabelGfx_SwitchOff
++#endif
+         }
+     },
+     [POKENAV_MENU_TYPE_CONDITION] =
+diff --git a/src/region_map.c b/src/region_map.c
+index cb9d8e985d29068c0c4ae4be8a62bc9f91ae1d7e..12e40cd10aac198bd0fbd67e76aa5816da75e305 100644
+--- a/src/region_map.c
++++ b/src/region_map.c
+@@ -2103,26 +2103,14 @@ u8 CtrRegionMap_PosWithinMapSec(u16 x, u16 y, u16 mapSecId)
+ // CB_ExitFlyMap's, for a destination chosen.
+ void CtrRegionMap_SetFlyDestination(u16 mapSecId, u8 posWithinMapSec)
+ {
+-    switch (mapSecId)
+-    {
+-    case MAPSEC_SOUTHERN_ISLAND:
+-        SetWarpDestinationToHealLocation(HEAL_LOCATION_SOUTHERN_ISLAND_EXTERIOR);
+-        break;
+-    case MAPSEC_BATTLE_FRONTIER:
+-        SetWarpDestinationToHealLocation(HEAL_LOCATION_BATTLE_FRONTIER_OUTSIDE_EAST);
+-        break;
+-    case MAPSEC_LITTLEROOT_TOWN:
+-        SetWarpDestinationToHealLocation(gSaveBlock2Ptr->playerGender == MALE ? HEAL_LOCATION_LITTLEROOT_TOWN_BRENDANS_HOUSE : HEAL_LOCATION_LITTLEROOT_TOWN_MAYS_HOUSE);
+-        break;
+-    case MAPSEC_EVER_GRANDE_CITY:
+-        SetWarpDestinationToHealLocation(FlagGet(FLAG_LANDMARK_POKEMON_LEAGUE) && posWithinMapSec == 0 ? HEAL_LOCATION_EVER_GRANDE_CITY_POKEMON_LEAGUE : HEAL_LOCATION_EVER_GRANDE_CITY);
+-        break;
+-    default:
+-        if (sMapHealLocations[mapSecId][2] != HEAL_LOCATION_NONE)
+-            SetWarpDestinationToHealLocation(sMapHealLocations[mapSecId][2]);
+-        else
+-            SetWarpDestinationToMapWarp(sMapHealLocations[mapSecId][0], sMapHealLocations[mapSecId][1], WARP_ID_NONE);
+-        break;
+-    }
++    (void)posWithinMapSec;
++    if (mapSecId >= ARRAY_COUNT(sMapHealLocations))
++        return;
++    if (mapSecId == MAPSEC_BATTLE_FRONTIER)
++        SetWarpDestinationToHealLocation(HEAL_LOCATION_BATTLE_TOWER_EXTERIOR);
++    else if (sMapHealLocations[mapSecId][2] != 0)
++        SetWarpDestinationToHealLocation(sMapHealLocations[mapSecId][2]);
++    else
++        SetWarpDestinationToMapWarp(sMapHealLocations[mapSecId][0], sMapHealLocations[mapSecId][1], WARP_ID_NONE);
+ }
+ #endif
+diff --git a/src/shop.c b/src/shop.c
+index 17553fcecb71a41adf62131b8c87941f4ed9ea46..cee714181aa6dd41e236717977de81f7e4bfb953 100755
+--- a/src/shop.c
++++ b/src/shop.c
+@@ -372,7 +372,6 @@ static void Task_HandleShopMenuBuy(u8 taskId)
+     data[9] = (u32)CB2_InitBuyMenu;
+     gTasks[taskId].func = Task_GoToBuyOrSellMenu;
+     FadeScreen(FADE_TO_BLACK, 0);
+-#endif
+ }
+ 
+ static void Task_HandleShopMenuSell(u8 taskId)
+@@ -382,7 +381,6 @@ static void Task_HandleShopMenuSell(u8 taskId)
+     data[9] = (u32)CB2_GoToSellMenu;
+     gTasks[taskId].func = Task_GoToBuyOrSellMenu;
+     FadeScreen(FADE_TO_BLACK, 0);
+-#endif
+ }
+ 
+ void CB2_ExitSellMenu(void)
+@@ -1438,7 +1436,7 @@ static void CtrShop_ListTouch(u8 listTaskId, s32 *itemId)
+         return;
+     if (y < CTR_LIST_TOP || y >= CTR_LIST_BOTTOM)
+     {
+-        CtrListMenu_Scroll(listTaskId, y < CTR_LIST_TOP ? -MAX_ITEMS_SHOWN : MAX_ITEMS_SHOWN);
++        CtrListMenu_Scroll(listTaskId, y < CTR_LIST_TOP ? -sShopData->itemsShowed : sShopData->itemsShowed);
+         return;
+     }
+     row = CtrListMenu_RowAt(listTaskId, x, y);
+@@ -1455,7 +1453,7 @@ static void CtrShop_ListTouch(u8 listTaskId, s32 *itemId)
+ // on the quantity or on the count in the bag is A, anywhere else B.
+ static u8 CtrShop_QuantityTouch(s16 *count, u16 max)
+ {
+-    static const u8 windows[] = {WIN_QUANTITY_PRICE, WIN_QUANTITY_IN_BAG};
++    static const u8 windows[] = {4};
+     s16 x, y, steps, value;
+     u8 i;
+ 
+diff --git a/src/start_menu.c b/src/start_menu.c
+index f1a835cbe9be3d4879f5da6b41e815af07501ee3..364561cd8453e83c3efa2d4aa351cbcb44c24fd6 100644
+--- a/src/start_menu.c
++++ b/src/start_menu.c
+@@ -1504,7 +1504,7 @@ static u8 sCtrRequest = MENU_ACTION_NONE_CTR;
+ static bool8 CtrStartMenu_IsReplaced(void)
+ {
+     return !IsOverworldLinkActive() && !InUnionRoom() && !GetSafariZoneFlag() && !InBattlePike()
+-        && CurrentBattlePyramidLocation() == PYRAMID_LOCATION_NONE && !InMultiPartnerRoom();
++        && !InBattlePyramid() && !InMultiPartnerRoom();
+ }
+ 
+ static bool8 CtrFieldCB_ReturnToField(void)
+diff --git a/src/title_screen.c b/src/title_screen.c
+index a016a649679e1fc0de65c6d02710962768ec2390..388ddc9baf39bc010799d6a50a1f397507c0133b 100644
+--- a/src/title_screen.c
++++ b/src/title_screen.c
+@@ -23,6 +23,11 @@
+ #include "constants/rgb.h"
+ #include "constants/songs.h"
+ 
++#define TITLE_SCREEN_WIDTH DISPLAY_WIDTH
++#define TITLE_BG_MODE DISPCNT_MODE_1
++#define TITLE_LOGO_BG_SIZE BGCNT_AFF256x256
++#define TITLE_CENTER_X_OFFSET 0
++
+ #define VERSION_BANNER_RIGHT_TILEOFFSET 64
+ #define VERSION_BANNER_LEFT_X 90
+ #define VERSION_BANNER_RIGHT_X 154
+diff --git a/src/trade.c b/src/trade.c
+index e61734ed205c77747e3e9eb8086be1dd2aedaf37..1636e2be0a983a6b721fce3bb98c1e6368691567 100644
+--- a/src/trade.c
++++ b/src/trade.c
+@@ -1,4 +1,9 @@
+ #include "global.h"
++#ifdef PORT_BRIDGE
++#define TRADE_GBA_GFX_SIZE 0x1400
++#else
++#define TRADE_GBA_GFX_SIZE 0x1420
++#endif
+ #include "malloc.h"
+ #include "battle_anim.h"
+ #include "battle_interface.h"

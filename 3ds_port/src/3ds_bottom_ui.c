@@ -4330,7 +4330,7 @@ static void QuickBallLabels(u16 ball, u16 count, int oy)
 {
     int x = 236, w = 78;
     Rgb dark = PLATE_DARK(sHueBall), shadow = PLATE_SHADOW(sHueBall);
-    const u8 *name = GetItemName(ball), *times = Times(count);
+    const u8 *name = ItemId_GetName(ball), *times = Times(count);
 
     DrawSmoothStr(&sSmall, name, x + w / 2 - SmoothInkWidth(&sSmall, name, 4) / 2, oy + 6, 4, sWhite, dark, NULL);
     DrawSmoothStr(&sNormal, times, x + w / 2 - SmoothInkWidth(&sNormal, times, 4) / 2, oy + ACT_H - 16, 4,

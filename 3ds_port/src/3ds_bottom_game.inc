@@ -634,7 +634,7 @@ static void DrawSummaryInfo(const struct CtrSummaryView *v, int x, int y, int w,
 
     if (!v->isEgg)
     {
-        const u8 *item = v->item ? GetItemName(v->item) : Ascii(CTR_TEXT("NONE", "NINGUNO", "AUCUN", "NESSUNO", "NENHUM", "KEINE", "なし"));
+        const u8 *item = v->item ? ItemId_GetName(v->item) : Ascii(CTR_TEXT("NONE", "NINGUNO", "AUCUN", "NESSUNO", "NENHUM", "KEINE", "なし"));
 
         for (int i = 0; i < 4; ++i)
         {

@@ -144,7 +144,9 @@ async function run({ base, rom, romName, followers, direct, cartridge, classic }
       (classic ? !classicHomebrew : (manifest.kind !== "firered3ds-web-payload" && !(cartridge && cartridgeOnly)))) {
     throw new Failure("payload_missing", "", "unknown web manifest");
   }
-  const payloadVersion = cartridgeOnly
+  const payloadVersion = classicHomebrew
+    ? [manifest.releaseTag, manifest.dataAbi, manifest.files.find((file) => file.path === "payload/Emerald3DS.3dsx")?.sha256].join("-")
+    : cartridgeOnly
     ? [manifest.releaseTag, manifest.dataAbi, manifest.cartridgeSha256].join("-")
     : manifest.releaseTag;
   const archiveName = classicHomebrew ? "Emerald3DS-WebPayload.zip" : "FireRed3DS-WebPayload.zip";

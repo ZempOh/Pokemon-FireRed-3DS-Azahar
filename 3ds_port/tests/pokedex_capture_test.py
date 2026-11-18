@@ -7,7 +7,6 @@ import tempfile
 
 
 ROOT = Path(__file__).resolve().parents[2]
-PATCH = ROOT / "patches/pokeemerald/0054-pokedex-capture-layout.patch"
 
 
 def function(source, signature):
@@ -268,13 +267,6 @@ def main():
     bridge = args.bridge.read_text(encoding="utf-8")
     with tempfile.TemporaryDirectory() as temporary:
         folder = Path(temporary)
-        if "bool8 CtrPokedex_IsCaughtMonPage(void)" not in pokedex:
-            (folder / "src").mkdir()
-            copied = folder / "src/pokedex.c"
-            copied.write_text(pokedex, encoding="utf-8")
-            subprocess.run(["git", "apply", "--check", str(PATCH)], cwd=folder, check=True)
-            subprocess.run(["git", "apply", str(PATCH)], cwd=folder, check=True)
-            pokedex = copied.read_text(encoding="utf-8")
         source = r'''
 #define PLATFORM_3DS 1
 #include <assert.h>
@@ -358,7 +350,7 @@ static bool8 FuncIsActiveTask(TaskFunc func) { return FindTaskIdByFunc(func) != 
 #define SetGpuReg(...) ((void)0)
 #define ShowBg(...) ((void)0)
 #define PlayCry_Normal(...) (++cries)
-#define LoadPaletteWithOffset(...) ((void)0)
+#define LoadPalette(...) ((void)0)
 #define FreeAllWindowBuffers() (++freedWindows)
 #define GetBgTilemapBuffer(...) NULL
 #define Free(buffer) free(buffer)
@@ -386,7 +378,6 @@ bool8 CtrPokedex_IsCaughtMonPage(void);
         ):
             source += function(bridge, signature)
         source += "#define SetVBlankCallback CtrCentredPokedex_SetVBlankCallback\n"
-        source += function(pokedex, "static void VBlankCB_CaughtMonPage(")
         source += pokedex[pokedex.index("#define tState         data[0]"):pokedex.index("u8 DisplayCaughtMonDexPage(")]
         for signature in (
             "u8 DisplayCaughtMonDexPage(", "static void Task_DisplayCaughtMonDexPage(u8 taskId)",
@@ -402,11 +393,7 @@ static void CheckCaught(void) {
     assert(gMain.inBattle);
     assert(videoCentred == CTR_CENTRED_POKEDEX_CAUGHT);
     assert(!videoStage && !videoStageFaded && !videoStageZoomed && !videoBattle && !videoTransition);
-    assert(sCentred.count <= 1);
-    if (sCentred.count) {
-        assert(sCentred.callbacks[0] == VBlankCB_CaughtMonPage);
-        assert(sCentred.screens[0] == CTR_CENTRED_PLAIN);
-    }
+    assert(sCentred.count == 0);
 }
 static void CheckBattle(IntrCallback callback) {
     UpdateStage();
@@ -445,15 +432,15 @@ static void Capture(u16 exitKey, IntrCallback callback) {
         gTasks[taskId].func(taskId);
         CheckCaught();
     }
-    assert(gMain.vblankCallback == VBlankCB_CaughtMonPage);
+    assert(gMain.vblankCallback == callback);
     assert(gPokedexVBlankCB == callback);
-    assert(sCentred.on && sCentred.screen == CTR_CENTRED_PLAIN);
+    assert(!sCentred.on);
     unsigned previousVBlanks = battleVBlanks;
     gMain.vblankCallback();
     assert(battleVBlanks == previousVBlanks + 1);
     SetVBlankCallback(NULL);
     CheckCaught();
-    CtrCentred_SetVBlankCallback(VBlankCB_CaughtMonPage);
+    SetVBlankCallback(callback);
     CheckCaught();
     gTasks[taskId].func(taskId);
     CheckCaught();

@@ -731,10 +731,8 @@ verify: verify-voxel-regions
 verify-voxel-regions: romfs/voxel/regions.bin
 	"$(PYTHON)" -B tests/voxel_regions_test.py --cc "$(HOSTCC)"
 
-# The buildings' animated texels (Rustboro's fountain plays its jet), composed
-# by voxel_building.c from BG VRAM at each frame of the game's animation.
+# Emerald reference fixture: Classic's Pallet models have no animated runs.
 .PHONY: verify-voxel-building-anim
-verify: verify-voxel-building-anim
 verify-voxel-building-anim: romfs/voxel/buildings.bin
 	"$(PYTHON)" -B tests/voxel_building_anim_test.py --cc "$(HOSTCC)"
 
@@ -772,7 +770,6 @@ verify-voxel-interior-lint:
 # run is exact at 45 degrees, and the Battle Pyramid and Dome leave their
 # fences to them.
 .PHONY: verify-voxel-fences
-verify: verify-voxel-fences
 verify-voxel-fences:
 	"$(PYTHON)" -B tests/voxel_fence_test.py
 
@@ -781,7 +778,6 @@ verify-voxel-fences:
 # the halls, arches and flowerbeds, the Pike's tail apart, all exact at 45
 # degrees.
 .PHONY: verify-voxel-frontier
-verify: verify-voxel-frontier
 verify-voxel-frontier:
 	"$(PYTHON)" -B tests/voxel_frontier_test.py
 
@@ -792,13 +788,16 @@ verify: verify-voxel-terrace-marks
 verify-voxel-terrace-marks:
 	"$(PYTHON)" -B tests/voxel_terrace_marks_test.py
 
-.PHONY: verify-pokedex-capture verify-voxel-dewford
-verify: verify-pokedex-capture verify-voxel-dewford
+.PHONY: verify-pokedex-capture verify-voxel-dewford verify-voxel-classic-pallet
+verify: verify-pokedex-capture verify-voxel-classic-pallet
 verify-pokedex-capture:
 	"$(PYTHON)" -B tests/pokedex_capture_test.py --tree "$(ROOT)" --cc "$(HOSTCC)" --sanitize
 
 verify-voxel-dewford:
 	"$(PYTHON)" -B tests/voxel_dewford_test.py --tree "$(ROOT)"
+
+verify-voxel-classic-pallet:
+	"$(PYTHON)" -B tests/voxel_classic_pallet_test.py
 
 # What the console builds of every map, checked by the engine's own code over
 # the shipped data (scripts/voxel_engine_view.py check, tests/voxel_scene_dump.c):

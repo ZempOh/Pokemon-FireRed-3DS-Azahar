@@ -161,9 +161,10 @@ enum {
     OPT_TEXT_SPEED, OPT_BATTLE_SCENE, OPT_BATTLE_STYLE, OPT_SOUND, OPT_BUTTON_MODE, OPT_FRAME,
     OPT_VOXEL, OPT_VOXEL_ANGLE, OPT_VOXEL_ZOOM, OPT_FPS, OPT_VOXEL_BATTLE, OPT_DAYNIGHT,
     OPT_RUN, OPT_FREE_MOVE, OPT_FOLLOWER, OPT_SCREEN_FIT,
+    OPT_CLIMATE, OPT_SEASON, OPT_WEATHER, OPT_DETAIL,
     OPT_COUNT
 };
-#define OPT_MAX_ROWS 16
+#define OPT_MAX_ROWS 20
 #define OPT_PAGE_ROWS 6
 #define TAB_X 6
 #define TAB_Y 29
@@ -943,6 +944,9 @@ static u8 OptionCount(int row)
     case OPT_FRAME:       return 10; /* option_menu.c's frame types */
     case OPT_VOXEL_ANGLE: return 6;
     case OPT_VOXEL_ZOOM:  return 5;
+    case OPT_CLIMATE: return 3;
+    case OPT_SEASON: return 4;
+    case OPT_WEATHER: return 5;
     case OPT_DAYNIGHT:    return 3;
     default:              return 2;
     }
@@ -966,6 +970,10 @@ static u8 OptionGet(int row)
     case OPT_FPS:          return CtrSettings_ShowFps();
     case OPT_FOLLOWER:     return CtrSettings_GetInt(FOLLOWER_KEY, 1) != 0;
     case OPT_SCREEN_FIT:   return CtrSettings_GetInt(SCREEN_FIT_KEY, 1) != 0;
+    case OPT_CLIMATE: return (u8)CtrSettings_GetInt("visual_climate",0) % OptionCount(row);
+    case OPT_SEASON: return (u8)CtrSettings_GetInt("visual_season",0) % OptionCount(row);
+    case OPT_WEATHER: return (u8)CtrSettings_GetInt("visual_weather",0) % OptionCount(row);
+    case OPT_DETAIL: return (u8)CtrSettings_GetInt("visual_detail",0) % OptionCount(row);
     case OPT_DAYNIGHT:     return (u8)CtrSettings_GetInt(DAYNIGHT_KEY, 1) % 3;
     default:               return CtrSettings_VoxelBattle();
     }
@@ -992,6 +1000,10 @@ static void OptionSet(int row, u8 value)
     case OPT_FPS:          CtrSettings_SetShowFps(value); break;
     case OPT_FOLLOWER:     CtrSettings_SetInt(FOLLOWER_KEY, value); break;
     case OPT_SCREEN_FIT:   CtrSettings_SetInt(SCREEN_FIT_KEY, value); break;
+    case OPT_CLIMATE: CtrSettings_SetInt("visual_climate",value); break;
+    case OPT_SEASON: CtrSettings_SetInt("visual_season",value); break;
+    case OPT_WEATHER: CtrSettings_SetInt("visual_weather",value); break;
+    case OPT_DETAIL: CtrSettings_SetInt("visual_detail",value); break;
     case OPT_DAYNIGHT:     CtrSettings_SetInt(DAYNIGHT_KEY, value); break;
     default:               CtrSettings_SetVoxelBattle(value); break;
     }
@@ -1031,6 +1043,10 @@ static const u8 *OptionName(int row)
     case OPT_FPS:          return Ascii("SHOW FPS");
     case OPT_FOLLOWER:     return Ascii("3D FOLLOWER");
     case OPT_SCREEN_FIT:   return Ascii("SCREEN FIT");
+    case OPT_CLIMATE: return Ascii("VISUAL CLIMATE");
+    case OPT_SEASON: return Ascii("VISUAL SEASON");
+    case OPT_WEATHER: return Ascii("VISUAL WEATHER");
+    case OPT_DETAIL: return Ascii("VISUAL DETAIL");
     case OPT_DAYNIGHT:     return Ascii("3D DAY/NIGHT");
     default:               return Ascii("3D BATTLE");
     }
@@ -1055,6 +1071,10 @@ static const u8 *OptionValue(int row, u8 value)
     case OPT_VOXEL_ANGLE:
         ConvertIntToDecimalStringN(buf, value, STR_CONV_MODE_LEFT_ALIGN, 3);
         return buf;
+    case OPT_CLIMATE: return Ascii(value==0?"ORIGINAL":value==1?"AUTOMATIC":"MANUAL");
+    case OPT_SEASON: return Ascii(value==0?"SPRING":value==1?"SUMMER":value==2?"AUTUMN":"WINTER");
+    case OPT_WEATHER: return Ascii(value==0?"ORIGINAL":value==1?"CLEAR":value==2?"RAIN":value==3?"SNOW":"FOG");
+    case OPT_DETAIL: return Ascii(value?"FULL":"REDUCED");
     case OPT_DAYNIGHT:
         return Ascii(value == 0 ? "OFF" : value == 1 ? "CLOCK" : "FAST");
     case OPT_SCREEN_FIT:

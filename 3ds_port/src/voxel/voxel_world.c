@@ -1195,3 +1195,7 @@ uint32_t VoxelWorld_PayloadSignature(void)
     }
     return hash;
 }
+
+bool VoxelWorld_MapIsConnected(void) {
+    return gMapHeader.connections != NULL && gMapHeader.connections->count > 0;
+}

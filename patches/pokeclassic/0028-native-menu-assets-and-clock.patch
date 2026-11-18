@@ -1,3 +1,62 @@
+diff --git a/gflib/bg.c b/gflib/bg.c
+index 5348de13f2be61203e2fb929b731b149ab07517d..d23a3fde5808c18685291180fccf88ea1720b343 100644
+--- a/gflib/bg.c
++++ b/gflib/bg.c
+@@ -4,6 +4,13 @@
+ #include "dma3.h"
+ #include "gpu_regs.h"
+ 
++#ifdef PORT_BRIDGE
++#include "port_platform.h"
++#endif
++#ifdef PLATFORM_3DS
++#include "3ds_video.h"
++#endif
++
+ #define DISPCNT_ALL_BG_AND_MODE_BITS    (DISPCNT_BG_ALL_ON | 0x7)
+ 
+ struct BgControl
+@@ -193,6 +200,9 @@ u8 LoadBgVram(u8 bg, const void *src, u16 size, u16 destOffset, u8 mode)
+         cursor = RequestDma3Copy(src, (void*)(offset + BG_VRAM), size, 0);
+         if (cursor == -1)
+             return -1;
++#ifdef PLATFORM_3DS
++        CtrVideo_TilemapRequested(offset, src, size);
++#endif
+         break;
+     default:
+         cursor = -1;
+@@ -443,6 +453,10 @@ bool8 IsDma3ManagerBusyWithBgCopy(void)
+ {
+     int i;
+ 
++#ifdef PORT_BRIDGE
++    // Map loads can poll synchronously; publish the RAM shadow without waiting for VBlank.
++    ProcessDma3Requests();
++#endif
+     for (i = 0; i < 0x80; i++)
+     {
+         u8 div = i / 0x20;
+@@ -914,6 +928,9 @@ void CopyToBgTilemapBufferRect(u8 bg, const void* src, u8 destX, u8 destY, u8 wi
+ 
+     if (!IsInvalidBg32(bg) && !IsTileMapOutsideWram(bg))
+     {
++#ifdef PORT_BRIDGE
++        src = Port_ResolveAssetPointerSized(src, width * height * (GetBgType(bg) == BG_TYPE_AFFINE ? 1 : 2));
++#endif
+         switch (GetBgType(bg))
+         {
+         case BG_TYPE_NORMAL:
+@@ -959,6 +976,9 @@ void CopyRectToBgTilemapBufferRect(u8 bg, const void *src, u8 srcX, u8 srcY, u8
+ 
+     if (!IsInvalidBg32(bg) && !IsTileMapOutsideWram(bg))
+     {
++#ifdef PORT_BRIDGE
++        src = Port_ResolveAssetPointerSized(src, srcWidth * srcHeight * (GetBgType(bg) == BG_TYPE_AFFINE ? 1 : 2));
++#endif
+         screenSize = GetBgControlAttribute(bg, BG_CTRL_ATTR_SCREENSIZE);
+         screenWidth = GetBgMetricTextMode(bg, 0x1) * 0x20;
+         screenHeight = GetBgMetricTextMode(bg, 0x2) * 0x20;
 diff --git a/gflib/dma3_manager.c b/gflib/dma3_manager.c
 index d774efe8cef23b955bb5d9950370f32b7303dadc..e5b7b0bb7bbe2b867ad1c0592a247ca3daf3bbd8 100644
 --- a/gflib/dma3_manager.c
@@ -183,8 +242,33 @@ index 1f6caf3b8fc0b24f2204724306fcb91619f73bb0..9bf7427f6fbb9799a8a7fd42ab947680
      DecompressGlyphTile(glyphs, gCurGlyph.gfxBufferTop);
      DecompressGlyphTile(glyphs + 0x80, gCurGlyph.gfxBufferBottom);
      gCurGlyph.width = 8;
+diff --git a/src/load_save.c b/src/load_save.c
+index ae0d088ea55cf75c2c1782d2268474faf697114e..82bcc75f5b8e628cc79a90d6833bf3bb682a2493 100644
+--- a/src/load_save.c
++++ b/src/load_save.c
+@@ -13,6 +13,9 @@
+ #include "gba/flash_internal.h"
+ #include "decoration_inventory.h"
+ #include "agb_flash.h"
++#ifdef PORT_BRIDGE
++#include "dma3.h"
++#endif
+ 
+ static void ApplyNewEncryptionKeyToAllEncryptedData(u32 encryptionKey);
+ 
+@@ -92,6 +95,10 @@ void MoveSaveBlocks_ResetHeap(void)
+     struct SaveBlock1 *saveBlock1Copy;
+     struct PokemonStorage *pokemonStorageCopy;
+ 
++#ifdef PORT_BRIDGE
++    ProcessDma3Requests();
++#endif
++
+     // save interrupt functions and turn them off
+     vblankCB = gMain.vblankCallback;
+     hblankCB = gMain.hblankCallback;
 diff --git a/src/overworld.c b/src/overworld.c
-index 6f138dd560931c7c052fc14dd06bdd77e4d9abd3..ae3182be42d8da6ca4bdc15911b5a8d2cdd3129f 100644
+index 6f138dd560931c7c052fc14dd06bdd77e4d9abd3..b1f6e5a81e391bd8ca13dcd25daeb2fea402d42b 100644
 --- a/src/overworld.c
 +++ b/src/overworld.c
 @@ -1,5 +1,11 @@
@@ -242,6 +326,26 @@ index 6f138dd560931c7c052fc14dd06bdd77e4d9abd3..ae3182be42d8da6ca4bdc15911b5a8d2
  }
  
  static void FieldClearVBlankHBlankCallbacks(void)
+@@ -2217,13 +2229,19 @@ static bool32 ReturnToFieldLink(u8 *state)
+ 
+ static void DoMapLoadLoop(u8 *state)
+ {
++    CONTINUE_TRACE("entered synchronous map loader");
+     while (!LoadMapInStepsLocal(state, FALSE));
++    CONTINUE_TRACE("synchronous map loader finished");
+ }
+ 
+ static void ResetMirageTowerAndSaveBlockPtrs(void)
+ {
+     ClearMirageTowerPulseBlend();
+     MoveSaveBlocks_ResetHeap();
++#ifdef PORT_BRIDGE
++    // The old heap's temporary tile buffers no longer exist.
++    ResetTempTileDataBuffers();
++#endif
+ }
+ 
+ static void ResetScreenForMapLoad(void)
 diff --git a/src/siirtc.c b/src/siirtc.c
 index 0e598f717225db915ffc0910169f058be22b1984..090f2456c114c4edcf168b98467f173dce682fd9 100644
 --- a/src/siirtc.c

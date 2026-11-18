@@ -1,0 +1,30 @@
+--- a/include/global.berry.h
++++ b/include/global.berry.h
+@@ -71,6 +71,11 @@
+     u8 watered2:1;
+     u8 watered3:1;
+     u8 watered4:1;
+-};
++}
++#if defined(PORTABLE) && defined(__arm__)
++// The Classic GBA save stores each berry-tree record on a four-byte boundary.
++ALIGNED(4)
++#endif
++;
+ 
+ #endif // GUARD_GLOBAL_BERRY_H
+--- a/include/global.h
++++ b/include/global.h
+@@ -1114,6 +1114,12 @@
+ STATIC_ASSERT(__builtin_offsetof(struct SaveBlock1, bagPocket_Treasures) == 0xB10, ClassicTreasuresSaveOffset);
+ STATIC_ASSERT(__builtin_offsetof(struct SaveBlock1, flags) == 0x15BC, ClassicFlagsSaveOffset);
+ STATIC_ASSERT(__builtin_offsetof(struct SaveBlock1, vars) == 0x16E8, ClassicVarsSaveOffset);
++STATIC_ASSERT(sizeof(struct BerryTree) == 8, ClassicBerryTreeWidth);
++STATIC_ASSERT(__builtin_offsetof(struct SaveBlock1, berryTrees) == 0x19E8, ClassicBerryTreeSaveOffset);
++STATIC_ASSERT(__builtin_offsetof(struct SaveBlock1, daycare) == 0x337C, ClassicDaycareSaveOffset);
++STATIC_ASSERT(__builtin_offsetof(struct SaveBlock1, dexNavChain) == 0x3819, ClassicDexNavSaveOffset);
++STATIC_ASSERT(sizeof(struct SaveBlock1) == 0x381C, ClassicFirstSaveBlockWidth);
++STATIC_ASSERT(sizeof(struct SaveBlock2) == 0xA68, ClassicSecondSaveBlockWidth);
+ STATIC_ASSERT(__builtin_offsetof(struct SaveBlock2, encryptionKey) == 0xB0, ClassicEncryptionKeySaveOffset);
+ #endif
+ 

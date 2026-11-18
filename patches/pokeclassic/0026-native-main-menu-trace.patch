@@ -1,0 +1,115 @@
+diff --git a/src/main_menu.c b/src/main_menu.c
+index 8fb152c119263c1965817fd6c80a6dc639c74b31..3bd0242bfc5dfa3dc1599999146b01711da3eceb 100644
+--- a/src/main_menu.c
++++ b/src/main_menu.c
+@@ -38,6 +38,14 @@
+ #include "window.h"
+ #include "mystery_gift_menu.h"
+ 
++#ifdef PLATFORM_3DS
++#include "3ds_log.h"
++#define MAIN_MENU_TRACE(...) CtrLog_Write(CTR_LOG_BOOT, "Classic menu: " __VA_ARGS__)
++static bool8 sMenuTraceFirstFrame;
++#else
++#define MAIN_MENU_TRACE(...) ((void)0)
++#endif
++
+ /*
+  * Main menu state machine
+  * -----------------------
+@@ -552,6 +560,13 @@ enum
+ 
+ static void CB2_MainMenu(void)
+ {
++#ifdef PLATFORM_3DS
++    if (sMenuTraceFirstFrame)
++    {
++        sMenuTraceFirstFrame = FALSE;
++        MAIN_MENU_TRACE("first frame, entering menu tasks");
++    }
++#endif
+     RunTasks();
+     AnimateSprites();
+     BuildOamBuffer();
+@@ -577,6 +592,7 @@ void CB2_ReinitMainMenu(void)
+ 
+ static u32 InitMainMenu(bool8 returningFromOptionsMenu)
+ {
++    MAIN_MENU_TRACE("init entered, from options=%u", returningFromOptionsMenu);
+     SetVBlankCallback(NULL);
+ 
+     SetGpuReg(REG_OFFSET_DISPCNT, 0);
+@@ -594,9 +610,11 @@ static u32 InitMainMenu(bool8 returningFromOptionsMenu)
+     DmaFill32(3, 0, (void *)OAM, OAM_SIZE);
+     DmaFill16(3, 0, (void *)(PLTT + 2), PLTT_SIZE - 2);
+ 
++    MAIN_MENU_TRACE("cleared VRAM, OAM and palette");
+     ResetPaletteFade();
+     LoadPalette(sMainMenuBgPal, 0, 32);
+     LoadPalette(sMainMenuTextPal, 0xF0, 32);
++    MAIN_MENU_TRACE("loaded menu palettes");
+     ScanlineEffect_Stop();
+     ResetTasks();
+     ResetSpriteData();
+@@ -605,6 +623,7 @@ static u32 InitMainMenu(bool8 returningFromOptionsMenu)
+         BeginNormalPaletteFade(PALETTES_ALL, 0, 0x10, 0, RGB_BLACK); // fade to black
+     else
+         BeginNormalPaletteFade(PALETTES_ALL, 0, 0x10, 0, RGB_WHITEALPHA); // fade to white
++    MAIN_MENU_TRACE("scheduled initial palette fade");
+     ResetBgsAndClearDma3BusyFlags(0);
+     InitBgsFromTemplates(0, sMainMenuBgTemplates, ARRAY_COUNT(sMainMenuBgTemplates));
+     ChangeBgX(0, 0, BG_COORD_SET);
+@@ -612,8 +631,10 @@ static u32 InitMainMenu(bool8 returningFromOptionsMenu)
+     ChangeBgX(1, 0, BG_COORD_SET);
+     ChangeBgY(1, 0, BG_COORD_SET);
+     InitWindows(sWindowTemplates_MainMenu);
++    MAIN_MENU_TRACE("initialized backgrounds and windows");
+     DeactivateAllTextPrinters();
+     LoadMainMenuWindowFrameTiles(0, MAIN_MENU_BORDER_TILE);
++    MAIN_MENU_TRACE("loaded menu frame tiles");
+ 
+     SetGpuReg(REG_OFFSET_WIN0H, 0);
+     SetGpuReg(REG_OFFSET_WIN0V, 0);
+@@ -630,6 +651,10 @@ static u32 InitMainMenu(bool8 returningFromOptionsMenu)
+     ShowBg(0);
+     HideBg(1);
+     CreateTask(Task_MainMenuCheckSaveFile, 0);
++#ifdef PLATFORM_3DS
++    sMenuTraceFirstFrame = TRUE;
++#endif
++    MAIN_MENU_TRACE("init finished, display=%04x bg0=%04x", GetGpuReg(REG_OFFSET_DISPCNT), GetGpuReg(REG_OFFSET_BG0CNT));
+ 
+     return 0;
+ }
+@@ -649,6 +674,7 @@ static void Task_MainMenuCheckSaveFile(u8 taskId)
+ 
+     if (!gPaletteFade.active)
+     {
++        MAIN_MENU_TRACE("initial fade finished, save status=%u", gSaveFileStatus);
+         SetGpuReg(REG_OFFSET_WIN0H, 0);
+         SetGpuReg(REG_OFFSET_WIN0V, 0);
+         SetGpuReg(REG_OFFSET_WININ, WININ_WIN0_BG0 | WININ_WIN0_OBJ);
+@@ -727,6 +753,7 @@ static void Task_MainMenuCheckBattery(u8 taskId)
+ {
+     if (!gPaletteFade.active)
+     {
++        MAIN_MENU_TRACE("checking clock");
+         SetGpuReg(REG_OFFSET_WIN0H, 0);
+         SetGpuReg(REG_OFFSET_WIN0V, 0);
+         SetGpuReg(REG_OFFSET_WININ, WININ_WIN0_BG0 | WININ_WIN0_OBJ);
+@@ -765,6 +792,7 @@ static void Task_DisplayMainMenu(u8 taskId)
+ 
+     if (!gPaletteFade.active)
+     {
++        MAIN_MENU_TRACE("building windows for menu type=%u", gTasks[taskId].tMenuType);
+         SetGpuReg(REG_OFFSET_WIN0H, 0);
+         SetGpuReg(REG_OFFSET_WIN0V, 0);
+         SetGpuReg(REG_OFFSET_WININ, WININ_WIN0_BG0 | WININ_WIN0_OBJ);
+@@ -893,6 +921,7 @@ static void Task_DisplayMainMenu(u8 taskId)
+                 break;
+         }
+         gTasks[taskId].func = Task_HighlightSelectedMainMenuItem;
++        MAIN_MENU_TRACE("window tilemaps queued");
+     }
+ }
+ 

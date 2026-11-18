@@ -1,5 +1,5 @@
 diff --git a/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt b/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt
-index 02e83e3..ec1796d 100644
+index 02e83e3..0d2ec08 100644
 --- a/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt
 +++ b/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt
 @@ -83,6 +83,8 @@ class EmulatorEngine(
@@ -18,7 +18,7 @@ index 02e83e3..ec1796d 100644
 +        // Thor's nominal 120 Hz ticks can settle near 118 Hz. Dividing those by two
 +        // slows the game, and waiting within a refresh gives projection <5 ms to finish.
 +        // The existing timer/audio path presents completed frames without that deadline.
-+        if (voxelNativeClock && gba && !probeOnly) return 0
++        if (voxelNativeClock && gba) return 0
          val p = vsyncPeriodNanos
          if (p == 0.0 || System.nanoTime() - lastVsyncNanos > 100_000_000L || vsyncUnreliable != null) return 0
          val hz = 1e9 / p

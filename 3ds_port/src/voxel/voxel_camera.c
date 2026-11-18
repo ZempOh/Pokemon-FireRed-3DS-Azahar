@@ -52,7 +52,7 @@ static void AdaptDistance(VoxelCamera *cam)
     float scale;
 
     VoxelWorld_GetMapDimensions(&mapW, &mapH);
-    scale = (float)(mapW > mapH ? mapW : mapH) * 0.2f;
+    scale = VoxelWorld_MapIsConnected() ? 5.0f : (float)(mapW > mapH ? mapW : mapH) * 0.2f;
     if (scale > 5.0f)
         scale = 5.0f;
 #ifdef CTR_DEBUG_CAMERA_ZOOM

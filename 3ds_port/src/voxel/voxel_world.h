@@ -82,6 +82,7 @@ unsigned VoxelWorld_NearbyPayloads(const void **payloads, unsigned max);
  * invalidates the prefetch list even while the map set is unchanged. */
 uint32_t VoxelWorld_PayloadSignature(void);
 unsigned VoxelWorld_InstanceCount(void);
+bool VoxelWorld_MapIsConnected(void);
 const VoxelMapInstance *VoxelWorld_Instance(unsigned index);
 const VoxelMapInstance *VoxelWorld_GetInstanceAt(int worldX, int worldY);
 

@@ -2,7 +2,7 @@ name: Compile FRLG Plus native port
 
 on:
   push:
-    branches: [voxel-frlg-plus]
+    branches: [voxel-frlg-plus, graphics/azahar-frlg]
   workflow_dispatch:
 
 permissions:

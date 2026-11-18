@@ -4289,7 +4289,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--preview", default=None)
     ap.add_argument("--layouts", default=None,
-                    help="default: the solved maps and every map with a ledge")
+                    help="comma-separated layouts, defaults to the Classic starting area")
     ap.add_argument("--output", default=None)
     ap.add_argument("--at", default=None, help="x,z of the preview target")
     ap.add_argument("--proof", default=None,
@@ -4298,10 +4298,7 @@ def main():
     if args.layouts:
         lids = args.layouts.split(",")
     else:
-        drawn = [l for members in DRAWN.values() for l in members]
-        lids = list(ENABLED) + [l for l in drawn if l not in ENABLED]
-        lids += [l for l in ledge_layouts() if l not in lids]
-        lids = list(dict.fromkeys(lids))   # a neighbour is in its alternate's group too
+        lids = ["LAYOUT_PALLET_TOWN", "LAYOUT_ROUTE1", "LAYOUT_VIRIDIAN_CITY"]
     if args.preview:
         os.makedirs(args.preview, exist_ok=True)
         tx, tz = (float(v) for v in args.at.split(",")) if args.at else (20.0, 60.0)

@@ -1,6 +1,14 @@
 # Graphics upgrade validation (2026-11-18)
 
-## Classic followup — November 18
+## Classic animated ground correction — Thor-qualified
+
+Build `8f42117` stages actual tileset-animation frame bytes before VBlank instead of copying native asset markers into flower and water VRAM. Dirty notifications update the affected texture tiles without rebuilding map geometry. Route 1 flowers and Pallet water edges passed animation checks in 2D and voxel 3D, along with the connecting walk, Pidgey battle and return.
+
+Field work measured 2.68 → 2.82 ms across eight complete 300-frame windows; battle-selection work measured 5.345 → 5.42 ms across twelve. Sampled renderer FPS stayed at least 59.8, with zero retained over-budget work logs and zero observed audio-track underruns. The battle opponents differed (Rattata level 6 before, Pidgey level 3 after); this is a compatibility/no-regression check, not a battle-performance improvement claim. [Exact checks, metric definitions and hashes](pokeclassic-thor-testing.md)
+
+Use the [ground and pacing fixes bundle](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/VoxelGraphics-Ground-Pacing-Fixes-2026-11-18.zip) and [release report](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/native-ground-pacing-report-2026-11-18.md). The earlier sections below preserve the forest/PP follow-up and initial graphics survey as historical records. Their ground-speckle observations describe older builds.
+
+## Earlier Classic forest/PP followup — historical
 
 Classic build `e6531b5` passed a focused AYN Thor retest after correcting the Kanto forest quadrants and the move-category artwork beside PP. Cold Continue loaded Route 1; walking along its east, west, and south forest edges showed continuous ground and canopy without the old gaps or sign-textured trunks. ThunderShock's special icon and Tail Whip's status icon each appeared cleanly beside `PP 30/30`. Level 6 Pikachu defeated level 3 Rattata, gained 23 EXP, returned to Route 1, and appeared in the live Party panel with 21/21 HP.
 

@@ -4,17 +4,19 @@ This branch ports Pokémon Classic v1.5.1 to Nintendo 3DS with a voxel overworld
 
 ## Build status
 
-Build `e6531b5` passed the November 18 AYN Thor retest in Azahar. Route 1's repeated forest now has continuous ground and canopy, and the move-category icons render cleanly beside PP. The retest covered cold Continue, walking along the forest edges, special and status move selection, a completed wild battle, return to Route 1, and the live Party panel. [Thor results and exact build hashes](docs/pokeclassic-thor-testing.md)
+Build `8f42117` passed the November 18 AYN Thor ground-animation and pacing checks in Azahar. Route 1/Pallet flowers and water edges now animate correctly in both 2D and voxel 3D. Native tileset updates stage the actual packed image bytes before copying them to VRAM, fixing the marker data that caused the speckles.
 
-The physical category passed the host regression; it was not available on the device test Pokémon. The earlier climate survey was not repeated in this focused retest. Historical tests also covered Oak's capture, the first rival battle, and the other touchscreen panels.
+Field work measured 2.68 → 2.82 ms and battle-selection work about 5.35 → 5.42 ms (medians of complete 300-frame window averages); sampled renderer FPS stayed at least 59.8, with no retained over-budget work logs. The battle opponents differed, so this is a compatibility/no-regression check, not a battle-performance improvement claim. A Pidgey battle, overworld return and Route 1/Pallet walk passed. [Exact Thor results and limits](docs/pokeclassic-thor-testing.md)
+
+The forest and PP corrections remain included. Earlier tests and the climate survey remain historical; this focused retest does not certify every map or a full playthrough.
 
 ## Build and install
 
-Use the [shared builder](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/voxel.html) or download the [native fixes bundle](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/VoxelGraphics-Native-Fixes-2026-11-18.zip). This bundle supersedes the initial graphics-preview downloads' FRLG+ and Classic contents. Keep each engine together with its matching recipe.
+Use the [shared builder](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/voxel.html) or the [ground and pacing fixes bundle](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/VoxelGraphics-Ground-Pacing-Fixes-2026-11-18.zip); see the [release test report](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/native-ground-pacing-report-2026-11-18.md). The new bundle supersedes the earlier Classic payloads. Keep each engine together with its matching recipe.
 
 Use your local Pokémon Classic v1.5.1 GBA ROM, SHA-1 `7e27a7878d6aeb3b798757f98e60d1064d762dbb`. The game data pack is rebuilt from that ROM on your device.
 
-1. From [Thor-tested build 44364733602](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/actions/runs/44364733602), download `pokeclassic-voxel-engine` and `pokeclassic-voxel-recipe`. Always pair artifacts from the same [Classic Actions run](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/actions/workflows/ci.yml?query=branch%3Agraphics%2Fazahar-classic). Extract the two engine files, `emerald3ds.recipe`, and the `voxelgen` directory together into `payload`.
+1. From [Thor-tested build 44376321112](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/actions/runs/44376321112), download `pokeclassic-voxel-engine` and `pokeclassic-voxel-recipe`. Always pair artifacts from the same [Classic Actions run](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/actions/workflows/ci.yml?query=branch%3Agraphics%2Fazahar-classic). Extract the two engine files, `emerald3ds.recipe`, and the `voxelgen` directory together into `payload`.
 2. Run the builder from the branch checkout with Python 3.13 and Pillow.
 
    ```sh
@@ -48,4 +50,4 @@ PokéDaisy reads the GBA edition inside its own emulator. The Azahar port provid
 
 ## Graphics upgrade
 
-See the [initial graphics report and Classic followup](docs/graphics-upgrade.md). Its original tables preserve the earlier builds, performance samples, and limitations; the followup records the forest and PP corrections. Climate remains opt-in. These early-game checks do not certify every map or effect.
+See the [current Classic results and historical graphics reports](docs/graphics-upgrade.md). The earlier tables preserve their original builds, performance samples and limitations; the current follow-up records the ground-animation fix and measured checks. Climate remains opt-in. These early-game checks do not certify every map or effect.

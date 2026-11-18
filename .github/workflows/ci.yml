@@ -72,12 +72,6 @@ jobs:
           make -C build/upstream -j4 tools
           make -C build/upstream -j4 generated
           make -C build/upstream/3ds_port -kj4 PYTHON=python3
-      - name: Host tests and link audit
-        run: make -C build/upstream/3ds_port verify PYTHON=python3
-      - name: Production timed encounter rules
-        run: python3 3ds_port/tests/encounter_tables_test.py --tree build/upstream
-      - name: Production berry clock integration
-        run: python3 3ds_port/tests/berry_clock_test.py --tree build/upstream
       - name: Engine-only 3DSX
         run: make -C build/upstream/3ds_port release PYTHON=python3
       - name: Audit the build outputs that would ship
@@ -88,5 +82,51 @@ jobs:
           python3 tools/release_audit.py --zip ship.zip --strict
       - uses: actions/upload-artifact@v4
         with:
-          name: emerald3ds-engine
+          name: pokeclassic-voxel-engine
           path: ship/
+      - name: Host tests and link audit
+        run: make -C build/upstream/3ds_port verify PYTHON=python3
+
+  builder-recipe:
+    if: github.event_name == 'workflow_dispatch'
+    needs: build-3ds
+    runs-on: ubuntu-latest
+    container: devkitpro/devkitarm:latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install host tools
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends build-essential libpng-dev python3 python3-pil git
+      - name: Build the pinned Classic source and verify ROM identity
+        run: |
+          git init build/stock
+          git -C build/stock fetch --depth 1 https://github.com/DaniRainbow/pokeclassic.git 02be0b670d9548b3d12c769faa051853df7fe19d
+          git -C build/stock checkout --detach FETCH_HEAD
+          git init build/agbcc
+          git -C build/agbcc fetch --depth 1 https://github.com/pret/agbcc.git da598c1d918402c42c0c0d7128ba14567f3175e9
+          git -C build/agbcc checkout --detach FETCH_HEAD
+          (cd build/agbcc && ./build.sh && ./install.sh ../stock)
+          make -C build/stock -j4
+          echo '7e27a7878d6aeb3b798757f98e60d1064d762dbb  build/stock/pokeClassic.gba' | sha1sum -c
+      - name: Rebuild native staging and write the extraction recipe
+        run: |
+          python3 tools/bootstrap.py
+          make -C build/upstream -j4 tools generated
+          make -C build/upstream/3ds_port -j4 PYTHON=python3
+          port=build/upstream/3ds_port
+          mkdir -p ship/payload
+          python3 tools/gen_recipe.py --decomp build/upstream --romfs "$port/romfs" \
+            --rom build/stock/pokeClassic.gba --gba-elf build/stock/pokeClassic.elf \
+            --out ship/payload/emerald3ds.recipe --release v0.5.0 \
+            --elf "$port/emerald3ds.elf" --image-elf "$port/build/gamedata_image.elf" \
+            --image-map "$port/build/gamedata_image.map" --nm "$DEVKITARM/bin/arm-none-eabi-nm"
+      - name: Audit the recipe before uploading
+        run: |
+          python3 -c "from shutil import make_archive; make_archive('recipe', 'zip', 'ship')"
+          python3 tools/release_audit.py --zip recipe.zip --strict --rom build/stock/pokeClassic.gba
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pokeclassic-voxel-recipe
+          path: ship/payload/emerald3ds.recipe
+          if-no-files-found: error

@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "kind": "voxel-cartridge-payload",
   "releaseTag": "v0.5.1",
-  "dataAbi": "f6a4de4b",
+  "dataAbi": "86680b2f",
   "entrypoint": {
     "pythonPath": "python"
   },
@@ -13,7 +13,7 @@
       "name": "Pokémon FireRed (USA, Rev 1)"
     }
   ],
-  "cartridgeSha256": "85317364111a19c0866bb9bbcb7fd6a921dc4e53c342868581402635284620ed",
+  "cartridgeSha256": "64bb0ed79f2e87b88821e212976d758d7acd1bfc5b38e7f2421c71fb0723f557",
   "files": [
     {
       "path": "licenses/NOTICE.md",
@@ -27,8 +27,8 @@
     },
     {
       "path": "payload/FireRed3DS.3dsx",
-      "sha256": "eb27bf4f27dae15856590b32237d722f72c1150c644558adf04813c4bf35c950",
-      "size": 4600560
+      "sha256": "678234cad8ed0fe10fcd517bb65a6dee569704306c3403d2a17d592ee758a3f2",
+      "size": 4603108
     },
     {
       "path": "payload/FireRed3DS.smdh",
@@ -37,8 +37,8 @@
     },
     {
       "path": "payload/firered3ds.recipe",
-      "sha256": "c8d28bb2ec7b572c4c90802a009db30e196f4bda5255b0089ba2b6a80a9a9a7f",
-      "size": 339896
+      "sha256": "0d9cbb91d55cb3933aa49bb5479e31bba786dfb2e38131fa0c31df79f54a98f7",
+      "size": 339400
     },
     {
       "path": "payload/voxelgen/scripts/fr_art.py",
@@ -182,8 +182,8 @@
     },
     {
       "path": "python/voxel_cartridge.py",
-      "sha256": "781bc0e276d7d2229d79f1ff5a3695ec35fb06946a1a7105263633a3340a8563",
-      "size": 1284
+      "sha256": "005159d16b90cf03d27348c581d1397ca9272e7b6b0e7f078a1126525fc0bcb8",
+      "size": 1322
     }
   ]
 }

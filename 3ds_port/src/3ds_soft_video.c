@@ -271,17 +271,34 @@ static void GpuUpload(void)
 static void GpuUploadUi(const uint16_t *pixels)
 {
     uint16_t row[CTR_SOFT_WIDTH];
+    unsigned dirtyStart = CTR_SOFT_HEIGHT;
+    const unsigned rowBytes = CTR_SOFT_WIDTH * sizeof(uint16_t);
 
     /* The overlay is often unchanged across several overworld frames. */
     if (sUiUploaded && memcmp(sUploadedUi, pixels, sizeof(sUploadedUi)) == 0)
         return;
     PORT_PROF_BEGIN(upload);
-    memcpy(sUploadedUi, pixels, sizeof(sUploadedUi));
-    sUiUploaded = true;
-    ++sUiRevision;
+    /* A text cursor or a changed HP/PP row need not convert the whole UI.
+     * Keep the previous linear image, including transparent pixels, and
+     * update both doubled rows whenever their source row changes. */
     for (unsigned y = 0; y < CTR_SOFT_HEIGHT; ++y)
     {
         const uint16_t *src = pixels + y * CTR_SOFT_WIDTH;
+        uint16_t *cached = sUploadedUi + y * CTR_SOFT_WIDTH;
+
+        if (sUiUploaded && memcmp(cached, src, rowBytes) == 0)
+        {
+            if (dirtyStart < y)
+            {
+                GSPGPU_FlushDataCache(sUiLinear + dirtyStart * UP * TEX_DIM,
+                                      (y - dirtyStart) * UP * TEX_DIM * sizeof(uint16_t));
+                dirtyStart = CTR_SOFT_HEIGHT;
+            }
+            continue;
+        }
+        if (dirtyStart == CTR_SOFT_HEIGHT)
+            dirtyStart = y;
+        memcpy(cached, src, rowBytes);
 
         for (unsigned x = 0; x < CTR_SOFT_WIDTH; ++x)
         {
@@ -292,7 +309,13 @@ static void GpuUploadUi(const uint16_t *pixels)
         }
         DoubleRow(sUiLinear + y * UP * TEX_DIM, row);
     }
-    GSPGPU_FlushDataCache(sUiLinear, TEX_DIM * UP_H * sizeof(uint16_t));
+    if (dirtyStart < CTR_SOFT_HEIGHT)
+        GSPGPU_FlushDataCache(sUiLinear + dirtyStart * UP * TEX_DIM,
+                              (CTR_SOFT_HEIGHT - dirtyStart) * UP * TEX_DIM * sizeof(uint16_t));
+    sUiUploaded = true;
+    ++sUiRevision;
+    /* The transfer still reads the complete image in the same format. Its
+     * queued source remains untouched until the next successful FrameBegin. */
     C3D_SyncDisplayTransfer((u32 *)sUiLinear, GX_BUFFER_DIM(TEX_DIM, TEX_DIM),
                             (u32 *)sUiTex.data, GX_BUFFER_DIM(TEX_DIM, TEX_DIM), UI_TRANSFER_FLAGS);
     PORT_PROF_END(upload, PORT_PROF_UPLOAD);

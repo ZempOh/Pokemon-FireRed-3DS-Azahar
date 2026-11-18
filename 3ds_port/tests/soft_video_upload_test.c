@@ -30,7 +30,7 @@ typedef struct { C3D_Tex *tex; const void *sub; } C2D_Image;
 #define TILE_TRANSFER_FLAGS 1
 #define UI_TRANSFER_FLAGS 2
 
-static uint16_t frame[240*160], uiPixels[240*160];
+static uint16_t frame[240*160], uiPixels[240*160], alternateUi[240*160];
 static const uint16_t *sFrame=frame, *sUi;
 static uint16_t sLut[32768], sUploadedFrame[240*160], sUploadedUi[240*160];
 static uint16_t sLastUi[240*160], sHoldUi[240*160];
@@ -48,6 +48,8 @@ static struct { float waitMs, cpuMs; } sStats;
 static bool available, updateOk=true, warmingUp, inBattle;
 static bool inFrame, failBegin, invalidated, drawn;
 static unsigned transfers, begins, ends, pendingCount;
+static unsigned uiFlushCalls, uiFlushedBytes;
+static bool uiFlushedRows[160];
 static uint64_t tick;
 static struct { const uint16_t *source; uint16_t *dest; uint16_t snapshot[512*512]; } pending[2];
 
@@ -55,7 +57,19 @@ static uint64_t svcGetSystemTick(void) { return ++tick; }
 uint32_t Port_ProfTick(void) { return (uint32_t)svcGetSystemTick(); }
 void Port_ProfAdd(unsigned section, uint32_t start) { (void)section; (void)start; }
 static void PlacePicture(void) {}
-static void GSPGPU_FlushDataCache(const void *p, unsigned size) { (void)p; (void)size; assert(inFrame); }
+static void GSPGPU_FlushDataCache(const void *p, unsigned size) {
+    uintptr_t address=(uintptr_t)p, first=(uintptr_t)sUiLinear;
+    assert(inFrame);
+    if (address>=first && address<first+sizeof(sUiLinear)) {
+        unsigned rowBytes=UP*TEX_DIM*sizeof(uint16_t), offset=(unsigned)(address-first);
+        assert(offset%rowBytes==0 && size%rowBytes==0 && size>0);
+        assert(offset+size<=UP_H*TEX_DIM*sizeof(uint16_t));
+        for (unsigned y=offset/rowBytes;y<(offset+size)/rowBytes;++y) {
+            assert(!uiFlushedRows[y]); uiFlushedRows[y]=true;
+        }
+        ++uiFlushCalls; uiFlushedBytes+=size;
+    }
+}
 static bool C3D_FrameBegin(unsigned flags) {
     assert(flags==C3D_FRAME_SYNCDRAW && !inFrame);
     ++begins;
@@ -66,6 +80,7 @@ static bool C3D_FrameBegin(unsigned flags) {
         memcpy(pending[i].dest,pending[i].source,sizeof(pending[i].snapshot));
     }
     pendingCount=0; invalidated=drawn=false; inFrame=true;
+    uiFlushCalls=uiFlushedBytes=0; memset(uiFlushedRows,0,sizeof(uiFlushedRows));
     return true;
 }
 static void C3D_SyncDisplayTransfer(u32 *src,u32 inDim,u32 *dst,u32 outDim,u32 flags) {
@@ -124,6 +139,15 @@ static void CheckPixels(const uint16_t *linear,const uint16_t *source,bool alpha
     }
 }
 
+static void CheckUiRows(const unsigned *rows,unsigned count,unsigned calls) {
+    assert(uiFlushCalls==calls && uiFlushedBytes==count*UP*TEX_DIM*sizeof(uint16_t));
+    for (unsigned y=0;y<160;++y) {
+        bool expected=false;
+        for (unsigned n=0;n<count;++n) expected|=rows[n]==y;
+        assert(uiFlushedRows[y]==expected);
+    }
+}
+
 int main(void) {
     for (unsigned i=0;i<32768;++i) {
         unsigned r=i&31,g=(i>>5)&31,b=(i>>10)&31;
@@ -140,12 +164,37 @@ int main(void) {
     for (unsigned pass=0;pass<2;++pass) {
         for (unsigned i=0;i<240*160;++i) uiPixels[i]=(uint16_t)(i+pass*240*160);
         GpuPresent(); CheckPixels(sUiLinear,uiPixels,true);
+        assert(uiFlushCalls==1 && uiFlushedBytes==UP_H*TEX_DIM*sizeof(uint16_t));
     }
     GpuPresent(); CheckPixels(uiTexels,uiPixels,true);
     unsigned stable=transfers,revision=sUiRevision;
     GpuPresent(); assert(transfers==stable && sUiRevision==revision);
+    CheckUiRows(NULL,0,0);
     uiPixels[0]^=32768; uiPixels[240*160-1]^=0x7fff;
     GpuPresent(); CheckPixels(sUiLinear,uiPixels,true);
+    CheckUiRows((const unsigned[]){0,159},2,2);
+    /* Adjacent dirty rows share one flush; an unchanged row splits runs. */
+    uiPixels[25*240+5]^=32768; uiPixels[26*240+6]^=32768; uiPixels[28*240+7]^=32768;
+    GpuPresent(); CheckPixels(sUiLinear,uiPixels,true);
+    CheckUiRows((const unsigned[]){25,26,28},3,2);
+    /* A different pointer with identical content is unchanged; a partial
+     * transparent clear and restoring the other buffer update just one row. */
+    memcpy(alternateUi,uiPixels,sizeof(alternateUi)); sUi=alternateUi;
+    GpuPresent(); CheckUiRows(NULL,0,0);
+    alternateUi[80*240+10]=0;
+    GpuPresent(); CheckPixels(sUiLinear,alternateUi,true); CheckUiRows((const unsigned[]){80},1,1);
+    sUi=uiPixels;
+    GpuPresent(); CheckPixels(sUiLinear,uiPixels,true); CheckUiRows((const unsigned[]){80},1,1);
+    for (unsigned pass=0;pass<100;++pass) {
+        uint16_t *next=(pass&1)?uiPixels:alternateUi;
+        memcpy(next,sUi,sizeof(uiPixels));
+        next[((pass*17)%160)*240+(pass*29)%240]^=0x8001;
+        sUi=next;
+        GpuPresent(); CheckPixels(sUiLinear,sUi,true);
+        CheckUiRows((const unsigned[]){(pass*17)%160},1,1);
+    }
+    GpuPresent(); CheckPixels(uiTexels,sUi,true); CheckUiRows(NULL,0,0);
+    assert(sUi==uiPixels);
     /* A rejected FrameBegin must not touch a still-queued source buffer. */
     failBegin=true; uiPixels[1]^=32768;
     stable=transfers; revision=sUiRevision;
@@ -163,6 +212,6 @@ int main(void) {
     CheckPixels(sLinear,frame,false); CheckPixels(sUiLinear,uiPixels,true);
     GpuPresent(); assert(pendingCount==0);
     assert(begins==ends+1);
-    puts("PASS: presenter queues uploads inside FrameBegin; exact colour/alpha/2x pixels and padding; unchanged frames, failed begin, held UI and two-upload fallback; buffers remain valid until next GPU completion.");
+    puts("PASS: exact full colour/alpha/2x texture and padding after sparse/disjoint/adjacent row updates, clears and alternating buffers; coalesced dirty flushes; unchanged frames, failed begin, held UI and two-upload fallback; queued buffers survive until next GPU completion.");
     return 0;
 }

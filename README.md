@@ -25,8 +25,10 @@ Subsequent active checks still dipped to **58.6 drawn FPS**, so this
 candidate was withheld from the release.
 
 The next candidate reduces lower-screen battle redraws and queues changed
-top-screen textures inside the GPU frame. Pixel-differential rendering and
-upload-order tests cover the changes. The game clock, frame-skip policy and
+top-screen textures inside the GPU frame. It converts only changed UI rows
+and coalesces their cache flushes, while retaining the full texture transfer.
+Pixel-differential rendering and upload-order tests cover the changes.
+The game clock, frame-skip policy and
 image quality are unchanged. Publication requires another Thor retest of
 steady selection, blinking battle text, menu interaction and actual moves.
 

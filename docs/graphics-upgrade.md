@@ -6,7 +6,9 @@ The scanline-only build below is **withheld from publication**. Its idle
 selection result passed, but active battle checks still reached 58.6
 drawn FPS at 59.8 game FPS. The next candidate adds lower-screen dirty-band
 redraws, contiguous rounded raster fills and top texture uploads queued
-after FrameBegin. Host differential and upload-order tests pass; Thor
+after FrameBegin. It converts only changed UI rows and flushes their
+coalesced linear-buffer ranges while retaining the full texture transfer.
+Host differential and upload-order tests pass; Thor
 steady, blinking-text, menu-interaction and actual-move checks are pending.
 No new ground/pacing bundle has been published.
 

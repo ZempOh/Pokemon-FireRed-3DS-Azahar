@@ -1,0 +1,57 @@
+diff --git a/src/battle_interface.c b/src/battle_interface.c
+index 4fe8497a7aede4e0ca9aa051ccb3fa63c48c3858..a1eeee431b02686b916af0bae594526e674422f3 100644
+--- a/src/battle_interface.c
++++ b/src/battle_interface.c
+@@ -3324,19 +3324,25 @@ static const struct SpriteTemplate sSpriteTemplate_LastUsedBallWindow =
+ };
+ 
+ #if B_LAST_USED_BALL_BUTTON == R_BUTTON && B_LAST_USED_BALL_CYCLE == TRUE
+-    static const u8 ALIGNED(4) sLastUsedBallWindowGfx[] = INCBIN_U8("graphics/battle_interface/last_used_ball_r_cycle.4bpp");
++    static const u8 ALIGNED(4) sLastUsedBallWindowGfx_r_cycle[] = INCBIN_U8("graphics/battle_interface/last_used_ball_r_cycle.4bpp");
++#define LAST_USED_BALL_WINDOW_GFX sLastUsedBallWindowGfx_r_cycle
+ #elif B_LAST_USED_BALL_CYCLE == TRUE
+-    static const u8 ALIGNED(4) sLastUsedBallWindowGfx[] = INCBIN_U8("graphics/battle_interface/last_used_ball_l_cycle.4bpp");
++    static const u8 ALIGNED(4) sLastUsedBallWindowGfx_l_cycle[] = INCBIN_U8("graphics/battle_interface/last_used_ball_l_cycle.4bpp");
++#define LAST_USED_BALL_WINDOW_GFX sLastUsedBallWindowGfx_l_cycle
+ #elif B_LAST_USED_BALL_BUTTON == R_BUTTON
+-    static const u8 sLastUsedBallWindowGfx[] = INCBIN_U8("graphics/battle_interface/last_used_ball_r.4bpp");
++    static const u8 sLastUsedBallWindowGfx_r[] = INCBIN_U8("graphics/battle_interface/last_used_ball_r.4bpp");
++#define LAST_USED_BALL_WINDOW_GFX sLastUsedBallWindowGfx_r
+ #else
+-    static const u8 sLastUsedBallWindowGfx[] = INCBIN_U8("graphics/battle_interface/last_used_ball_l.4bpp");
++    static const u8 sLastUsedBallWindowGfx_l[] = INCBIN_U8("graphics/battle_interface/last_used_ball_l.4bpp");
++#define LAST_USED_BALL_WINDOW_GFX sLastUsedBallWindowGfx_l
+ #endif
+ static const struct SpriteSheet sSpriteSheet_LastUsedBallWindow =
+ {
+-    sLastUsedBallWindowGfx, sizeof(sLastUsedBallWindowGfx), LAST_BALL_WINDOW_TAG
++    LAST_USED_BALL_WINDOW_GFX, sizeof(LAST_USED_BALL_WINDOW_GFX), LAST_BALL_WINDOW_TAG
+ };
+ 
++#undef LAST_USED_BALL_WINDOW_GFX
++
+ #define LAST_USED_BALL_X_F    15
+ #define LAST_USED_BALL_X_0    -15
+ #define LAST_USED_BALL_Y      ((IsDoubleBattle()) ? 78 : 68)
+diff --git a/src/field_door.c b/src/field_door.c
+index 36087ed1f7c06f8c0a0400499f8d8e43ed5fca55..073d30cbcda8b682f79c681e62355d2333b7332f 100644
+--- a/src/field_door.c
++++ b/src/field_door.c
+@@ -46,7 +46,6 @@ static const u8 sDoorAnimTiles_BirchsLab[] = INCBIN_U8("graphics/door_anims/birc
+ static const u8 sDoorAnimTiles_FallarborLightRoof[] = INCBIN_U8("graphics/door_anims/fallarbor_light_roof.4bpp");
+ static const u8 sDoorAnimTiles_Lilycove[] = INCBIN_U8("graphics/door_anims/lilycove.4bpp");
+ static const u8 sDoorAnimTiles_LilycoveWooden[] = INCBIN_U8("graphics/door_anims/lilycove_wooden.4bpp");
+-//static const u8 sDoorAnimTiles_General[] = INCBIN_U8("graphics/door_anims/general.4bpp");
+ static const u8 sDoorAnimTiles_PokeCenter[] = INCBIN_U8("graphics/door_anims/poke_center.4bpp");
+ static const u8 sDoorAnimTiles_Gym[] = INCBIN_U8("graphics/door_anims/gym.4bpp");
+ static const u8 sDoorAnimTiles_PokeMart[] = INCBIN_U8("graphics/door_anims/poke_mart.4bpp");
+@@ -66,9 +65,7 @@ static const u8 sDoorAnimTiles_Pacifidlog[] = INCBIN_U8("graphics/door_anims/pac
+ static const u8 sDoorAnimTiles_BattleTowerCorridor[] = INCBIN_U8("graphics/door_anims/battle_tower_corridor.4bpp");
+ static const u8 sDoorAnimTiles_CyclingRoad[] = INCBIN_U8("graphics/door_anims/cycling_road.4bpp");
+ static const u8 sDoorAnimTiles_LilycoveDeptStore[] = INCBIN_U8("graphics/door_anims/lilycove_dept_store.4bpp");
+-//static const u8 sDoorAnimTiles_SafariZone[] = INCBIN_U8("graphics/door_anims/safari_zone.4bpp");
+ static const u8 sDoorAnimTiles_MossdeepSpaceCenter[] = INCBIN_U8("graphics/door_anims/mossdeep_space_center.4bpp");
+-//static const u8 sDoorAnimTiles_CableClub[] = INCBIN_U8("graphics/door_anims/cable_club.4bpp");
+ static const u8 sDoorAnimTiles_AbandonedShip[] = INCBIN_U8("graphics/door_anims/abandoned_ship.4bpp");
+ static const u8 sDoorAnimTiles_FallarborDarkRoof[] = INCBIN_U8("graphics/door_anims/fallarbor_dark_roof.4bpp");
+ static const u8 sDoorAnimTiles_AbandonedShipRoom[] = INCBIN_U8("graphics/door_anims/abandoned_ship_room.4bpp");

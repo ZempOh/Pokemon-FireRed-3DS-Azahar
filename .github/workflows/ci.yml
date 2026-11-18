@@ -119,7 +119,8 @@ jobs:
       - name: Rebuild native staging and write the extraction recipe
         run: |
           python3 tools/bootstrap.py
-          make -C build/upstream -j4 tools generated
+          make -C build/upstream -j4 tools
+          make -C build/upstream -j4 generated
           make -C build/upstream/3ds_port -j4 PYTHON=python3
           port=build/upstream/3ds_port
           mkdir -p ship/payload

@@ -10,11 +10,18 @@ metadata.
 | Pokémon Classic v1.5.1 | `7e27a7878d6aeb3b798757f98e60d1064d762dbb` | In live GBA memory, the profile reads the starter, Pallet Town and Route 1, and one Potion in the Medicine pocket. |
 | Pokémon FireRed & LeafGreen+ v1.5.1 | `c34a4401f2fe86c515fc6d9a6d231224a98f55d5` | In live GBA memory, the profile reads the starter, the first rival battle, Pallet Town and Route 1, and one Potion in the Medicine pocket. Use the English v1.5.1 patch for FireRed Rev 0. |
 
+Both profiles passed on the AYN Thor using the APK from the same
+[successful build](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/actions/runs/44218300690).
+
+- Classic showed level 6 Pikachu at 21/21 HP with its sprite, Potion ×1,
+  and the full Kanto map with the player on Route 1.
+- FRLG+ showed level 5 Bulbasaur at 20/20 HP, Potion, Berry Pouch, and TM
+  Case at ×1 each, and the full map for the player's Route 1 location.
+
 PokéDaisy 1.6.1 also recognized the installed English Let's Go Pikachu,
 Radical Red 4.10, and Unbound 2.1.1.1 builds on the Thor. Let's Go Pikachu
 showed its live party and map and opened the bag. Radical Red and Unbound
-reached their introductions. On-device verification of the two new
-profiles in PokéDaisy Dev is pending.
+reached their introductions. These three checks used the stock app.
 
 ## Install and verify on Android
 
@@ -28,11 +35,20 @@ profiles in PokéDaisy Dev is pending.
    import a copy of the corresponding GBA save.
 4. Start each game and check that **Party** shows the starter and **Map**
    follows the move from Pallet Town to Route 1. Collect the free Route 1
-   Potion and check that **Bag** shows one Potion in Medicine.
+   Potion and check that **Bag** shows one Potion in Medicine. If you load
+   a saved game, walk a few steps to let the live companion data activate.
 
-APK builds made on fresh CI runners can have different development signing
-keys. If Android reports a signature mismatch while updating PokéDaisy Dev,
-back up the dev app's saves before uninstalling it and installing the new APK.
+### Updating PokéDaisy Dev
+
+Android accepts an in-place update only when both APKs use the same signing
+key. Fresh CI runners generate separate debug keys. A locally built APK
+typically uses your local debug key, and subsequent local builds can update
+it in place when you keep using that key.
+
+Keep the stock PokéDaisy app (`com.pokedaisy.app`) installed. To switch
+between APKs with different keys, back up the Dev app's saves, uninstall
+only **PokéDaisy Dev** (`com.pokedaisy.app.dev`), and install the new Dev APK.
+Restore the saved progress in Dev after installing.
 
 ## Voxel 3D ports
 
@@ -56,7 +72,8 @@ pass gameplay checks in Azahar on the Thor.
 The workflow checks out PokéDaisy commit
 `79bd00e155fcc7d4373f23f5386d6e67c8c423eb` with submodules, applies the
 patches in name order, and regenerates and checks the profile and area map
-tables. It uses Java 17, Python 3.12, Android SDK 34, NDK
+tables. It also runs a regression test for Classic's partner Pikachu and
+egg display. It uses Java 17, Python 3.12, Android SDK 34, NDK
 `28.2.13676358`, and CMake `3.22.1`. [Android build workflow](../.github/workflows/pokedaisy-profiles.yml)
 
 You can use the same steps locally on Linux with those tools installed. Run

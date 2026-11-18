@@ -1,0 +1,534 @@
+diff --git a/gflib/blit.c b/gflib/blit.c
+index bdbb2e2fdb553bb191df8b9c33f063d6be816e0c..199f80cdf748683b55fe6697f2e51be0e5bbd55b 100644
+--- a/gflib/blit.c
++++ b/gflib/blit.c
+@@ -207,3 +207,15 @@ void FillBitmapRect8Bit(struct Bitmap *surface, u16 x, u16 y, u16 width, u16 hei
+         }
+     }
+ }
++
++#ifdef PLATFORM_3DS
++#include "port_platform.h"
++
++const u8 *ResolveBitmapSource(const u8 *base, u32 offset)
++{
++#ifdef PORT_BRIDGE
++    base = Port_ResolveAssetPointer(base);
++#endif
++    return base + offset;
++}
++#endif
+diff --git a/gflib/blit.h b/gflib/blit.h
+index 78f67766ed44cfb4afe48e91e0c46b684d12a8fa..870e812249a832a8efed00ceef2988b3c16c1aad 100644
+--- a/gflib/blit.h
++++ b/gflib/blit.h
+@@ -1,6 +1,10 @@
+ #ifndef GUARD_BLIT_H
+ #define GUARD_BLIT_H
+ 
++#ifdef PLATFORM_3DS
++const u8 *ResolveBitmapSource(const u8 *base, u32 offset);
++#endif
++
+ struct Bitmap
+ {
+     u8 *pixels;
+diff --git a/gflib/text.c b/gflib/text.c
+index 18bd5ba8c9b95b2013ae787f8060fe64fc7141f1..1af4cc7b81746186732650f8b076c733822d8b92 100644
+--- a/gflib/text.c
++++ b/gflib/text.c
+@@ -344,6 +344,43 @@ void RunTextPrinters(void)
+     }
+ }
+ 
++#ifdef PLATFORM_3DS
++#include "port_platform.h"
++
++s16 CtrText_PrinterPage(u8 windowId, const u8 *str)
++{
++    const struct TextPrinter *printer;
++    const u8 *p;
++    s16 page = 0;
++
++    if (windowId >= WINDOWS_MAX || str == NULL || !sTextPrinters[windowId].active)
++        return -1;
++    printer = &sTextPrinters[windowId];
++    str = Port_ResolveAssetPointer(str);
++    if (printer->printerTemplate.currentChar < str || printer->printerTemplate.currentChar - str > 0x400)
++        return -1;
++    for (p = str; p < printer->printerTemplate.currentChar; p++)
++    {
++        if (*p == EOS)
++            return -1;
++        if (*p == EXT_CTRL_CODE_BEGIN)
++        {
++            if (p[1] == EOS)
++                return -1;
++            p += GetExtCtrlCodeLength(p[1]);
++        }
++        else if (*p == CHAR_PROMPT_CLEAR)
++        {
++            page++;
++        }
++    }
++    // Waiting at a \p, the page before it is still on show.
++    if (printer->state == RENDER_STATE_CLEAR && page > 0)
++        page--;
++    return page;
++}
++#endif
++
+ bool16 IsTextPrinterActive(u8 id)
+ {
+     return sTextPrinters[id].active;
+diff --git a/src/battle_interface.c b/src/battle_interface.c
+index 74fa553f3dc2cd4a3e0d5f7f86773271f67ae37c..4fe8497a7aede4e0ca9aa051ccb3fa63c48c3858 100644
+--- a/src/battle_interface.c
++++ b/src/battle_interface.c
+@@ -33,6 +33,9 @@
+ #include "constants/songs.h"
+ #include "constants/battle_config.h"
+ #include "constants/items.h"
++#ifdef PORT_BRIDGE
++#include "port_platform.h"
++#endif
+ 
+ enum
+ {   // Corresponds to gHealthboxElementsGfxTable (and the tables after it) in graphics.c
+@@ -885,7 +888,11 @@ u8 CreateSafariPlayerHealthboxSprites(void)
+ 
+ static const u8 *GetHealthboxElementGfxPtr(u8 elementId)
+ {
+-    return gHealthboxElementsGfxTable[elementId];
++    const u8 (*tiles)[32] = gHealthboxElementsGfxTable;
++#ifdef PORT_BRIDGE
++    tiles = Port_ResolveAssetPointer(tiles);
++#endif
++    return tiles[elementId];
+ }
+ 
+ // Syncs the position of healthbar accordingly with the healthbox.
+@@ -3622,4 +3629,11 @@ void ArrowsChangeColorLastBallCycle(bool32 showArrows)
+         pltOutline->b = defaultPlttOutline->b;
+     }
+ #endif
+-}
+\ No newline at end of file
++}
++
++#ifdef PLATFORM_3DS
++const u8 *CtrBattleHud_ElementGfx(u8 elementId)
++{
++    return GetHealthboxElementGfxPtr(elementId);
++}
++#endif
+diff --git a/src/event_object_movement.c b/src/event_object_movement.c
+index bccadf7cc5d4ca69c6314c61c9a7c9af3ca29211..8db0ee7e6c53ce1128dbf4e6dda52456d01f5a10 100644
+--- a/src/event_object_movement.c
++++ b/src/event_object_movement.c
+@@ -10460,3 +10460,18 @@ u16 GetBoulderRevealFlagByLocalIdAndMap(u8 localId, u8 mapNum, u8 mapGroup)
+     return GetObjectEventTemplateByLocalIdAndMap(localId, mapNum, mapGroup)->trainerType;
+ }
+ 
++#ifdef PLATFORM_3DS
++#include "3ds_field_view.h"
++
++void UpdateObjectEventsForViewChange(void)
++{
++    static unsigned sViewGeneration;
++    unsigned generation = CtrFieldView_Generation();
++
++    if (generation == sViewGeneration)
++        return;
++    sViewGeneration = generation;
++    RemoveObjectEventsOutsideView();
++    TrySpawnObjectEvents(0, 0);
++}
++#endif
+diff --git a/src/fieldmap.c b/src/fieldmap.c
+index 5e2af1dcce782f8b023c5a4ded5e6130aa4caf76..c4a37c89c57c8d20c77e077fb6105dcf4923e55d 100644
+--- a/src/fieldmap.c
++++ b/src/fieldmap.c
+@@ -463,7 +463,7 @@ static bool8 CameraBorderDrawable(const struct MapLayout *layout)
+     if (border == NULL)
+         return FALSE;
+     for (i = 0; i < 4; i++)
+-        if (UNPACK_METATILE(border[i]) >= NUM_METATILES_IN_PRIMARY)
++        if ((border[i] & MAPGRID_METATILE_ID_MASK) >= NUM_METATILES_IN_PRIMARY)
+             return FALSE;
+     return TRUE;
+ }
+@@ -893,7 +893,7 @@ u32 MapGridGetMetatileIdForCameraAt(int x, int y)
+ 
+     if (block == MAPGRID_UNDEFINED)
+         block = GetCameraConnectionBlockAt(x, y, TRUE);
+-    return UNPACK_METATILE(block);
++    return block & MAPGRID_METATILE_ID_MASK;
+ }
+ 
+ #endif
+diff --git a/src/item_menu.c b/src/item_menu.c
+index b6248c9c9eee08fc14b135b35b01db4e928615a3..c436d0deb3641eb514fc04b47aa5e7ee9dca6af0 100644
+--- a/src/item_menu.c
++++ b/src/item_menu.c
+@@ -3255,7 +3255,7 @@ static void CtrBag_ViewRows(struct CtrBagView *view)
+         view->flags[i] = 0;
+         if (item != ITEM_NONE)
+         {
+-            if (pocket == BERRIES_POCKET || (pocket != KEYITEMS_POCKET && GetItemImportance(item) == FALSE))
++            if (pocket == BERRIES_POCKET || (pocket != KEYITEMS_POCKET && ItemId_GetImportance(item) == FALSE))
+                 view->flags[i] |= CTR_BAG_ROW_COUNT;
+             else if (gSaveBlock1Ptr->registeredItemL == item)
+                 view->flags[i] |= CTR_BAG_ROW_REGISTERED;
+diff --git a/src/item_menu_icons.c b/src/item_menu_icons.c
+index cddc933130352f79aa3bde980a43cd3955cf1de3..838a37d9fa32219a2d60ab64c561a70ce4002622 100644
+--- a/src/item_menu_icons.c
++++ b/src/item_menu_icons.c
+@@ -122,6 +122,13 @@ static const union AnimCmd *const sBagSpriteAnimTable[] =
+     sSpriteAnim_Bag_KeyItems
+ };
+ 
++#ifdef PLATFORM_3DS
++u8 CtrBag_SpriteFrame(u8 pocket)
++{
++    return sBagSpriteAnimTable[pocket + 1][0].frame.imageValue / 64;
++}
++#endif
++
+ static const union AffineAnimCmd sSpriteAffineAnim_BagNormal[] =
+ {
+     AFFINEANIMCMD_FRAME(256, 256, 0, 0),
+diff --git a/src/list_menu.c b/src/list_menu.c
+index 8ba13a6cf8a2e094df37d5a203f85edb4f40fb9d..a29b545ecf4d2a198f42ff951201659d47778928 100644
+--- a/src/list_menu.c
++++ b/src/list_menu.c
+@@ -1460,3 +1460,60 @@ static void ListMenuRemoveRedArrowCursorObject(u8 taskId)
+     DestroySprite(&gSprites[data->spriteId]);
+     DestroyTask(taskId);
+ }
++
++#ifdef PLATFORM_3DS
++s16 CtrListMenu_RowAt(u8 listTaskId, s16 x, s16 y)
++{
++    struct ListMenu *list = (void *) gTasks[listTaskId].data;
++    u8 yMultiplier = GetFontAttribute(list->template.fontId, FONTATTR_MAX_LETTER_HEIGHT) + list->template.itemVerticalPadding;
++    s16 left = GetWindowAttribute(list->template.windowId, WINDOW_TILEMAP_LEFT) * 8;
++    s16 top = GetWindowAttribute(list->template.windowId, WINDOW_TILEMAP_TOP) * 8 + list->template.upText_Y;
++    s16 width = GetWindowAttribute(list->template.windowId, WINDOW_WIDTH) * 8;
++    s16 row;
++
++    if (x < left || x >= left + width || y < top || yMultiplier == 0)
++        return -1;
++    row = (y - top) / yMultiplier;
++    if (row >= list->template.maxShowed || list->scrollOffset + row >= list->template.totalItems)
++        return -1;
++    return row;
++}
++
++void CtrListMenu_Select(u8 listTaskId, u16 row)
++{
++    struct ListMenu *list = (void *) gTasks[listTaskId].data;
++    u16 oldRow = list->selectedRow;
++
++    if (row == oldRow || row >= list->template.maxShowed || list->template.items[list->scrollOffset + row].id == LIST_HEADER)
++        return;
++    list->selectedRow = row;
++    ListMenuErasePrintedCursor(list, oldRow);
++    ListMenuDrawCursor(list);
++    ListMenuCallSelectionChangedCallback(list, FALSE);
++    CopyWindowToVram(list->template.windowId, COPYWIN_GFX);
++}
++
++s16 CtrListMenu_Scroll(u8 listTaskId, s16 rows)
++{
++    struct ListMenu *list = (void *) gTasks[listTaskId].data;
++    s32 maxScroll = list->template.totalItems - list->template.maxShowed;
++    s32 scroll = list->scrollOffset + rows;
++
++    if (scroll > maxScroll)
++        scroll = maxScroll;
++    if (scroll < 0)
++        scroll = 0;
++    rows = scroll - list->scrollOffset;
++    if (rows == 0)
++        return 0;
++    ListMenuErasePrintedCursor(list, list->selectedRow);
++    list->scrollOffset = scroll;
++    if (list->template.items[list->scrollOffset + list->selectedRow].id == LIST_HEADER)
++        list->selectedRow = rows > 0 ? list->selectedRow + 1 : list->selectedRow - 1;
++    ListMenuScroll(list, rows > 0 ? rows : -rows, rows > 0);
++    ListMenuDrawCursor(list);
++    ListMenuCallSelectionChangedCallback(list, FALSE);
++    CopyWindowToVram(list->template.windowId, COPYWIN_GFX);
++    return rows;
++}
++#endif
+diff --git a/src/party_menu.c b/src/party_menu.c
+index e9e28e305fd14394ce81e95bae3df9aa0f42e790..0738d0bc0e8ea8fc58db7fbfa3460db3c7e580bc 100644
+--- a/src/party_menu.c
++++ b/src/party_menu.c
+@@ -7530,3 +7530,14 @@ void ItemUseCB_PokeBall(u8 taskId, TaskFunc task)
+     }
+ }
+ 
++#ifdef PLATFORM_3DS
++void CtrFly_Start(void);
++void CtrRegionMap_SetFlyDestination(u16 mapSecId, u8 posWithinMapSec);
++
++void CtrParty_Fly(u8 slot, u16 mapSecId, u8 posWithinMapSec)
++{
++    gPartyMenu.slotId = slot;
++    CtrRegionMap_SetFlyDestination(mapSecId, posWithinMapSec);
++    CtrFly_Start();
++}
++#endif
+diff --git a/src/pokedex.c b/src/pokedex.c
+index aa4cf4cecf1f1703222178017ecbbc7c2cc7ce92..8b5ba573f4bae54ab53df2c88552cebd85adf99f 100644
+--- a/src/pokedex.c
++++ b/src/pokedex.c
+@@ -6919,3 +6919,40 @@ const u8 *CtrPokedex_CaughtBallGfx(void)
+     return Port_ResolveAssetPointerSized(sCaughtBall_Gfx, 64);
+ }
+ #endif
++
++#ifdef PLATFORM_3DS
++u16 CtrPokedex_InfoDexNum(void)
++{
++    if (!CtrPokedex_IsOpen() || gMain.callback2 != CB2_Pokedex)
++        return 0;
++    if (sPokedexListItem != NULL
++        && (FuncIsActiveTask(Task_WaitForExitInfoScreen) || FuncIsActiveTask(Task_HandleInfoScreenInput)
++            || FuncIsActiveTask(Task_WaitForExitSearchResultsInfoScreen)))
++        return sPokedexListItem->dexNum;
++    if (FuncIsActiveTask(Task_HandlePokedexInput) || FuncIsActiveTask(Task_HandleSearchResultsInput)
++     || FuncIsActiveTask(Task_HandlePokedexStartMenuInput) || FuncIsActiveTask(Task_HandleSearchResultsStartMenuInput))
++    {
++        const struct PokedexListItem *item;
++
++        if (sPokedexView->selectedPokemon >= sPokedexView->pokemonListCount)
++            return 0;
++        item = &sPokedexView->pokedexList[sPokedexView->selectedPokemon];
++        return item->seen ? item->dexNum : 0;
++    }
++    return 0;
++}
++
++bool8 CtrPokedex_ListScrolling(void)
++{
++    return sPokedexView != NULL && sPokedexView->scrollTimer != 0;
++}
++
++bool8 CtrPokedex_IsCaughtMonPage(void)
++{
++    u8 taskId = FindTaskIdByFunc(Task_DisplayCaughtMonDexPage);
++
++    return (taskId != TASK_NONE && gTasks[taskId].data[0] != 0)
++        || FuncIsActiveTask(Task_HandleCaughtMonPageInput)
++        || FuncIsActiveTask(Task_ExitCaughtMonPage);
++}
++#endif
+diff --git a/src/pokedex_area_screen.c b/src/pokedex_area_screen.c
+index 27f351e024fc7de179542b04d171c5656a498a26..3de44b8ca5b023451cd60de7f76b993e0de20573 100755
+--- a/src/pokedex_area_screen.c
++++ b/src/pokedex_area_screen.c
+@@ -795,3 +795,34 @@ static void CreateAreaUnknownSprites(void)
+         }
+     }
+ }
++
++#ifdef PLATFORM_3DS
++#include "3ds_game_views.h"
++
++bool8 CtrPokedexArea_GetView(struct CtrDexView *view)
++{
++    u16 i, x, y;
++
++    if (sPokedexAreaScreen == NULL || !FuncIsActiveTask(Task_HandlePokedexAreaScreenInput))
++        return FALSE;
++    for (i = 0; i < sPokedexAreaScreen->numOverworldAreas; i++)
++        for (y = 0; y < AREA_SCREEN_HEIGHT && y < CTR_DEX_AREA_ROWS; y++)
++            for (x = 0; x < AREA_SCREEN_WIDTH; x++)
++                if (GetRegionMapSecIdAt(x, y) == sPokedexAreaScreen->overworldAreasWithMons[i].regionMapSectionId)
++                    view->areaRows[y] |= 1u << x;
++    for (i = 0; i < sPokedexAreaScreen->numSpecialAreas && view->marks < CTR_DEX_AREA_MARKS; i++)
++    {
++        u16 mapSecId = sPokedexAreaScreen->specialAreaRegionMapSectionIds[i];
++
++        if (mapSecId >= MAPSEC_NONE)
++            continue;
++        // The middle of its place on the map, in cells (MAPCURSOR_X_MIN 1,
++        // MAPCURSOR_Y_MIN 2 as region_map.c counts them).
++        view->markX[view->marks] = gRegionMapEntries[mapSecId].x + 1;
++        view->markY[view->marks] = gRegionMapEntries[mapSecId].y + 2;
++        view->marks++;
++    }
++    view->areaUnknown = sPokedexAreaScreen->numOverworldAreas == 0 && sPokedexAreaScreen->numSpecialAreas == 0;
++    return TRUE;
++}
++#endif
+diff --git a/src/pokedex_cry_screen.c b/src/pokedex_cry_screen.c
+index 28e2bd1632a8ed2dd1e54607f8e9770ea30bddcc..18e05928d0a488c0d3caacf8d4f8df4fcb19db7c 100644
+--- a/src/pokedex_cry_screen.c
++++ b/src/pokedex_cry_screen.c
+@@ -576,3 +576,18 @@ static void SetCryMeterNeedleTarget(s8 offset)
+     sCryMeterNeedle->moveIncrement = NEEDLE_MOVE_INCREMENT;
+ }
+ 
++#ifdef PLATFORM_3DS
++#include "3ds_game_views.h"
++
++void CtrDexCry_GetView(s8 *wave, u8 *volume)
++{
++    s16 level;
++
++    memset(wave, 0, CTR_DEX_WAVE);
++    *volume = 0;
++    if (sCryMeterNeedle == NULL)
++        return;
++    level = (MIN_NEEDLE_POS - sCryMeterNeedle->rotation) * 10 / (MIN_NEEDLE_POS - MAX_NEEDLE_POS);
++    *volume = level < 0 ? 0 : level > 10 ? 10 : level;
++}
++#endif
+diff --git a/src/pokemon.c b/src/pokemon.c
+index d192913babdc0be68af43a4042391cf336b80385..a5215545a6c67a5a3a87e04175d522049ca11e17 100644
+--- a/src/pokemon.c
++++ b/src/pokemon.c
+@@ -7303,3 +7303,12 @@ void SavePlayerPartyMon(u32 index, struct Pokemon *mon)
+ {
+     gSaveBlock1Ptr->playerParty[index] = *mon;
+ }
++
++#ifdef PLATFORM_3DS
++#include "constants/battle_config.h"
++
++bool8 MoveSplitEnabled(void)
++{
++    return B_PHYSICAL_SPECIAL_SPLIT >= GEN_4;
++}
++#endif
+diff --git a/src/pokemon_summary_screen.c b/src/pokemon_summary_screen.c
+index c234b727016d7adf2539c04e3de224e8e71ef043..1a0f271a5d4dedcdf2069c292fe6e773ab6c374a 100644
+--- a/src/pokemon_summary_screen.c
++++ b/src/pokemon_summary_screen.c
+@@ -1830,7 +1830,9 @@ static bool8 CtrSummary_TurnToTarget(u8 taskId)
+         sCtrPageTarget = -1;
+         return FALSE;
+     }
+-    CtrSummary_ChangePageTo(taskId, target);
++    if (target >= sMonSummaryScreen->minPageIndex && target <= sMonSummaryScreen->maxPageIndex
++     && target != sMonSummaryScreen->currPageIndex)
++        ChangePage(taskId, target > sMonSummaryScreen->currPageIndex ? 1 : -1);
+     return TRUE;
+ }
+ 
+diff --git a/src/pokenav_match_call_list.c b/src/pokenav_match_call_list.c
+index 2fefd55996d9f72bc7c11501bda5ee1a4438efbb..80417d4a0e08e79eefe1c981b1cd27aeec8038cf 100755
+--- a/src/pokenav_match_call_list.c
++++ b/src/pokenav_match_call_list.c
+@@ -513,3 +513,32 @@ static bool32 ShouldDoNearbyMessage(void)
+     #endif
+     return FALSE;
+ }
++
++#ifdef PLATFORM_3DS
++u8 CtrPokenavMatchCall_Input(u16 *cursor, u16 *count)
++{
++    struct Pokenav_MatchCallMenu *state = GetSubstructPtr(POKENAV_SUBSTRUCT_MATCH_CALL_MAIN);
++
++    if (state == NULL)
++        return 0xFF;
++    *cursor = state->optionCursorPos;
++    *count = state->maxOptionId + 1;
++    if (state->callback == CB2_HandleMatchCallInput)
++        return 0;
++    if (state->callback == CB2_HandleMatchCallOptionsInput)
++        return 1;
++    if (state->callback == CB2_HandleCheckPageInput)
++        return 2;
++    if (state->callback == CB2_HandleCallExitInput)
++        return 3;
++    return 0xFF;
++}
++
++void CtrPokenavMatchCall_SetOption(u16 cursor)
++{
++    struct Pokenav_MatchCallMenu *state = GetSubstructPtr(POKENAV_SUBSTRUCT_MATCH_CALL_MAIN);
++
++    if (state != NULL && cursor <= state->maxOptionId)
++        state->optionCursorPos = cursor;
++}
++#endif
+diff --git a/src/script.c b/src/script.c
+index 1a4df19f274c29baee1918ee8e7b1ba90af0a6e1..8f644e3423f96bb736d6edf590c08db9eed346b9 100644
+--- a/src/script.c
++++ b/src/script.c
+@@ -502,3 +502,25 @@ void InitRamScript_NoObjectEvent(u8 *script, u16 scriptSize)
+     InitRamScript(script, scriptSize, MAP_GROUP(UNDEFINED), MAP_NUM(UNDEFINED), NO_OBJECT);
+     #endif
+ }
++
++#ifdef PLATFORM_3DS
++void LockPlayerFieldControls(void)
++{
++    ScriptContext2_Enable();
++}
++
++void UnlockPlayerFieldControls(void)
++{
++    ScriptContext2_Disable();
++}
++
++bool8 ArePlayerFieldControlsLocked(void)
++{
++    return ScriptContext2_IsEnabled();
++}
++
++bool8 ScriptContext_IsEnabled(void)
++{
++    return sScriptContext1Status != 2;
++}
++#endif
+diff --git a/src/stub.c b/src/stub.c
+index 0aa8757af147a06dfa96bacccca282e70f0b489a..48356635af7aabe4ac9bc9022b189ba0e3abf6fe 100644
+--- a/src/stub.c
++++ b/src/stub.c
+@@ -263,9 +263,19 @@ STUB_FUNC(void SetPokemonCryStereo(u32 val))
+ STUB_FUNC(void SetPokemonCryPriority(u8 val))
+ STUB_FUNC(void IsPokemonCryPlaying(struct MusicPlayerInfo *mplayInfo))
+ */
++#ifndef PLATFORM_3DS
+ STUB_FUNC(void MultiBootInit(struct MultiBootParam *mp))
++#endif
++#ifndef PLATFORM_3DS
+ STUB_FUNC(int MultiBootMain(struct MultiBootParam *mp))
++#endif
++#ifndef PLATFORM_3DS
+ STUB_FUNC(void MultiBootStartProbe(struct MultiBootParam *mp))
++#endif
++#ifndef PLATFORM_3DS
+ STUB_FUNC(void MultiBootStartMaster(struct MultiBootParam *mp, const u8 *srcp, int length, u8 palette_color, s8 palette_speed))
++#endif
++#ifndef PLATFORM_3DS
+ STUB_FUNC(int MultiBootCheckComplete(struct MultiBootParam *mp))
++#endif
+ //STUB_FUNC(IntrFunc IntrSIO32(void))
+diff --git a/src/trade.c b/src/trade.c
+index 1636e2be0a983a6b721fce3bb98c1e6368691567..bfd6e9c364ac2aa8345a200cdd74a01aab2ff7ac 100644
+--- a/src/trade.c
++++ b/src/trade.c
+@@ -5058,3 +5058,15 @@ static void CB2_SaveAndEndWirelessTrade(void)
+     BuildOamBuffer();
+     UpdatePaletteFade();
+ }
++
++#ifdef PLATFORM_3DS
++bool8 CtrTrade_IsOpen(void)
++{
++    return gMain.callback2 == CB2_TradeMenu;
++}
++
++IntrCallback CtrTrade_MenuVBlankCallback(void)
++{
++    return VBlankCB_TradeMenu;
++}
++#endif

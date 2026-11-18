@@ -10,6 +10,7 @@
    From the page: start, followers. */
 
 const PYODIDE = "https://cdn.jsdelivr.net/pyodide/v314.0.7/full/";
+const CLASSIC_PYODIDE = "https://cdn.jsdelivr.net/pyodide/v0.28.3/full/";
 
 const post = (msg, transfer) => self.postMessage(msg, transfer || []);
 let followersArrived;
@@ -68,13 +69,13 @@ async function download(url, stage) {
   return out;
 }
 
-async function loadRuntime() {
+async function loadRuntime(indexURL) {
   let py;
   try {
-    const { loadPyodide } = await import(PYODIDE + "pyodide.mjs");
+    const { loadPyodide } = await import(indexURL + "pyodide.mjs");
     post({ type: "progress", stage: "runtime", fraction: 0.4 });
     py = await loadPyodide({
-      indexURL: PYODIDE,
+      indexURL,
       stdout: (line) => post({ type: "log", line }),
       stderr: (line) => post({ type: "log", line }),
     });
@@ -122,10 +123,10 @@ function mkdirs(py, path) {
   if (dir) py.FS.mkdirTree(dir);
 }
 
-async function run({ base, rom, romName, followers, direct, cartridge }) {
+async function run({ base, rom, romName, followers, direct, cartridge, classic }) {
   const t0 = performance.now();
   post({ type: "phase", phase: "runtime" });
-  const py = await loadRuntime();
+  const py = await loadRuntime(classic ? CLASSIC_PYODIDE : PYODIDE);
   post({ type: "log", line: "Python " + py.runPython("import sys; sys.version.split()[0]") + ", Pyodide " + py.version });
 
   post({ type: "phase", phase: "payload" });
@@ -138,14 +139,16 @@ async function run({ base, rom, romName, followers, direct, cartridge }) {
     throw e instanceof Failure ? e : new Failure("network", "", String(e));
   }
   const cartridgeOnly = manifest.kind === "voxel-cartridge-payload";
+  const classicHomebrew = classic && manifest.kind === "emerald3ds-web-payload";
   if (manifest.schemaVersion !== 1 ||
-      (manifest.kind !== "firered3ds-web-payload" && !(cartridge && cartridgeOnly))) {
+      (classic ? !classicHomebrew : (manifest.kind !== "firered3ds-web-payload" && !(cartridge && cartridgeOnly)))) {
     throw new Failure("payload_missing", "", "unknown web manifest");
   }
   const payloadVersion = cartridgeOnly
     ? [manifest.releaseTag, manifest.dataAbi, manifest.cartridgeSha256].join("-")
     : manifest.releaseTag;
-  const zip = await download(base + "payload/FireRed3DS-WebPayload.zip?v=" + encodeURIComponent(payloadVersion), "payload");
+  const archiveName = classicHomebrew ? "Emerald3DS-WebPayload.zip" : "FireRed3DS-WebPayload.zip";
+  const zip = await download(base + "payload/" + archiveName + "?v=" + encodeURIComponent(payloadVersion), "payload");
   py.FS.mkdirTree("/fr3ds");
   py.FS.writeFile("/fr3ds/payload.zip", zip);
   py.globals.set("expected_manifest", JSON.stringify(manifest));
@@ -165,7 +168,14 @@ async function run({ base, rom, romName, followers, direct, cartridge }) {
   post({ type: "phase", phase: "data" });
   py.globals.set("js_progress", (stage, fraction, message) => post({ type: "progress", stage, fraction, message }));
   py.globals.set("rom_path", "/rom/" + name);
-  const built = JSON.parse(py.runPython(cartridgeOnly ? `
+  const built = JSON.parse(py.runPython(classicHomebrew ? `
+from pathlib import Path
+from emerald3ds_builder.web import run_web_build
+classic_dir = Path("/sd/3ds/pokeclassic-voxel")
+classic_dir.mkdir(parents=True)
+run_web_build(rom_path, "/fr3ds/payload", str(classic_dir / "emerald3ds.pak"), js_progress,
+              "/fr3ds/web-manifest.json", with_followers=False)
+` : cartridgeOnly ? `
 from voxel_cartridge import run
 run(rom_path, js_progress)
 ` : `
@@ -175,6 +185,23 @@ run_web_build(rom_path, "/fr3ds/payload", "/sd/3ds/firered3ds/firered3ds.pak", j
   py.FS.unlink("/rom/" + name);
   if (!built.ok) throw new Failure(built.error.code, built.error.message, built.error.hint);
   post({ type: "log", line: "pack: " + JSON.stringify(built.result) });
+  if (classicHomebrew) {
+    post({ type: "phase", phase: "zip" });
+    py.runPython(`
+from shutil import copyfile
+from zipfile import ZIP_DEFLATED, ZipFile
+source = Path("/fr3ds/payload")
+copyfile(source / "Emerald3DS.3dsx", classic_dir / "PokeClassicVoxel.3dsx")
+copyfile(source / "Emerald3DS.smdh", classic_dir / "PokeClassicVoxel.smdh")
+with ZipFile("/out.zip", "w", compression=ZIP_DEFLATED, compresslevel=1) as archive:
+    for item in sorted(classic_dir.iterdir()):
+        archive.write(item, item.relative_to("/sd").as_posix())
+`);
+    const out = py.FS.readFile("/out.zip");
+    const buffer = out.buffer.byteLength === out.byteLength ? out.buffer : out.slice().buffer;
+    post({ type: "done", zip: buffer, result: built.result }, [buffer]);
+    return;
+  }
   if (!cartridge) {
     py.globals.set("rom_sha1", built.result.romSha1);
     py.runPython(`

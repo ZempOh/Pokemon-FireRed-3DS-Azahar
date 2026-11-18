@@ -42,6 +42,10 @@ function choose(port, button) {
   games.querySelectorAll("button").forEach((game) => game.setAttribute("aria-pressed", String(game === button)));
   $("#build-title").textContent = "Build " + port.name;
   $("[data-rom-help]").textContent = "Required ROM: " + port.input;
+  build.textContent = port.format === "homebrew" ? "Build Azahar ZIP" : "Build .3ds cartridge";
+  $("[data-install]").textContent = port.format === "homebrew"
+    ? "Unzip the download and copy its 3ds folder into Azahar’s sdmc folder. Open PokeClassicVoxel.3dsx from Azahar."
+    : "Copy the finished file into your Azahar 3DS games folder and launch it from the library.";
   chooseFile(undefined);
 }
 
@@ -74,19 +78,22 @@ function receive(event) {
     if (message.message) announce(message.message);
   } else if (message.type === "phase") {
     const phases = { runtime: "Loading builder…", payload: "Downloading build files…",
-                     data: "Checking and extracting the ROM…", zip: "Assembling the cartridge…" };
+                     data: "Checking and extracting the ROM…", zip: "Assembling the download…" };
     if (phases[message.phase]) announce(phases[message.phase]);
   } else if (message.type === "error") {
     stop();
     announce([message.message || "The build could not finish.", message.hint].filter(Boolean).join(" "), true);
   } else if (message.type === "done") {
     stop();
-    outputUrl = URL.createObjectURL(new Blob([message.cartridge], { type: "application/octet-stream" }));
+    const blob = message.zip
+      ? new Blob([message.zip], { type: "application/zip" })
+      : new Blob([message.cartridge], { type: "application/octet-stream" });
+    outputUrl = URL.createObjectURL(blob);
     download.href = outputUrl;
     download.download = selected.output;
     download.textContent = "Download " + selected.output;
     download.hidden = false;
-    announce("Cartridge ready.");
+    announce("Download ready.");
     download.focus();
   }
 }
@@ -106,12 +113,13 @@ $("[data-form]").addEventListener("submit", async (event) => {
   try {
     const bytes = await rom.arrayBuffer();
     if (buildId !== id) return;
-    worker = new Worker(new URL("./builder.worker.js?v=voxel-1", import.meta.url), { type: "module" });
+    worker = new Worker(new URL("./builder.worker.js?v=voxel-2", import.meta.url), { type: "module" });
     worker.onmessage = receive;
     worker.onerror = () => { stop(); announce("The browser could not start the builder.", true); };
     worker.postMessage({
       type: "start", base: new URL(selected.base, document.baseURI).href,
-      rom: bytes, romName: rom.name, cartridge: true, followers: false, direct: false,
+      rom: bytes, romName: rom.name, cartridge: selected.format !== "homebrew",
+      classic: selected.format === "homebrew", followers: false, direct: false,
     }, [bytes]);
   } catch (error) {
     if (buildId !== id) return;

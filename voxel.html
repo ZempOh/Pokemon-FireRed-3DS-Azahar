@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Build voxel Pokémon cartridges for Azahar using your own ROM files.">
-  <title>Voxel cartridge builder · Pokémon 3DS</title>
+  <title>Voxel game builder · Pokémon 3DS</title>
   <link rel="icon" href="img/icon.png">
   <link rel="stylesheet" href="assets/css/site.css?v=3">
   <link rel="stylesheet" href="assets/css/voxel.css">
@@ -20,15 +20,15 @@
     </div>
   </header>
   <main class="wrap voxel-main">
-    <h1>Voxel cartridge builder</h1>
-    <p class="lead">Build a standalone .3ds cartridge for Azahar. Your ROM stays on this device.</p>
+    <h1>Voxel game builder</h1>
+    <p class="lead">Build a voxel 3D game for Azahar. Your ROM stays on this device.</p>
     <div class="voxel-layout">
       <section aria-labelledby="ports-title">
         <h2 id="ports-title">Choose a game</h2>
         <div class="voxel-games" data-games></div>
       </section>
       <section class="panel voxel-panel" aria-labelledby="build-title">
-        <h2 id="build-title">Build a cartridge</h2>
+        <h2 id="build-title">Build a game</h2>
         <p data-rom-help>Select a game to see the required ROM version.</p>
         <form data-form>
           <label class="drop" data-drop>
@@ -42,10 +42,10 @@
           <div class="actions voxel-actions">
             <button class="btn btn-primary" type="submit" data-build disabled>Build .3ds cartridge</button>
             <button class="btn btn-ghost" type="button" data-cancel hidden>Cancel build</button>
-            <a class="btn btn-primary" data-download hidden>Download cartridge</a>
+            <a class="btn btn-primary" data-download hidden>Download</a>
           </div>
         </form>
-        <p class="small muted voxel-install">Copy the finished file into your Azahar 3DS games folder and launch it from the library.</p>
+        <p class="small muted voxel-install" data-install></p>
       </section>
     </div>
   </main>

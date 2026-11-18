@@ -4319,17 +4319,8 @@ def main():
         # against the same relief the build does
         if os.environ.get("VOXEL_RELIEF_EXPORT"):
             shutil.copy2(args.output, os.environ["VOXEL_RELIEF_EXPORT"])
-        # the mountains of the maps chosen so far, counted tile by tile
-        # (voxel_terraces.py) over the solve, in the world it placed
-        import voxel_terraces
-        voxel_terraces.apply_file(args.output)
-        # the level a step seam gives up, as a slope across the open sea
-        apply_sea_ramps(args.output)
-        # no cut tile's ground in a pit under the ground beside it
+        # Keep the base under each cut level with its neighboring tiles.
         apply_cut_feet(args.output)
-        # the hand corrections (assets/voxel/relief_fixes.json) over the drawing's
-        if not os.environ.get("VOXEL_RELIEF_NO_FIXES"):
-            voxel_relief_fixes.apply_file(args.output)
 
 
 if __name__ == "__main__":

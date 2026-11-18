@@ -1,0 +1,35 @@
+diff --git a/include/global.h b/include/global.h
+index 8dc1d7d4..e86a3db9 100644
+--- a/include/global.h
++++ b/include/global.h
+@@ -997,7 +999,12 @@ struct SaveBlock1
+     /*0x494*/ u16 coins;
+     /*0x496*/ u16 registeredItemL; // registered for use with L button
+               u16 registeredItemR; // registered for use with R button
++#if defined(PORTABLE) && defined(__arm__)
++    // agbcc places the Classic save's first item slot on a four-byte boundary.
++    struct ItemSlot pcItems[PC_ITEMS_COUNT] ALIGNED(4);
++#else
+     /*0x498*/ struct ItemSlot pcItems[PC_ITEMS_COUNT];
++#endif
+     /*0x560*/ struct ItemSlot bagPocket_Items[BAG_ITEMS_COUNT];
+     /*0x5D8*/ struct ItemSlot bagPocket_KeyItems[BAG_KEYITEMS_COUNT];
+     /*0x650*/ struct ItemSlot bagPocket_PokeBalls[BAG_POKEBALLS_COUNT];
+@@ -1099,6 +1106,17 @@ struct SaveBlock1
+ 
+ extern struct SaveBlock1* gSaveBlock1Ptr;
+ 
++#if defined(PORTABLE) && defined(__arm__)
++STATIC_ASSERT(sizeof(struct ItemSlot) == 4, ClassicItemSlotWidth);
++STATIC_ASSERT(__builtin_offsetof(struct SaveBlock1, bagPocket_Items) == 0x628, ClassicItemsSaveOffset);
++STATIC_ASSERT(__builtin_offsetof(struct SaveBlock1, bagPocket_Medicine) == 0x980, ClassicMedicineSaveOffset);
++STATIC_ASSERT(__builtin_offsetof(struct SaveBlock1, bagPocket_BattleItems) == 0xA20, ClassicBattleItemsSaveOffset);
++STATIC_ASSERT(__builtin_offsetof(struct SaveBlock1, bagPocket_Treasures) == 0xB10, ClassicTreasuresSaveOffset);
++STATIC_ASSERT(__builtin_offsetof(struct SaveBlock1, flags) == 0x15BC, ClassicFlagsSaveOffset);
++STATIC_ASSERT(__builtin_offsetof(struct SaveBlock1, vars) == 0x16E8, ClassicVarsSaveOffset);
++STATIC_ASSERT(__builtin_offsetof(struct SaveBlock2, encryptionKey) == 0xB0, ClassicEncryptionKeySaveOffset);
++#endif
++
+ struct MapPosition
+ {
+     s16 x;

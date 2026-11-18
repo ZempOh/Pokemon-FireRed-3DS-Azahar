@@ -1,0 +1,84 @@
+diff --git a/src/wild_encounter.c b/src/wild_encounter.c
+index ee76337..5ed42d5 100644
+--- a/src/wild_encounter.c
++++ b/src/wild_encounter.c
+@@ -1,5 +1,6 @@
+ #include "global.h"
+ #ifdef PLATFORM_3DS
++#include <stdint.h>
+ #include "3ds_extras.h"
+ #endif
+ #include "random.h"
+@@ -666,13 +667,36 @@ void FishingWildEncounter(u8 rod)
+     StartWildBattle();
+ }
+ 
++#ifdef PLATFORM_3DS
++extern u8 __ctr_gamedata[], __ctr_gamedata_end[];
++
++static bool8 IsInWildGameData(const void *ptr, size_t size)
++{
++    uintptr_t address = (uintptr_t)ptr;
++    uintptr_t start = (uintptr_t)__ctr_gamedata;
++    uintptr_t end = (uintptr_t)__ctr_gamedata_end;
++    return address >= start && address <= end && size <= end - address;
++}
++
++static bool8 IsValidWildCryTable(const struct WildPokemonInfo *info, size_t count)
++{
++    return (uintptr_t)info % _Alignof(struct WildPokemonInfo) == 0
++        && IsInWildGameData(info, sizeof(*info))
++        && (uintptr_t)info->wildPokemon % _Alignof(struct WildPokemon) == 0
++        && IsInWildGameData(info->wildPokemon, count * sizeof(*info->wildPokemon));
++}
++#endif
++
+ u16 GetLocalWildMon(bool8 *isWaterMon)
+ {
+     u16 headerId;
+     const struct WildPokemonInfo * landMonsInfo;
+     const struct WildPokemonInfo * waterMonsInfo;
+ 
++    *isWaterMon = FALSE;
+     headerId = GetCurrentMapWildMonHeaderId();
++    if (headerId == HEADER_NONE)
++        return SPECIES_NONE;
+     if(gSaveBlock1Ptr->keyFlags.version == 0)
+     {
+         landMonsInfo = gWildMonHeaders[headerId].landMonsInfo_FR;
+@@ -684,9 +708,13 @@ u16 GetLocalWildMon(bool8 *isWaterMon)
+         waterMonsInfo = gWildMonHeaders[headerId].waterMonsInfo_LG;
+     }
+ 
+-    *isWaterMon = FALSE;
+-    if (headerId == HEADER_NONE)
+-        return SPECIES_NONE;
++#ifdef PLATFORM_3DS
++    // The 3DS loads these two levels of pointers from its relocated data bundle.
++    if (!IsValidWildCryTable(landMonsInfo, LAND_WILD_COUNT))
++        landMonsInfo = NULL;
++    if (!IsValidWildCryTable(waterMonsInfo, WATER_WILD_COUNT))
++        waterMonsInfo = NULL;
++#endif
+     // Neither
+     if (landMonsInfo == NULL && waterMonsInfo == NULL)
+         return SPECIES_NONE;
+@@ -727,7 +755,11 @@ u16 GetLocalWaterMon(void)
+             waterMonsInfo = gWildMonHeaders[headerId].waterMonsInfo_LG;
+         }
+ 
++#ifdef PLATFORM_3DS
++        if (IsValidWildCryTable(waterMonsInfo, WATER_WILD_COUNT))
++#else
+         if (waterMonsInfo)
++#endif
+             return waterMonsInfo->wildPokemon[ChooseWildMonIndex_WaterRock()].species;
+     }
+     return SPECIES_NONE;
+@@ -1121,4 +1153,4 @@ static u8 ViridianForestNuzlockeOverride(const struct WildPokemonInfo * info, u8
+             break; 
+     }
+     return slot;
+-}
+\ No newline at end of file
++}

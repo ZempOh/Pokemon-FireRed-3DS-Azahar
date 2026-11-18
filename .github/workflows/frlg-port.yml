@@ -27,6 +27,7 @@ jobs:
       - name: Prepare FRLG Plus source
         run: |
           python3 tools/bootstrap.py --dir build/upstream
+          python3 3ds_port/tests/scanline_window_test.py --tree build/upstream
           make -C build/upstream -j2 tools
           make -C build/upstream -j2 generated
       - name: Compile native cartridge template

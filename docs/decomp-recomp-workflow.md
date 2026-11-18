@@ -11,6 +11,12 @@ Use this workflow for the FireRed, FRLG+ and Pokémon Classic 3DS ports and the 
 
 Use PoryMap or the source map JSON to identify a tile, section, or object before editing it. Keep PC decoding and tile checks in small scripts that can run against new builds. This project has matching GBA sources and builds ARM-native 3DS code with devkitARM. N64Recomp is a separate N64-specific workflow that illustrates the value of retaining symbols. [PoryMap project](https://github.com/huderlem/porymap) · [N64Recomp project](https://github.com/N64Recomp/N64Recomp)
 
+When the Azahar log reports a fault in a homebrew build and gives the text segment base, use [the 3DSX PC helper](../tools/azahar_3dsx_pc.py). It prints the engine hash and instructions around the reported PC. Add `--objdump` with an explicit path if devkitARM is outside `PATH`.
+
+```sh
+python tools/azahar_3dsx_pc.py Emerald3DS.3dsx 0x266fe0 --text-base 0x100000
+```
+
 ## Parallel work
 
 Assign one worktree and one branch or read-only investigation to each agent. Give the connected Thor to one integration owner so inputs and save changes stay attributable. Use the branch or CI commit as the source of truth, with a short handoff that identifies the next thing to verify. [Reddit worktree discussion](https://www.reddit.com/r/codex/comments/1xu5qzc/running_codex_and_claude_code_on_the_same_repo/) · [Git worktree documentation](https://git-scm.com/docs/git-worktree)

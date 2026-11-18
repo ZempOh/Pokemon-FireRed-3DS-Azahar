@@ -24,6 +24,8 @@
 .voxel-panel progress { width: 100%; margin-block: 8px; accent-color: var(--red); }
 .voxel-actions { margin-top: 16px; }
 .voxel-install { margin: 18px 0 0; }
+.voxel-android { margin-top: 32px; }
+.voxel-android-games { padding-inline-start: 1.2em; }
 [data-download][hidden], [data-cancel][hidden] { display: none; }
 [data-status][data-error] { color: var(--err); }
 @media (max-width: 690px) {

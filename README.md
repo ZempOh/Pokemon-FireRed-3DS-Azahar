@@ -24,7 +24,7 @@ The output file names retain the original engine's naming convention. This branc
 
 ## Controls
 
-Voxel 3D starts enabled with fresh settings. The lower-screen map has a 3D toggle for the overworld. The gear opens the camera and battle view settings. Use the lower-screen dock or **Start** and the D-pad to open Party and Bag.
+Voxel 3D starts enabled with fresh settings. On the lower screen, open **Option → World → 3D** to toggle voxel mode and adjust the camera. The **Battle** tab controls voxel battle scenery. Use the lower-screen dock or **Start** and the D-pad to open Party and Bag.
 
 ## Source builds
 

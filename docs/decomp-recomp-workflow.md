@@ -17,6 +17,8 @@ When the Azahar log reports a fault in a homebrew build and gives the text segme
 python tools/azahar_3dsx_pc.py Emerald3DS.3dsx 0x266fe0 --text-base 0x100000
 ```
 
+When the fault lands in an allocator, check the writes that preceded it. The Classic ports exposed two examples during replay. The widened field needed two tilemap screenblocks, and the Static ability popup needed the full asset size from the pack before applying its pixel edits. For graphics held behind an `INCBIN` placeholder, check how the native port resolves the actual byte count and base address before allocating or applying offsets.
+
 ## Parallel work
 
 Assign one worktree and one branch or read-only investigation to each agent. Give the connected Thor to one integration owner so inputs and save changes stay attributable. Use the branch or CI commit as the source of truth, with a short handoff that identifies the next thing to verify. [Reddit worktree discussion](https://www.reddit.com/r/codex/comments/1xu5qzc/running_codex_and_claude_code_on_the_same_repo/) · [Git worktree documentation](https://git-scm.com/docs/git-worktree)

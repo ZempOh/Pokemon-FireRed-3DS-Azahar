@@ -4,6 +4,7 @@
 #include <stdint.h>
 /* field_camera.h declares it for the 3DS build only (PLATFORM_3DS). */
 uint32_t GetMapClosedEdges(void);
+const uint16_t *MapGridGetCameraBorderAt(int x, int y, uint8_t *index);
 #include "../src/voxel/voxel_world.c"
 
 struct MapHeader gMapHeader;
@@ -14,7 +15,7 @@ struct ObjectEvent gObjectEvents[OBJECT_EVENTS_COUNT];
 struct PlayerAvatar gPlayerAvatar;
 const struct Tileset gTileset_General = {0};
 static u16 sFortreeAttributes[280] = {
-    [628 - NUM_METATILES_IN_PRIMARY] = MB_PUDDLE,
+    [667 - NUM_METATILES_IN_PRIMARY] = MB_PUDDLE,
     [657 - NUM_METATILES_IN_PRIMARY] = MB_PUDDLE,
 };
 const struct Tileset gTileset_Fortree = {.metatileAttributes = sFortreeAttributes};
@@ -30,7 +31,7 @@ bool8 MetatileBehavior_IsPC(u8 b) { return b == MB_PC; }
 bool8 MetatileBehavior_IsSecretBasePC(u8 b) { return b == MB_SECRET_BASE_PC; }
 bool8 MetatileBehavior_IsPlayerRoomPCOn(u8 b) { return b == MB_PLAYER_ROOM_PC_ON; }
 static const struct ObjectEventGraphicsInfo *sDynamicInfo;
-const struct ObjectEventGraphicsInfo *GetObjectEventGraphicsInfo(u8 id)
+const struct ObjectEventGraphicsInfo *GetObjectEventGraphicsInfo(u16 id)
 { return id == 1 ? sDynamicInfo : NULL; }
 const struct Tileset gTileset_GenericBuilding = {0};
 bool VoxelAtlas_IsVoid(const VoxelMapInstance *inst, int metatile) { (void)inst; (void)metatile; return false; }
@@ -47,7 +48,7 @@ void CB2_OverworldBasic(void) {}
 #define FIXTURE_MAPS 10
 static struct MapHeader sFixtureHeaders[FIXTURE_MAPS];
 static bool sFixtureMaps;
-const struct MapHeader *const GetMapHeaderFromConnection(const struct MapConnection *c)
+const struct MapHeader *const GetMapHeaderFromConnection(struct MapConnection *c)
 {
     return sFixtureMaps && c->mapGroup == FIXTURE_GROUP && c->mapNum < FIXTURE_MAPS
          ? &sFixtureHeaders[c->mapNum] : NULL;
@@ -341,7 +342,7 @@ int main(void)
     /* Both cells have MB_PUDDLE, but Fortree's 657 is drawn as grass. */
     gBackupMapLayout.width = gBackupMapLayout.height = 12;
     live[MAP_OFFSET + MAP_OFFSET * 12] = 657;
-    live[MAP_OFFSET + 1 + MAP_OFFSET * 12] = 628;
+    live[MAP_OFFSET + 1 + MAP_OFFSET * 12] = 667;
     sInstanceCount = 1;
     sInstances[0] = (VoxelMapInstance){.width = 2, .height = 1,
                                      .secondaryTileset = &gTileset_Fortree};

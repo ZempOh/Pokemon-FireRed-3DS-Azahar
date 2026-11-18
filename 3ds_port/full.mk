@@ -573,7 +573,7 @@ verify-voxel-world: build/voxel_world_hash_test.exe
 build/voxel_world_hash_test.exe: tests/voxel_world_hash_test.c src/voxel/voxel_world.c src/voxel/voxel_world.h $(HOST_MAP_HEADERS)
 	@mkdir -p $(@D)
 	$(HOSTCC) -std=gnu99 -O2 -DPORTABLE -DMODERN=1 -D__INTELLISENSE__ \
-		-iquote compat -iquote ../include -Isrc/voxel tests/voxel_world_hash_test.c -o $@
+		-iquote compat -iquote ../include -iquote ../gflib -Isrc/voxel tests/voxel_world_hash_test.c -o $@
 
 # The field's banks of other tilesets in 2D (3ds_tile_banks.h).
 verify: verify-tile-banks

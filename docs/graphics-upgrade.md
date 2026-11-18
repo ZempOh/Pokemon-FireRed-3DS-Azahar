@@ -49,8 +49,11 @@ values above 15 ms. These results do not establish zero stutter in every
 move, map or later-game scene; no active-phase timing improvement is claimed.
 
 The build workflow runs 600 pixel-differential cases against the original
-compositor: full and UI frames, normal/affine sprites, wrapped/split/object
-windows, blend, mosaic, hidden frames and HBlank/VCount register updates.
+compositor: full-only, UI-only and combined passes, normal/affine sprites,
+wrapped/split/object windows, blending, sprite mosaic and simulated
+HBlank/VCount register updates. The DMA stub checks 160 HBlank dispatches;
+actual DMA destinations were reviewed in source. This harness does not
+exercise fully hidden frames, background mosaic or DMA writes.
 A separate 602-case review also checked live HBlank OAM affine-parameter
 writes, including normal and object-window sprites whose output visibly
 changed. Both renderers matched byte for byte. OAM geometry is populated in

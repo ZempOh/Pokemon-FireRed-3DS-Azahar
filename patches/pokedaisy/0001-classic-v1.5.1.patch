@@ -1,0 +1,132 @@
+diff --git a/app/src/main/kotlin/com/pokedaisy/app/GameTitles.kt b/app/src/main/kotlin/com/pokedaisy/app/GameTitles.kt
+index c22389abd52bd4ff5be257707b2a9fa38351710e..dbec05140958bfdffc4d10f82aecff9dae23d8a7 100644
+--- a/app/src/main/kotlin/com/pokedaisy/app/GameTitles.kt
++++ b/app/src/main/kotlin/com/pokedaisy/app/GameTitles.kt
+@@ -147,6 +147,7 @@ object GameTitles {
+         "dacb6e40e7f572ddefd2dfa10e99c0da6835b062" to "Pokémon SoulGold",
+         "e10105d8544469c6a11ca2cf510289981df3c3b0" to "Pokémon Glazed",
+         "a7c4e34fafb53f2d5283eb6d43dad285c0dd40a8" to "Pokémon Emerald Kaizo",
++        "7e27a7878d6aeb3b798757f98e60d1064d762dbb" to "Pokémon Classic",
+         "cbd71af65ee3dcd53280a6a12014bfb11e8f626a" to "Pokémon Emerald Legacy",
+         "1d20091c4d936f5eb122db8780554dd0829ffb63" to "Pokémon Emerald Imperium",
+         "d0658315da1e8827f66f15c3d3a000fe747e163e" to "Pokémon Quetzal",
+diff --git a/app/src/main/kotlin/com/pokedaisy/app/SaveFileEdits.kt b/app/src/main/kotlin/com/pokedaisy/app/SaveFileEdits.kt
+index dead0389b1f76c2e8406f0004cd1916b032a23e1..c4c6ba04e417a9033bf57cfc738201766796f6b6 100644
+--- a/app/src/main/kotlin/com/pokedaisy/app/SaveFileEdits.kt
++++ b/app/src/main/kotlin/com/pokedaisy/app/SaveFileEdits.kt
+@@ -36,6 +36,7 @@ object SaveFileEdits {
+         if (RomIdentity.isGameBoy(rom)) return null
+         if (RomArchive.romSize(rom) > 0x1000000L) return null
+         val code = RomIdentity.gameCode(rom)
++        if (RomIdentity.sha1(rom) == com.pokedaisy.app.companion.data.TelemetrySampler.POKECLASSIC_V1_5_1_SHA1) return null
+         // Emerald Legacy keeps retail's header but not its SaveBlock1 (a 120-slot ITEMS pocket moves everything after
+         // it): the bag and flags would be edited at retail's offsets. Only a full 16 MB Emerald can be it.
+         if (code == "BPEE" && RomArchive.romSize(rom) == 0x1000000L &&
+diff --git a/app/src/main/kotlin/com/pokedaisy/app/companion/data/ActiveTables.kt b/app/src/main/kotlin/com/pokedaisy/app/companion/data/ActiveTables.kt
+index 2727071d6f4228a86d16052c53a88c5131926f5e..92ad7cba832c9e8ae54b9f9adccbe1872d3f96e5 100644
+--- a/app/src/main/kotlin/com/pokedaisy/app/companion/data/ActiveTables.kt
++++ b/app/src/main/kotlin/com/pokedaisy/app/companion/data/ActiveTables.kt
+@@ -584,6 +584,10 @@ val activeTypeNames: Map<Int, String> get() = when {
+     monomyth -> typeNamesMonomyth
+     else -> frHack?.typeNamesMerged ?: typeNames
+ }
++private val pokeClassicMapSections by lazy {
++    mapSecDataEmerald + mapSecData.filterKeys { it >= 0x58 }
++}
++
+ val activeMapSecData: Map<Int, MapSecInfo> get() = localText?.mapSecData ?: when {
+     gen4 -> emptyMap()   // no region map yet: the place comes from the map header (Telemetry.mapSecName)
+     pureRgb -> mapSecDataPureRgb
+@@ -595,6 +599,7 @@ val activeMapSecData: Map<Int, MapSecInfo> get() = localText?.mapSecData ?: when
+     goldSilver -> mapSecDataGoldSilver
+     crystal -> mapSecDataCrystal
+     unbound -> mapSecDataUnbound
++    romGameCode == "POKECLASSIC" -> pokeClassicMapSections
+     // Seaglass keeps vanilla Hoenn mapsec ids (0x00 = Littleroot, confirmed live).
+     emerald -> runningEmeraldHack?.emeraldMapSecsMerged ?: mapSecDataEmerald
+     seaglass || tmt2 -> mapSecDataEmerald
+diff --git a/app/src/main/kotlin/com/pokedaisy/app/companion/data/Poller.kt b/app/src/main/kotlin/com/pokedaisy/app/companion/data/Poller.kt
+index 9b2feeea4fee0059985008cd73cb100fb03097e3..529d7f2c5f028027066bf7bd4c1417025672a363 100644
+--- a/app/src/main/kotlin/com/pokedaisy/app/companion/data/Poller.kt
++++ b/app/src/main/kotlin/com/pokedaisy/app/companion/data/Poller.kt
+@@ -470,6 +470,15 @@ class TelemetrySampler {
+             return
+         }
+ 
++        // Classic is an expanded Emerald ROM with the retail header.
++        if (code == "BPEE" && size == 18_677_224L &&
++            runCatching { romHash(reader, size) }.getOrNull() == POKECLASSIC_V1_5_1_SHA1
++        ) {
++            kind = GameKind.EMERALD
++            nativeCfg = NATIVE_POKECLASSIC_V1_5_1
++            return
++        }
++
+         // Pokémon Ultra Violet: FireRed 1.0 under a game code of its own (PUVV) - by its hash.
+         if (code == ULTRA_VIOLET_CODE) {
+             val hash = runCatching { romHash(reader, size) }.getOrNull()
+@@ -1053,6 +1062,7 @@ class TelemetrySampler {
+         // Pokémon Emerald Kaizo v2.0 (BPEE, 16 MB) - its GPIO bytes are zero, so the masked hash is the file's.
+         const val EMERALD_KAIZO_V2_0_SHA1 = "a7c4e34fafb53f2d5283eb6d43dad285c0dd40a8"
+         // Pokémon Emerald Legacy v1.1.4 (BPEE, 16 MB) - its source at tag V1.1.4 built with agbcc is this file byte for byte.
++        const val POKECLASSIC_V1_5_1_SHA1 = "7e27a7878d6aeb3b798757f98e60d1064d762dbb"
+         const val EMERALD_LEGACY_V1_1_4_SHA1 = "cbd71af65ee3dcd53280a6a12014bfb11e8f626a"
+         // Pokémon Glazed 9.2.0 (BPEE, 32 MB) - host-side masked hash (GPIO bytes zero).
+         const val GLAZED_V9_2_0_SHA1 = "e10105d8544469c6a11ca2cf510289981df3c3b0"
+@@ -1338,7 +1348,7 @@ class TelemetrySampler {
+         val SUPPORTED_HACK_SHA1S = setOf(
+             UNBOUND_V2_1_1_1_SHA1, GAIA_V3_2_SHA1, RADICAL_RED_V4_1_SHA1, ODYSSEY_V4_1_1_SHA1,
+             AMETHYST_V1_3_0_SHA1, AMETHYST_V1_4_1_SHA1, CELIA_V1_1_4_SHA1, HEART_AND_SOUL_V2_0_6_SHA1, LAZARUS_V2_0_SHA1,
+-            ROWE_V2_1_9_1_SHA1, EMERALD_ROGUE_V2_2_1_EX_SHA1, TMT2_V1_5_2_SHA1, EMERALD_SEAGLASS_V3_0_SHA1, EMERALD_KAIZO_V2_0_SHA1, EMERALD_LEGACY_V1_1_4_SHA1,
++            ROWE_V2_1_9_1_SHA1, EMERALD_ROGUE_V2_2_1_EX_SHA1, TMT2_V1_5_2_SHA1, EMERALD_SEAGLASS_V3_0_SHA1, EMERALD_KAIZO_V2_0_SHA1, EMERALD_LEGACY_V1_1_4_SHA1, POKECLASSIC_V1_5_1_SHA1,
+             SOULGOLD_V1_1_4_SHA1, SOULGOLD_V1_2_SHA1, SOULGOLD_V1_2B_SHA1, SOULGOLD_V1_2C_SHA1, GLAZED_V9_2_0_SHA1, IMPERIUM_V1_3_1_SHA1,
+             SOULGOLD_V1_2_1_SHA1, SOULGOLD_V1_2_1B_SHA1,
+             QUETZAL_V9_0_ALPHA_SHA1, QUETZAL_V9_0_ALPHA_ES_SHA1, QUETZAL_V9_1_ALPHA_SHA1, QUETZAL_V9_1_ALPHA_ES_SHA1, UNBOUND_V2_1_1_1_FR_SHA1,
+diff --git a/gamedata/gen3/hacks/pokeclassic.toml b/gamedata/gen3/hacks/pokeclassic.toml
+new file mode 100644
+index 0000000000000000000000000000000000000000..310af805e4b3e34ee42d4f7f5e3df183bd2110f8
+--- /dev/null
++++ b/gamedata/gen3/hacks/pokeclassic.toml
+@@ -0,0 +1,33 @@
++# Classic v1.5.1, DaniRainbow/pokeclassic at 02be0b670d9548b3d12c769faa051853df7fe19d.
++# All addresses are from the ELF that rebuilt SHA-1 7e27a7878d6aeb3b798757f98e60d1064d762dbb.
++# The 100-byte party layout and 8-byte BagPocket stride are preserved. The gBagPockets
++# order follows Classic's include/constants/item.h. Treasures use the generic Items group.
++[config.pokeclassic_v1_5_1]
++base = 'emerald'
++gameCode = 'POKECLASSIC'
++playerParty = 0x02023628
++playerPartyCount = 0x02023625
++battleMons = 0x020230F8
++battlerPositions = 0x020230EA
++battlersCount = 0x020230E0
++battleTypeFlags = 0x02023060
++gMain = 0x030022C0
++saveBlock1Ptr = 0x03005D8C
++saveBlock2Ptr = 0x03005D90
++objectEvents = 0x02035D58
++mapHeader = 0x02035CA0
++bagPockets = 0x02038830
++bagPocketCount = 8
++bagPocketOrder = 'POKECLASSIC_BAG_POCKET_ORDER'
++monIconTable = 0x088E473C
++monIconPaletteIndices = 0x088E4E60
++monIconPaletteTable = 0x088E502C
++itemIconTable = 0x0898D908
++itemDescs = { preset = 'vanilla', base = 0x088ED5A0, count = 430 }
++battlerControllerFuncs = 0
++handleInputChooseAction = 0
++handleInputChooseMove = 0
++completeWhenChoseItem = 0
++waitForMonSelection = 0
++handleInputChooseTarget = 0
++eggSpecies = 429
+diff --git a/gamedata/gen3/records/pokeclassic.toml b/gamedata/gen3/records/pokeclassic.toml
+new file mode 100644
+index 0000000000000000000000000000000000000000..0488dad81ed61680057a3767c35688cfda516084
+--- /dev/null
++++ b/gamedata/gen3/records/pokeclassic.toml
+@@ -0,0 +1,3 @@
++[list.POKECLASSIC_BAG_POCKET_ORDER]
++of = 'Int'
++items = ['POCKET_ITEMS', 'POCKET_MEDICINE', 'POCKET_POKE_BALLS', 'POCKET_BATTLE_ITEMS', 'POCKET_BERRIES', 'POCKET_ITEMS', 'POCKET_TM_HM', 'POCKET_KEY_ITEMS']

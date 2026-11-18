@@ -1,0 +1,66 @@
+name: Build PokéDaisy hack profiles
+
+on:
+  push:
+    branches: [pokedaisy-hack-profiles]
+    paths: ['patches/pokedaisy/**', '.github/workflows/pokedaisy-profiles.yml']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pokedaisy-hack-profiles
+  cancel-in-progress: true
+
+jobs:
+  dev-apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/checkout@v5
+        with:
+          repository: lidor30/pokedaisy
+          ref: 79bd00e155fcc7d4373f23f5386d6e67c8c423eb
+          submodules: recursive
+          path: pokedaisy
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: android-actions/setup-android@9fc6c4e9069bf8d3d10b2204b1fb8f6ef7065407
+        with:
+          packages: platform-tools
+          log-accepted-android-sdk-licenses: false
+      - name: Apply profiles and regenerate game data
+        working-directory: pokedaisy
+        run: |
+          for patch in ../patches/pokedaisy/*.patch; do
+            git apply "$patch"
+          done
+          python3 scripts/gen_gamedata.py
+          python3 scripts/gen_gamedata.py --check
+      - name: Validate wrappers
+        uses: gradle/actions/wrapper-validation@748248ddd2a24f49513d8f472f81c3a07d4d50e1
+        with:
+          min-wrapper-count: 2
+          allow-checksums: 2c23278a62dc9f96ab11bee897d9f53e6479d6419135e4560ce822a6431df5e5
+      - uses: gradle/actions/setup-gradle@748248ddd2a24f49513d8f472f81c3a07d4d50e1
+        with:
+          validate-wrappers: false
+      - name: Install Android dependencies
+        run: sdkmanager --install "ndk;28.2.13676358" "cmake;3.22.1" "platforms;android-34"
+      - name: Build side-by-side development APK
+        working-directory: pokedaisy
+        run: ./gradlew :app:assembleDev --stacktrace
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pokedaisy-profile-dev
+          path: pokedaisy/app/build/outputs/apk/dev/*.apk
+          if-no-files-found: error
+          retention-days: 7
+

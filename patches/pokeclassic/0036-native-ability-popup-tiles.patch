@@ -1,0 +1,67 @@
+diff --git a/src/battle_interface.c b/src/battle_interface.c
+index a1eeee43..df0ae1c8 100644
+--- a/src/battle_interface.c
++++ b/src/battle_interface.c
+@@ -2802,9 +2802,16 @@ static void SafariTextIntoHealthboxObject(void *dest, u8 *windowTileData, u32 wi
+ static const u8 sAbilityPopUpGfx[] = INCBIN_U8("graphics/battle_interface/ability_pop_up.4bpp");
+ static const u16 sAbilityPopUpPalette[] = INCBIN_U16("graphics/battle_interface/ability_pop_up.gbapal");
+ 
++#ifdef PORT_BRIDGE
++// Two 64 x 32 4bpp sprites share this sheet. The INCBIN symbol is a stub.
++#define ABILITY_POP_UP_GFX_BYTES (2 * 64 * 32 / 2)
++#else
++#define ABILITY_POP_UP_GFX_BYTES sizeof(sAbilityPopUpGfx)
++#endif
++
+ static const struct SpriteSheet sSpriteSheet_AbilityPopUp =
+ {
+-    sAbilityPopUpGfx, sizeof(sAbilityPopUpGfx), ABILITY_POP_UP_TAG
++    sAbilityPopUpGfx, ABILITY_POP_UP_GFX_BYTES, ABILITY_POP_UP_TAG
+ };
+ static const struct SpritePalette sSpritePalette_AbilityPopUp =
+ {
+@@ -3128,18 +3135,29 @@ static inline void CopyPixels(u8 *dest, const u8 *src, u32 pixelCount)
+ static void RestoreOverwrittenPixels(u8 *tiles)
+ {
+     u32 i;
+-    u8 *buffer = Alloc(sizeof(sAbilityPopUpGfx) * 2);
++    const u8 *art = sAbilityPopUpGfx;
++    u8 *buffer;
+ 
+-    CpuCopy32(tiles, buffer, sizeof(sAbilityPopUpGfx));
++#ifdef PORT_BRIDGE
++    if (Port_GetAssetSizeExact(art) != ABILITY_POP_UP_GFX_BYTES)
++        return;
++    art = Port_ResolveAssetPointer(art);
++    if (art == NULL || art == sAbilityPopUpGfx)
++        return;
++#endif
++    buffer = Alloc(ABILITY_POP_UP_GFX_BYTES);
++    if (buffer == NULL)
++        return;
++    CpuCopy32(tiles, buffer, ABILITY_POP_UP_GFX_BYTES);
+ 
+     for (i = 0; i < ARRAY_COUNT(sOverwrittenPixelsTable); i++)
+     {
+         CopyPixels(buffer + sOverwrittenPixelsTable[i][0],
+-                   sAbilityPopUpGfx + sOverwrittenPixelsTable[i][0],
++                   art + sOverwrittenPixelsTable[i][0],
+                    sOverwrittenPixelsTable[i][1]);
+     }
+ 
+-    CpuCopy32(buffer, tiles, sizeof(sAbilityPopUpGfx));
++    CpuCopy32(buffer, tiles, ABILITY_POP_UP_GFX_BYTES);
+     Free(buffer);
+ }
+ 
+@@ -3151,6 +3169,10 @@ void CreateAbilityPopUp(u8 battlerId, u32 ability, bool32 isDoubleBattle)
+     if (!B_ABILITY_POP_UP)
+         return;
+ 
++#ifdef PORT_BRIDGE
++    if (Port_GetAssetSizeExact(sAbilityPopUpGfx) != ABILITY_POP_UP_GFX_BYTES)
++        return;
++#endif
+     if (gBattleScripting.abilityPopupOverwrite != 0)
+         ability = gBattleScripting.abilityPopupOverwrite;
+ 

@@ -1,0 +1,227 @@
+diff --git a/app/src/main/kotlin/com/pokedaisy/app/companion/data/RomArt.kt b/app/src/main/kotlin/com/pokedaisy/app/companion/data/RomArt.kt
+index 7f6c460877a9c06537c6ff073c987d05ac0df46d..bf789693daa2e0e3e8195ba9fe058c4ed55a08ca 100644
+--- a/app/src/main/kotlin/com/pokedaisy/app/companion/data/RomArt.kt
++++ b/app/src/main/kotlin/com/pokedaisy/app/companion/data/RomArt.kt
+@@ -496,7 +496,7 @@ object RomArt {
+      * there, under the game's own text box) stays transparent. [firstColour]: where the game loads the palette (Team
+      * Rocket Edition 2026's Johto and Sevii maps load theirs at BG palette 0).
+      */
+-    private fun emeraldRegionMap(tiles: ByteArray, pal: IntArray, map: ByteArray, firstColour: Int = 112): Image {
++    internal fun emeraldRegionMap(tiles: ByteArray, pal: IntArray, map: ByteArray, firstColour: Int = 112): Image {
+         val img = Image(240, 160)
+         for (ty in 0 until 20) for (tx in 0 until 30) {
+             val t = map[ty * 64 + tx].toInt() and 0xFF
+diff --git a/app/src/main/kotlin/com/pokedaisy/app/companion/data/RomRegionMap.kt b/app/src/main/kotlin/com/pokedaisy/app/companion/data/RomRegionMap.kt
+index 2ab5a172022d345306f9a915d7e9d1e59549450a..56db29eada01f6ffac288d293ce6eef56167fe02 100644
+--- a/app/src/main/kotlin/com/pokedaisy/app/companion/data/RomRegionMap.kt
++++ b/app/src/main/kotlin/com/pokedaisy/app/companion/data/RomRegionMap.kt
+@@ -59,8 +59,22 @@ object RomRegionMap {
+     private const val GRID_OFFSET = 4
+     private const val SCREEN_BYTES = 30 * 20 * 2
+ 
++    private const val FRLG_PLUS_CRC = "964763c0"
++    private const val CLASSIC_CRC = "e4deb9be"
++    private const val HACK_MAPSEC_NONE = 0xD5
++
++    // FRLG+ v1.5.1 relocates these tables and indexes them by the full map section ID.
++    private val frlgPlusTables = mapOf(
++        LIT_GFX to 0x479178, LIT_PAL to 0x478E38, LIT_SEVII to 0x47C700,
++        LIT_NAMES to 0x47C90C, LIT_CORNERS to 0x47CC60, LIT_DIMS to 0x47CFB8,
++        LIT_TILEMAPS[0] to 0x47A3F8, LIT_TILEMAPS[1] to 0x47A658,
++        LIT_TILEMAPS[2] to 0x47A768, LIT_TILEMAPS[3] to 0x47A84C,
++        LIT_GRIDS[0] to 0x47D310, LIT_GRIDS[1] to 0x47D5A4,
++        LIT_GRIDS[2] to 0x47D838, LIT_GRIDS[3] to 0x47DACC,
++    )
++
+     /** Bump when the images change, so ROMs read before get new ones. */
+-    private const val VERSION = 3 // 2: junk Sevii screens dropped (Odyssey, Sword and Shield Ultimate Plus); 3: and unused ones (GS Chronicles, Gaia)
++    private const val VERSION = 4
+ 
+     // FireRed 1.0's own Sevii tilemaps and region map tiles: a hack that moved the tiles but still points a screen
+     // at one of these draws FireRed's islands in its own tiles.
+@@ -82,7 +96,7 @@ object RomRegionMap {
+ 
+     /** [read] [rom], writing its screens (once per [romKey]) where [RomArt]'s art goes. */
+     fun loadNow(filesDir: Path, romKey: String, rom: Path): Data? {
+-        val parsed = withRomFile(rom) { read(FileRom(it)) } ?: return null
++        val parsed = withRomFile(rom) { read(FileRom(it), romKey) } ?: return null
+         val dir = (RomArt.dir(filesDir) / "regionmap").apply { mkdirs() }
+         val names = parsed.images.mapIndexed { i, img ->
+             val name = "rom-$romKey-v$VERSION-$i"
+@@ -101,36 +115,45 @@ object RomRegionMap {
+         }
+     }
+ 
+-    /** The region map [rom] carries, or null if it isn't a FireRed 1.0 ROM whose map code is where this expects. */
+-    fun read(rom: Rom): Parsed? {
++    private fun u16(b: ByteArray, i: Int) = (b[i].toInt() and 0xFF) or ((b[i + 1].toInt() and 0xFF) shl 8)
++
++    private fun ptr(rom: Rom, at: Int): Int? {
++        val b = rom.read(at, 4)
++        if (b.size < 4) return null
++        val p = u16(b, 0).toLong() or (u16(b, 2).toLong() shl 16)
++        return (p - 0x08000000L).takeIf { it in 0 until rom.size }?.toInt()
++    }
++
++    private fun lz(rom: Rom, off: Int): ByteArray? =
++        try {
++            RomArt.lz77(rom.read(off, 0x12000), 0, -1)
++        } catch (_: IndexOutOfBoundsException) {
++            null
++        }
++
++    /** The region map carried by a known cartridge or a compatible FireRed-based ROM. */
++    fun read(rom: Rom, romKey: String? = null): Parsed? {
++        if (romKey == CLASSIC_CRC) return readClassic(rom)
++        val frlgPlus = romKey == FRLG_PLUS_CRC
+         val header = rom.read(0xAC, 0x11)
+         // Rev 1 has its code elsewhere. Anything else is taken as rev 0's code - Unbound's French
+         // translation left its revision byte at 0x9E - and the literal pools below must still
+         // land on data of the right shape.
+         if (header.size < 0x11 || asciiString(header, 0, 4) != "BPRE" || header[0x10].toInt() == 1) return null
+ 
+-        fun u16(b: ByteArray, i: Int) = (b[i].toInt() and 0xFF) or ((b[i + 1].toInt() and 0xFF) shl 8)
+-        fun ptr(at: Int): Int? {
+-            val b = rom.read(at, 4)
+-            if (b.size < 4) return null
+-            val p = u16(b, 0).toLong() or (u16(b, 2).toLong() shl 16)
+-            return (p - 0x08000000L).takeIf { it in 0 until rom.size }?.toInt()
+-        }
+-        fun lz(off: Int): ByteArray? =
+-            try {
+-                RomArt.lz77(rom.read(off, 0x12000), 0, -1)
+-            } catch (_: IndexOutOfBoundsException) {
+-                null
+-            }
++        fun table(at: Int): Int? = if (frlgPlus) frlgPlusTables[at] else ptr(rom, at)
++        val mapsecNone = if (frlgPlus) HACK_MAPSEC_NONE else MAPSEC_NONE
++        val firstMapsec = if (frlgPlus) 0 else FIRST_MAPSEC
++        val sectionCount = if (frlgPlus) HACK_MAPSEC_NONE else SECTIONS
+ 
+-        val tiles = ptr(LIT_GFX)?.let(::lz)?.takeIf { it.size % 32 == 0 } ?: return null
+-        val pal = RomArt.palette(rom.read(ptr(LIT_PAL) ?: return null, 16 * 32)).takeIf { it.size >= 16 } ?: return null
++        val tiles = table(LIT_GFX)?.let { lz(rom, it) }?.takeIf { it.size % 32 == 0 } ?: return null
++        val pal = RomArt.palette(rom.read(table(LIT_PAL) ?: return null, 16 * 32)).takeIf { it.size >= 16 } ?: return null
+ 
+         // Hacks with one region point every slot at the same tilemap: one image each.
+-        val mapOffs = LIT_TILEMAPS.map { ptr(it) ?: return null }
++        val mapOffs = LIT_TILEMAPS.map { table(it) ?: return null }
+         val distinct = mapOffs.distinct()
+         val screens = distinct.map { off ->
+-            val map = lz(off)?.takeIf { it.size in SCREEN_BYTES / 2..0x800 } ?: return null
++            val map = lz(rom, off)?.takeIf { it.size in SCREEN_BYTES / 2..0x800 } ?: return null
+             RomArt.screen(tiles, pal, fullScreen(map), 30)
+         }
+         val imageOf = mapOffs.map { distinct.indexOf(it) }
+@@ -148,31 +171,40 @@ object RomRegionMap {
+             }
+         }
+ 
+-        val names = ptr(LIT_NAMES) ?: return null
+-        val corners = rom.read(ptr(LIT_CORNERS) ?: return null, SECTIONS * 4)
+-        val dims = rom.read(ptr(LIT_DIMS) ?: return null, SECTIONS * 4)
+-        val sevii = rom.read(ptr(LIT_SEVII) ?: return null, 3 * 30)
+-        if (corners.size < SECTIONS * 4 || dims.size < SECTIONS * 4 || sevii.size < 3 * 30) return null
++        val names = table(LIT_NAMES) ?: return null
++        val corners = rom.read(table(LIT_CORNERS) ?: return null, sectionCount * 4)
++        val dims = rom.read(table(LIT_DIMS) ?: return null, sectionCount * 4)
++        val sevii = rom.read(table(LIT_SEVII) ?: return null, 3 * 30)
++        if (corners.size < sectionCount * 4 || dims.size < sectionCount * 4 || sevii.size < 3 * 30) return null
+         // Hacks move where the Sevii sections start (Unbound and Odyssey past
+         // the last one) or cut the check out altogether (Gaia): all one map.
+         val cmp = rom.read(SEVII_CMP, 4)
+-        val seviiStart = if (cmp.size == 4 && cmp[1].toInt() == 0x28 && (cmp[3].toInt() and 0xFF) == 0xD9) (cmp[0].toInt() and 0xFF) + 1 else 0x100
++        val seviiStart = when {
++            frlgPlus -> 0x8F
++            cmp.size == 4 && cmp[1].toInt() == 0x28 && (cmp[3].toInt() and 0xFF) == 0xD9 -> (cmp[0].toInt() and 0xFF) + 1
++            else -> 0x100
++        }
+ 
+         fun regionOf(mapsec: Int): Int {
+             if (mapsec < seviiStart) return 0
+             for (j in 0 until 3) for (i in 0 until 30) {
+                 val m = sevii[j * 30 + i].toInt() and 0xFF
+-                if (m == MAPSEC_NONE) break
++                if (m == mapsecNone) break
+                 if (m == mapsec) return j + 1
+             }
+             return 0
+         }
+ 
+         val sections = HashMap<Int, MapSecInfo>()
+-        for (i in 0 until SECTIONS) {
+-            val name = titleCase(Gen3Text.decode(rom.read(ptr(names + i * 4) ?: break, 32)))
++        for (i in 0 until sectionCount) {
++            val namePtr = ptr(rom, names + i * 4)
++            if (namePtr == null) {
++                if (frlgPlus) continue
++                break
++            }
++            val name = titleCase(Gen3Text.decode(rom.read(namePtr, 32)))
+             if (name.isEmpty()) continue
+-            val mapsec = FIRST_MAPSEC + i
++            val mapsec = firstMapsec + i
+             val x = u16(corners, i * 4)
+             val y = u16(corners, i * 4 + 2)
+             val w = u16(dims, i * 4)
+@@ -190,7 +222,7 @@ object RomRegionMap {
+         // FireRed's own Sevii tilemap in the hack's moved tiles, holding no section or hardly any placed on it: junk
+         // too (GS Chronicles keeps its Kanto routes 12-27 there, three of 21 with a box; Gaia none at all). Its
+         // sections go on the main map, nothing highlighted. Amethyst and Orange Islands redrew theirs: most placed.
+-        if (ptr(LIT_GFX) != FIRERED_TILES) {
++        if (table(LIT_GFX) != FIRERED_TILES) {
+             for (i in screens.indices) {
+                 if (i == imageOf[0] || i in junk || distinct[i] !in FIRERED_SEVII_TILEMAPS) continue
+                 val on = sections.values.filter { it.region == i }
+@@ -204,13 +236,13 @@ object RomRegionMap {
+         // if it names this ROM's own sections - else taps fall back to the rects.
+         val layouts = images.indices.map { image ->
+             if (image in junk) return@map null
+-            val off = ptr(LIT_GRIDS[imageOf.indexOf(image)]) ?: return@map null
++            val off = table(LIT_GRIDS[imageOf.indexOf(image)]) ?: return@map null
+             val bytes = rom.read(off, 2 * GRID_W * GRID_H)
+             if (bytes.size < 2 * GRID_W * GRID_H) return@map null
+-            val named = bytes.map { it.toInt() and 0xFF }.filter { it != MAPSEC_NONE }
++            val named = bytes.map { it.toInt() and 0xFF }.filter { it != mapsecNone }
+             if (named.isEmpty() || named.count { it in sections } < named.size * 9 / 10) return@map null
+             RegionLayout(
+-                GRID_OFFSET - crops[image][0], GRID_OFFSET - crops[image][1], GRID_W, GRID_H, MAPSEC_NONE,
++                GRID_OFFSET - crops[image][0], GRID_OFFSET - crops[image][1], GRID_W, GRID_H, mapsecNone,
+                 (0 until 2).map { l -> bytes.copyOfRange(l * GRID_W * GRID_H, (l + 1) * GRID_W * GRID_H) },
+             )
+         }
+@@ -223,6 +255,34 @@ object RomRegionMap {
+         )
+     }
+ 
++    /** Classic v1.5.1 keeps a single Emerald-format region map with its own cursor grid and names. */
++    private fun readClassic(rom: Rom): Parsed? {
++        // sRegionMapBg_GfxLZ, sRegionMapBg_TilemapLZ, sRegionMapBg_Pal, sRegionMap_MapSectionLayout.
++        val tiles = lz(rom, 0x910460)?.takeIf { it.size % 64 == 0 } ?: return null
++        val map = lz(rom, 0x910DAC)?.takeIf { it.size == 64 * 64 } ?: return null
++        val palette = RomArt.palette(rom.read(0x910420, 0x40)).takeIf { it.size == 32 } ?: return null
++        val grid = rom.read(0x9110C8, 28 * 15).takeIf { it.size == 28 * 15 } ?: return null
++        val entries = 0x912174 // gRegionMapEntries, {u8 x, y, width, height; const u8 *name}
++        val sections = buildMap {
++            for (mapsec in 0 until HACK_MAPSEC_NONE) {
++                val off = entries + mapsec * 8
++                val namePtr = ptr(rom, off + 4) ?: continue
++                val name = titleCase(Gen3Text.decode(rom.read(namePtr, 32)))
++                if (name.isEmpty()) continue
++                val bounds = rom.read(off, 4)
++                val x = (bounds[0].toInt() and 0xFF) + 1
++                val y = (bounds[1].toInt() and 0xFF) + 2
++                val w = bounds[2].toInt() and 0xFF
++                val h = bounds[3].toInt() and 0xFF
++                val visible = grid.any { (it.toInt() and 0xFF) == mapsec } && x + w <= 30 && y + h <= 20
++                put(mapsec, if (visible) MapSecInfo(name, 0, x, y, w, h) else MapSecInfo(name, 0, 0, 0, 0, 0))
++            }
++        }
++        val image = RomArt.emeraldRegionMap(tiles, palette, map)
++        val layout = RegionLayout(1, 2, 28, 15, HACK_MAPSEC_NONE, listOf(grid))
++        return Parsed(listOf(image), sections, listOf(layout))
++    }
++
+     /** A tilemap cut short of the whole 30x20 screen (Unbound's) ends, from its last whole row, in its top-left tile - the border's. */
+     private fun fullScreen(map: ByteArray): ByteArray {
+         if (map.size >= SCREEN_BYTES) return map

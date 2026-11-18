@@ -1,0 +1,15 @@
+diff --git a/src/pokemon_summary_screen.c b/src/pokemon_summary_screen.c
+index 2af449a39e46abbfb7abcee3690f2ab291d20564..c234b727016d7adf2539c04e3de224e8e71ef043 100644
+--- a/src/pokemon_summary_screen.c
++++ b/src/pokemon_summary_screen.c
+@@ -1961,8 +1961,8 @@ bool8 CtrSummary_GetView(struct CtrSummaryView *view)
+         view->moves[MAX_MON_MOVES] = sMonSummaryScreen->newMove;
+     if (!sum->isEgg)
+     {
+-        view->types[0] = gSpeciesInfo[sum->species].types[0];
+-        view->types[1] = gSpeciesInfo[sum->species].types[1];
++        view->types[0] = gBaseStats[sum->species].type1;
++        view->types[1] = gBaseStats[sum->species].type2;
+         i = GetAbilityBySpecies(sum->species, sum->abilityNum);
+         view->abilityName = gAbilityNames[i];
+         view->abilityDesc = gAbilityDescriptionPointers[i];

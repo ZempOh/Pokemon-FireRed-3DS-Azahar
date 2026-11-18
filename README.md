@@ -16,6 +16,18 @@ cartridge dump.
 **[Project website](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/)**
 · **[Game builder](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/build.html)**
 
+## Ports and companion builds
+
+| Project | Source and build instructions |
+| --- | --- |
+| FireRed 3DS | This branch contains the AYN Thor rendering fixes and the [FireRed cartridge workflow](.github/workflows/cartridge.yml). |
+| FireRed & LeafGreen+ v1.5.1 | [Native port, cartridge assembly, and Thor tests](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/tree/voxel-frlg-plus). |
+| Pokémon Classic v1.5.1 | [Native port and build status](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/tree/voxel-pokeclassic). |
+| PokéDaisy | [GBA companion development builds](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/tree/pokedaisy-hack-profiles). |
+
+The Azahar ports have their own touchscreen Party, Bag, and Map. PokéDaisy
+uses those games' GBA ROMs in its own emulator.
+
 ## Install and update
 
 ### One-file cartridge for Azahar

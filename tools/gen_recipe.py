@@ -541,6 +541,51 @@ def match_len(a: memoryview, i: int, b: memoryview, j: int, limit: int) -> int:
     return length
 
 
+class RomSearch:
+    """Find exact matches without rescanning the whole ROM at each payload byte."""
+
+    def __init__(self, rom: bytes):
+        self.rom = rom
+        self.words: dict[int, int | list[int]] = {}
+        end = len(rom) & ~3
+        for index, (word,) in enumerate(struct.iter_unpack("<I", memoryview(rom)[:end])):
+            at = 4 * index
+            old = self.words.get(word)
+            if old is None:
+                self.words[word] = at
+            elif isinstance(old, int):
+                self.words[word] = [old, at]
+            else:
+                old.append(at)
+
+    def find(self, needle: bytes) -> int:
+        if len(needle) < 7:
+            return self.rom.find(needle)
+
+        best = len(self.rom)
+        # A match of seven or more bytes contains an aligned word, no matter
+        # where it starts. Check each residue class with its rarest end anchor.
+        for start in range(4):
+            last = start + ((len(needle) - start - 4) & ~3)
+            first_hits = self.words.get(struct.unpack_from("<I", needle, start)[0], ())
+            last_hits = self.words.get(struct.unpack_from("<I", needle, last)[0], ())
+            first_count = 1 if isinstance(first_hits, int) else len(first_hits)
+            last_count = 1 if isinstance(last_hits, int) else len(last_hits)
+            hits, shift = (first_hits, start) if first_count <= last_count else (last_hits, last)
+            if isinstance(hits, int):
+                hits = (hits,)
+            if len(hits) > 256:
+                return self.rom.find(needle)
+            for at in hits:
+                at -= shift
+                if at >= best:
+                    break
+                if at >= 0 and self.rom.startswith(needle, at):
+                    best = at
+                    break
+        return best if best < len(self.rom) else -1
+
+
 class Cover:
     def __init__(self, rom: bytes):
         self.rom = rom
@@ -549,6 +594,7 @@ class Cover:
         self.bitmaps: list[list[int]] = []
         self.bitmap_ids: dict[tuple, int] = {}
         self.windows: dict[bytes, int] | None = None
+        self.search = RomSearch(rom)
 
     WINDOW = 32        # inside a translation's texts the ROM is looked up by
     WINDOW_STRIDE = 8  # sampled windows: any run of 40 bytes it holds is found
@@ -701,7 +747,7 @@ class Cover:
                 for width in widths:
                     width = min(width, seg_end - i) if width > 32 else width
                     if width >= 2 and seg_end - i >= width:
-                        found = self.rom.find(bytes(dv[i:i + width]))
+                        found = self.search.find(bytes(dv[i:i + width]))
                         if found >= 0:
                             break
             if found >= 0:
@@ -802,7 +848,7 @@ def main() -> None:
         is_gd = rel == "gamedata/gamedata.bin"
         breaks = layout_breaks(args.decomp) if rel == "maps/layouts.bin" else None
         own = translation_mask(data, runs, shorts) if runs else None
-        whole = rom.find(data) if data and mask is None else -1
+        whole = cover.search.find(data) if data and mask is None else -1
         if whole >= 0:
             ops, patches = [["C", whole, len(data)]], []
             stats = dict.fromkeys(totals, 0)
@@ -834,12 +880,12 @@ def main() -> None:
             data = (args.decomp / rel).read_bytes()
             crc = zlib.crc32(data) & 0xFFFFFFFF
             ops, stats = None, {"literal": 0}
-            whole = rom.find(data) if data else -1
+            whole = cover.search.find(data) if data else -1
             lz = args.decomp / (rel + ".lz")
             if whole >= 0:
                 ops = [["C", whole, len(data)]]
             elif lz.exists():
-                off = rom.find(lz.read_bytes())
+                off = cover.search.find(lz.read_bytes())
                 if off >= 0 and rcp.lz77_decompress(rom, off) == data:
                     ops = [["Z", off]]
             if ops is None:

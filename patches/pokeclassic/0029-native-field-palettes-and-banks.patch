@@ -1,0 +1,63 @@
+diff --git a/include/field_camera.h b/include/field_camera.h
+index 6e8af1a539fa46acadc977e1a5a08150f4ea988a..5fa9dca34e212aa7401540498989b905ee3dcfee 100644
+--- a/include/field_camera.h
++++ b/include/field_camera.h
+@@ -29,4 +29,9 @@ void InstallCameraPanAheadCallback(void);
+ void UpdateCameraPanning(void);
+ void FieldUpdateBgTilemapScroll(void);
+ 
++#ifdef PLATFORM_3DS
++void FieldCamera_RegisterTileBanks(void);
++void FieldCamera_UnregisterTileBanks(void);
++#endif
++
+ #endif //GUARD_FIELD_CAMERA_H
+diff --git a/src/fieldmap.c b/src/fieldmap.c
+index c4a37c89c57c8d20c77e077fb6105dcf4923e55d..a029321cbabd136cd02d8cbe5d0a7d561a43c374 100644
+--- a/src/fieldmap.c
++++ b/src/fieldmap.c
+@@ -1509,10 +1509,10 @@ void LoadTilesetPalette(struct Tileset const *tileset, u16 destOffset, u16 size,
+         const u16 (*palettes)[16] = tileset->palettes;
+         static u8 sLoggedPalettes;
+         u8 logMask = tileset->isSecondary ? 2 : 1;
++        u32 sourceOffset = tileset->isSecondary == TRUE ? NUM_PALS_IN_PRIMARY * PLTT_SIZE_4BPP : 0;
+ 
+         if (tileset->isSecondary <= TRUE && Port_GetAssetSizeExact(palettes) != 0)
+         {
+-            u32 sourceOffset = tileset->isSecondary ? NUM_PALS_IN_PRIMARY * PLTT_SIZE_4BPP : 0;
+             if (!Port_LoadAssetRangeToBuffer(palettes, sourceOffset,
+                                            (u8 *)paletteData + sourceOffset, size))
+                 return;
+@@ -1524,7 +1524,7 @@ void LoadTilesetPalette(struct Tileset const *tileset, u16 destOffset, u16 size,
+             u8 nonzero = 0;
+ 
+             for (u32 i = 0; i < size; i++)
+-                nonzero |= ((const u8 *)palettes)[i];
++                nonzero |= ((const u8 *)palettes)[sourceOffset + i];
+             Port_SetGfxPaletteDebug(tileset->isSecondary, nonzero,
+                                    palettes != tileset->palettes);
+             PORT_LOG("Palette %c src=%08lX dst=%08lX nz=%02X\n",
+@@ -1541,9 +1541,9 @@ void LoadTilesetPalette(struct Tileset const *tileset, u16 destOffset, u16 size,
+         {
+             // LoadPalette(&black, destOffset, 2);
+             if (skipFaded)
+-                CpuFastCopy(tileset->palettes, &gPlttBufferUnfaded[destOffset], size);
++                CpuFastCopy(palettes, &gPlttBufferUnfaded[destOffset], size);
+             else
+-                LoadPaletteFast(((u16*)tileset->palettes), destOffset, size);
++                LoadPaletteFast((const u16 *)palettes, destOffset, size);
+             gPlttBufferFaded[destOffset] = gPlttBufferUnfaded[destOffset] = RGB_BLACK; // why does it have to be black?
+             FieldmapPaletteDummy(destOffset + 1, (size - 2) >> 1);
+             low = 0;
+@@ -1552,9 +1552,9 @@ void LoadTilesetPalette(struct Tileset const *tileset, u16 destOffset, u16 size,
+         else if (tileset->isSecondary == TRUE)
+         {
+             if (skipFaded)
+-                CpuFastCopy(((u16*)tileset->palettes) + (NUM_PALS_IN_PRIMARY * 16), &gPlttBufferUnfaded[destOffset], size);
++                CpuFastCopy(palettes[NUM_PALS_IN_PRIMARY], &gPlttBufferUnfaded[destOffset], size);
+             else
+-                LoadPaletteFast(((u16*)tileset->palettes) + (NUM_PALS_IN_PRIMARY * 16), destOffset, size);
++                LoadPaletteFast(palettes[NUM_PALS_IN_PRIMARY], destOffset, size);
+             low = NUM_PALS_IN_PRIMARY;
+             high = NUM_PALS_TOTAL;
+         }

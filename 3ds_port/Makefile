@@ -364,10 +364,9 @@ build/field_view_test$(EXESUFFIX): tests/field_view_test.c src/3ds_field_view.c 
 verify-encounters: build/encounters_test.exe
 	./build/encounters_test.exe
 
-# Reads the decomp's maps and headers, so it needs the bootstrapped tree:
-# part of `verify` there, not of the standalone host tests
+# Emerald reference fixture. Classic has no Hoenn Dive encounters or
+# visible wild Pokémon, so the Classic verification uses verify-encounters.
 .PHONY: verify-underwater-encounters
-verify: verify-underwater-encounters
 verify-underwater-encounters:
 	"$(PYTHON)" -B tests/underwater_encounters_test.py --tree $(ROOT)
 
@@ -425,8 +424,8 @@ verify: verify-randomizer
 verify-randomizer: build/randomizer_test$(EXESUFFIX)
 	./build/randomizer_test$(EXESUFFIX)
 
-# Hash guards and edit positions must match the complete patched English tree.
-verify: verify-randomizer-locales
+# Emerald reference fixture for its translated ROM releases. Classic uses
+# one pinned ROM and verifies the locale-independent randomizer core.
 .PHONY: verify-randomizer-locales
 verify-randomizer-locales:
 	$(PYTHON) tests/randomizer_locale_test.py --tree $(ROOT)

@@ -53,12 +53,12 @@ def supported_sha1s(manifest: dict | None) -> tuple[str, ...]:
 
 
 def build_pack_for_web(rom_path, payload_path, output_path, progress_callback=None,
-                       manifest_path=None, language=None) -> dict:
+                       manifest_path=None, language=None, with_followers=True) -> dict:
     """ROM -> emerald3ds.pak with in-process generators.
 
     progress_callback(stage, fraction, message): stage is one of "rom", "data",
     "scenery", "verify"; fraction is the overall position (0..1). The follower
-    sprites come from jsDelivr one by one (followers.py), the one host the
+    sprites, when enabled, come from jsDelivr one by one (followers.py), the one host the
     site's Content-Security-Policy lets the page reach besides its own."""
     manifest = None
     if manifest_path is not None:
@@ -74,8 +74,8 @@ def build_pack_for_web(rom_path, payload_path, output_path, progress_callback=No
             progress_callback(STAGES.get(message.split(": ", 1)[0], "data"), fraction, message)
 
     rom = load_rom(Path(rom_path), supported_sha1s(manifest))
-    fetcher = followers.Fetcher(followers.load_sources(), fetch=followers.xhr_fetch, workers=1,
-                                hosts=followers.HOSTS[1:])
+    fetcher = (followers.Fetcher(followers.load_sources(), fetch=followers.xhr_fetch, workers=1,
+                                 hosts=followers.HOSTS[1:]) if with_followers else False)
     variant = variant_for(manifest, rom.sha1, language) if manifest is not None else None
     if manifest is not None and variant is None:
         raise BuilderError("This release has no '%s' version made from this ROM." % language,
@@ -106,12 +106,12 @@ def describe(exc: BaseException) -> dict:
 
 
 def run_web_build(rom_path, payload_path, output_path, progress_callback=None, manifest_path=None,
-                  language=None) -> str:
+                  language=None, with_followers=True) -> str:
     """build_pack_for_web, never raising: returns a JSON string
     {"ok": true, "result": {...}} or {"ok": false, "error": {code, message, hint}}."""
     try:
         result = build_pack_for_web(rom_path, payload_path, output_path, progress_callback, manifest_path,
-                                    language or None)
+                                    language or None, with_followers=with_followers)
         return json.dumps({"ok": True, "apiVersion": API_VERSION, "result": result})
     except BaseException as exc:  # noqa: BLE001 - everything is reported to the page
         if isinstance(exc, (KeyboardInterrupt, SystemExit)):

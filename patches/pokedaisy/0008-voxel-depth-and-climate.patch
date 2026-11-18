@@ -88,7 +88,7 @@ index 0000000..2a64342
 +    }
 +}
 diff --git a/app/src/main/cpp/pk_wide.c b/app/src/main/cpp/pk_wide.c
-index c9f321d..2d3ef63 100644
+index c9f321d..a3f0c13 100644
 --- a/app/src/main/cpp/pk_wide.c
 +++ b/app/src/main/cpp/pk_wide.c
 @@ -28,12 +28,16 @@
@@ -185,7 +185,7 @@ index c9f321d..2d3ef63 100644
      // Keep the location-name sign at its original screen anchor. Menus, dialogue, and
      // scenes with other field UI already use the normal compositor.
      for (int y = 0; y < POPUP_ROWS * 8; y++) {
-@@ -5102,6 +5118,13 @@ static int viewInner(struct mCore* core, const uint32_t* frame, uint32_t* out, s
+@@ -5102,10 +5118,24 @@ static int viewInner(struct mCore* core, const uint32_t* frame, uint32_t* out, s
          else lastTorn = 1;
      }
  
@@ -199,6 +199,18 @@ index c9f321d..2d3ef63 100644
      if (voxelEnabled && voxelKnown && !centre && !inBattle && !overlayDim && !flyOn && !partnerReq.visible &&
          lastScene == PK_WIDE_SCENE_FIELD && bestSnap >= 0 && prev >= 0 && !textUp() && !effectsUp()) {
          needFrame();
+-        if (drawVoxel(&snaps[bestSnap], bestCx, bestCy, bestH, bestV, out, v, alpha)) {
++        bool voxelDrawn = drawVoxel(&snaps[bestSnap], bestCx, bestCy, bestH, bestV, out, v, alpha);
++#ifdef __ANDROID__
++        if (voxelDiagnosticFrame % 600 == 0)
++            __android_log_print(ANDROID_LOG_INFO, "pokedaisy", "voxel result: drawn=%d camera=%d,%d window=%d,%d limits=%dx%d climate=%d blend=%u header=%u,%u",
++                voxelDrawn, bestCx, bestCy, v.x, v.y, BUF_W, BUF_H, voxelClimate.config, voxelClimate.blend,
++                F.mapHeader ? r8(F.mapHeader + 0x17) : 0, F.mapHeader ? r8(F.mapHeader + 0x16) : 0);
++#endif
++        if (voxelDrawn) {
+ #ifdef PK_WIDE_CACHE
+             holeLeft = false;
+             cachedLast = false;
 diff --git a/app/src/main/cpp/pk_wide.h b/app/src/main/cpp/pk_wide.h
 index b93a924..3d8f9cc 100644
 --- a/app/src/main/cpp/pk_wide.h

@@ -4,7 +4,7 @@ This branch ports Pokémon Classic v1.5.1 to Nintendo 3DS with a voxel overworld
 
 ## Build status
 
-The native executable builds and reaches Azahar on the AYN Thor. Gameplay verification uses the matching runtime data pack and tracks the opening maps, starter battle, and the three touchscreen panels.
+The native build runs in Azahar on the AYN Thor. Device checks covered a cold launch, Pallet Town, Route 1, Oak’s capture of Pikachu, the first rival battle, and the three touchscreen panels. [Thor test notes](docs/pokeclassic-thor-testing.md)
 
 ## Build and install
 

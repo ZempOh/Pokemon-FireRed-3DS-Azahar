@@ -239,24 +239,23 @@ def test_ledge_chains_and_uphill():
 
 
 def test_real_ledges():
-    # Lilycove: its two rings of ledges between the hill and the town below
-    # stand half way, every ledge round them a step; none jumped up
-    lid = "LAYOUT_LILYCOVE_CITY"
-    sol = vt.finish(vt.solve_auto(lid), {})
+    # Classic Route 1 has south-facing jump edges on the level ground.
+    lid = "LAYOUT_ROUTE1"
+    auto = vt.solve_auto(lid)
+    sol = vt.finish(auto, {})
     c = sol["cells"]
     at = {src[1:]: cell for cell, src in c.src.items() if src[0] == lid}
-    hill, below = sol["pieces"][at[(48, 8)]][1], sol["pieces"][at[(48, 12)]][1]
-    assert hill - below == L, (hill, below)
-    for x in range(48, 54):
-        assert sol["pieces"][at[(x, 10)]] == ("F", (hill + below) / 2), sol["pieces"][at[(x, 10)]]
-    ring = [at[(x, y)] for x in range(47, 55) for y in (9, 11)] + [at[(47, 10)], at[(54, 10)]]
-    assert set(ring) <= sol["ledges"]["steps"], set(ring) - sol["ledges"]["steps"]
-    assert not sol["ledges"]["uphill"], sol["ledges"]["uphill"]
-    # a ledge marked with a piece of the mountain is that piece, no ledge
-    auto = vt.solve_auto(lid)
-    cell = at[(48, 9)]
-    rock = vt.finish(auto, {cell: {"level": hill, "piece": "S"}})
-    assert rock["pieces"][cell] == ("S", hill), rock["pieces"][cell]
+    for x in range(2, 8):
+        cell = at[(x, 5)]
+        assert cell in c.jumps
+        assert sol["ledges"]["sides"][cell] == {(0, 1): [0, 0]}
+        assert cell not in sol["ledges"]["uphill"]
+    assert at[(8, 5)] not in c.jumps
+
+    # An explicit terrace piece takes precedence over the map's jump edge.
+    cell = at[(2, 5)]
+    rock = vt.finish(auto, {cell: {"level": L, "piece": "S"}})
+    assert rock["pieces"][cell] == ("S", L), rock["pieces"][cell]
     assert cell not in rock["cells"].jumps and cell not in rock["kept"]
     assert cell in auto["cells"].jumps and cell in c.jumps
 

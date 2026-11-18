@@ -1,12 +1,39 @@
 # FireRed & LeafGreen+ on AYN Thor
 
-## Additional UI-row update retest — pending
+## UI-row update retest — Thor verified
 
-The queued-upload/lower-redraw build `85a7c36` passed the retained idle and
-blinking-text cadence checks at 59.8 game/drawn FPS, but controlled
-Fight/Back interaction still reached 59.3 drawn FPS. It was withheld.
-The next candidate updates only changed top UI rows and must repeat all
-cadence and gameplay checks. See the [test history](graphics-upgrade.md).
+Build `dfb5e4dfc4cc98ec29cb49541435effa61a373ab` passed the three cadence
+scenes on the Thor: steady move selection 59.8 minimum drawn FPS, held
+blinking text 59.8, and repeated Fight/Back input 59.7. Retained game rates
+were 59.8–59.9 FPS, with a median of 59.8 in each scene. Steady reported work-window
+median was 9.080 ms versus 12.660 ms before; the wait boundary changed, so
+that is not a pure CPU-speedup percentage. See the [full measurement and
+implementation notes](graphics-upgrade.md#measurement-and-implementation-scope).
+
+Cold Continue used the Route 1 fixture. Bulbasaur level 6 began at 22/22 HP
+against Pidgey level 3. Growl reduced its PP to 39/40; three Tackle turns
+damaged and defeated Pidgey, and the game returned to Route 1 at 13/22 HP.
+Party matched that HP, the five Bag tabs were present, and Medicine displayed
+Potion ×1. Move PP, categories and the battle footer updated cleanly.
+
+The separate 99.10-second active segment retained nine complete PACE windows,
+minimum 59.6 and median 59.8 drawn FPS. All logged PACE rows were reviewed;
+this mixed gameplay/capture segment is not the controlled work comparison.
+Active Azahar audio tracks advanced with 0→0 endpoint underruns in each of
+the blink, interaction, idle and active phases. The installed cartridge was
+pulled back and matched the fresh same-run build by SHA-256. See the
+[exact build identities](graphics-upgrade.md#exact-qualified-build).
+
+The original idle opponent was Rattata level 4; the v1 controlled blink/menu
+opponent was the same Pidgey level 3 used for V3. Tests cover these early-game
+scenes and regressions, not every move, map or later-game transition.
+
+### Withheld intermediate UI update
+
+The queued-upload/lower-redraw build `85a7c36` held idle and blinking text at
+a minimum 59.8 game/drawn FPS, but controlled Fight/Back input reached 59.3 drawn FPS.
+It was withheld. V3 adds dirty-row conversion; the original scanline-only
+candidate below is also historical and withheld.
 
 ## November 18 battle-pacing retest — publication withheld
 
@@ -31,7 +58,7 @@ back and its SHA-256 matched the candidate.
 
 The comparison uses the same scene type, not an identical battle replay.
 Work is a reported elapsed-time metric with presentation waits treated as
-described in the [full measurement notes](graphics-upgrade.md#frlg-battle-pacing-follow-up--further-thor-retest-pending).
+described in the [full measurement notes](graphics-upgrade.md#measurement-and-implementation-scope).
 The active segment verifies gameplay and rendering; it is not a controlled
 timing benchmark. No whole-game zero-stutter claim is made.
 

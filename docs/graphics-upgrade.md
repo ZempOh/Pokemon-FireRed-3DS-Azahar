@@ -1,15 +1,132 @@
 # Graphics upgrade validation (2026-11-18)
 
-## FRLG+ battle pacing follow-up — further Thor retest pending
+## FRLG+ battle pacing follow-up — Thor verified
 
-Both earlier pacing candidates below are **withheld from publication**.
-The queued-upload/lower-redraw v2 fixed the measured blinking-text dip, but
-controlled Fight/Back interaction still reached 59.3 drawn FPS. The next
-candidate converts only changed top UI rows and flushes their coalesced
-linear-buffer ranges, retaining the full queued texture transfer, colour
-format and filtering. Fresh Thor checks of steady selection, blinking text,
-menu interaction and actual moves are required. No new ground/pacing bundle
-has been published.
+The third candidate passed the unchanged Thor gates and the affected gameplay
+checks. The two earlier pacing candidates remain withheld, as recorded below.
+The tested binary is `dfb5e4dfc4cc98ec29cb49541435effa61a373ab`, built in
+[run 44390865728](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/actions/runs/44390865728).
+
+### Cadence and test scope
+
+| Scene | Retained PROF / PACE windows | Before minimum drawn FPS | V3 minimum drawn FPS |
+| --- | --- | ---: | ---: |
+| Steady move selection | 12 / 5 | 58.7 (original published build) | 59.8 |
+| Held blinking battle text | 6 / 3 | 59.5 (withheld v1) | 59.8 |
+| Controlled Fight/Back input | 12 / 5 | 58.1 (withheld v1) | 59.7 |
+
+Retained game rates were 59.8–59.9 FPS, with a median of 59.8 in each scene.
+Steady reported
+work-window median was **9.080 ms**, down from **12.660 ms** (28.3% lower
+reported elapsed work); scanline median was **6.18 ms**, down from **9.62 ms**.
+The largest retained steady work peak was **14.83 ms**. Interaction drawn
+median was 59.8 FPS, with a minimum of 59.7. Blink drawn rates were 59.8–59.9,
+with a minimum and median of 59.8.
+The gate requires every retained candidate PACE window to reach at least
+59.6 drawn FPS, game FPS between 59.6 and 60.0, and at least 10% lower steady
+reported work. It does not reinterpret work over budget as dropped frames.
+
+Tests used the same Thor/Azahar 2126.2-googleplay setup, Route 1 fixture,
+settings and voxel field/battle mode. V3 used Bulbasaur level 6 at 22/22 HP
+versus Pidgey level 3, matching the v1 controlled blink/menu opponent. The
+original unoptimized idle baseline used Rattata level 4; the v2 tests used
+Rattata level 3. These are scene-type comparisons, not identical full replays.
+
+The first potentially partial aggregate was excluded independently for each
+counter, then the first requested complete windows were retained. PROF spans
+300 logical game frames and PACE spans 600. Blink ran for 45 seconds without
+inputs or screenshots. Interaction alternated 52 A/B inputs every 1.5 seconds
+over 78 seconds, opening Fight and returning, without attacks or screenshots.
+The actual-move segment was recorded separately.
+
+### Gameplay, audio and installed bytes
+
+Growl consumed one PP (39/40); the opponent's turn left Bulbasaur at 19/22 HP.
+Three Tackle turns showed progressive enemy damage and player HP changes to
+16/22 and 13/22, then Pidgey fainted and the game returned to Route 1. Move
+cards, PP and the HP footer updated without stale UI. After battle all five
+Bag tabs were present, Medicine showed Potion ×1, and Party agreed at 13/22 HP.
+
+The 99.10-second active capture includes moves, damage, knockout, UI captures
+and return. Its nine complete PACE windows had a minimum 59.6 and median 59.8
+drawn FPS. All ten logged PACE rows, including the first potentially partial
+one, were reviewed: drawn 59.6–59.9, game 59.8–59.9. Its mixed callbacks and
+captures are not the controlled steady-work comparison. Two logged frames
+in the retained work interval exceeded the LCD budget; these are not a
+dropped-presentation count.
+
+In all four measured phases, active Azahar audio tracks kept the same
+identity, advanced playback and had 0→0 endpoint underruns. System-wide mixer
+counters were excluded. The installed cartridge was pulled back from the
+Thor and its SHA-256 matched the fresh candidate exactly. This is limited
+early-game coverage, not full-playthrough or physical-console certification.
+
+### Measurement and implementation scope
+
+PROF work is elapsed BeginFrame-to-EndFrame time minus the soft presenter's
+recorded FrameBegin wait, clamped to zero. It is elapsed work, not pure CPU
+execution time or GPU duration. Each PROF value averages 300 logical game
+frames; the summary is the median of those window averages. The queued-upload
+change moves FrameBegin before texture uploads. Some synchronization that
+previously counted as work can therefore fall inside the excluded wait or
+queued GPU execution. The formula is unchanged, but the wait boundary moved:
+a dynamic-UI work reduction is not an equal-percentage CPU speedup. Unchanged
+steady selection isolates the scanline benefit more closely. Independent
+PACE counters measure game and drawn frames over 600 logical frames and
+establish cadence; their counting and the frame-skip policy are unchanged.
+Sections are inclusive and must not be summed. Hidden frames retain the
+pre-existing limitation of subtracting the last renderer wait measurement.
+Reported work above the LCD budget is not a count of missed presentations.
+
+The renderer snapshots display/window/blend registers per scanline, builds
+a sparse object-window list alongside the existing sprite lists, and uses
+the existing constant-mask path for uniform mode-0 windows. Split windows,
+affine backgrounds and live HBlank effects retain their general paths.
+The lower screen repaints changed header/body/footer bands and copies their
+rows; cache flushes still cover whole affected framebuffer columns. Rounded
+shapes preserve their pixels while writing contiguous vertical spans.
+
+Top texture uploads run after a successful FrameBegin. UI conversion now
+compares source rows, converts only changed rows and coalesces adjacent
+dirty-row cache flushes. The full queued 512×512 transfer, texture format,
+alpha, filtering and 2× expansion are preserved. Upload buffers are reused
+only after FrameBegin completes the preceding GPU work. The game clock,
+automatic frame-skip policy, image quality and gameplay are unchanged.
+
+Host checks compare 600 full-only, UI-only and combined scanline passes,
+including normal/affine sprites, split/wrapped/object windows, blending,
+sprite mosaic and simulated HBlank/VCount register changes. The DMA stub
+checks all 160 HBlank dispatch calls; actual destinations were source-audited.
+The harness does not execute fully hidden frames, background mosaic or DMA
+writes. A separate 602-case review includes live HBlank OAM affine updates.
+
+The lower-screen oracle compares 1,200 old/new rounded-raster cases and 2,003
+battle-state transitions against a full repaint. Shapes/layout/dirty decisions
+are production code; fonts and icons are deterministic stand-ins. Actual
+page/menu invalidation was reviewed in source. The real upload functions
+are tested with an asynchronous queue model, exact colour/alpha/expansion/
+padding, edge/adjacent/disjoint dirty rows, transparent clear/restore, 100
+alternating source buffers, unchanged frames, failed FrameBegin, held UI and
+voxel fallback. One changed source row flushes 2,048 upload-buffer bytes;
+two separated rows flush 4,096, versus 327,680 for all used rows. These host
+checks complement Thor testing; they do not emulate PICA or certify physical
+Nintendo 3DS hardware.
+
+### Exact qualified build
+
+| Artifact | Identity |
+| --- | --- |
+| Binary-producing commit | `dfb5e4dfc4cc98ec29cb49541435effa61a373ab` |
+| Matching engine and recipe run | [44390865728](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/actions/runs/44390865728) |
+| Raw blank engine SHA-256 | `0303b5521b1127425a0ceda77ae552f96b76a0b76f614ef251f630c5b4e0be82` |
+| Web payload ZIP SHA-256 | `378340998d4f46aee6ab4e62532756ed56d1e8a48079724189bf1e5f46e1981a` |
+| Private cartridge SHA-256 | `9fab54643cc6e8acdd2614e1cf90e2095e9e8b378944f07328105dec09dd722c` |
+| Data ABI | `231df0cd` |
+
+The cartridge was generated fresh from the matching same-run web payload.
+Private hashes identify local test bytes; ROMs, saves and generated game packs
+are not published. Keep engines and recipes paired. The browser installation
+entry point is the [shared voxel builder](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/voxel.html).
 
 ### Queued-upload v2 evidence — historical
 
@@ -23,7 +140,8 @@ was assembled fresh from its matching recipe and tested on the Thor.
 | Held wild-appeared text | 6 / 3 | 59.5 (v1) | 59.8 |
 | Controlled Fight/Back input | 12 / 5 | 58.1 (v1) | 59.3 |
 
-All retained game rates were 59.8 FPS. The blink test ran without input or
+Retained game rates ranged from 59.7 to 59.9 FPS across the controlled v1/v2
+records. The blink test ran without input or
 screenshots; the interaction test alternated A/B at 1.5-second intervals
 over 78 seconds, without attacks or screenshots. The controlled v1 opponent
 was Pidgey level 3; v2 used Rattata level 3. The original idle sample used
@@ -108,8 +226,7 @@ VBlank; the slot-machine HBlank affine updates remain live per scanline.
 
 The installed cartridge was pulled back and matched the candidate exactly.
 The hashes above identify a local test candidate, not a published pacing fix.
-The next candidate has different code and will need fresh build hashes and
-device qualification. ROMs, saves and generated game data are not published.
+The later qualified V3 build and its fresh hashes are documented above. ROMs, saves and generated game data are not published.
 
 ## FRLG+ Bag follow-up — Thor verified
 

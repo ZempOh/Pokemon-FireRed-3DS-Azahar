@@ -268,7 +268,7 @@ index ae0d088ea55cf75c2c1782d2268474faf697114e..82bcc75f5b8e628cc79a90d6833bf3bb
      vblankCB = gMain.vblankCallback;
      hblankCB = gMain.hblankCallback;
 diff --git a/src/overworld.c b/src/overworld.c
-index 6f138dd560931c7c052fc14dd06bdd77e4d9abd3..b1f6e5a81e391bd8ca13dcd25daeb2fea402d42b 100644
+index 6f138dd560931c7c052fc14dd06bdd77e4d9abd3..3deec327716b6c460405d7af674b897794b07398 100644
 --- a/src/overworld.c
 +++ b/src/overworld.c
 @@ -1,5 +1,11 @@
@@ -283,7 +283,87 @@ index 6f138dd560931c7c052fc14dd06bdd77e4d9abd3..b1f6e5a81e391bd8ca13dcd25daeb2fe
  #include "battle_pyramid.h"
  #include "battle_setup.h"
  #include "berry.h"
-@@ -1853,6 +1859,7 @@ void CB2_ContinueSavedGame(void)
+@@ -295,8 +301,13 @@ static const struct BgTemplate sOverworldBgTemplates[] =
+     {
+         .bg = 1,
+         .charBaseIndex = 0,
++#ifdef PORT_BRIDGE
++        .mapBaseIndex = 25,
++        .screenSize = 1,
++#else
+         .mapBaseIndex = 29,
+         .screenSize = 0,
++#endif
+         .paletteMode = 0,
+         .priority = 1,
+         .baseTile = 0
+@@ -304,8 +315,13 @@ static const struct BgTemplate sOverworldBgTemplates[] =
+     {
+         .bg = 2,
+         .charBaseIndex = 0,
++#ifdef PORT_BRIDGE
++        .mapBaseIndex = 27,
++        .screenSize = 1,
++#else
+         .mapBaseIndex = 28,
+         .screenSize = 0,
++#endif
+         .paletteMode = 0,
+         .priority = 2,
+         .baseTile = 0
+@@ -313,8 +329,13 @@ static const struct BgTemplate sOverworldBgTemplates[] =
+     {
+         .bg = 3,
+         .charBaseIndex = 0,
++#ifdef PORT_BRIDGE
++        .mapBaseIndex = 29,
++        .screenSize = 1,
++#else
+         .mapBaseIndex = 30,
+         .screenSize = 0,
++#endif
+         .paletteMode = 0,
+         .priority = 3,
+         .baseTile = 0
+@@ -1443,16 +1464,24 @@ u8 GetCurrentMapBattleScene(void)
+ 
+ static void InitOverworldBgs(void)
+ {
++#ifdef PORT_BRIDGE
++    const size_t tilemapBytes = 2 * BG_SCREEN_SIZE;
++#else
++    const size_t tilemapBytes = BG_SCREEN_SIZE;
++#endif
+     InitBgsFromTemplates(0, sOverworldBgTemplates, ARRAY_COUNT(sOverworldBgTemplates));
+     SetBgAttribute(1, BG_ATTR_MOSAIC, 1);
+     SetBgAttribute(2, BG_ATTR_MOSAIC, 1);
+     SetBgAttribute(3, BG_ATTR_MOSAIC, 1);
+-    gOverworldTilemapBuffer_Bg1 = AllocZeroed(BG_SCREEN_SIZE);
+-    gOverworldTilemapBuffer_Bg2 = AllocZeroed(BG_SCREEN_SIZE);
+-    gOverworldTilemapBuffer_Bg3 = AllocZeroed(BG_SCREEN_SIZE);
++    gOverworldTilemapBuffer_Bg1 = AllocZeroed(tilemapBytes);
++    gOverworldTilemapBuffer_Bg2 = AllocZeroed(tilemapBytes);
++    gOverworldTilemapBuffer_Bg3 = AllocZeroed(tilemapBytes);
+     SetBgTilemapBuffer(1, gOverworldTilemapBuffer_Bg1);
+     SetBgTilemapBuffer(2, gOverworldTilemapBuffer_Bg2);
+     SetBgTilemapBuffer(3, gOverworldTilemapBuffer_Bg3);
++#ifdef PLATFORM_3DS
++    FieldCamera_RegisterTileBanks();
++#endif
+     InitStandardTextBoxWindows();
+ }
+ 
+@@ -1460,6 +1489,9 @@ void CleanupOverworldWindowsAndTilemaps(void)
+ {
+     ClearMirageTowerPulseBlendEffect();
+     FreeAllOverworldWindowBuffers();
++#ifdef PLATFORM_3DS
++    FieldCamera_UnregisterTileBanks();
++#endif
+     TRY_FREE_AND_SET_NULL(gOverworldTilemapBuffer_Bg3);
+     TRY_FREE_AND_SET_NULL(gOverworldTilemapBuffer_Bg2);
+     TRY_FREE_AND_SET_NULL(gOverworldTilemapBuffer_Bg1);
+@@ -1853,6 +1885,7 @@ void CB2_ContinueSavedGame(void)
  {
      u8 trainerHillMapId;
  
@@ -291,7 +371,7 @@ index 6f138dd560931c7c052fc14dd06bdd77e4d9abd3..b1f6e5a81e391bd8ca13dcd25daeb2fe
      FieldClearVBlankHBlankCallbacks();
      StopMapMusic();
      ResetSafariZoneFlag_();
-@@ -1860,6 +1867,7 @@ void CB2_ContinueSavedGame(void)
+@@ -1860,6 +1893,7 @@ void CB2_ContinueSavedGame(void)
          ResetWinStreaks();
  
      LoadSaveblockMapHeader();
@@ -299,7 +379,7 @@ index 6f138dd560931c7c052fc14dd06bdd77e4d9abd3..b1f6e5a81e391bd8ca13dcd25daeb2fe
      ClearDiveAndHoleWarps();
      trainerHillMapId = GetCurrentTrainerHillMapId();
      if (gMapHeader.mapLayoutId == LAYOUT_BATTLE_FRONTIER_BATTLE_PYRAMID_FLOOR)
-@@ -1869,8 +1877,10 @@ void CB2_ContinueSavedGame(void)
+@@ -1869,8 +1903,10 @@ void CB2_ContinueSavedGame(void)
      else
          LoadSaveblockObjEventScripts();
  
@@ -310,7 +390,7 @@ index 6f138dd560931c7c052fc14dd06bdd77e4d9abd3..b1f6e5a81e391bd8ca13dcd25daeb2fe
      UpdateMiscOverworldStates();
      if (gMapHeader.mapLayoutId == LAYOUT_BATTLE_FRONTIER_BATTLE_PYRAMID_FLOOR)
          InitBattlePyramidMap(TRUE);
-@@ -1879,6 +1889,7 @@ void CB2_ContinueSavedGame(void)
+@@ -1879,6 +1915,7 @@ void CB2_ContinueSavedGame(void)
      else
          InitMapFromSavedGame();
  
@@ -318,7 +398,7 @@ index 6f138dd560931c7c052fc14dd06bdd77e4d9abd3..b1f6e5a81e391bd8ca13dcd25daeb2fe
      PlayTimeCounter_Start();
      ScriptContext1_Init();
      ScriptContext2_Disable();
-@@ -1899,6 +1910,7 @@ void CB2_ContinueSavedGame(void)
+@@ -1899,6 +1936,7 @@ void CB2_ContinueSavedGame(void)
          SetMainCallback1(CB1_Overworld);
          CB2_ReturnToField();
      }
@@ -326,7 +406,7 @@ index 6f138dd560931c7c052fc14dd06bdd77e4d9abd3..b1f6e5a81e391bd8ca13dcd25daeb2fe
  }
  
  static void FieldClearVBlankHBlankCallbacks(void)
-@@ -2217,13 +2229,19 @@ static bool32 ReturnToFieldLink(u8 *state)
+@@ -2217,13 +2255,22 @@ static bool32 ReturnToFieldLink(u8 *state)
  
  static void DoMapLoadLoop(u8 *state)
  {
@@ -338,6 +418,9 @@ index 6f138dd560931c7c052fc14dd06bdd77e4d9abd3..b1f6e5a81e391bd8ca13dcd25daeb2fe
  static void ResetMirageTowerAndSaveBlockPtrs(void)
  {
      ClearMirageTowerPulseBlend();
++#ifdef PLATFORM_3DS
++    FieldCamera_UnregisterTileBanks();
++#endif
      MoveSaveBlocks_ResetHeap();
 +#ifdef PORT_BRIDGE
 +    // The old heap's temporary tile buffers no longer exist.

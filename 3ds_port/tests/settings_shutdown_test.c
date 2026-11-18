@@ -17,8 +17,8 @@ static int TestRename(const char *from, const char *to);
 static unsigned renames;
 static int TestRemove(const char *path) { (void)path; return 0; }
 static int TestRename(const char *from, const char *to) {
-    assert(strcmp(from, "sdmc:/3ds/emerald3ds/settings.txt.tmp") == 0);
-    assert(strcmp(to, "sdmc:/3ds/emerald3ds/settings.txt") == 0);
+    assert(strcmp(from, "sdmc:/3ds/pokeclassic-voxel/settings.txt.tmp") == 0);
+    assert(strcmp(to, "sdmc:/3ds/pokeclassic-voxel/settings.txt") == 0);
     ++renames; return 0;
 }
 static pthread_mutex_t diskMutex = PTHREAD_MUTEX_INITIALIZER;
@@ -84,6 +84,7 @@ static void ExtraCapacity(void) {
 int main(int argc, char **argv) {
     fault = argc > 1 ? argv[1][0] - '0' : 0;
     ExtraCapacity();
+    CtrSettings_ApplyLine("voxel=0");
     CtrSettings_SetVoxel(true);
     pthread_mutex_lock(&diskMutex);
     while (!entered) pthread_cond_wait(&diskCond, &diskMutex);

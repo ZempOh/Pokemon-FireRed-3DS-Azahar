@@ -1,6 +1,6 @@
 """Window edges past 255 on the 400-pixel screen, end to end on the host:
 WIN_RANGE as a wide unit sees it (include/gba/io_reg.h), the game's own
-SetGpuReg (src/gpu_regs.c), and the compositor's reading of the registers
+SetGpuReg (gflib/gpu_regs.c), and the compositor's reading of the registers
 (WindowEdge and WindowOver, taken from src/3ds_video.c)."""
 import argparse
 from pathlib import Path
@@ -24,7 +24,9 @@ def function(source, signature):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--cc', default='gcc')
+    parser.add_argument('--tree', type=Path, default=REPO)
     args = parser.parse_args()
+    tree = args.tree.resolve()
     video = (ROOT / 'src/3ds_video.c').read_text(encoding='utf-8')
     source = r'''
 #include "global.h"
@@ -99,11 +101,12 @@ int main(void)
 '''
     with tempfile.TemporaryDirectory() as tmp:
         path = Path(tmp) / 'wide_window_test.c'
-        binary = Path(tmp) / 'wide_window_test'
+        binary = Path(tmp) / 'wide_window_test.exe'
         path.write_text(source, encoding='utf-8')
         subprocess.run([args.cc, '-std=gnu99', '-w', '-DPLATFORM_3DS', '-DPORTABLE', '-DMODERN=1',
-                        '-iquote', str(REPO / 'include'), '-iquote', str(REPO / 'include/constants'),
-                        '-iquote', str(REPO), str(path), str(REPO / 'src/gpu_regs.c'), '-o', str(binary)],
+                        '-iquote', str(tree / 'include'), '-iquote', str(tree / 'include/constants'),
+                        '-iquote', str(tree / 'gflib'), '-iquote', str(tree), str(path),
+                        str(tree / 'gflib/gpu_regs.c'), '-o', str(binary)],
                        check=True)
         return subprocess.run([str(binary)]).returncode
 

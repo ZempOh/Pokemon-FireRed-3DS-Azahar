@@ -1,0 +1,66 @@
+diff --git a/gflib/gpu_regs.c b/gflib/gpu_regs.c
+index 3bcc4fd9313146f221092550ed377d80612a871c..2c33e722ee79ba99f2d7da5a2f136bd4d9adfae5 100644
+--- a/gflib/gpu_regs.c
++++ b/gflib/gpu_regs.c
+@@ -8,7 +8,7 @@
+ 
+ #define EMPTY_SLOT 0xFF
+ 
+-static u8 sGpuRegBuffer[GPU_REG_BUF_SIZE];
++static ALIGNED(2) u8 sGpuRegBuffer[GPU_REG_BUF_SIZE];
+ static u8 sGpuRegWaitingList[GPU_REG_BUF_SIZE];
+ static volatile bool8 sGpuRegBufferLocked;
+ static volatile bool8 sShouldSyncRegIE;
+@@ -63,7 +63,11 @@ void CopyBufferedValuesToGpuRegs(void)
+     }
+ }
+ 
++#ifdef PLATFORM_3DS
++static void SetGpuReg16(u8 regOffset, u16 value)
++#else
+ void SetGpuReg(u8 regOffset, u16 value)
++#endif
+ {
+     if (regOffset < GPU_REG_BUF_SIZE)
+     {
+@@ -97,6 +101,24 @@ void SetGpuReg(u8 regOffset, u16 value)
+     }
+ }
+ 
++#ifdef PLATFORM_3DS
++// Keep the extra horizontal window edge bits beside the original register.
++// The tag allows raw writes to the GBA register to invalidate the extra bits.
++void SetGpuReg(u8 regOffset, u32 value)
++{
++    if (regOffset == REG_OFFSET_WIN0H || regOffset == REG_OFFSET_WIN1H)
++    {
++        u8 over = regOffset == REG_OFFSET_WIN0H ? REG_OFFSET_WIN0H_OVER : REG_OFFSET_WIN1H_OVER;
++        u8 tag = regOffset == REG_OFFSET_WIN0H ? REG_OFFSET_WIN0H_TAG : REG_OFFSET_WIN1H_TAG;
++
++        // A sign-extended GBA window from a task's s16 is still 16-bit.
++        SetGpuReg16(over, (value >> 16) == 0xFFFF ? 0 : value >> 16);
++        SetGpuReg16(tag, value);
++    }
++    SetGpuReg16(regOffset, value);
++}
++#endif
++
+ void SetGpuReg_ForcedBlank(u8 regOffset, u16 value)
+ {
+     if (regOffset < GPU_REG_BUF_SIZE)
+diff --git a/gflib/gpu_regs.h b/gflib/gpu_regs.h
+index 89e0cb64bcf56ffa0843295d05553a8a22ab56d0..4b122af09082e9a988fe00e8dff125411828a5c4 100644
+--- a/gflib/gpu_regs.h
++++ b/gflib/gpu_regs.h
+@@ -8,7 +8,11 @@
+ // Exported ROM declarations
+ void InitGpuRegManager(void);
+ void CopyBufferedValuesToGpuRegs(void);
++#ifdef PLATFORM_3DS
++void SetGpuReg(u8 regOffset, u32 value);
++#else
+ void SetGpuReg(u8 regOffset, u16 value);
++#endif
+ void SetGpuReg_ForcedBlank(u8 regOffset, u16 value);
+ u16 GetGpuReg(u8 regOffset);
+ void SetGpuRegBits(u8 regOffset, u16 mask);

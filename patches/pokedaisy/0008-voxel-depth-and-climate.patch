@@ -1,3 +1,17 @@
+diff --git a/app/build.gradle.kts b/app/build.gradle.kts
+index e2d3729..b92969e 100644
+--- a/app/build.gradle.kts
++++ b/app/build.gradle.kts
+@@ -129,6 +129,9 @@ android {
+     }
+ 
+     signingConfigs {
++        getByName("debug") {
++            System.getenv("POKEDAISY_PREVIEW_KEYSTORE")?.let { storeFile = file(it) }
++        }
+         if (keystoreProps != null) {
+             create("release") {
+                 storeFile = file(keystoreProps.getProperty("storeFile"))
 diff --git a/app/src/main/cpp/pk_voxel_climate.h b/app/src/main/cpp/pk_voxel_climate.h
 new file mode 100644
 index 0000000..2a64342
@@ -88,10 +102,10 @@ index 0000000..2a64342
 +    }
 +}
 diff --git a/app/src/main/cpp/pk_wide.c b/app/src/main/cpp/pk_wide.c
-index c9f321d..a3f0c13 100644
+index c9f321d..25be6e1 100644
 --- a/app/src/main/cpp/pk_wide.c
 +++ b/app/src/main/cpp/pk_wide.c
-@@ -28,12 +28,16 @@
+@@ -28,6 +28,7 @@
  #include "pk_wide.h"
  #include "pk_cheats.h"
  #include "pk_wide_voxel.h"
@@ -99,16 +113,7 @@ index c9f321d..a3f0c13 100644
  
  #include <stdbool.h>
  #include <stdio.h>
- #include <math.h>
- #include <stdlib.h>
- #include <string.h>
-+#ifdef __ANDROID__
-+#include <android/log.h>
-+#endif
- 
- #include <mgba/core/core.h>
- #include <mgba/internal/gba/gba.h>
-@@ -2074,7 +2078,7 @@ static void drawObjects(const struct Snap* s, int cx, int cy, int x0, int y0, in
+@@ -2074,7 +2075,7 @@ static void drawObjects(const struct Snap* s, int cx, int cy, int x0, int y0, in
                  }
                  uint8_t v = line[(px & 7) / 2];
                  int ci = px & 1 ? v >> 4 : v & 15;
@@ -117,7 +122,7 @@ index c9f321d..a3f0c13 100644
                  if (p[i].copy && onFrame(p[i].x + xx, Y)) continue;   // the real frame has its own
                  int wl = windowLayers(p[i].x + xx, Y);
                  if (!(wl & 0x10)) continue;
-@@ -2086,14 +2090,14 @@ static void drawObjects(const struct Snap* s, int cx, int cy, int x0, int y0, in
+@@ -2086,14 +2087,14 @@ static void drawObjects(const struct Snap* s, int cx, int cy, int x0, int y0, in
                      dst[J * stride + X] = c;
                      holeBuf[J][X] = 0;
                  } else if (p[i].world) {
@@ -134,7 +139,7 @@ index c9f321d..a3f0c13 100644
                      }
                  }
              }
-@@ -2647,10 +2651,12 @@ int pk_wide_voxel_knows(uint32_t crc) {
+@@ -2647,10 +2648,12 @@ int pk_wide_voxel_knows(uint32_t crc) {
  }
  
  void pk_wide_voxel(int on) { voxelEnabled = on != 0; }
@@ -147,7 +152,7 @@ index c9f321d..a3f0c13 100644
      if (!crc) voxelEnabled = false;
      gbGame = crc && pk_wide_gb_configure(crc);
      if (gbGame) {
-@@ -4918,7 +4924,7 @@ static bool drawVoxel(const struct Snap* s, int cx, int cy, int href, int vref,
+@@ -4918,7 +4921,7 @@ static bool drawVoxel(const struct Snap* s, int cx, int cy, int href, int vref,
  
      static uint32_t* texture;
      static size_t textureCap;
@@ -156,7 +161,7 @@ index c9f321d..a3f0c13 100644
      static size_t depthCap;
      size_t textureSize = (size_t) w * h, depthSize = (size_t) v.w * v.h;
      if (textureCap < textureSize) {
-@@ -4928,7 +4934,7 @@ static bool drawVoxel(const struct Snap* s, int cx, int cy, int href, int vref,
+@@ -4928,7 +4931,7 @@ static bool drawVoxel(const struct Snap* s, int cx, int cy, int href, int vref,
          textureCap = textureSize;
      }
      if (depthCap < depthSize) {
@@ -165,7 +170,7 @@ index c9f321d..a3f0c13 100644
          if (!next) return false;
          depth = next;
          depthCap = depthSize;
-@@ -4950,9 +4956,19 @@ static bool drawVoxel(const struct Snap* s, int cx, int cy, int href, int vref,
+@@ -4950,9 +4953,19 @@ static bool drawVoxel(const struct Snap* s, int cx, int cy, int href, int vref,
          memcpy(raw[y], texture + sy * w + sx, (size_t) v.w * sizeof(uint32_t));
          memcpy(rawHole[y], holeBuf[sy] + sx, (size_t) v.w);
      }
@@ -185,32 +190,6 @@ index c9f321d..a3f0c13 100644
      // Keep the location-name sign at its original screen anchor. Menus, dialogue, and
      // scenes with other field UI already use the normal compositor.
      for (int y = 0; y < POPUP_ROWS * 8; y++) {
-@@ -5102,10 +5118,24 @@ static int viewInner(struct mCore* core, const uint32_t* frame, uint32_t* out, s
-         else lastTorn = 1;
-     }
- 
-+#ifdef __ANDROID__
-+    static unsigned voxelDiagnosticFrame;
-+    if (voxelEnabled && ++voxelDiagnosticFrame % 600 == 0)
-+        __android_log_print(ANDROID_LOG_INFO, "pokedaisy", "voxel field: known=%d centre=%d battle=%d overlay=%d fly=%d partner=%d scene=%d snap=%d prev=%d text=%d effects=%d view=%dx%d",
-+            voxelKnown, centre != NULL, inBattle, overlayDim, flyOn, partnerReq.visible,
-+            lastScene, bestSnap, prev, textUp(), effectsUp(), v.w, v.h);
-+#endif
-     if (voxelEnabled && voxelKnown && !centre && !inBattle && !overlayDim && !flyOn && !partnerReq.visible &&
-         lastScene == PK_WIDE_SCENE_FIELD && bestSnap >= 0 && prev >= 0 && !textUp() && !effectsUp()) {
-         needFrame();
--        if (drawVoxel(&snaps[bestSnap], bestCx, bestCy, bestH, bestV, out, v, alpha)) {
-+        bool voxelDrawn = drawVoxel(&snaps[bestSnap], bestCx, bestCy, bestH, bestV, out, v, alpha);
-+#ifdef __ANDROID__
-+        if (voxelDiagnosticFrame % 600 == 0)
-+            __android_log_print(ANDROID_LOG_INFO, "pokedaisy", "voxel result: drawn=%d camera=%d,%d window=%d,%d limits=%dx%d climate=%d blend=%u header=%u,%u",
-+                voxelDrawn, bestCx, bestCy, v.x, v.y, BUF_W, BUF_H, voxelClimate.config, voxelClimate.blend,
-+                F.mapHeader ? r8(F.mapHeader + 0x17) : 0, F.mapHeader ? r8(F.mapHeader + 0x16) : 0);
-+#endif
-+        if (voxelDrawn) {
- #ifdef PK_WIDE_CACHE
-             holeLeft = false;
-             cachedLast = false;
 diff --git a/app/src/main/cpp/pk_wide.h b/app/src/main/cpp/pk_wide.h
 index b93a924..3d8f9cc 100644
 --- a/app/src/main/cpp/pk_wide.h

@@ -62,6 +62,12 @@ static const OptRowDef sRows3d[] = {
     GAME_ROW(OPT_VOXEL_ZOOM, CTR_TEXT("3D ZOOM", "ZOOM 3D", "ZOOM 3D", "ZOOM 3D", "ZOOM 3D", "3D-ZOOM", "3D ズーム")),
     GAME_ROW(OPT_VOXEL_BLUR, CTR_TEXT("3D BLUR", "DESENFOQUE 3D", "FLOU 3D", "SFOC. 3D", "DESFOQUE 3D", "3D-UNSCHÄRFE", "3D ぼかし")),
 };
+static const OptRowDef sRowsClimate[] = {
+    GAME_ROW(OPT_CLIMATE, "VISUAL CLIMATE"),
+    GAME_ROW(OPT_SEASON, "SEASON"),
+    GAME_ROW(OPT_WEATHER, "WEATHER"),
+    GAME_ROW(OPT_DETAIL, "EFFECT DETAIL"),
+};
 static const OptRowDef sRowsField[] = {
     EXTRA_ROW("visible_wild"),
     EXTRA_ROW("follower"),
@@ -135,6 +141,7 @@ static const OptGroupDef sGroupsGeneral[] = {
 };
 static const OptGroupDef sGroupsWorld[] = {
     GROUP("3D", sRows3d),
+    GROUP("CLIMATE", sRowsClimate),
     GROUP(CTR_TEXT("FIELD", "CAMPO", "TERRAIN", "CAMPO", "CAMPO", "FELD", "フィールド"), sRowsField),
     GROUP(CTR_TEXT("HELPERS", "AYUDAS", "AIDES", "AIUTI", "AJUDAS", "HILFEN", "べんり"), sRowsHelpers),
     GROUP(CTR_TEXT("CLOCK", "RELOJ", "HORLOGE", "OROLOGIO", "RELÓGIO", "UHR", "とけい"), sRowsClock),
@@ -305,6 +312,10 @@ static const u8 *OptionValue(int row, u8 value)
 
     switch (row)
     {
+    case OPT_CLIMATE: return Ascii(value==0?"ORIGINAL":value==1?"AUTOMATIC":"MANUAL");
+    case OPT_SEASON: return Ascii(value==0?"SPRING":value==1?"SUMMER":value==2?"AUTUMN":"WINTER");
+    case OPT_WEATHER: return Ascii(value==0?"ORIGINAL":value==1?"CLEAR":value==2?"RAIN":value==3?"SNOW":"FOG");
+    case OPT_DETAIL: return Ascii(value?"FULL":"REDUCED");
     case OPT_TEXT_SPEED: return value == 0 ? gText_TextSpeedSlow : value == 1 ? gText_TextSpeedMid : gText_TextSpeedFast;
     case OPT_BATTLE_STYLE: return value ? gText_BattleStyleSet : gText_BattleStyleShift;
     case OPT_SOUND: return value ? gText_SoundStereo : gText_SoundMono;
@@ -372,13 +383,19 @@ static const u8 *RowLabel(const OptRow *r)
 /* The game's options and the port's, a step on (or back). */
 static void StepGameOption(int row, bool8 back)
 {
-    static const u8 counts[OPTION_ROWS] = {3, 2, 2, 2, 3, WINDOW_FRAMES_COUNT, 2, 2, 0, 0, 2, 2};
+    static const u8 counts[OPTION_ROWS] = {3, 2, 2, 2, 3, WINDOW_FRAMES_COUNT, 2, 2, 0, 0, 2, 2, 3, 4, 5, 2};
     u8 value, step = back ? counts[row] - 1 : 1;
 
     if (!OptionLive(row, CtrSettings_Voxel()))
         return;
     switch (row)
     {
+    case OPT_CLIMATE: case OPT_SEASON: case OPT_WEATHER: case OPT_DETAIL: {
+        static const char *keys[]={"visual_climate","visual_season","visual_weather","visual_detail"};
+        const char *key=keys[row-OPT_CLIMATE];
+        CtrSettings_SetInt(key, (CtrSettings_GetInt(key,0)+step)%counts[row]);
+        break;
+    }
     case OPT_FPS: CtrSettings_SetShowFps(!CtrSettings_ShowFps()); break;
     case OPT_VOXEL: CtrSettings_SetVoxel(!CtrSettings_Voxel()); break;
     case OPT_VOXEL_BATTLE: CtrSettings_SetVoxelBattle(!CtrSettings_VoxelBattle()); break;

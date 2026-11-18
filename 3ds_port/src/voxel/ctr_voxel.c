@@ -7087,6 +7087,8 @@ static void MoteVertex(VoxelGpuVertex *v, float x, float y, float z, float stren
  * Colour is the constant warm white; alpha is the vertex's strength (the
  * twinkle, gone at the corners) x the light's. Added over what is behind.
  */
+#include "voxel_climate.h"
+
 static void DrawMotes(const C3D_Mtx *view, const VoxelLight *light, const VoxelLight *unlit)
 {
     int originX = (int)floorf(sCamera.targetX), originZ = (int)floorf(sCamera.targetZ);
@@ -7102,7 +7104,10 @@ static void DrawMotes(const C3D_Mtx *view, const VoxelLight *light, const VoxelL
     VoxelGpuVertex *v = sMotes;
     C3D_TexEnv *env;
 
-    for (unsigned i = 0; i < VOXEL_MOTES; ++i)
+    bool precipitation = sClimateMix > 0 && (sClimateWeather == 2 || sClimateWeather == 3);
+    unsigned count = precipitation && CtrSettings_GetInt("visual_detail",0)==0 ? VOXEL_MOTES/2 : VOXEL_MOTES;
+    if (precipitation && sClimateWeather == 2) { ux*=4; uy*=4; uz*=4; rx*=0.3f; ry*=0.3f; rz*=0.3f; }
+    for (unsigned i = 0; i < count; ++i)
     {
         float phase = MoteRandom(i, 1) * 6.2832f;
         /* Where it has drifted to in the anchored world, then brought into
@@ -7118,6 +7123,11 @@ static void DrawMotes(const C3D_Mtx *view, const VoxelLight *light, const VoxelL
                 + 0.15f * sinf(seconds * 0.7f + phase);
         float glint = 0.55f + 0.45f * sinf(seconds * (1.1f + MoteRandom(i, 6)) + phase * 2.0f);
 
+        if (precipitation) {
+            y = sCamera.targetY + VOXEL_MOTE_LOW + Wrap(MoteRandom(i,5)*8.0f
+                - seconds*(sClimateWeather==2?5.0f:0.7f), VOXEL_MOTE_HIGH-VOXEL_MOTE_LOW);
+            glint=0.8f;
+        }
         MoteVertex(&v[0], x, y, z, glint);
         MoteVertex(&v[1], x + ux, y + uy, z + uz, 0.0f);
         MoteVertex(&v[2], x + rx, y + ry, z + rz, 0.0f);
@@ -7144,7 +7154,7 @@ static void DrawMotes(const C3D_Mtx *view, const VoxelLight *light, const VoxelL
     C3D_TexEnvOpAlpha(env, GPU_TEVOP_A_SRC_R, GPU_TEVOP_A_SRC_ALPHA, GPU_TEVOP_A_SRC_ALPHA);
     C3D_TexEnvFunc(env, C3D_Alpha, GPU_MODULATE);
     C3D_TexEnvScale(env, C3D_Alpha, GPU_TEVSCALE_2);
-    C3D_TexEnvColor(env, (strength << 24) | (VOXEL_MOTE_COLOUR & 0xFFFFFFu));
+    C3D_TexEnvColor(env, (strength << 24) | (precipitation ? 0xE8E0D8u : (VOXEL_MOTE_COLOUR & 0xFFFFFFu)));
     C3D_TexEnvInit(C3D_GetTexEnv(1));
     C3D_TexEnvInit(C3D_GetTexEnv(2));
     FadeFor(false);
@@ -7153,7 +7163,7 @@ static void DrawMotes(const C3D_Mtx *view, const VoxelLight *light, const VoxelL
     C3D_DepthTest(true, GPU_GREATER, GPU_WRITE_COLOR);
     C3D_AlphaBlend(GPU_BLEND_ADD, GPU_BLEND_ADD, GPU_SRC_ALPHA, GPU_ONE, GPU_ZERO, GPU_ONE);
     BindVertices(sMotes);
-    C3D_DrawArrays(GPU_TRIANGLES, 0, VOXEL_MOTES * VOXEL_MOTE_VERTICES);
+    C3D_DrawArrays(GPU_TRIANGLES, 0, count * VOXEL_MOTE_VERTICES);
     C3D_DepthTest(true, GPU_GREATER, GPU_WRITE_ALL);
     C3D_AlphaBlend(GPU_BLEND_ADD, GPU_BLEND_ADD,
                    GPU_SRC_ALPHA, GPU_ONE_MINUS_SRC_ALPHA, GPU_ZERO, GPU_ONE);
@@ -8515,6 +8525,10 @@ void CtrVoxel_Draw(C3D_RenderTarget *target, int eye)
     const VoxelMapInstance *current = VoxelWorld_Instance(0);
     bool indoor = current != NULL && current->indoor;
     VoxelLight light = LightFor(indoor), unlit = LightFor(true);
+#if CTR_VOXEL_LIGHTING
+    light = ClimateLight(light, current != NULL && !indoor && !current->cave && !sBattle.on
+                         && VoxelWorld_Weather() == VOXEL_WEATHER_CLEAR);
+#endif
     /* The swoop: the light towards neutral with the camera (VOXEL_SWOOP_NEUTRAL_START). */
     float neutral = CtrVoxel_SwoopNeutral();
     bool dapples;

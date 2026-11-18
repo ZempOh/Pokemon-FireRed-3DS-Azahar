@@ -476,7 +476,7 @@ enum { COL_Y = SCR_COUNT, COL_TITLE, COL_RUN, COL_ITEMS };
 #endif
 enum { OPT_TEXT_SPEED, OPT_BATTLE_SCENE, OPT_BATTLE_STYLE, OPT_SOUND, OPT_BUTTON_MODE, OPT_FRAME,
        OPT_FPS, OPT_VOXEL, OPT_VOXEL_PITCH, OPT_VOXEL_ZOOM, OPT_VOXEL_BLUR, OPT_VOXEL_BATTLE,
-       OPTION_ROWS };
+       OPT_CLIMATE, OPT_SEASON, OPT_WEATHER, OPT_DETAIL, OPTION_ROWS };
 #define OPTION_SHOWN OPTION_ROWS
 
 typedef struct
@@ -3352,6 +3352,10 @@ static void ReadOptionValues(u8 options[OPTION_ROWS])
     options[OPT_VOXEL_ZOOM] = CtrSettings_VoxelZoom();
     options[OPT_VOXEL_BLUR] = CtrSettings_VoxelBlurStrength();
     options[OPT_VOXEL_BATTLE] = CtrSettings_VoxelBattle();
+    options[OPT_CLIMATE] = CtrSettings_GetInt("visual_climate",0)%3;
+    options[OPT_SEASON] = CtrSettings_GetInt("visual_season",0)%4;
+    options[OPT_WEATHER] = CtrSettings_GetInt("visual_weather",0)%5;
+    options[OPT_DETAIL] = CtrSettings_GetInt("visual_detail",0)%2;
 }
 
 /*

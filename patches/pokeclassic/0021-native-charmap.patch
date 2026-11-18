@@ -1,0 +1,15 @@
+diff --git a/include/global.h b/include/global.h
+index 8dc1d7d460335a7ace6b22e1854cabf09d523391..d041a031eca2ed886240ecf3282991c4cd17c3ef 100644
+--- a/include/global.h
++++ b/include/global.h
+@@ -54,8 +54,10 @@
+ /// IDE support
+ #if defined(__APPLE__) || defined(__CYGWIN__) || defined(__INTELLISENSE__)
+ // We define these when using certain IDEs to fool preproc
++#ifndef PORT_BRIDGE
+ #define _(x)        (x)
+ #define __(x)       (x)
++#endif
+ #define INCBIN(...) {0}
+ #define INCBIN_U8   INCBIN
+ #define INCBIN_U16  INCBIN

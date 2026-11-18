@@ -147,8 +147,9 @@ class Pair:
     def layer_pixels(self, metatile, layer):
         """Drawn pixels of one layer: {(x, y): rgb}. Index 0 is not drawn.
 
-        Layer 0 is the metatile's lower half and layer 1 the upper. Index 0 is
-        skipped on BOTH, unlike the atlas, which floods layer 0's index 0 with
+        Layer 0 is the metatile's base and layer 1 combines both of Classic's
+        overlays, in drawing order. Index 0 is skipped on both, unlike the atlas,
+        which floods layer 0's index 0 with
         the backdrop colour to get an opaque tile: here the question is what
         the artist DREW, and an index-0 pixel is where they drew nothing.
         """
@@ -162,8 +163,9 @@ class Pair:
         out = {}
         if entries is None:
             return out
-        for quad in range(4):
-            entry = entries[layer * 4 + quad]
+        tiles = entries[:4] if layer == 0 else entries[4:]
+        for index, entry in enumerate(tiles):
+            quad = index % 4
             data = self.subtile(entry & 0x3FF, (entry >> 12) & 0xF)
             if data is None:
                 continue

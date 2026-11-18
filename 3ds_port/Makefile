@@ -385,7 +385,7 @@ build/voxel_lamps_test$(EXESUFFIX): tests/voxel_lamps_test.c src/voxel/voxel_sig
 	$(HOSTCC) -std=c99 -O2 -Wall -Wextra -Werror -Iinclude -Isrc/voxel -DVOXEL_HOST_FILES -DSIGN_MASK_PATH='"build/voxel_lamps_fixture.bin"' tests/voxel_lamps_test.c src/voxel/voxel_sign.c -lm -o $@
 
 verify-night-windows:
-	"$(PYTHON)" tests/voxel_night_test.py --cc "$(HOSTCC)" --assets romfs/voxel/buildings.bin
+	"$(PYTHON)" tests/voxel_night_test.py --cc "$(HOSTCC)"
 
 verify-daynight: build/daynight_test.exe
 	./build/daynight_test.exe

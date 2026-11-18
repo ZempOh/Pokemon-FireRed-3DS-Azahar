@@ -2,14 +2,14 @@ name: Build PokéDaisy voxel preview
 
 on:
   push:
-    branches: [pokedaisy-voxel-field]
+    branches: [pokedaisy-voxel-field, graphics/pokedaisy-upgrade]
     paths: ['patches/pokedaisy/**', '.github/workflows/pokedaisy-profiles.yml']
 
 permissions:
   contents: read
 
 concurrency:
-  group: pokedaisy-voxel-field
+  group: pokedaisy-voxel-field-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -46,6 +46,10 @@ jobs:
           python3 scripts/gen_gamedata.py --check
           python3 scripts/gen_area_maps.py
           python3 scripts/gen_area_maps.py --check
+      - name: Test projected sprite depth
+        run: |
+          cc -std=c11 -Wall -Wextra -Werror -Wno-unused-function -I pokedaisy/app/src/main/cpp tools/test_voxel_projection.c -o /tmp/test-voxel
+          /tmp/test-voxel
       - name: Validate wrappers
         uses: gradle/actions/wrapper-validation@748248ddd2a24f49513d8f472f81c3a07d4d50e1
         with:

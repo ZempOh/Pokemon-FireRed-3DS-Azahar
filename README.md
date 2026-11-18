@@ -24,13 +24,17 @@ and all five retained idle cadence windows measured 59.8 game/drawn FPS.
 Subsequent active checks still dipped to **58.6 drawn FPS**, so this
 candidate was withheld from the release.
 
-The next candidate reduces lower-screen battle redraws and queues changed
-top-screen textures inside the GPU frame. It converts only changed UI rows
-and coalesces their cache flushes, while retaining the full texture transfer.
-Pixel-differential rendering and upload-order tests cover the changes.
-The game clock, frame-skip policy and
-image quality are unchanged. Publication requires another Thor retest of
-steady selection, blinking battle text, menu interaction and actual moves.
+The queued-upload/lower-redraw v2 reached 59.2 minimum drawn FPS during
+controlled Fight/Back input. Dirty-row UI conversion in v3 improved that
+minimum to 59.5, still below the unchanged 59.6 gate. Both were withheld.
+The remaining input spikes include 6.6–6.7 ms of lower-screen work; every
+character was rebuilding the font lookup table, including width measurement.
+
+The next candidate caches indexed glyph pixels and dimensions for repeated
+labels, preserving fonts, colours, spacing and the printer's scratch state.
+The game clock, frame-skip policy and image quality are unchanged. Publication
+requires another Thor retest of steady selection, blinking battle text,
+menu interaction and actual moves.
 
 See [test evidence and current status](docs/graphics-upgrade.md). The earlier
 published build remains available while this candidate is evaluated.

@@ -2,15 +2,37 @@
 
 ## FireRed battle pacing follow-up — further Thor retest pending
 
-The scanline-only build below is **withheld from publication**. Its idle
-selection result passed, but active battle checks still reached 58.6
-drawn FPS at 59.8 game FPS. The next candidate adds lower-screen dirty-band
-redraws, contiguous rounded raster fills and top texture uploads queued
-after FrameBegin. It converts only changed UI rows and flushes their
-coalesced linear-buffer ranges while retaining the full texture transfer.
-Host differential and upload-order tests pass; Thor
-steady, blinking-text, menu-interaction and actual-move checks are pending.
-No new ground/pacing bundle has been published.
+The three earlier FireRed pacing candidates are **withheld from publication**.
+The scanline-only v1 passed idle selection but reached 58.6 drawn FPS during
+active battle checks. Queued uploads and lower-screen dirty bands in v2
+reached 59.2 minimum drawn FPS in controlled Fight/Back input. V3 added
+dirty-row UI conversion and reached 59.5, below the unchanged 59.6 gate.
+
+The V3 interaction used Charmander level 6 at 21/21 HP versus Rattata level 3,
+with 52 alternating A/B inputs 1.5 seconds apart and no screenshots or attacks.
+The first potentially partial aggregates were excluded, then 12 complete
+PROF and five PACE windows retained. Drawn median was 59.7, game median 59.8;
+reported work-window median was 9.360 ms and its largest peak 18.21 ms.
+Six logged work frames exceeded the LCD budget; these are not dropped-frame
+counts. Repeated menu changes spent 6.6–6.7 ms in lower-screen work even when
+there was no top upload. Each glyph, including width-only measurements,
+regenerated and restored the printer's lookup table.
+
+The next candidate adds a bounded glyph cache keyed by font and character.
+It stores canonical indexed pixels and dimensions, with live RGB colours and
+letter spacing. It retains the original small-font partial scratch writes,
+keeps no pointers into evictable assets, and clears at initialization/reset.
+Fresh Thor steady, blinking-text, menu-interaction and actual-move checks are
+required. Qualified FRLG+ V3 is separate; this is FireRed-only development.
+
+The glyph regression passes 9,572 full-canvas, width, entire glyph-scratch
+and palette comparisons using existing upstream Latin font PNGs and the
+production conversion/decompression/text functions. It covers four fonts,
+all 256 byte glyphs, cold/warm hits, clipping, controls, collisions and reset.
+Temporary font data is generated only while testing; no ROM is needed.
+A twelve-character centered label makes 24 uncached decompressions, eight
+on a cold cache and zero across 100 warm repeats. These are call counts,
+not a Thor speedup claim. Existing lower-screen and upload regressions pass.
 
 ### Scanline-only v1 evidence — historical
 

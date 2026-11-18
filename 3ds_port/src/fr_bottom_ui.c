@@ -317,6 +317,51 @@ static void DrawTile4(const u8 *tile, int x, int y, const u16 *pal565, bool8 hfl
 /* Text, in the game's fonts                                                */
 /* ------------------------------------------------------------------------ */
 
+typedef struct {
+    struct GlyphInfo info;
+    u16 character;
+    u8 font;
+    bool8 valid;
+} GlyphCacheEntry;
+
+static GlyphCacheEntry sGlyphCache[128];
+
+static void ResetGlyphCache(void)
+{
+    memset(sGlyphCache, 0, sizeof(sGlyphCache));
+}
+
+/* Port_DecompressGlyph always returns the immutable Latin font with indices
+ * 1/0/2 and restores the game's printer colours. Keep those indexed bytes,
+ * not resolved asset pointers or the foreground/shadow RGB colours. Width
+ * measurements and repeated labels can reuse the same glyph without building
+ * and restoring the font lookup table twice for every character. */
+static void CacheGlyph(u8 font, u16 c)
+{
+    GlyphCacheEntry *entry = &sGlyphCache[(c ^ ((unsigned)font << 5)) & 127];
+
+    if (!entry->valid || entry->font != font || entry->character != c)
+    {
+        Port_DecompressGlyph(font, c);
+        entry->info = gGlyphInfo;
+        entry->character = c;
+        entry->font = font;
+        entry->valid = TRUE;
+        return;
+    }
+    if (font == FONT_SMALL)
+    {
+        /* Small glyphs only overwrite their two left tiles. Preserve the
+         * untouched scratch bytes exactly as the original decompressor does. */
+        memcpy(gGlyphInfo.pixels, entry->info.pixels, 32);
+        memcpy(gGlyphInfo.pixels + 64, entry->info.pixels + 64, 32);
+        gGlyphInfo.width = entry->info.width;
+        gGlyphInfo.height = entry->info.height;
+    }
+    else
+        gGlyphInfo = entry->info;
+}
+
 static u16 NextChar(const u8 **s)
 {
     u16 c = **s;
@@ -341,7 +386,7 @@ static int DrawGlyph(u8 font, u16 c, int x, int y, u16 fg, u16 shadow, bool8 dra
 {
     int w, h;
 
-    Port_DecompressGlyph(font, c);
+    CacheGlyph(font, c);
     w = gGlyphInfo.width;
     h = gGlyphInfo.height;
     if (draw)
@@ -4705,6 +4750,7 @@ static void ProcessPanelTouch(const ViewState *s, bool active, u16 x, u16 y)
 
 void CtrBottom_Init(void)
 {
+    ResetGlyphCache();
     for (unsigned c = 0; c < 32768; ++c)
         sLut[c] = Rgb(c & 31, (c >> 5) & 31, (c >> 10) & 31);
     memset(sCanvas, 0, sizeof(sCanvas));
@@ -4742,6 +4788,7 @@ static void BottomFrame(void)
     }
     if (CtrGame_Resets() != sResetsSeen)
     {
+        ResetGlyphCache();
         /* back to the title: no game until the field is on again */
         sResetsSeen = CtrGame_Resets();
         sInGame = FALSE;

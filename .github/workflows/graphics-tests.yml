@@ -17,3 +17,9 @@ jobs:
           python3 3ds_port/tests/voxel_weather_gate_test.py
       - name: Connected-map camera framing
         run: python3 3ds_port/tests/voxel_camera_boundary_test.py
+      - name: Bottom glyph cache with upstream Latin fonts
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-pil
+          python3 tools/bootstrap.py --dir build/upstream
+          python3 3ds_port/tests/bottom_glyph_cache_test.py --tree build/upstream

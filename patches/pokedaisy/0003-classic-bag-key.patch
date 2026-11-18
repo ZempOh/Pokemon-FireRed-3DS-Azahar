@@ -1,0 +1,13 @@
+diff --git a/gamedata/gen3/hacks/pokeclassic.toml b/gamedata/gen3/hacks/pokeclassic.toml
+index 310af805e4b3e34ee42d4f7f5e3df183bd2110f8..5826f05401495e3e81b0a6ce18b49d9948255e91 100644
+--- a/gamedata/gen3/hacks/pokeclassic.toml
++++ b/gamedata/gen3/hacks/pokeclassic.toml
+@@ -18,6 +18,8 @@ objectEvents = 0x02035D58
+ mapHeader = 0x02035CA0
+ bagPockets = 0x02038830
+ bagPocketCount = 8
++# The expanded Pokédex shifts this field. Confirmed by decoding the Route 1 Potion.
++encryptionKeyOff = 0xB0
+ bagPocketOrder = 'POKECLASSIC_BAG_POCKET_ORDER'
+ monIconTable = 0x088E473C
+ monIconPaletteIndices = 0x088E4E60

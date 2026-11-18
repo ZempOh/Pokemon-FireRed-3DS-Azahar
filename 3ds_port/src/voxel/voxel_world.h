@@ -114,6 +114,7 @@ typedef enum {
     VOXEL_WEATHER_SHADE
 } VoxelWeatherClass;
 VoxelWeatherClass VoxelWorld_Weather(void);
+bool VoxelWorld_ClimateAllowed(void);
 /* How thick the game's fog is right now, 0-1: its sprites' blend as it fades
  * in and out, 0 when there are none (voxel_world.c). */
 float VoxelWorld_FogDensity(void);

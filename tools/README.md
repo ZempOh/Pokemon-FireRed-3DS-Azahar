@@ -5,7 +5,7 @@ The catalog is at `voxel.html`. `voxel-catalog.json` lists each game's display n
 The original FireRed entry uses the existing `cartridge-fps` payload. For a port with a compatible recipe and cartridge format, use the matching recipe ZIP and blank template from the same build.
 
 ```powershell
-$release = '../frlg-guard-test'
+$release = '../frlg-color-test'
 python tools/prepare-cartridge.py --source ../voxel-frlg-plus --template "$release/cartridge-template.3ds" --recipe-zip "$release/FireRed3DS-v1.5.1-Windows.zip" --out voxel/frlg-plus/payload --name 'FireRed & LeafGreen+ v1.5.1' --code BPRE
 ```
 

@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "kind": "voxel-cartridge-payload",
   "releaseTag": "v1.5.1",
-  "dataAbi": "293702f1",
+  "dataAbi": "b3befc50",
   "entrypoint": {
     "pythonPath": "python"
   },
@@ -13,7 +13,7 @@
       "name": "FireRed & LeafGreen+ v1.5.1"
     }
   ],
-  "cartridgeSha256": "b63af5f9f67d68a14bdd564e3157b13a344413bbbdafd242a0d7b4cb7ba56e84",
+  "cartridgeSha256": "17f538057e375e0ed0323820e4f577d4d83fa9d4bb1a8f35e116ccd777313a01",
   "files": [
     {
       "path": "licenses/NOTICE.md",
@@ -27,8 +27,8 @@
     },
     {
       "path": "payload/firered3ds.recipe",
-      "sha256": "69e3c9beeab226313aa2c5f3f4a05a854340f002093733dc64fabfe33a39c995",
-      "size": 406748
+      "sha256": "686a64c5b07b1867b6b28c76d0d96ad85ad41ed4290022eea544ce55f385b339",
+      "size": 406996
     },
     {
       "path": "payload/voxelgen/scripts/fr_art.py",

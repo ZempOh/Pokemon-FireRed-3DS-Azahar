@@ -10,8 +10,6 @@ For browser installs, open the [shared voxel builder](https://zempoh.github.io/P
 **FireRed & LeafGreen+**, select your matching ROM, then build and download
 the `.3ds` cartridge. Close the game in Azahar before copying it into the
 folder Azahar scans. Saves and settings remain in Azahar's virtual SD folder.
-The browser serves published releases; the CI instructions below pin the
-exact qualified build independently of browser rollout.
 
 For the exact Thor-tested build, assemble the matching CI artifacts:
 

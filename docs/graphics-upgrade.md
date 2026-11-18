@@ -61,6 +61,10 @@ counters were excluded. The installed cartridge was pulled back from the
 Thor and its SHA-256 matched the fresh candidate exactly. This is limited
 early-game coverage, not full-playthrough or physical-console certification.
 
+After all three native retests, the original 18 save/settings/diagnostic
+paths were restored and reverified with binary-safe checks. All four
+installed executable/data files matched their qualified candidates.
+
 ### Measurement and implementation scope
 
 PROF work is elapsed BeginFrame-to-EndFrame time minus the soft presenter's

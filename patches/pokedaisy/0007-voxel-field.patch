@@ -1,0 +1,573 @@
+diff --git a/app/build.gradle.kts b/app/build.gradle.kts
+index 7d0b493..e2d3729 100644
+--- a/app/build.gradle.kts
++++ b/app/build.gradle.kts
+@@ -153,7 +153,7 @@ android {
+         // google-services.json has no client for its id.
+         create("dev") {
+             initWith(getByName("debug"))
+-            applicationIdSuffix = ".dev"
++            applicationIdSuffix = ".voxelpreview"
+             buildConfigField("boolean", "CRASHLYTICS", "false")
+             matchingFallbacks += listOf("debug")
+         }
+diff --git a/app/src/dev/res/values/strings.xml b/app/src/dev/res/values/strings.xml
+index 17e1cb5..5b50e9c 100644
+--- a/app/src/dev/res/values/strings.xml
++++ b/app/src/dev/res/values/strings.xml
+@@ -1,5 +1,5 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <!-- The dev build (beside the release app): its own name in the launcher. -->
+ <resources>
+-    <string name="app_name">PokeDaisy Dev</string>
++    <string name="app_name">PokeDaisy Voxel Preview</string>
+ </resources>
+diff --git a/app/src/main/cpp/pk_wide.c b/app/src/main/cpp/pk_wide.c
+index 9dbcd47..47df349 100644
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -27,6 +27,7 @@
+ 
+ #include "pk_wide.h"
+ #include "pk_cheats.h"
++#include "pk_wide_voxel.h"
+ 
+ #include <stdbool.h>
+ #include <stdio.h>
+@@ -1445,6 +1446,7 @@ struct Piece {
+     int x, y, w, h, tile, prio, pal, mode;   // mode: OAM objMode (0 normal, 1 semi-transparent, 2 OBJ window)
+     bool hflip, vflip;
+     bool copy;                               // a weather sprite repeated past the screen: margins only
++    bool world;                              // coordOffsetEnabled: placed on the map, rather than the screen
+     int rot, mat;                            // OAM affine mode (0 none, 1 affine, 3 double-size) and matrix
+ };
+ 
+@@ -1515,7 +1517,7 @@ static int buildPieces(const struct Snap* s, struct Piece* out) {
+         }
+         struct Piece base = { .tile = (int) (a2 & 0x3FF), .prio = (int) ((a2 >> 10) & 3), .pal = (int) (a2 >> 12),
+                               .mode = (int) ((a0 >> 10) & 3), .hflip = !(rot & 1) && (a1 & 0x1000), .vflip = !(rot & 1) && (a1 & 0x2000),
+-                              .copy = false, .rot = rot, .mat = (int) ((a1 >> 9) & 31) };
++                              .copy = false, .world = world, .rot = rot, .mat = (int) ((a1 >> 9) & 31) };
+         uint32_t tables = (uint32_t) sp[0x18] | (uint32_t) sp[0x19] << 8 | (uint32_t) sp[0x1A] << 16 | (uint32_t) sp[0x1B] << 24;
+         int mode = sp[0x42] >> 6;
+         uint32_t table = tables && mode ? tables + 8 * (uint32_t) (sp[0x42] & 0x3F) : 0;
+@@ -1857,11 +1859,12 @@ static double pwSum[8]; static int pwN; static long pwFast, pwSlow, pwWhy[4];
+ #endif
+ static void drawPartner(int x0, int y0, int x1, int y1, uint32_t* dst, int stride, uint32_t alpha);
+ 
+-static void drawObjects(const struct Snap* s, int cx, int cy, int x0, int y0, int x1, int y1, uint32_t* dst, int stride, uint32_t alpha);
++static void drawObjects(const struct Snap* s, int cx, int cy, int x0, int y0, int x1, int y1, uint32_t* dst, int stride,
++                        uint32_t alpha, const struct VoxelView* voxel);
+ static bool frameTaken;   // the frame's own pixels aren't drawn (takenBuf has them): sprites skip them unlooked at
+ 
+ static void drawRegion(const struct Snap* s, int cx, int cy, int href, int vref, int x0, int y0, int x1, int y1,
+-                       bool skipFrame, uint32_t* dst, int stride, uint32_t alpha) {
++                       bool skipFrame, uint32_t* dst, int stride, uint32_t alpha, bool groundOnly) {
+     int w = x1 - x0, h = y1 - y0;
+     PW_MARK(dr0);
+     foreignFrame++;
+@@ -2011,12 +2014,13 @@ static void drawRegion(const struct Snap* s, int cx, int cy, int href, int vref,
+     PW_MARK(dr2);
+     PW_ADD(5, dr1, dr2);
+     frameTaken = skipFrame;
+-    drawObjects(s, cx, cy, x0, y0, x1, y1, dst, stride, alpha);
++    if (!groundOnly) drawObjects(s, cx, cy, x0, y0, x1, y1, dst, stride, alpha, NULL);
+ }
+ 
+ // The PPU's OBJ layer: per pixel the first opaque piece in OAM order wins among sprites,
+ // then shows if its priority is <= the front BG's.
+-static void drawObjects(const struct Snap* s, int cx, int cy, int x0, int y0, int x1, int y1, uint32_t* dst, int stride, uint32_t alpha) {
++static void drawObjects(const struct Snap* s, int cx, int cy, int x0, int y0, int x1, int y1, uint32_t* dst, int stride,
++                        uint32_t alpha, const struct VoxelView* voxel) {
+     PW_MARK(dr2);
+     int w = x1 - x0;
+     if (!(io(0) & 0x40)) return;   // 2D tile mapping
+@@ -2025,6 +2029,7 @@ static void drawObjects(const struct Snap* s, int cx, int cy, int x0, int y0, in
+     const struct Piece* p = pieces[shown];
+     for (int i = 0; i < npieces[shown]; i++) {
+         if (p[i].mode == 2) continue;   // an OBJ window shape, not drawn
++        if (voxel && p[i].copy) continue;
+         int sw = p[i].w, sh = p[i].h;
+         int bw = p[i].rot == 3 ? 2 * sw : sw, bh = p[i].rot == 3 ? 2 * sh : sh;   // the box it covers on screen
+         if (p[i].x + bw <= x0 || p[i].x >= x1 || p[i].y + bh <= y0 || p[i].y >= y1) continue;
+@@ -2033,6 +2038,13 @@ static void drawObjects(const struct Snap* s, int cx, int cy, int x0, int y0, in
+         int m = p[i].mat;   // an affine sprite's matrix: the frame's OAM affineParams from entry 4 * m
+         int pa = (int16_t) oam[(4 * m) * 4 + 3], pb = (int16_t) oam[(4 * m + 1) * 4 + 3];
+         int pc = (int16_t) oam[(4 * m + 2) * 4 + 3], pd = (int16_t) oam[(4 * m + 3) * 4 + 3];
++        int foot = p[i].y + bh - 1;
++        int vx = 0, vy = 0;
++        if (voxel && p[i].world) {
++            int z = voxelRiseAt(voxel, p[i].x + bw / 2, foot);
++            vx = voxelX(voxel, p[i].x, foot);
++            vy = voxelY(voxel, foot, z) - bh + 1;
++        }
+         for (int yy = 0; yy < bh; yy++) {
+             int Y = p[i].y + yy, J = Y - y0;
+             if (Y < y0 || Y >= y1) continue;
+@@ -2069,15 +2081,30 @@ static void drawObjects(const struct Snap* s, int cx, int cy, int x0, int y0, in
+                 takenBuf[J][X] = 1;
+                 if (p[i].prio > OBJ_PRIO(J, X)) continue;
+                 uint32_t c = color(P[256 + p[i].pal * 16 + ci], alpha);
+-                dst[J * stride + X] = p[i].mode == 1 ? blend(c, OBJ_BELOW(J, X), OBJ_LAYER(J, X)) : wl & 0x20 ? brightness(c, 4) : c;
+-                holeBuf[J][X] = 0;
++                c = p[i].mode == 1 ? blend(c, OBJ_BELOW(J, X), OBJ_LAYER(J, X)) : wl & 0x20 ? brightness(c, 4) : c;
++                if (!voxel) {
++                    dst[J * stride + X] = c;
++                    holeBuf[J][X] = 0;
++                } else if (p[i].world) {
++                    voxelPixel(voxel, vx + xx, vy + yy, foot, c);
++                } else if (onFrame(p[i].x + xx, Y)) {
++                    int sx = p[i].x + xx - (voxel->centreX - voxel->width / 2);
++                    int sy = Y - (voxel->centreY - voxel->height / 2);
++                    if ((unsigned) sx < (unsigned) voxel->width && (unsigned) sy < (unsigned) voxel->height) {
++                        int at = sy * voxel->width + sx;
++                        voxel->out[at] = realFrame[Y * PK_WIDE_W + p[i].x + xx];
++                        voxel->depth[at] = UINT16_MAX;
++                    }
++                }
+             }
+         }
+     }
+     PW_MARK(dr3);
+     PW_ADD(6, dr2, dr3);
+-    drawGhosts(s, cx, cy, x0, y0, x1, y1, dst, stride, alpha);
+-    drawPartner(x0, y0, x1, y1, dst, stride, alpha);
++    if (!voxel) {
++        drawGhosts(s, cx, cy, x0, y0, x1, y1, dst, stride, alpha);
++        drawPartner(x0, y0, x1, y1, dst, stride, alpha);
++    }
+     useLive();
+     PW_MARK(dr4);
+     PW_ADD(7, dr3, dr4);
+@@ -2606,6 +2633,7 @@ static int lastMode;                // PK_WIDE_MODE_*
+ static int lastClose;               // pk_wide_wants_close
+ static int lastScene = PK_WIDE_SCENE_OFF;   // pk_wide_scene
+ static int overlayDim;              // 0..256: how far the map around a BG0 picture is dimmed (ramps in and out)
++static bool voxelEnabled, voxelKnown;
+ static struct PkWideView rawView;   // the window raw[] was last drawn for (w 0 = nothing yet)
+ static uint32_t raw[BUF_H][BUF_W];  // the last scene drawn (map or battle) that checked out, frame pixels unused
+ static uint8_t rawHole[BUF_H][BUF_W];   // ... and where it had nothing: the frame's nearest edge pixel goes on there
+@@ -2613,8 +2641,15 @@ static uint8_t rawHole[BUF_H][BUF_W];   // ... and where it had nothing: the fra
+ int pk_wide_frame_w(void) { return gbGame ? PK_WIDE_GB_W : PK_WIDE_W; }
+ int pk_wide_frame_h(void) { return gbGame ? PK_WIDE_GB_H : PK_WIDE_H; }
+ 
++int pk_wide_voxel_knows(uint32_t crc) {
++    return crc == 0x25c3d89fu || crc == 0xfba55dd8u || crc == 0x4b3d4957u;
++}
++
++void pk_wide_voxel(int on) { voxelEnabled = on != 0; }
++
+ int pk_wide_configure(uint32_t crc) {
+     lastFault = 0;
++    voxelKnown = pk_wide_voxel_knows(crc);
+     gbGame = crc && pk_wide_gb_configure(crc);
+     if (gbGame) {
+         configured = false;
+@@ -4584,7 +4619,7 @@ static void cacheDraw(const struct Snap* s, const uint32_t* frame, uint32_t* out
+     ringY = cy + v.y;
+     useLive();
+     frameTaken = true;
+-    drawObjects(s, cx, cy, v.x, v.y, v.x + v.w, v.y + v.h, out, v.w, alpha);
++    drawObjects(s, cx, cy, v.x, v.y, v.x + v.w, v.y + v.h, out, v.w, alpha, NULL);
+     ringOn = false;
+     uint8_t bars[PK_WIDE_H];
+     barRows(bars);
+@@ -4667,7 +4702,7 @@ static bool flySignMask(uint8_t sign[FL_SIGN_H][FL_SIGN_W]) {
+ static void flySignMove(const uint8_t sign[FL_SIGN_H][FL_SIGN_W], const struct Snap* s, int cx, int cy, int href, int vref,
+                         const uint32_t* frame, uint32_t* out, struct PkWideView v, int dx, int dy, uint32_t alpha) {
+     static uint32_t under[FL_SIGN_H][FL_SIGN_W];
+-    drawRegion(s, cx, cy, href, vref, 0, 0, FL_SIGN_W, FL_SIGN_H, false, &under[0][0], FL_SIGN_W, alpha);
++    drawRegion(s, cx, cy, href, vref, 0, 0, FL_SIGN_W, FL_SIGN_H, false, &under[0][0], FL_SIGN_W, alpha, false);
+     // Where the sign's pixels are now (frame pixel (x, y) at window (x - v.x, y - v.y)): the map again.
+     for (int y = 0; y < FL_SIGN_H; y++) {
+         int oy = y - v.y;
+@@ -4729,7 +4764,7 @@ static void fullDraw(const struct FullView* f) {
+     if (valid || battle || menu) {
+         if (valid) {
+             const struct Snap* s = &snaps[bestSnap];
+-            drawRegion(s, bestCx, bestCy, bestH, bestV, v.x, v.y, v.x + v.w, v.y + v.h, true, &raw[0][0], BUF_W, alpha);
++            drawRegion(s, bestCx, bestCy, bestH, bestV, v.x, v.y, v.x + v.w, v.y + v.h, true, &raw[0][0], BUF_W, alpha, false);
+             if (!overlay) markBarRows(v.x, v.y, v.w, v.h);   // FireRed's map preview keeps its dimmed map around it
+         } else if (battle) {
+             drawBattleRegion(v.x, v.y, v.x + v.w, v.y + v.h, true, &raw[0][0], BUF_W, alpha);
+@@ -4739,7 +4774,7 @@ static void fullDraw(const struct FullView* f) {
+         for (int j = 0; j < v.h; j++) memcpy(rawHole[j], holeBuf[j], (size_t) v.w);
+         rawView = v;
+         if (centre) {
+-            if (valid) drawRegion(&snaps[bestSnap], bestCx, bestCy, bestH, bestV, 0, 0, PK_WIDE_W, PK_WIDE_H, false, centre, PK_WIDE_W, alpha);
++            if (valid) drawRegion(&snaps[bestSnap], bestCx, bestCy, bestH, bestV, 0, 0, PK_WIDE_W, PK_WIDE_H, false, centre, PK_WIDE_W, alpha, false);
+             else if (battle) drawBattleRegion(0, 0, PK_WIDE_W, PK_WIDE_H, false, centre, PK_WIDE_W, alpha);   // holes show the backdrop, as the PPU does
+             else drawMenuRegion(0, 0, PK_WIDE_W, PK_WIDE_H, false, centre, PK_WIDE_W, alpha, NULL);
+         }
+@@ -4851,6 +4886,79 @@ void pk_wide_finish(void) {
+ }
+ #endif
+ 
++static int terrainRise(const struct Snap* s, int x, int y) {
++    // The FireRed map cell's upper nibble is its elevation. 0 (any) and 15 (bridge) are
++    // special movement layers. Keep these and the border at the ordinary ground level.
++    int elevation = 3;
++    if ((unsigned) x < (unsigned) s->vw && (unsigned) y < (unsigned) s->vh) {
++        int layer = s->vmap[y * s->vw + x] >> 12;
++        if (layer > 0 && layer < 15) elevation = layer;
++    }
++    int z = 4 * (elevation - 1);
++    return z > VOXEL_MAX_RISE ? VOXEL_MAX_RISE : z;
++}
++
++static bool drawVoxel(const struct Snap* s, int cx, int cy, int href, int vref,
++                      uint32_t* out, struct PkWideView v, uint32_t alpha) {
++    if (v.w > VOXEL_MAX_W || v.h > VOXEL_MAX_H || v.w < 120 || v.h < 80) return false;
++
++    // Include the extra rows and columns the projected view can see. Align the
++    // source window to the live map grid so cell boundaries follow camera motion.
++    int margin = (v.h + 5) / 6;
++    int mx = margin + VOXEL_MAX_RISE / 3 + 4;
++    int left = voxelFloor(cx + v.x - mx, VOXEL_TILE) * VOXEL_TILE - cx;
++    int right = voxelFloor(cx + v.x + v.w + mx + VOXEL_TILE - 1, VOXEL_TILE) * VOXEL_TILE - cx;
++    int top = voxelFloor(cy + v.y - margin - VOXEL_TILE, VOXEL_TILE) * VOXEL_TILE - cy;
++    int bottom = voxelFloor(cy + v.y + v.h + margin + 2 * VOXEL_MAX_RISE + VOXEL_TILE - 1, VOXEL_TILE)
++        * VOXEL_TILE - cy;
++    int w = right - left, h = bottom - top;
++    if (w > BUF_W || h > BUF_H) return false;
++
++    static uint32_t* texture;
++    static size_t textureCap;
++    static uint16_t* depth;
++    static size_t depthCap;
++    size_t textureSize = (size_t) w * h, depthSize = (size_t) v.w * v.h;
++    if (textureCap < textureSize) {
++        uint32_t* next = realloc(texture, textureSize * sizeof(*texture));
++        if (!next) return false;
++        texture = next;
++        textureCap = textureSize;
++    }
++    if (depthCap < depthSize) {
++        uint16_t* next = realloc(depth, depthSize * sizeof(*depth));
++        if (!next) return false;
++        depth = next;
++        depthCap = depthSize;
++    }
++
++    uint8_t rises[((BUF_W + VOXEL_TILE - 1) / VOXEL_TILE) * ((BUF_H + VOXEL_TILE - 1) / VOXEL_TILE)];
++    int cols = w / VOXEL_TILE, rows = h / VOXEL_TILE;
++    int cellX = (cx + left) / VOXEL_TILE, cellY = (cy + top) / VOXEL_TILE;
++    for (int y = 0; y < rows; y++)
++        for (int x = 0; x < cols; x++)
++            rises[y * cols + x] = (uint8_t) terrainRise(s, cellX + x, cellY + y);
++
++    struct VoxelView voxel = { out, depth, texture, v.w, v.h, v.x + v.w / 2, v.y + v.h / 2,
++                               left, top, cols, rows, w, rises };
++    drawRegion(s, cx, cy, href, vref, left, top, right, bottom, false, texture, w, alpha, true);
++    voxelTerrain(&voxel);
++    drawObjects(s, cx, cy, left, top, right, bottom, texture, w, alpha, &voxel);
++
++    // Keep the location-name sign at its original screen anchor. Menus, dialogue, and
++    // scenes with other field UI already use the normal compositor.
++    for (int y = 0; y < POPUP_ROWS * 8; y++) {
++        if ((unsigned) (y - v.y) >= (unsigned) v.h) continue;
++        useLine(y);
++        if (!(io(0) & 0x100)) continue;
++        for (int x = 0; x < POPUP_COLS * 8; x++)
++            if ((unsigned) (x - v.x) < (unsigned) v.w && barEdge(x, y))
++                out[(y - v.y) * v.w + x - v.x] = realFrame[y * PK_WIDE_W + x];
++    }
++    useLive();
++    return true;
++}
++
+ static int viewInner(struct mCore* core, const uint32_t* frame, uint32_t* out, struct PkWideView v, uint32_t* centre) {
+     if (laterJoin) laterJoin();
+     if (gbGame) {
+@@ -4986,6 +5094,20 @@ static int viewInner(struct mCore* core, const uint32_t* frame, uint32_t* out, s
+         else lastTorn = 1;
+     }
+ 
++    if (voxelEnabled && voxelKnown && !centre && !inBattle && !overlayDim && !flyOn && !partnerReq.visible &&
++        lastScene == PK_WIDE_SCENE_FIELD && bestSnap >= 0 && prev >= 0 && !textUp() && !effectsUp()) {
++        needFrame();
++        if (drawVoxel(&snaps[bestSnap], bestCx, bestCy, bestH, bestV, out, v, alpha)) {
++#ifdef PK_WIDE_CACHE
++            holeLeft = false;
++            cachedLast = false;
++#endif
++            if (linesWanted && lineIoFrames < 2) lineIoFrames++;
++            prev = cur;
++            return 256;
++        }
++    }
++
+ #ifdef PK_WIDE_CACHE
+     holeLeft = false;
+     int cacheBgs = 0;
+diff --git a/app/src/main/cpp/pk_wide.h b/app/src/main/cpp/pk_wide.h
+index 596e0c7..b93a924 100644
+--- a/app/src/main/cpp/pk_wide.h
++++ b/app/src/main/cpp/pk_wide.h
+@@ -177,6 +177,10 @@ struct PkWideView {
+  */
+ int pk_wide_view(struct mCore* core, const uint32_t* frame, uint32_t* out, struct PkWideView view, uint32_t* centre);
+ 
++/** Optional projected field view for the CRC-pinned profiles. Toggle from the emulation thread. */
++void pk_wide_voxel(int on);
++int pk_wide_voxel_knows(uint32_t crc);
++
+ /** Instead of pk_wide_view, for a frame that won't be shown (fast-forward runs several per screen refresh): keeps the
+  * game's RAM after it, as the next frame drawn needs, without drawing anything - most of WIDE's cost. */
+ void pk_wide_skip(struct mCore* core, const uint32_t* frame);
+diff --git a/app/src/main/cpp/pk_wide_voxel.h b/app/src/main/cpp/pk_wide_voxel.h
+new file mode 100644
+index 0000000..8082cb7
+--- /dev/null
++++ b/app/src/main/cpp/pk_wide_voxel.h
+@@ -0,0 +1,107 @@
++// Private software renderer for the live GBA field view in pk_wide.c.
++#pragma once
++
++#include <stdint.h>
++
++#define VOXEL_TILE 16
++#define VOXEL_MAX_RISE 20
++#define VOXEL_MAX_W 480
++#define VOXEL_MAX_H 400
++
++struct VoxelView {
++    uint32_t* out;
++    uint16_t* depth;
++    const uint32_t* texture;
++    int width, height;
++    int centreX, centreY;
++    int left, top, cols, rows, stride;
++    const uint8_t* rises;
++};
++
++static int voxelFloor(int n, int d) {
++    return n >= 0 ? n / d : (n + 1) / d - 1;
++}
++
++static int voxelX(const struct VoxelView* v, int x, int y) {
++    return v->width / 2 + x - v->centreX + voxelFloor(y - v->centreY, 4);
++}
++
++static int voxelY(const struct VoxelView* v, int y, int z) {
++    return v->height / 2 + voxelFloor(3 * (y - v->centreY), 4) - z;
++}
++
++static int voxelRise(const struct VoxelView* v, int col, int row) {
++    if ((unsigned) col >= (unsigned) v->cols || (unsigned) row >= (unsigned) v->rows) return 0;
++    return v->rises[row * v->cols + col];
++}
++
++static int voxelRiseAt(const struct VoxelView* v, int x, int y) {
++    return voxelRise(v, voxelFloor(x - v->left, VOXEL_TILE), voxelFloor(y - v->top, VOXEL_TILE));
++}
++
++static void voxelPixel(const struct VoxelView* v, int x, int y, int worldY, uint32_t color) {
++    if ((unsigned) x >= (unsigned) v->width || (unsigned) y >= (unsigned) v->height) return;
++    int i = y * v->width + x;
++    int depth = worldY - v->top + 1;
++    if (depth < v->depth[i]) return;
++    v->out[i] = color;
++    v->depth[i] = (uint16_t) depth;
++}
++
++static uint32_t voxelShade(uint32_t color, unsigned strength) {
++    uint32_t rb = ((color & 0x00FF00FFu) * strength >> 8) & 0x00FF00FFu;
++    uint32_t g = ((color & 0x0000FF00u) * strength >> 8) & 0x0000FF00u;
++    return (color & 0xFF000000u) | rb | g;
++}
++
++static void voxelTerrain(const struct VoxelView* v) {
++    // The floor fills the output. The projection bounds in pk_wide.c include every sample.
++    for (int y = 0; y < v->height; y++) {
++        int worldY = v->centreY + voxelFloor(4 * (y - v->height / 2) + 3, 3);
++        int worldX = v->centreX - v->width / 2 - voxelFloor(worldY - v->centreY, 4);
++        int at = y * v->width;
++        const uint32_t* src = v->texture + (worldY - v->top) * v->stride + worldX - v->left;
++        for (int x = 0; x < v->width; x++) {
++            v->out[at + x] = src[x];
++            v->depth[at + x] = (uint16_t) (worldY - v->top + 1);
++        }
++    }
++
++    for (int row = 0; row < v->rows; row++) {
++        int y0 = v->top + row * VOXEL_TILE, y1 = y0 + VOXEL_TILE;
++        for (int col = v->cols - 1; col >= 0; col--) {
++            int rise = voxelRise(v, col, row);
++            if (!rise) continue;
++            int x0 = v->left + col * VOXEL_TILE;
++            int left = voxelRise(v, col - 1, row), front = voxelRise(v, col, row + 1);
++            int base = voxelY(v, y0, rise);
++            // West wall, seen along the slanted grid lines.
++            if (rise > left) {
++                for (int j = 0; j < VOXEL_TILE; j += 4) {
++                    int worldY = y0 + j;
++                    int x = voxelX(v, x0, worldY);
++                    int top = voxelY(v, worldY, rise);
++                    uint32_t color = v->texture[(row * VOXEL_TILE + j) * v->stride + col * VOXEL_TILE];
++                    for (int y = top; y < top + rise - left + 2; y++)
++                        voxelPixel(v, x, y, worldY + 2, voxelShade(color, 155));
++                }
++            }
++            // South wall, continuing the color of the live texture's front edge.
++            if (rise > front) {
++                int x = voxelX(v, x0, y1), top = voxelY(v, y1, rise);
++                const uint32_t* src = v->texture + (row * VOXEL_TILE + VOXEL_TILE - 1) * v->stride + col * VOXEL_TILE;
++                for (int i = 0; i < VOXEL_TILE; i++) {
++                    uint32_t color = voxelShade(src[i], 192);
++                    for (int y = top; y < top + rise - front; y++) voxelPixel(v, x + i, y, y1, color);
++                }
++            }
++            // The top uses nearest-neighbor texels, including the engine's animated palette and tile data.
++            for (int j = 0; j < VOXEL_TILE * 3 / 4; j++) {
++                int worldY = y0 + (j * 4 + 3) / 3;
++                int x = voxelX(v, x0, worldY);
++                const uint32_t* src = v->texture + (worldY - v->top) * v->stride + col * VOXEL_TILE;
++                for (int i = 0; i < VOXEL_TILE; i++) voxelPixel(v, x + i, base + j, worldY, src[i]);
++            }
++        }
++    }
++}
+diff --git a/app/src/main/cpp/pokedaisy_jni.c b/app/src/main/cpp/pokedaisy_jni.c
+index 408343d..6ee3d56 100644
+--- a/app/src/main/cpp/pokedaisy_jni.c
++++ b/app/src/main/cpp/pokedaisy_jni.c
+@@ -229,6 +229,17 @@ Java_com_pokedaisy_app_MgbaCore_pkWideConfigure(JNIEnv* env, jobject thiz, jint
+     g.wideCrc = pk_wide_configure(want) ? want : 0;
+ }
+ 
++JNIEXPORT jboolean JNICALL
++Java_com_pokedaisy_app_MgbaCore_pkWideVoxelKnows(JNIEnv* env, jobject thiz, jint crc) {
++    return pk_wide_voxel_knows((uint32_t) crc) ? JNI_TRUE : JNI_FALSE;
++}
++
++// Emulation thread, before the next frame.
++JNIEXPORT void JNICALL
++Java_com_pokedaisy_app_MgbaCore_pkWideSetVoxel(JNIEnv* env, jobject thiz, jboolean on) {
++    pk_wide_voxel(on != JNI_FALSE);
++}
++
+ // SCENE SPEEDS / AUTO-RUN / RUN INDOORS / WILD ENCOUNTERS: read the field with the tables of the game whose ROM has
+ // this CRC32 (0 = none), and its wild-encounter switch at wildFlag (0 = not found). Emu thread.
+ JNIEXPORT void JNICALL
+diff --git a/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt b/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt
+index 92aff49..5c80105 100644
+--- a/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt
++++ b/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt
+@@ -81,6 +81,7 @@ class EmulatorEngine(
+ 
+     /** WIDE's native tables for this game ([WideScreen.gameFor]), or [WideScreen.OFF]; applied between frames. */
+     @Volatile var wideGame = WideScreen.OFF
++    @Volatile var wideVoxelGame = WideScreen.OFF
+     /** A Game Boy game pk_wide_gb.c knows (its [WideScreen.gameFor]), EXPAND on or not: with EXPAND off it's configured
+      * anyway with nothing drawn, for its scene (the FIELD HUD's field read: a Game Boy game has no FfMenuWatch). */
+     @Volatile var gbSceneGame = WideScreen.OFF
+@@ -1314,6 +1315,7 @@ class EmulatorEngine(
+         var ffGroupStart = 0L
+         var rewindApplied = -1   // pkInit dropped any buffer: set it again for this core
+         var wideApplied = WideScreen.OFF   // pkInit starts with WIDE off
++        var voxelApplied = false
+         var wideFaultReported = false
+         var lastWideDraw = 0L
+         var frame = 0L
+@@ -1368,6 +1370,11 @@ class EmulatorEngine(
+                 wideApplied = wideWanted
+                 wideCamera?.reset()
+             }
++            val voxelWanted = !probeOnly && wideWanted != WideScreen.OFF && wideWanted == wideVoxelGame
++            if (voxelWanted != voxelApplied) {
++                MgbaCore.pkWideSetVoxel(voxelWanted)
++                voxelApplied = voxelWanted
++            }
+             val camera = wideCamera
+             if (probeOnly) {
+                 MgbaCore.pkWideSetView(0, 0, 0, 0)   // nothing drawn: the native side only works out the scene
+diff --git a/app/src/main/kotlin/com/pokedaisy/app/MgbaCore.kt b/app/src/main/kotlin/com/pokedaisy/app/MgbaCore.kt
+index 13e3fab..0de8b4b 100644
+--- a/app/src/main/kotlin/com/pokedaisy/app/MgbaCore.kt
++++ b/app/src/main/kotlin/com/pokedaisy/app/MgbaCore.kt
+@@ -90,6 +90,8 @@ object MgbaCore {
+ 
+     /** WIDE ([WideScreen]): draw the game whose ROM has this CRC32 ([WideScreen.gameFor]; 0 = off). Emu thread. */
+     external fun pkWideConfigure(crc: Int)
++    external fun pkWideVoxelKnows(crc: Int): Boolean
++    external fun pkWideSetVoxel(on: Boolean)
+     /** WIDE: whether pk_wide.c has tables for the ROM with this CRC32 (pk_wide_games.h). Any thread. */
+     external fun pkWideKnows(crc: Int): Boolean
+     /** WIDE and the field reads: know the ROM with CRC32 [crc] by [row] (a hack [com.pokedaisy.app.companion.data.RetailEngine]
+diff --git a/app/src/main/kotlin/com/pokedaisy/app/PokeDaisyActivity.kt b/app/src/main/kotlin/com/pokedaisy/app/PokeDaisyActivity.kt
+index a9efb0f..e428e2a 100644
+--- a/app/src/main/kotlin/com/pokedaisy/app/PokeDaisyActivity.kt
++++ b/app/src/main/kotlin/com/pokedaisy/app/PokeDaisyActivity.kt
+@@ -2424,6 +2424,13 @@ class PokeDaisyActivity : Activity() {
+             runOnUiThread { syncGameScreen() }
+         }
+         override val wideSupported get() = wideGame != WideScreen.OFF
++        override val voxelFieldSupported get() = wideSupported && MgbaCore.pkWideVoxelKnows(wideGame)
++        override val voxelField get() = gameAspect == GameAspect.WIDE && Prefs(this@PokeDaisyActivity).voxelFieldFor(romKey)
++        override fun setVoxelField(on: Boolean) {
++            if (!voxelFieldSupported) return
++            Prefs(this@PokeDaisyActivity).setVoxelFieldFor(romKey, on)
++            if (on) setGameAspect(GameAspect.WIDE) else runOnUiThread { syncGameScreen() }
++        }
+         override val lookAround get() = Prefs(this@PokeDaisyActivity).lookAround
+         override fun setLookAround(on: Boolean) {
+             Prefs(this@PokeDaisyActivity).lookAround = on
+@@ -4485,6 +4492,11 @@ class PokeDaisyActivity : Activity() {
+         syncTouchExtras()
+         if (::engine.isInitialized) {
+             engine.wideGame = if (aspect == GameAspect.WIDE) wideGame else WideScreen.OFF
++            engine.wideVoxelGame = if (companionSettings.voxelFieldSupported && companionSettings.voxelField) {
++                wideGame
++            } else {
++                WideScreen.OFF
++            }
+             // A Game Boy game's field read for the HUD is pk_wide_gb.c's scene, EXPAND or not.
+             engine.gbSceneGame = if (romIsGameBoy) wideGame else WideScreen.OFF
+         }
+diff --git a/app/src/main/kotlin/com/pokedaisy/app/Prefs.kt b/app/src/main/kotlin/com/pokedaisy/app/Prefs.kt
+index 6577e13..a8fea24 100644
+--- a/app/src/main/kotlin/com/pokedaisy/app/Prefs.kt
++++ b/app/src/main/kotlin/com/pokedaisy/app/Prefs.kt
+@@ -644,6 +644,12 @@ class Prefs(context: Context) {
+         get() = p.getBoolean("status_bar_on_companion", false)
+         set(v) = p.edit().putBoolean("status_bar_on_companion", v).apply()
+ 
++    fun voxelFieldFor(crc: String): Boolean = p.getBoolean("voxel_field_$crc", false)
++
++    fun setVoxelFieldFor(crc: String, enabled: Boolean) {
++        p.edit().putBoolean("voxel_field_$crc", enabled).apply()
++    }
++
+     /** How the game sits on the top screen: the GBA's 3:2, stretched to fill it, or WIDE (more of the
+      * map at the sides). Before WIDE this was a boolean, "stretch_game", which still picks STRETCH. */
+     var gameAspect: GameAspect
+diff --git a/app/src/main/kotlin/com/pokedaisy/app/companion/CompanionSettings.kt b/app/src/main/kotlin/com/pokedaisy/app/companion/CompanionSettings.kt
+index 5faea4c..5a27c43 100644
+--- a/app/src/main/kotlin/com/pokedaisy/app/companion/CompanionSettings.kt
++++ b/app/src/main/kotlin/com/pokedaisy/app/companion/CompanionSettings.kt
+@@ -444,6 +444,9 @@ interface CompanionSettings {
+ 
+     /** Whether WIDE knows the running game (WideScreen.gameFor); it shows as ORIGINAL otherwise. */
+     val wideSupported: Boolean get() = false
++    val voxelFieldSupported: Boolean get() = false
++    val voxelField: Boolean get() = false
++    fun setVoxelField(on: Boolean) {}
+ 
+     /** EXPAND's LOOK AROUND - see [com.pokedaisy.app.Prefs.lookAround]. */
+     val lookAround: Boolean get() = true
+diff --git a/app/src/main/kotlin/com/pokedaisy/app/companion/ui/CompanionSettingsScreen.kt b/app/src/main/kotlin/com/pokedaisy/app/companion/ui/CompanionSettingsScreen.kt
+index 48c158c..a939c55 100644
+--- a/app/src/main/kotlin/com/pokedaisy/app/companion/ui/CompanionSettingsScreen.kt
++++ b/app/src/main/kotlin/com/pokedaisy/app/companion/ui/CompanionSettingsScreen.kt
+@@ -788,6 +788,10 @@ private fun homeRows(
+                 )
+             }
+         },
++        if (s.voxelFieldSupported) SettingRow(
++            "VOXEL 3D", onOff(s.voxelField),
++            subtitle = "Experimental 3D overworld using Expand",
++        ) { s.setVoxelField(!s.voxelField); changed() } else null,
+         // EXPAND only: the zoom step from a list, for a device with no right stick (R3 is the ZOOM hotkey).
+         s.zoomSteps.takeIf { s.gameAspect == GameAspect.WIDE && it.size > 1 }?.let { steps ->
+             val labels = steps.map(::zoomLabel)

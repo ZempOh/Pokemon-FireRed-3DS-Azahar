@@ -1,15 +1,15 @@
-name: Build PokéDaisy hack profiles
+name: Build PokéDaisy voxel preview
 
 on:
   push:
-    branches: [pokedaisy-hack-profiles]
+    branches: [pokedaisy-voxel-field]
     paths: ['patches/pokedaisy/**', '.github/workflows/pokedaisy-profiles.yml']
 
 permissions:
   contents: read
 
 concurrency:
-  group: pokedaisy-hack-profiles
+  group: pokedaisy-voxel-field
   cancel-in-progress: true
 
 jobs:
@@ -56,12 +56,12 @@ jobs:
           validate-wrappers: false
       - name: Install Android dependencies
         run: sdkmanager --install "ndk;28.2.13676358" "cmake;3.22.1" "platforms;android-34"
-      - name: Build side-by-side development APK
+      - name: Build side-by-side voxel preview APK
         working-directory: pokedaisy
         run: ./gradlew :app:assembleDev --stacktrace
       - uses: actions/upload-artifact@v4
         with:
-          name: pokedaisy-profile-dev
+          name: pokedaisy-voxel-preview
           path: pokedaisy/app/build/outputs/apk/dev/*.apk
           if-no-files-found: error
           retention-days: 7

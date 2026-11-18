@@ -1,0 +1,18 @@
+diff --git a/src/text_printer.c b/src/text_printer.c
+index e3f4973..d043506 100644
+--- a/src/text_printer.c
++++ b/src/text_printer.c
+@@ -123,6 +123,13 @@ void RunTextPrinters(void)
+         {
+             if (sTextPrinters[i].active)
+             {
++#ifdef PORT_BRIDGE
++                // The split battle UI can render instant menu text while this printer is active.
++                const struct TextPrinterTemplate *template = &sTextPrinters[i].printerTemplate;
++                if (template->fgColor != sLastTextFgColor || template->bgColor != sLastTextBgColor
++                    || template->shadowColor != sLastTextShadowColor)
++                    GenerateFontHalfRowLookupTable(template->fgColor, template->bgColor, template->shadowColor);
++#endif
+                 u16 renderCmd = RenderFont(&sTextPrinters[i]);
+                 switch (renderCmd)
+                 {

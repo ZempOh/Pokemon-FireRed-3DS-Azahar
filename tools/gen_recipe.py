@@ -777,12 +777,21 @@ def main() -> None:
                                  pointer_mask(args.romfs, "gamedata/gamedata.bin", len(gd)))
         print("gen_recipe: %d symbol hints, %d record remaps for the game data" % (len(hints), len(remaps)))
     out = rcp.Recipe(engine_abi=abi, rom_sha1=sha1, release=args.release)
+    if args.gba_elf:
+        syms = vtree_manifest.gba_symbols(args.nm, args.gba_elf)
+        out.vtree = vtree_manifest.metadata(args.decomp, syms)
+        missing = [m["folder"] for m in out.vtree["maps"] if m["rom"] is None]
+        missing += [l["id"] for l in out.vtree["layouts"] if "name" in l and l["rom"] is None]
+        if missing:
+            raise SystemExit("gen_recipe: no ROM symbol for %s" % missing[:5])
     totals = {"copy": 0, "fill": 0, "pointer": 0, "literal": 0, "remap": 0, "translation": 0}
     domains: dict[str, dict] = {}
     own_masks: dict[str, bytearray] = {}
     per_file = []
     start = time.time()
-    for rel, path in staging.data_files(args.romfs):
+    for i, (rel, path) in enumerate(staging.data_files(args.romfs), 1):
+        if i == 1 or i % 250 == 0:
+            print(f"gen_recipe: processing file {i}: {rel}", flush=True)
         data = path.read_bytes()
         crc = zlib.crc32(data) & 0xFFFFFFFF
         if rel in GENERATED:
@@ -792,8 +801,14 @@ def main() -> None:
         is_gd = rel == "gamedata/gamedata.bin"
         breaks = layout_breaks(args.decomp) if rel == "maps/layouts.bin" else None
         own = translation_mask(data, runs, shorts) if runs else None
-        ops, patches, stats = cover.run(data, mask, hints if is_gd else None, remaps if is_gd else None,
-                                        breaks, own)
+        whole = rom.find(data) if data and mask is None else -1
+        if whole >= 0:
+            ops, patches = [["C", whole, len(data)]], []
+            stats = dict.fromkeys(totals, 0)
+            stats["copy"] = len(data)
+        else:
+            ops, patches, stats = cover.run(data, mask, hints if is_gd else None, remaps if is_gd else None,
+                                            breaks, own)
         entry = {"path": rel, "size": len(data), "crc": crc, "ops": ops}
         if patches:
             entry["patches"] = patches
@@ -813,12 +828,6 @@ def main() -> None:
         if stats["literal"]:
             per_file.append((stats["literal"], rel))
     if args.gba_elf:
-        syms = vtree_manifest.gba_symbols(args.nm, args.gba_elf)
-        out.vtree = vtree_manifest.metadata(args.decomp, syms)
-        missing = [m["folder"] for m in out.vtree["maps"] if m["rom"] is None]
-        missing += [l["id"] for l in out.vtree["layouts"] if "name" in l and l["rom"] is None]
-        if missing:
-            raise SystemExit("gen_recipe: no ROM symbol for %s" % missing[:5])
         lit_before = len(cover.literals)
         for rel in vtree_manifest.binary_inputs(args.decomp):
             data = (args.decomp / rel).read_bytes()

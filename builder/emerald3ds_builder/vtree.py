@@ -111,6 +111,8 @@ def build_tree(rom: bytes, recipe: Recipe, root: Path, progress=None) -> None:
             continue
         entry = {"id": item["id"], "name": item["name"]}
         entry.update(read_layout(rom, item["rom"], tilesets))
+        if "tileset_assembly" in meta:
+            entry["border_width"], entry["border_height"] = struct.unpack_from("<BB", rom, item["rom"] + 24)
         entry["border_filepath"] = item["border_filepath"]
         entry["blockdata_filepath"] = item["blockdata_filepath"]
         layouts.append(entry)
@@ -126,22 +128,34 @@ def build_tree(rom: bytes, recipe: Recipe, root: Path, progress=None) -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(record, indent=2), encoding="utf-8")
 
-    inc = root / "src" / "data" / "tilesets"
-    inc.mkdir(parents=True, exist_ok=True)
-    (inc / "metatiles.h").write_text(
-        "".join('const u16 %s[] = INCBIN_U16("%s");\n' % (n, p) for n, p in meta["metatiles_h"]),
-        encoding="utf-8")
-    (inc / "headers.h").write_text(
-        "".join("const struct Tileset %s =\n{\n    .metatiles = %s,\n};\n\n" % (n, m)
-                for n, m in meta["headers_h"]),
-        encoding="utf-8")
+    assembly = meta.get("tileset_assembly")
+    if assembly is not None:
+        inc = root / "data" / "tilesets"
+        inc.mkdir(parents=True, exist_ok=True)
+        (inc / "headers.inc").write_text(
+            "".join(f"{name}::\n" + "".join(f"    .4byte {symbol}\n" for symbol in symbols)
+                    for name, *symbols in assembly["headers"]), encoding="utf-8")
+        for table in ("metatiles", "graphics"):
+            (inc / f"{table}.inc").write_text(
+                "".join(f'{name}::\n    .incbin "{path}"\n' for name, path in assembly[table]),
+                encoding="utf-8")
+    else:
+        inc = root / "src" / "data" / "tilesets"
+        inc.mkdir(parents=True, exist_ok=True)
+        (inc / "metatiles.h").write_text(
+            "".join('const u16 %s[] = INCBIN_U16("%s");\n' % (n, p) for n, p in meta["metatiles_h"]),
+            encoding="utf-8")
+        (inc / "headers.h").write_text(
+            "".join("const struct Tileset %s =\n{\n    .metatiles = %s,\n};\n\n" % (n, m)
+                    for n, m in meta["headers_h"]),
+            encoding="utf-8")
     behaviors = meta.get("metatile_behaviors")
     if not behaviors:
         raise BuilderError("This release's recipe does not name the metatile behaviours.")
     const = root / "include" / "constants"
     const.mkdir(parents=True, exist_ok=True)
-    (const / "metatile_behaviors.h").write_text(
-        "enum {\n" + "".join("    %s = %d,\n" % (n, v) for n, v in behaviors) + "};\n",
-        encoding="utf-8")
+    text = ("".join(f"#define {n} {v:#04x}\n" for n, v in behaviors) if assembly is not None
+            else "enum {\n" + "".join("    %s = %d,\n" % (n, v) for n, v in behaviors) + "};\n")
+    (const / "metatile_behaviors.h").write_text(text, encoding="utf-8")
     if progress:
         progress(1.0)

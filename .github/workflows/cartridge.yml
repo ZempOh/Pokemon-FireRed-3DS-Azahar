@@ -2,7 +2,7 @@ name: Build browser cartridge engine
 
 on:
   push:
-    branches: [standalone-browser-output, thor-rendering-tuning]
+    branches: [standalone-browser-output, thor-rendering-tuning, graphics/azahar-frlg]
     paths: ['.github/workflows/cartridge.yml', '3ds_port/**', 'patches/**', 'tools/**']
   workflow_dispatch:
 

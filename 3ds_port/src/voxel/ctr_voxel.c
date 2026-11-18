@@ -6090,7 +6090,7 @@ void CtrVoxel_Draw(C3D_RenderTarget *target, float eyeOffset)
     VoxelLight light = LightFor(indoor), unlit = LightFor(true);
 #if CTR_VOXEL_LIGHTING
     light = ClimateLight(light, current != NULL && !indoor && !current->cave && !sBattle.on
-                         && VoxelWorld_Weather() == VOXEL_WEATHER_CLEAR);
+                         && VoxelWorld_ClimateAllowed());
 #endif
     bool dapples = DapplesOn(&light);
 #if CTR_VOXEL_LIGHTING

@@ -28,6 +28,8 @@ jobs:
         run: |
           python3 tools/bootstrap.py --dir build/upstream
           python3 3ds_port/tests/scanline_window_test.py --tree build/upstream
+          python3 3ds_port/tests/fr_battle_redraw_test.py
+          python3 3ds_port/tests/soft_video_upload_test.py
           make -C build/upstream -j2 tools
           make -C build/upstream -j2 generated
       - name: Compile native cartridge template

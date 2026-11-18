@@ -1,6 +1,16 @@
 # Graphics upgrade validation (2026-11-18)
 
-## FRLG+ battle pacing follow-up — Thor verified
+## FRLG+ battle pacing follow-up — further Thor retest pending
+
+The scanline-only build below is **withheld from publication**. Its idle
+selection result passed, but active battle checks still reached 58.3
+drawn FPS at 59.8 game FPS. The next candidate adds lower-screen dirty-band
+redraws, contiguous rounded raster fills and top texture uploads queued
+after FrameBegin. Host differential and upload-order tests pass; Thor
+steady, blinking-text, menu-interaction and actual-move checks are pending.
+No new ground/pacing bundle has been published.
+
+### Scanline-only v1 evidence — historical
 
 The software scanline compositor snapshots display/window/blend registers
 per scanline, builds a sparse object-window sprite list alongside the
@@ -9,7 +19,7 @@ uniform mode-0 windows. Split windows, affine backgrounds and live HBlank
 effects retain their general rendering paths. Image quality, game logic,
 the game clock and the automatic frame-skip policy are unchanged.
 
-The candidate passed the focused AYN Thor retest with Azahar
+The scanline-only candidate was tested on AYN Thor with Azahar
 2126.2-googleplay. Both steady samples used the same Route 1 save, Bulbasaur
 level 6 at 22/22 HP, settings, voxel battle mode and move-selection phase.
 The opponent was Rattata level 4 before and level 3 after; this is a
@@ -19,7 +29,7 @@ then the first 12 complete PROF windows and five complete PACE windows were
 retained in both revisions. Each PROF window spans 300 logical game frames;
 each PACE window spans 600.
 
-| Retained steady-selection metric | Before | Qualified build |
+| Retained steady-selection metric | Before | Scanline-only v1 |
 | --- | ---: | ---: |
 | Median of reported work-window averages | 12.660 ms | 9.265 ms |
 | Median of scanline-window averages | 9.62 ms | 6.16 ms |
@@ -29,8 +39,9 @@ each PACE window spans 600.
 | Game FPS in every retained PACE window | 59.8 | 59.8 |
 
 Reported work decreased 26.8%; every retained candidate PACE window reached
-59.8 drawn FPS. This passed the preregistered minimum of 10% lower reported
-work and at least 59.6 drawn FPS in every retained window. Active battle
+59.8 drawn FPS. This passed the idle thresholds of 10% lower reported
+work and at least 59.6 drawn FPS in every retained window, but the later
+active dips mean the broader pacing fix is not qualified. Active battle
 coverage was a separate visual/gameplay check: Growl lowered Attack, Tackle
 damaged and defeated Rattata, and the game returned to Route 1. Party then
 showed Bulbasaur at 12/22 HP, matching the battle. Categories and PP remained
@@ -39,7 +50,8 @@ The active Azahar track advanced with 0→0 underruns during both idle and
 active segments; system-wide mixer counters were excluded.
 
 `work` is elapsed BeginFrame-to-EndFrame time minus the renderer's recorded
-FrameBegin wait, clamped to zero. It includes FrameEnd and other blocking
+FrameBegin wait in `3ds_soft_video.c`, clamped to zero. It includes
+FrameEnd, synchronous uploads before FrameBegin in v1, and other blocking
 inside presentation, so it is not pure CPU or GPU execution time. Hidden
 frames use the renderer's most recent wait measurement; both revisions use
 the same profiler code. Section timings are inclusive and must not be
@@ -59,7 +71,7 @@ writes, including normal and object-window sprites whose output visibly
 changed. Both renderers matched byte for byte. OAM geometry is populated in
 VBlank; the slot-machine HBlank affine updates remain live per scanline.
 
-| Qualified artifact | Provenance |
+| Withheld scanline-only artifact | Provenance |
 | --- | --- |
 | Binary-producing commit | `e175dd3116da8ccdaec23df5eaa695dabb3077eb` |
 | Matching build and recipe | [44377149759](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/actions/runs/44377149759) |
@@ -68,11 +80,9 @@ VBlank; the slot-machine HBlank affine updates remain live per scanline.
 | Private Thor cartridge SHA-256 | `1ef165e9fe38203ca2164b4f07faae8d39585de7c4d5abd2a8be986f19ef177b` |
 
 The installed cartridge was pulled back and matched the candidate exactly.
-Use the [ground and pacing fixes bundle](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/VoxelGraphics-Ground-Pacing-Fixes-2026-11-18.zip)
-with your own matching ROM. It supersedes the earlier FRLG+ payloads; keep
-the engine and recipe from the same build. Private cartridge hashes are
-comparison identifiers only; ROMs, saves and generated game data are not
-published. Subsequent documentation-only commits retain this built code.
+The hashes above identify a local test candidate, not a published pacing fix.
+The next candidate has different code and will need fresh build hashes and
+device qualification. ROMs, saves and generated game data are not published.
 
 ## FRLG+ Bag follow-up — Thor verified
 

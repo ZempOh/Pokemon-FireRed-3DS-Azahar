@@ -1,10 +1,12 @@
 # FireRed & LeafGreen+ on AYN Thor
 
-## November 18 battle-pacing retest
+## November 18 battle-pacing retest — publication withheld
 
 Build `e175dd3116da8ccdaec23df5eaa695dabb3077eb`, from
 [run 44377149759](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/actions/runs/44377149759),
-passed the focused Thor checks. Cold Continue loaded the Route 1 fixture.
+passed the idle and visual checks, but later active cadence dipped to
+58.3 drawn FPS at 59.8 game FPS. This candidate was withheld; the next
+redraw/upload fix requires fresh Thor checks. Cold Continue loaded Route 1.
 Bulbasaur level 6 began at 22/22 HP against Rattata level 3; the baseline
 had Rattata level 4. With the same settings and move-selection phase, the
 first 12 complete 300-frame work windows and five complete 600-frame cadence
@@ -21,7 +23,7 @@ back and its SHA-256 matched the candidate.
 
 The comparison uses the same scene type, not an identical battle replay.
 Work is a reported elapsed-time metric with presentation waits treated as
-described in the [full measurement notes](graphics-upgrade.md#frlg-battle-pacing-follow-up--thor-verified).
+described in the [full measurement notes](graphics-upgrade.md#frlg-battle-pacing-follow-up--further-thor-retest-pending).
 The active segment verifies gameplay and rendering; it is not a controlled
 timing benchmark. No whole-game zero-stutter claim is made.
 

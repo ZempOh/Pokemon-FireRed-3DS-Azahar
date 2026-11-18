@@ -28,6 +28,8 @@ enum
     PORT_PROF_LAYERS,     /* compositor: layer textures */
     PORT_PROF_DRAW,       /* compositor: geometry for the frame */
     PORT_PROF_FRAMEEND,   /* C3D_FrameEnd */
+    PORT_PROF_BOTTOM,     /* native lower-screen snapshot and redraw */
+    PORT_PROF_UPLOAD,     /* software frame/UI conversion and queued upload */
     PORT_PROF_COUNT
 };
 

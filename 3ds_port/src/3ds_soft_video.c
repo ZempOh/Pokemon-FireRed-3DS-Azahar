@@ -24,6 +24,7 @@
 #include "3ds_platform.h"
 #include "3ds_softvideo.h"
 #include "3ds_video.h"
+#include "../compat/port_prof.h"
 #include "voxel/ctr_voxel.h"
 #include "voxel/voxel_battle.h"
 #include <math.h>
@@ -249,6 +250,7 @@ static void GpuUpload(void)
     /* Menus and several transition frames reuse the same 2D picture. */
     if (sFrameUploaded && memcmp(sUploadedFrame, sFrame, sizeof(sUploadedFrame)) == 0)
         return;
+    PORT_PROF_BEGIN(upload);
     memcpy(sUploadedFrame, sFrame, sizeof(sUploadedFrame));
     sFrameUploaded = true;
 
@@ -263,6 +265,7 @@ static void GpuUpload(void)
     GSPGPU_FlushDataCache(sLinear, TEX_DIM * UP_H * sizeof(uint16_t));
     C3D_SyncDisplayTransfer((u32 *)sLinear, GX_BUFFER_DIM(TEX_DIM, TEX_DIM),
                             (u32 *)sFrameTex.data, GX_BUFFER_DIM(TEX_DIM, TEX_DIM), TILE_TRANSFER_FLAGS);
+    PORT_PROF_END(upload, PORT_PROF_UPLOAD);
 }
 
 static void GpuUploadUi(const uint16_t *pixels)
@@ -272,6 +275,7 @@ static void GpuUploadUi(const uint16_t *pixels)
     /* The overlay is often unchanged across several overworld frames. */
     if (sUiUploaded && memcmp(sUploadedUi, pixels, sizeof(sUploadedUi)) == 0)
         return;
+    PORT_PROF_BEGIN(upload);
     memcpy(sUploadedUi, pixels, sizeof(sUploadedUi));
     sUiUploaded = true;
     ++sUiRevision;
@@ -291,6 +295,7 @@ static void GpuUploadUi(const uint16_t *pixels)
     GSPGPU_FlushDataCache(sUiLinear, TEX_DIM * UP_H * sizeof(uint16_t));
     C3D_SyncDisplayTransfer((u32 *)sUiLinear, GX_BUFFER_DIM(TEX_DIM, TEX_DIM),
                             (u32 *)sUiTex.data, GX_BUFFER_DIM(TEX_DIM, TEX_DIM), UI_TRANSFER_FLAGS);
+    PORT_PROF_END(upload, PORT_PROF_UPLOAD);
 }
 
 #if CTR_VOXEL_ENABLED
@@ -382,7 +387,7 @@ static void BannerEdges(void)
 
 static void GpuPresent(void)
 {
-    uint64_t start = svcGetSystemTick(), drawStart, beginTick;
+    uint64_t start = svcGetSystemTick(), drawStart, beginTick, uploadEnd;
 
     PlacePicture();
     C2D_Image image = { &sFrameTex, &sFrameSub };
@@ -414,6 +419,15 @@ static void GpuPresent(void)
      * the 2D picture - it flashed in for a moment as a warp faded in. */
     bool warming = false;
 
+    drawStart = svcGetSystemTick();
+    /* Wait before reusing either upload buffer. Inside a frame, display
+     * transfers queue ahead of the draws instead of blocking for completion.
+     * The next FrameBegin drains that queue before these buffers change. */
+    if (!C3D_FrameBegin(C3D_FRAME_SYNCDRAW))
+        return;
+    beginTick = svcGetSystemTick();
+    sStats.waitMs = (beginTick - drawStart) * 1000.0f / SYSCLOCK_ARM11;
+
     if (held)
         GpuUploadUi(captureHeld ? sLastUi : sHoldUi);
     else if (sFrame && !voxel && sFrameDrawn)
@@ -422,9 +436,8 @@ static void GpuPresent(void)
         warming = true;     /* no picture this frame: black under the UI */
     if (voxel || warming)
         GpuUploadUi(sUi);
-    drawStart = svcGetSystemTick();
-    /* Begin waits for the previous frame and paces to the screen's 60 Hz. */
-    C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+    uploadEnd = svcGetSystemTick();
+    PORT_PROF_BEGIN(draw);
     /* The PICA's texture cache dropped before anything samples what the
      * transfers above wrote. Citro3D asks for that only when a texture
      * binding changes, and Citro2D rebinds only a texture other than the one
@@ -433,8 +446,6 @@ static void GpuPresent(void)
      * (found by the Emerald port with hardware dumps; Azahar has no such
      * cache). The same bit Citro3D's own context update writes. */
     GPUCMD_AddMaskedWrite(GPUREG_TEXUNIT_CONFIG, 0x4, 1u << 16);
-    beginTick = svcGetSystemTick();
-    sStats.waitMs = (beginTick - drawStart) * 1000.0f / SYSCLOCK_ARM11;
     sVoxelUploads = 0;
 #if CTR_VOXEL_ENABLED
     /* The world's chunks and atlas may not be ready yet (a new map): the 2D
@@ -531,7 +542,10 @@ static void GpuPresent(void)
         C2D_SceneBegin(sTop);
         C2D_DrawImageAt(image, sPicX, 0.0f, 0.5f, NULL, sPicScaleX / UP, DRAW_SCALE);
     }
+    PORT_PROF_END(draw, PORT_PROF_DRAW);
+    PORT_PROF_BEGIN(frameEnd);
     C3D_FrameEnd(0);
+    PORT_PROF_END(frameEnd, PORT_PROF_FRAMEEND);
     /* the 2D picture went unseen: the game side needs not draw the next */
     sDrewVoxel = voxel || warmingUp;
 #if CTR_VOXEL_ENABLED
@@ -540,7 +554,7 @@ static void GpuPresent(void)
 #endif
     /* C3D_FrameBegin paces the frames to the screen's 60 Hz (its frame rate
      * limit); a second wait here would halve that. */
-    sStats.cpuMs = (drawStart - start) * 1000.0f / SYSCLOCK_ARM11;
+    sStats.cpuMs = ((drawStart - start) + (uploadEnd - beginTick)) * 1000.0f / SYSCLOCK_ARM11;
 }
 #endif
 

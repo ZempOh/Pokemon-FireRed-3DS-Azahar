@@ -15,11 +15,11 @@
 unsigned char g_PortLogActive;
 void Port_Log_Printf(const char *fmt, ...) { (void)fmt; }
 const void *Port_ResolveAssetPointer(const void *p) { return p; }
-static const int kPrimary = 1, kSecondary = 2;
+static int kPrimary = 1, kSecondary = 2;
 static bool sDerived;
 static const struct MapLayout sDerivedLayout = {
-    .primaryTileset = (const struct Tileset *)&kPrimary,
-    .secondaryTileset = (const struct Tileset *)&kSecondary
+    .primaryTileset = (struct Tileset *)&kPrimary,
+    .secondaryTileset = (struct Tileset *)&kSecondary
 };
 bool VoxelBuildings_Variant(unsigned i, unsigned *layout, unsigned *metatile, unsigned *quarters)
 {
@@ -50,9 +50,10 @@ int VoxelRelief_CutFringe(const uint8_t *rows, const uint16_t clear[16], int x, 
     (void)rows; (void)clear;
     return sFringe && x == 1 && y == 0 ? 17 : -1;
 }
-static uint8_t sPrimaryTiles[512 * 32], sSecondaryTiles[512 * 32];
+static uint8_t sPrimaryTiles[NUM_TILES_IN_PRIMARY * 32];
+static uint8_t sSecondaryTiles[(NUM_TILES_TOTAL - NUM_TILES_IN_PRIMARY) * 32];
 static uint16_t sPrimaryPalettes[16 * 16], sSecondaryPalettes[16 * 16];
-static uint16_t sMetatiles[1024 * 8];
+static uint16_t sMetatiles[NUM_METATILES_TOTAL * NUM_TILES_PER_METATILE];
 static uint8_t sUsed[1024];
 void VoxelWorld_MarkUsedMetatiles(const void *p, const void *s, uint8_t *used)
 {
@@ -63,12 +64,13 @@ bool Voxel_LoadTiles(const void *t, uint8_t *d, uint32_t n)
 {
     if (t != &kPrimary && t != &kSecondary)
         return false;
-    memcpy(d, t == &kPrimary ? sPrimaryTiles : sSecondaryTiles, n < 512 * 32 ? n : 512 * 32);
+    uint32_t bytes = t == &kPrimary ? sizeof(sPrimaryTiles) : sizeof(sSecondaryTiles);
+    memcpy(d, t == &kPrimary ? sPrimaryTiles : sSecondaryTiles, n < bytes ? n : bytes);
     return true;
 }
 const uint16_t *Voxel_ResolveMetatiles(const void *t)
 {
-    return t == &kPrimary ? sMetatiles : t == &kSecondary ? sMetatiles + 512 * 8 : NULL;
+    return t == &kPrimary ? sMetatiles : t == &kSecondary ? sMetatiles + NUM_METATILES_IN_PRIMARY * NUM_TILES_PER_METATILE : NULL;
 }
 const uint16_t *Voxel_ResolvePalettes(const void *t)
 {
@@ -84,7 +86,7 @@ static void ReferenceCompose(const struct AtlasSource *src, const uint16_t *entr
     unsigned baseX = (slot % VOXEL_ATLAS_COLUMNS) * VOXEL_ATLAS_SLOT;
     unsigned baseY = (slot / VOXEL_ATLAS_COLUMNS) * VOXEL_ATLAS_SLOT;
 
-    for (unsigned layer = 0; layer < 2; ++layer)
+    for (unsigned layer = 0; layer < NUM_TILES_PER_METATILE / 4; ++layer)
         for (unsigned quadrant = 0; quadrant < 4; ++quadrant)
         {
             unsigned dstX = (quadrant % 2) * SUBTILE_PX, dstY = (quadrant / 2) * SUBTILE_PX;
@@ -119,7 +121,7 @@ static void ReferenceCompose(const struct AtlasSource *src, const uint16_t *entr
 
 static bool ReferenceBlack(const struct AtlasSource *src, const uint16_t *entries)
 {
-    for (unsigned layer = 0; layer < 2; ++layer)
+    for (unsigned layer = 0; layer < NUM_TILES_PER_METATILE / 4; ++layer)
         for (unsigned quadrant = 0; quadrant < 4; ++quadrant)
         {
             uint16_t entry = entries[layer * 4 + quadrant];
@@ -168,10 +170,9 @@ static bool NoTime(void)
 static void Fill(unsigned blackEvery)
 {
     for (unsigned i = 0; i < sizeof(sPrimaryTiles); ++i)
-    {
         sPrimaryTiles[i] = (uint8_t)Random();
+    for (unsigned i = 0; i < sizeof(sSecondaryTiles); ++i)
         sSecondaryTiles[i] = (uint8_t)Random();
-    }
     /* A few all-zero tiles, which only draw the backdrop and layer 1 keys out. */
     memset(sPrimaryTiles + 7 * 32, 0, 32);
     memset(sSecondaryTiles + 9 * 32, 0, 32);
@@ -193,14 +194,14 @@ static void Run(struct AtlasSource *src, unsigned trials, unsigned *blacks)
     InitMorton();
     for (unsigned t = 0; t < trials; ++t)
     {
-        uint16_t entries[8];
+        uint16_t entries[NUM_TILES_PER_METATILE];
         unsigned slot = Random() % VOXEL_SOLID_BASE;
         bool black;
 
-        for (unsigned e = 0; e < 8; ++e)
+        for (unsigned e = 0; e < NUM_TILES_PER_METATILE; ++e)
             entries[e] = (uint16_t)(Random() & 0xFFFF);
         if (t % 5 == 0)
-            entries[Random() % 8] = (uint16_t)((Random() & 0xF000) | 7); /* blank tile */
+            entries[Random() % NUM_TILES_PER_METATILE] = (uint16_t)((Random() & 0xF000) | 7); /* blank tile */
         memset(sNew, 0x5A, sizeof(sNew));
         memset(sOld, 0x5A, sizeof(sOld));
         black = ComposeMetatile(src, entries, sNew, slot, 0, NULL);
@@ -348,7 +349,7 @@ static void PagedAtlases(void)
                 unsigned slot = job.map.slotOf[m] - 1u;
                 assert(job.map.slotOf[m] != VOXEL_SLOT_ABSENT);
                 if (slot / VOXEL_ATLAS_MAX_SLOTS == job.page)
-                    ReferenceCompose(&src, sMetatiles + m * 8u, sOld, slot % VOXEL_ATLAS_MAX_SLOTS);
+                    ReferenceCompose(&src, sMetatiles + m * NUM_TILES_PER_METATILE, sOld, slot % VOXEL_ATLAS_MAX_SLOTS);
             }
             assert(memcmp(dest, sOld, sizeof(sOld)) == 0);
             for (unsigned i = VOXEL_ATLAS_PIXELS; i < VOXEL_ATLAS_PIXELS + 16; ++i)
@@ -401,8 +402,8 @@ static void AnimatedTiles(void)
     sUsed[1] = sUsed[2] = 1;
     for (unsigned t = 0; t < 4; ++t)
     {
-        sMetatiles[1 * 8 + t] = 432;
-        sMetatiles[2 * 8 + t] = 10;
+        sMetatiles[1 * NUM_TILES_PER_METATILE + t] = 432;
+        sMetatiles[2 * NUM_TILES_PER_METATILE + t] = 10;
     }
     Fill(0);
     assert(VoxelAtlas_Build(&inst, sOneGo, &map, false));
@@ -428,9 +429,9 @@ static void AnimatedTiles(void)
     src.primaryPalettes = sPrimaryPalettes;
     src.secondaryPalettes = sSecondaryPalettes;
     src.primaryMetatiles = sMetatiles;
-    src.secondaryMetatiles = sMetatiles + 512 * 8;
+    src.secondaryMetatiles = sMetatiles + NUM_METATILES_IN_PRIMARY * NUM_TILES_PER_METATILE;
     memset(sOld, 0, sizeof(sOld));
-    ReferenceCompose(&src, sMetatiles + 8, sOld, slot1);
+    ReferenceCompose(&src, sMetatiles + NUM_TILES_PER_METATILE, sOld, slot1);
     for (unsigned y = 0; y < 16; ++y)
         for (unsigned x = 0; x < 16; ++x)
         {
@@ -455,7 +456,7 @@ static void AnimatedTiles(void)
         {
             sUsed[id] = 1;
             for (unsigned t = 0; t < 4; ++t)
-                sMetatiles[id * 8 + t] = (id == 5 || id == 40 || id == 66) ? 432 : 10;
+                sMetatiles[id * NUM_TILES_PER_METATILE + t] = (id == 5 || id == 40 || id == 66) ? 432 : 10;
         }
         Fill(0);
         assert(VoxelAtlas_Build(&inst, sOneGo, &map, false));
@@ -540,12 +541,12 @@ static void AnimatedTiles(void)
         {
             VoxelAnim_Begin(&sPass, dirty);
             assert(VoxelAnim_AddAtlas(&sPass, 1, &inst, true, &map, live) && sPass.targets == 3);
-            sMetatiles[66 * 8 + 5] = 600;
+            sMetatiles[66 * NUM_TILES_PER_METATILE + 5] = NUM_TILES_IN_PRIMARY + 88;
             VoxelAnim_Begin(&sPass, dirty);
             assert(VoxelAnim_AddAtlas(&sPass, 1, &inst, true, &map, live) && sPass.targets == 2);
             VoxelAnim_Begin(&sPass, dirty);
             assert(VoxelAnim_AddAtlas(&sPass, 0, &inst, false, &map, live) && sPass.targets == 3);
-            sMetatiles[66 * 8 + 5] = 0;
+            sMetatiles[66 * NUM_TILES_PER_METATILE + 5] = 0;
         }
         memset(dirty, 0, sizeof(dirty));
         assert(VoxelAtlas_RefreshAnimatedPageRows(&inst, &map, 0, sOneGo, live, dirty, &rows) == 0
@@ -560,7 +561,7 @@ static void AnimatedTiles(void)
             memset(sMetatiles, 0, sizeof(sMetatiles));
             for (unsigned id = 1; id <= 70; ++id)
                 for (unsigned t = 0; t < 4; ++t)
-                    sMetatiles[id * 8 + t] = (id == 5 || id == 8 || id == 12 || id == 30) ? 432 : 10 + id + t;
+                    sMetatiles[id * NUM_TILES_PER_METATILE + t] = (id == 5 || id == 8 || id == 12 || id == 30) ? 432 : 10 + id + t;
             Fill(0);
             assert(VoxelAtlas_Build(&inst, sOneGo, &map, false));
             memcpy(live, sPrimaryTiles, sizeof(sPrimaryTiles));
@@ -626,7 +627,7 @@ static void DerivedPages(void)
     memset(sPrimaryTiles, 0, 32); /* transparent upper layer */
     memset(sMetatiles, 0, sizeof(sMetatiles));
     for (unsigned m = 0; m < 1024; ++m)
-        for (unsigned q = 0; q < 4; ++q) sMetatiles[m * 8 + q] = 432;
+        for (unsigned q = 0; q < 4; ++q) sMetatiles[m * NUM_TILES_PER_METATILE + q] = 432;
     memset(sUsed, 1, sizeof(sUsed));
     sUsed[1023] = 2; /* Visible material precedes all prefetch ids. */
     memcpy(live, sPrimaryTiles, sizeof(sPrimaryTiles));
@@ -653,7 +654,7 @@ static void DerivedPages(void)
             if (slot / VOXEL_ATLAS_MAX_SLOTS != job.page) continue;
             unsigned local = slot % VOXEL_ATLAS_MAX_SLOTS;
             unsigned base = m < 1024 ? m : m < VOXEL_CUT_FIRST ? m - 1024 : m - VOXEL_CUT_FIRST;
-            ReferenceCompose(&src, sMetatiles + base * 8, sOld, local);
+            ReferenceCompose(&src, sMetatiles + base * NUM_TILES_PER_METATILE, sOld, local);
             if (m >= VOXEL_CUT_FIRST)
                 sOld[CtrVideo_Texel(local % VOXEL_ATLAS_COLUMNS * 16,
                                      local / VOXEL_ATLAS_COLUMNS * 16, VOXEL_ATLAS_W)] &= (uint16_t)~1u;
@@ -705,12 +706,12 @@ static void DerivedPages(void)
         memset(live + 10 * 32, 0x22, 32);
         for (unsigned q = 0; q < 4; ++q)
         {
-            sMetatiles[3 * 8 + q] = 432;
-            sMetatiles[3 * 8 + 4 + q] = 10;
+            sMetatiles[3 * NUM_TILES_PER_METATILE + q] = 432;
+            sMetatiles[3 * NUM_TILES_PER_METATILE + 4 + q] = 10;
         }
         VoxelAnim_Begin(&sPass, dirty);
         assert(VoxelAnim_AddAtlas(&sPass, 0, &inst, false, &one, live) && sPass.targets == 0);
-        sMetatiles[3 * 8 + 4 + 2] = 0;
+        sMetatiles[3 * NUM_TILES_PER_METATILE + 4 + 2] = 0;
         VoxelAnim_Begin(&sPass, dirty);
         assert(VoxelAnim_AddAtlas(&sPass, 0, &inst, false, &one, live) && sPass.targets == 1);
     }
@@ -721,7 +722,7 @@ static void DerivedPages(void)
  * pixel without alpha, its fringe pixel the colour of the rock beside. */
 static void CutPlans(const struct AtlasSource *src)
 {
-    static const uint16_t entries[8] = {5 | 2 << 12, 6, 7 | 1 << 10, 8, 0, 0, 0, 0};
+    static const uint16_t entries[NUM_TILES_PER_METATILE] = {5 | 2 << 12, 6, 7 | 1 << 10, 8, 0, 0, 0, 0};
     uint8_t rows[32] = {0x03};
     uint16_t plain[256], cut[256];
 

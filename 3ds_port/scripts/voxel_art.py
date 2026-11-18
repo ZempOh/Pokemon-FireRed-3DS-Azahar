@@ -44,6 +44,9 @@ def _tileset_paths(filename, prefix):
 METATILES = _tileset_paths("metatiles.inc", "gMetatiles_")
 ATTRIBUTES = _tileset_paths("metatiles.inc", "gMetatileAttributes_")
 GRAPHICS = _tileset_paths("graphics.inc", "gTilesetTiles_")
+# Classic defines the general primary art in src/graphics.c, outside graphics.inc.
+GRAPHICS.setdefault("gTileset_General",
+                    os.path.join(ROOT, "data", "tilesets", "primary", "general", "tiles.4bpp.lz"))
 
 
 def read_u16(path):

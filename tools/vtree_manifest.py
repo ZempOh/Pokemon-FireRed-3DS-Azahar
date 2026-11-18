@@ -56,7 +56,8 @@ def binary_inputs(root: Path) -> list[str]:
         for key in ("blockdata_filepath", "border_filepath"):
             if key in entry:
                 files.append(entry[key])
-    if (root / TILESETS / "headers.inc").exists():
+    assembly = (root / TILESETS / "headers.inc").exists()
+    if assembly:
         files.extend(path for prefix in ("gMetatiles_", "gMetatileAttributes_")
                      for _, path in incbins(root, "metatiles.inc", prefix))
     else:
@@ -75,10 +76,12 @@ def binary_inputs(root: Path) -> list[str]:
                 if (folder / "palettes" / ("%02d.gbapal" % i)).exists():
                     files.append(rel + "/palettes/%02d.gbapal" % i)
     files += [f for f in ANIM_FRAMES if (root / f).exists()]
-    # The intro's leaves scene, for scripts/gen_intro_margins.py.
-    scene = root / "graphics/intro/scene_1"
-    files += [p.relative_to(root).as_posix() for p in
-              [scene / "bg.4bpp"] + [scene / ("bg%d_map.bin" % i) for i in range(4)] if p.exists()]
+    # Emerald's leaves intro files remain in the Classic source tree, but its
+    # ROM never uses them. Only the legacy C-tileset build needs those inputs.
+    if not assembly:
+        scene = root / "graphics/intro/scene_1"
+        files += [p.relative_to(root).as_posix() for p in
+                  [scene / "bg.4bpp"] + [scene / ("bg%d_map.bin" % i) for i in range(4)] if p.exists()]
     seen, ordered = set(), []
     for f in files:
         if f not in seen:

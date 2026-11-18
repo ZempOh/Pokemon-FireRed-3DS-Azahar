@@ -135,8 +135,6 @@ ROMFS_SHADER_OUTS += romfs/voxel/trees.rgba5551
 ROMFS_SHADER_OUTS += romfs/voxel/signposts.bin
 ROMFS_SHADER_OUTS += romfs/voxel/buildings.bin
 ROMFS_SHADER_OUTS += romfs/voxel/relief.bin
-# New art around the intro's leaves scene (scripts/gen_intro_margins.py).
-ROMFS_SHADER_OUTS += romfs/stage/leaves.bin
 # The bottom screen's battle menus: the port's own art (scripts/gen_battle_art.py).
 ROMFS_SHADER_OUTS += romfs/bottom/battle.bin
 # The bottom screen's menu backdrop: the port's own art (scripts/gen_menu_art.py).
@@ -468,10 +466,9 @@ map-includes:
 # Voxel generators read converted tiles/palettes directly. On a fresh checkout
 # those files do not exist until the asset stage, which runs after the link.
 # Build the shared inputs before any generator (one recursive make, not one
-# process per palette). Include the intro image for the same reason.
+# process per palette).
 VOXEL_GFX_SOURCES := $(wildcard $(ROOT)/data/tilesets/primary/*/tiles.png $(ROOT)/data/tilesets/secondary/*/tiles.png)
 VOXEL_GFX_SOURCES += $(wildcard $(ROOT)/data/tilesets/primary/*/palettes/*.pal $(ROOT)/data/tilesets/secondary/*/palettes/*.pal)
-VOXEL_GFX_SOURCES += $(wildcard $(ROOT)/graphics/intro/scene_1/bg.png)
 # The tileset animations a model's texels follow (voxel_building_specs.py
 # FOUNTAIN_ANIM: Rustboro's fountain; MAUVILLE_GYM_GATES: the gym's barriers).
 VOXEL_GFX_SOURCES += $(wildcard $(ROOT)/data/tilesets/secondary/rustboro/anim/fountain/*.png)
@@ -481,7 +478,7 @@ VOXEL_GFX_OUTPUTS += $(patsubst %.pal,%.gbapal,$(filter %.pal,$(VOXEL_GFX_SOURCE
 ifneq ($(strip $(VOXEL_GFX_OUTPUTS)),)
 $(VOXEL_GFX_OUTPUTS) &: $(VOXEL_GFX_SOURCES)
 	+$(MAKE) -C $(ROOT) $(patsubst $(ROOT)/%,%,$(VOXEL_GFX_OUTPUTS))
-romfs/voxel/regions.bin romfs/voxel/signposts.bin romfs/voxel/buildings.bin romfs/voxel/relief.bin romfs/stage/leaves.bin: $(VOXEL_GFX_OUTPUTS)
+romfs/voxel/regions.bin romfs/voxel/signposts.bin romfs/voxel/buildings.bin romfs/voxel/relief.bin: $(VOXEL_GFX_OUTPUTS)
 endif
 
 # What every cell of every layout IS (the console reads its signposts).
@@ -557,11 +554,6 @@ romfs/bottom/menu.bin: scripts/gen_menu_art.py scripts/gen_battle_art.py
 romfs/battle/hud.bin: scripts/gen_battle_hud.py
 	@mkdir -p $(@D)
 	"$(PYTHON)" scripts/gen_battle_hud.py --output $@
-romfs/stage/leaves.bin: scripts/gen_intro_margins.py $(ROOT)/graphics/intro/scene_1/bg.4bpp \
-		$(wildcard $(ROOT)/graphics/intro/scene_1/bg?_map.bin)
-	@mkdir -p $(@D)
-	"$(PYTHON)" scripts/gen_intro_margins.py --output $@
-
 HOST_VOXEL_DEFS := -D'PORT_LOG(...)=((void)0)' -DVOXEL_HOST_FILES
 
 .PHONY: verify-voxel-trees
@@ -617,7 +609,8 @@ build/voxel_atlas_test.exe: tests/voxel_atlas_test.c src/voxel/voxel_atlas.c src
         src/3ds_video_decode.c src/voxel/voxel_grade.c src/voxel/voxel_grade.h $(HOST_MAP_HEADERS)
 	@mkdir -p $(@D)
 	$(HOSTCC) -std=gnu99 -O2 -DPORTABLE -DMODERN=1 -D__INTELLISENSE__ \
-		-iquote compat -iquote ../include -Iinclude -Isrc/voxel tests/voxel_atlas_test.c src/voxel/voxel_grade.c -o $@
+		-iquote compat -iquote ../include -iquote ../gflib -Iinclude -Isrc/voxel \
+		tests/voxel_atlas_test.c src/voxel/voxel_grade.c -o $@
 
 verify: verify-voxel-trees
 verify-voxel-trees: build/voxel_tree_test.exe

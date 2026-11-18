@@ -171,7 +171,9 @@ static const OptCatDef sCats[CAT_COUNT] = {
     {CTR_TEXT("CHEATS", "TRUCOS", "ASTUCES", "TRUCCHI", "TRAPAÇAS", "CHEATS", "チート"), sGroupsCheats, ARRAY_COUNT(sGroupsCheats)},
 };
 
-#define OPT_GROUPS_MAX 4
+#define OPT_GROUPS_MAX 5
+_Static_assert(ARRAY_COUNT(sGroupsWorld) <= OPT_GROUPS_MAX, "world options group capacity");
+_Static_assert(ARRAY_COUNT(sGroupsCheats) <= OPT_GROUPS_MAX, "cheat options group capacity");
 #define OPT_ROWS_MAX 6
 
 /* A row as it is in this build: its definition and, for an extra, its line. */

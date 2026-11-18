@@ -88,7 +88,7 @@ jobs:
         run: make -C build/upstream/3ds_port verify PYTHON=python3
 
   builder-recipe:
-    if: github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[classic-recipe]')
     runs-on: ubuntu-latest
     container: devkitpro/devkitarm:latest
     steps:

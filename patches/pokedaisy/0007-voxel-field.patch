@@ -317,10 +317,10 @@ index 596e0c7..b93a924 100644
  void pk_wide_skip(struct mCore* core, const uint32_t* frame);
 diff --git a/app/src/main/cpp/pk_wide_voxel.h b/app/src/main/cpp/pk_wide_voxel.h
 new file mode 100644
-index 0000000..8082cb7
+index 0000000..ccc2d8e
 --- /dev/null
 +++ b/app/src/main/cpp/pk_wide_voxel.h
-@@ -0,0 +1,107 @@
+@@ -0,0 +1,113 @@
 +// Private software renderer for the live GBA field view in pk_wide.c.
 +#pragma once
 +
@@ -353,6 +353,10 @@ index 0000000..8082cb7
 +    return v->height / 2 + voxelFloor(3 * (y - v->centreY), 4) - z;
 +}
 +
++static int voxelWorldY(const struct VoxelView* v, int y, int z) {
++    return v->centreY + voxelFloor(4 * (y - v->height / 2 + z) + 3, 3);
++}
++
 +static int voxelRise(const struct VoxelView* v, int col, int row) {
 +    if ((unsigned) col >= (unsigned) v->cols || (unsigned) row >= (unsigned) v->rows) return 0;
 +    return v->rises[row * v->cols + col];
@@ -380,7 +384,7 @@ index 0000000..8082cb7
 +static void voxelTerrain(const struct VoxelView* v) {
 +    // The floor fills the output. The projection bounds in pk_wide.c include every sample.
 +    for (int y = 0; y < v->height; y++) {
-+        int worldY = v->centreY + voxelFloor(4 * (y - v->height / 2) + 3, 3);
++        int worldY = voxelWorldY(v, y, 0);
 +        int worldX = v->centreX - v->width / 2 - voxelFloor(worldY - v->centreY, 4);
 +        int at = y * v->width;
 +        const uint32_t* src = v->texture + (worldY - v->top) * v->stride + worldX - v->left;
@@ -400,13 +404,15 @@ index 0000000..8082cb7
 +            int base = voxelY(v, y0, rise);
 +            // West wall, seen along the slanted grid lines.
 +            if (rise > left) {
-+                for (int j = 0; j < VOXEL_TILE; j += 4) {
-+                    int worldY = y0 + j;
-+                    int x = voxelX(v, x0, worldY);
-+                    int top = voxelY(v, worldY, rise);
-+                    uint32_t color = v->texture[(row * VOXEL_TILE + j) * v->stride + col * VOXEL_TILE];
-+                    for (int y = top; y < top + rise - left + 2; y++)
-+                        voxelPixel(v, x, y, worldY + 2, voxelShade(color, 155));
++                int xStart = voxelX(v, x0, y0), xEnd = voxelX(v, x0, y1 - 1);
++                for (int x = xStart; x <= xEnd; x++) {
++                    int first = v->centreY + 4 * (x - (v->width / 2 + x0 - v->centreX));
++                    int worldY = first + 3 < y1 ? first + 3 : y1 - 1;
++                    int top = voxelY(v, first > y0 ? first : y0, rise);
++                    int bottom = voxelY(v, worldY, left);
++                    uint32_t color = v->texture[(worldY - v->top) * v->stride + col * VOXEL_TILE];
++                    color = voxelShade(color, 155);
++                    for (int y = top; y <= bottom; y++) voxelPixel(v, x, y, worldY, color);
 +                }
 +            }
 +            // South wall, continuing the color of the live texture's front edge.
@@ -419,11 +425,11 @@ index 0000000..8082cb7
 +                }
 +            }
 +            // The top uses nearest-neighbor texels, including the engine's animated palette and tile data.
-+            for (int j = 0; j < VOXEL_TILE * 3 / 4; j++) {
-+                int worldY = y0 + (j * 4 + 3) / 3;
++            for (int y = base; y < voxelY(v, y1, rise); y++) {
++                int worldY = voxelWorldY(v, y, rise);
 +                int x = voxelX(v, x0, worldY);
 +                const uint32_t* src = v->texture + (worldY - v->top) * v->stride + col * VOXEL_TILE;
-+                for (int i = 0; i < VOXEL_TILE; i++) voxelPixel(v, x + i, base + j, worldY, src[i]);
++                for (int i = 0; i < VOXEL_TILE; i++) voxelPixel(v, x + i, y, worldY, src[i]);
 +            }
 +        }
 +    }

@@ -1,5 +1,5 @@
 diff --git a/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt b/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt
-index 02e83e3..0d2ec08 100644
+index 02e83e3..65c95a6 100644
 --- a/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt
 +++ b/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt
 @@ -83,6 +83,8 @@ class EmulatorEngine(
@@ -11,18 +11,7 @@ index 02e83e3..0d2ec08 100644
      /** A Game Boy game pk_wide_gb.c knows (its [WideScreen.gameFor]), EXPAND on or not: with EXPAND off it's configured
       * anyway with nothing drawn, for its scene (the FIELD HUD's field read: a Game Boy game has no FfMenuWatch). */
      @Volatile var gbSceneGame = WideScreen.OFF
-@@ -1067,6 +1069,10 @@ class EmulatorEngine(
- 
-     /** Refreshes per game frame while the display paces 1x, or 0 for timer pacing. */
-     private fun vsyncsPerFrame(): Int {
-+        // Thor's nominal 120 Hz ticks can settle near 118 Hz. Dividing those by two
-+        // slows the game, and waiting within a refresh gives projection <5 ms to finish.
-+        // The existing timer/audio path presents completed frames without that deadline.
-+        if (voxelNativeClock && gba) return 0
-         val p = vsyncPeriodNanos
-         if (p == 0.0 || System.nanoTime() - lastVsyncNanos > 100_000_000L || vsyncUnreliable != null) return 0
-         val hz = 1e9 / p
-@@ -1215,7 +1221,7 @@ class EmulatorEngine(
+@@ -1215,7 +1217,7 @@ class EmulatorEngine(
  
          val scratch = ShortArray(4096)
          val tap = AudioTap()
@@ -31,6 +20,18 @@ index 02e83e3..0d2ec08 100644
          var next = System.nanoTime()
          var fpsFrames = 0
          var fpsSince = System.nanoTime()
+@@ -1833,7 +1835,10 @@ class EmulatorEngine(
+                 trouble = AudioTroubleWatch()
+                 Log.i("pokedaisy", "audio: trying vsync pacing again")
+             }
+-            perFrame = if (speed == 1f && track != null && bufferFrames > 0 && !vsyncFallback) vsyncsPerFrame() else 0
++            // Thor's nominal 120 Hz ticks can settle near 118 Hz. Dividing those by two
++            // slows the game, and waiting within a refresh gives projection <5 ms to finish.
++            // Use the timer/audio path at 1x; retain the existing fast-forward grouping below.
++            perFrame = if (speed == 1f && track != null && bufferFrames > 0 && !vsyncFallback && !(voxelNativeClock && gba)) vsyncsPerFrame() else 0
+             pacedPerFrame = perFrame
+             val ffPer = ffFramesPerRefresh(speed, vsyncsPerFrame())
+             if (ffPer != ffPerTick) {
 diff --git a/app/src/main/kotlin/com/pokedaisy/app/PokeDaisyActivity.kt b/app/src/main/kotlin/com/pokedaisy/app/PokeDaisyActivity.kt
 index f3fc9b3..b950d1f 100644
 --- a/app/src/main/kotlin/com/pokedaisy/app/PokeDaisyActivity.kt

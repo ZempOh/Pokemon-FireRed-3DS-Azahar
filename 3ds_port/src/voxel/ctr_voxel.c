@@ -8527,7 +8527,7 @@ void CtrVoxel_Draw(C3D_RenderTarget *target, int eye)
     VoxelLight light = LightFor(indoor), unlit = LightFor(true);
 #if CTR_VOXEL_LIGHTING
     light = ClimateLight(light, current != NULL && !indoor && !VoxelWorld_Underground() && !sBattle.on
-                         && VoxelWorld_Weather() == VOXEL_WEATHER_CLEAR);
+                         && VoxelWorld_ClimateAllowed());
 #endif
     /* The swoop: the light towards neutral with the camera (VOXEL_SWOOP_NEUTRAL_START). */
     float neutral = CtrVoxel_SwoopNeutral();

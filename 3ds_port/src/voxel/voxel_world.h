@@ -142,6 +142,7 @@ typedef enum {
     VOXEL_WEATHER_ASH
 } VoxelWeatherClass;
 VoxelWeatherClass VoxelWorld_Weather(void);
+bool VoxelWorld_ClimateAllowed(void);
 /* How much of the rain, the sand or the ash is in the air, 0-1, following the
  * game's own as it comes and goes: the rain's drops shown of all it can show
  * (a downpour is 1), the sand's and the ash's sprite blend (voxel_world.c). */

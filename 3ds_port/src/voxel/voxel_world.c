@@ -944,6 +944,17 @@ void VoxelWorld_GetPlayerWorldCoords(float *worldX, float *worldZ)
     if (worldZ != NULL) *worldZ = z;
 }
 
+bool VoxelWorld_ClimateAllowed(void)
+{
+#ifdef PLATFORM_3DS
+    /* Normal outdoor daylight is not a scripted weather effect. */
+    unsigned weather = GetCurrentWeather();
+    return weather == WEATHER_NONE || weather == WEATHER_SUNNY_CLOUDS || weather == WEATHER_SUNNY;
+#else
+    return true;
+#endif
+}
+
 VoxelWeatherClass VoxelWorld_Weather(void)
 {
 #ifdef PLATFORM_3DS

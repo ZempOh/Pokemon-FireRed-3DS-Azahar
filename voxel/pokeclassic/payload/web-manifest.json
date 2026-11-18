@@ -1,0 +1,284 @@
+{
+  "assets": {
+    "ciaForwarder": null,
+    "recipe": {
+      "path": "payload/emerald3ds.recipe",
+      "sha256": "82347ab998ff112bcad580754302ab1b0230349698c19e5216227f596eb621cb",
+      "size": 583840
+    },
+    "smdh": {
+      "path": "payload/Emerald3DS.smdh",
+      "releaseAsset": "Emerald3DS.smdh",
+      "sha256": "e0126c27c1f7c4a14ae1408ab6d3ff6e63100f908114280a8bbed75171cb82cd",
+      "size": 14016
+    },
+    "threeDsx": {
+      "path": "payload/Emerald3DS.3dsx",
+      "releaseAsset": "Emerald3DS.3dsx",
+      "sha256": "18fa7610e77cd474172c8d5467bd7c11e490efd38a8762cb72b0910707b2122a",
+      "size": 6682780
+    }
+  },
+  "builderVersion": "0.5.0",
+  "dataAbi": "7e37d71f",
+  "entrypoint": {
+    "apiVersion": 2,
+    "function": "run_web_build",
+    "module": "emerald3ds_builder.web",
+    "pythonPath": "python"
+  },
+  "files": [
+    {
+      "path": "licenses/AI_DISCLOSURE.md",
+      "sha256": "bfdfa74c876b4a724c2238037a1e6f166f0121d5ed387c10ed0e66900471baca",
+      "size": 646
+    },
+    {
+      "path": "licenses/LICENSE-PORT.md",
+      "sha256": "7d819da889b26235c34129c838de2f5bc2920b553c29b810d7253c72cb18ee0a",
+      "size": 23291
+    },
+    {
+      "path": "licenses/NOTICE.md",
+      "sha256": "4a827a18da20638e10c51ed5fa8276f93a9b6091a108f0f97aa3434356e43fdf",
+      "size": 2692
+    },
+    {
+      "path": "licenses/voxel-NOTICE.md",
+      "sha256": "22377d367c802b59a045d9b824c033f09b273701b89721985860f6203a095824",
+      "size": 1685
+    },
+    {
+      "path": "payload/Emerald3DS.3dsx",
+      "sha256": "18fa7610e77cd474172c8d5467bd7c11e490efd38a8762cb72b0910707b2122a",
+      "size": 6682780
+    },
+    {
+      "path": "payload/Emerald3DS.smdh",
+      "sha256": "e0126c27c1f7c4a14ae1408ab6d3ff6e63100f908114280a8bbed75171cb82cd",
+      "size": 14016
+    },
+    {
+      "path": "payload/emerald3ds.recipe",
+      "sha256": "82347ab998ff112bcad580754302ab1b0230349698c19e5216227f596eb621cb",
+      "size": 583840
+    },
+    {
+      "path": "payload/voxelgen/assets/voxel/relief_fixes.json",
+      "sha256": "6d6eb755382e53f9d706d4160072886d03e2150ef60552b9f606a1e48171018c",
+      "size": 1706500
+    },
+    {
+      "path": "payload/voxelgen/scripts/classic_building_specs.py",
+      "sha256": "d347b7b6797d2f68dcc41391b9542eee124adf850f33a7005f5d8177a5260b5c",
+      "size": 11436
+    },
+    {
+      "path": "payload/voxelgen/scripts/dump_region_art.py",
+      "sha256": "2149c066db10edbfc39916c80cd08f9bcd166d53c583334e7e89c29cbd8138a3",
+      "size": 4447
+    },
+    {
+      "path": "payload/voxelgen/scripts/gen_voxel_buildings.py",
+      "sha256": "7c19d3aae68696d64d4d6a438b0d336acba5aaf4245055b23afc85e9ff09b514",
+      "size": 245019
+    },
+    {
+      "path": "payload/voxelgen/scripts/gen_voxel_regions.py",
+      "sha256": "f3b6d8004d4618112cf77f71ab7a564779bef5e36e286f5ac423cfffbd62c530",
+      "size": 3276
+    },
+    {
+      "path": "payload/voxelgen/scripts/gen_voxel_relief.py",
+      "sha256": "2be288efd04537c7b2bd817e544d590966757b9c69c77ebd5b3c920dad72823a",
+      "size": 201506
+    },
+    {
+      "path": "payload/voxelgen/scripts/gen_voxel_sign_masks.py",
+      "sha256": "b83e17ba6fef7482653da31759a5b38a7515c9bfae6d7bfe1ad59f32f848321a",
+      "size": 7551
+    },
+    {
+      "path": "payload/voxelgen/scripts/voxel_art.py",
+      "sha256": "f6b55162faad0adb5f4a94f6331a2c773f106dfd119ca9a388796abb58da5bb6",
+      "size": 7193
+    },
+    {
+      "path": "payload/voxelgen/scripts/voxel_bridge.py",
+      "sha256": "802e5501bf6cc99f700037e02a28a0c8e0e7f2ba24b1bbe1fbdb3966c353f5a4",
+      "size": 120699
+    },
+    {
+      "path": "payload/voxelgen/scripts/voxel_building.py",
+      "sha256": "2d5b454a6540f934a2233737e3c5f75da9bc62352a83c2756638b63eedaad7ee",
+      "size": 177362
+    },
+    {
+      "path": "payload/voxelgen/scripts/voxel_building_specs.py",
+      "sha256": "be7ef051b438ff1c19bc87ceaee4ade42681501f0f2dee47fa1236f90ee43685",
+      "size": 439333
+    },
+    {
+      "path": "payload/voxelgen/scripts/voxel_cells.py",
+      "sha256": "e2d6139964356fd6bbcf4b9f263a3684229bc31c00c9ac61745fe94fb72b1045",
+      "size": 23158
+    },
+    {
+      "path": "payload/voxelgen/scripts/voxel_defect_scan.py",
+      "sha256": "6a72a78bfad77412271fb1e005a080dfe481f1e15074425aee981c494e5f2558",
+      "size": 28664
+    },
+    {
+      "path": "payload/voxelgen/scripts/voxel_engine_view.py",
+      "sha256": "dbe7efba47643db361d9113d9fc97d92a87a6b0456f4a7a5749c0465a75c50ea",
+      "size": 33222
+    },
+    {
+      "path": "payload/voxelgen/scripts/voxel_fence.py",
+      "sha256": "9fa59cd528961b796f9ace3116bc56b36edbcb80975386b3a66e3a9d06d57dc1",
+      "size": 13652
+    },
+    {
+      "path": "payload/voxelgen/scripts/voxel_fortree.py",
+      "sha256": "ee218a69b06d964fabd479f141c11dbbebe70c933f30e83ba7a51260f63b3c7d",
+      "size": 15528
+    },
+    {
+      "path": "payload/voxelgen/scripts/voxel_night.py",
+      "sha256": "c6ff827d9c1085a7fed3ba999f081a66fd1ff7dfef3b3b4c818ba145ecd43b77",
+      "size": 5284
+    },
+    {
+      "path": "payload/voxelgen/scripts/voxel_props.py",
+      "sha256": "c5ab90964df5b46f4439f3d975d51e794df8b8ba0d596165442aed7e18aeca7b",
+      "size": 12298
+    },
+    {
+      "path": "payload/voxelgen/scripts/voxel_relief_fixes.py",
+      "sha256": "45a2978051f2d0c4d638b1a21efe4f5f4687180a5c8c37887bd592cf19fe4757",
+      "size": 25461
+    },
+    {
+      "path": "payload/voxelgen/scripts/voxel_relief_lines.py",
+      "sha256": "fbbc5e87c1e4772c190c4cb01361c0c8dabba090c4529c367428641f797b46da",
+      "size": 27953
+    },
+    {
+      "path": "payload/voxelgen/scripts/voxel_sign_mask.py",
+      "sha256": "23638210245348d4c1649bd263d14d746940943391cec045617c3072c71710c9",
+      "size": 5254
+    },
+    {
+      "path": "payload/voxelgen/scripts/voxel_terraces.py",
+      "sha256": "68716b808d6bf2b0665e62da793bb89d2144e8aa1ab43b316645f7d52d02ec9d",
+      "size": 259206
+    },
+    {
+      "path": "payload/voxelgen/src/voxel/voxel_regions.h",
+      "sha256": "b0cc5947589cdf01c07385df9d7e6f244fb69425291e3109ae3c56a5bc96788e",
+      "size": 1627
+    },
+    {
+      "path": "python/emerald3ds_builder/__init__.py",
+      "sha256": "e8c25ac8bf20cf91afbe3c949830b81b85d6146748fdcb62ae10da8e0bb83393",
+      "size": 107
+    },
+    {
+      "path": "python/emerald3ds_builder/build.py",
+      "sha256": "0e05dbc59bde5f85e2420cd4f19e028567c6c232d6e6b6cc9316a2fe1ec8d06b",
+      "size": 17512
+    },
+    {
+      "path": "python/emerald3ds_builder/errors.py",
+      "sha256": "0e0b05fd9747b7d1b2094c22733cbbb04995e93eea34016d3ac3eb7a97e677ed",
+      "size": 720
+    },
+    {
+      "path": "python/emerald3ds_builder/followers.py",
+      "sha256": "e1418eb124cccaee94f3506e64875704dbe87d67b1fe8b287ab4937c6d50dc72",
+      "size": 17869
+    },
+    {
+      "path": "python/emerald3ds_builder/followers_sources.py",
+      "sha256": "fe4d28e57825db74a794d9745d9e622cbb22f9c539e5ed6dafaf9908d805fed7",
+      "size": 106198
+    },
+    {
+      "path": "python/emerald3ds_builder/pak.py",
+      "sha256": "b72e560bae8efa756592e053e74b60756999d110d5bf606ff5d10ad5f0a8c45b",
+      "size": 7195
+    },
+    {
+      "path": "python/emerald3ds_builder/precompiled.py",
+      "sha256": "8e7b1e16b4550f8574172b5ea43fda7fdc5c42ed1e71569c61614b616444272a",
+      "size": 19369
+    },
+    {
+      "path": "python/emerald3ds_builder/recipe.py",
+      "sha256": "d879811ef8052da5a187fb35322745e32a42f6a892dca1753d0087dc09a944e5",
+      "size": 11077
+    },
+    {
+      "path": "python/emerald3ds_builder/rom.py",
+      "sha256": "13ee3ddafddc944a2bb94442a9a08fb36eb4d7b97ab6bb51e687d6f6bf38a2fd",
+      "size": 5954
+    },
+    {
+      "path": "python/emerald3ds_builder/voxel.py",
+      "sha256": "7eb5247bce604882e5bd91fcb52d69679de75698584aeee304ded9a74b1c29c2",
+      "size": 11057
+    },
+    {
+      "path": "python/emerald3ds_builder/vtree.py",
+      "sha256": "71073cd2740562dc329976b58480ec074e7048787bfce3f74049cc145d855926",
+      "size": 7352
+    },
+    {
+      "path": "python/emerald3ds_builder/web.py",
+      "sha256": "54f221bfe840ed595f6d0846656db7e08c2b9457d6c12f37fd4a3b73884695dc",
+      "size": 6041
+    },
+    {
+      "path": "python/emerald3ds_builder/webmanifest.py",
+      "sha256": "19cfe1f63628ac148443b5bf80231732ef24aff077564d462cd1ac3240298bde",
+      "size": 11092
+    }
+  ],
+  "install": {
+    "directory": "3ds/pokeclassic-voxel",
+    "files": [
+      "Emerald3DS.3dsx",
+      "Emerald3DS.smdh",
+      "emerald3ds.pak"
+    ]
+  },
+  "kind": "emerald3ds-web-payload",
+  "packSchema": 1,
+  "pyodideCompatibility": {
+    "inprocessGenerators": true,
+    "subprocess": false
+  },
+  "pythonRuntime": {
+    "minimumVersion": "3.11",
+    "packages": [
+      "pillow"
+    ],
+    "stdlib": [
+      "lzma",
+      "zlib"
+    ]
+  },
+  "recipeRelease": "v0.5.0",
+  "releaseTag": "v0.5.0",
+  "releaseVersion": "0.5.0",
+  "schemaVersion": 1,
+  "supportedRoms": [
+    {
+      "code": "BPEE",
+      "language": "en",
+      "name": "Pokemon Classic v1.5.1",
+      "region": "USA, Europe",
+      "sha1": "7e27a7878d6aeb3b798757f98e60d1064d762dbb"
+    }
+  ]
+}

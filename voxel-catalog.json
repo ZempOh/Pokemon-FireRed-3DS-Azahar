@@ -16,6 +16,9 @@
   {
     "id": "pokeclassic",
     "name": "Pokémon Classic",
-    "input": "Pokémon Classic v1.5.1"
+    "input": "Pokémon Classic v1.5.1",
+    "base": "voxel/pokeclassic/",
+    "format": "homebrew",
+    "output": "PokeClassicVoxel-SD.zip"
   }
 ]

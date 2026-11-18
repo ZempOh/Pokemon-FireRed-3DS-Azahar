@@ -167,7 +167,7 @@ build/root/%.o: $(ROOT)/%.c Makefile full.mk
 	cd $(ROOT) && "$(CC)" $(FULLFLAGS) $(FULLCFLAGS) -MMD -MP -MT $@ -MF $(CURDIR)/$(@:.o=.d.tmp) -E -x c $(patsubst $(ROOT)/%,%,$<) \
 		| "$(PREPROC)" $(patsubst $(ROOT)/%,%,$<) charmap.txt -i \
 		| "$(CC)" $(FULLFLAGS) $(FULLCFLAGS) -x c -c -o $(CURDIR)/$@ -
-	@sed -e 's# src/# $(abspath $(ROOT))/src/#g' -e 's#^src/#$(abspath $(ROOT))/src/#' $(@:.o=.d.tmp) > $(@:.o=.d)
+	@sed -E 's#(^|[[:space:]])(src|gflib)/#\1$(abspath $(ROOT))/\2/#g' $(@:.o=.d.tmp) > $(@:.o=.d)
 	@rm -f $(@:.o=.d.tmp)
 
 # Screens staged as one whole GBA picture: GBA geometry, and their VBlank

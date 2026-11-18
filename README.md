@@ -32,11 +32,14 @@ and all five retained idle cadence windows measured 59.8 game/drawn FPS.
 Subsequent active checks still dipped to **58.3 drawn FPS**, so this
 candidate was withheld from the release.
 
-The next candidate reduces lower-screen battle redraws and queues changed
-top-screen textures inside the GPU frame. Pixel-differential rendering and
-upload-order tests cover the changes. The game clock, frame-skip policy and
-image quality are unchanged. Publication requires another Thor retest of
-steady selection, blinking battle text, menu interaction and actual moves.
+The queued-upload/lower-redraw candidate `85a7c36` then held steady selection
+and blinking battle text at 59.8 game/drawn FPS, but controlled Fight/Back
+interaction still reached 59.3 drawn FPS. It is also withheld. The next
+candidate converts only changed top UI rows while retaining the queued full
+texture transfer. Pixel-differential rendering and upload-order tests cover
+the changes. The game clock, frame-skip policy and image quality are
+unchanged. Publication requires another Thor retest of all three cadence
+scenes and actual moves.
 
 See [test evidence and current status](docs/graphics-upgrade.md). The earlier
 published build remains available while this candidate is evaluated.

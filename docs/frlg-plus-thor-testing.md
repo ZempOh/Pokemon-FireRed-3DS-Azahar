@@ -1,5 +1,13 @@
 # FireRed & LeafGreen+ on AYN Thor
 
+## Additional UI-row update retest — pending
+
+The queued-upload/lower-redraw build `85a7c36` passed the retained idle and
+blinking-text cadence checks at 59.8 game/drawn FPS, but controlled
+Fight/Back interaction still reached 59.3 drawn FPS. It was withheld.
+The next candidate updates only changed top UI rows and must repeat all
+cadence and gameplay checks. See the [test history](graphics-upgrade.md).
+
 ## November 18 battle-pacing retest — publication withheld
 
 Build `e175dd3116da8ccdaec23df5eaa695dabb3077eb`, from

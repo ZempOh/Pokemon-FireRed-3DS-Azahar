@@ -3,6 +3,8 @@
 The fake queue keeps source pointers until the next FrameBegin, detecting
 buffer reuse before GPU completion. Conversion is compared with independent
 RGB565/RGBA5551 reference images, including the unused texture padding.
+Sparse updates also assert the coalesced flush ranges while comparing the
+entire persistent image after transparency clears and source-buffer changes.
 """
 from pathlib import Path
 import argparse

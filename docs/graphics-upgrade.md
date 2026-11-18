@@ -2,13 +2,40 @@
 
 ## FRLG+ battle pacing follow-up — further Thor retest pending
 
-The scanline-only build below is **withheld from publication**. Its idle
-selection result passed, but active battle checks still reached 58.3
-drawn FPS at 59.8 game FPS. The next candidate adds lower-screen dirty-band
-redraws, contiguous rounded raster fills and top texture uploads queued
-after FrameBegin. Host differential and upload-order tests pass; Thor
-steady, blinking-text, menu-interaction and actual-move checks are pending.
-No new ground/pacing bundle has been published.
+Both earlier pacing candidates below are **withheld from publication**.
+The queued-upload/lower-redraw v2 fixed the measured blinking-text dip, but
+controlled Fight/Back interaction still reached 59.3 drawn FPS. The next
+candidate converts only changed top UI rows and flushes their coalesced
+linear-buffer ranges, retaining the full queued texture transfer, colour
+format and filtering. Fresh Thor checks of steady selection, blinking text,
+menu interaction and actual moves are required. No new ground/pacing bundle
+has been published.
+
+### Queued-upload v2 evidence — historical
+
+Build `85a7c361936cc8a6d9402fbb2e20fc0699ae543e` from
+[run 44386042397](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/actions/runs/44386042397)
+was assembled fresh from its matching recipe and tested on the Thor.
+
+| Scene | Retained PROF / PACE windows | Earlier minimum drawn FPS | V2 minimum drawn FPS |
+| --- | --- | ---: | ---: |
+| Steady move selection | 12 / 5 | 58.7 (original build) | 59.8 |
+| Held wild-appeared text | 6 / 3 | 59.5 (v1) | 59.8 |
+| Controlled Fight/Back input | 12 / 5 | 58.1 (v1) | 59.3 |
+
+All retained game rates were 59.8 FPS. The blink test ran without input or
+screenshots; the interaction test alternated A/B at 1.5-second intervals
+over 78 seconds, without attacks or screenshots. The controlled v1 opponent
+was Pidgey level 3; v2 used Rattata level 3. The original idle sample used
+Rattata level 4. These are scene-type comparisons, not identical replays.
+V2 idle reported work-window median was 9.320 ms and scanline median 6.16 ms;
+interaction work median was 9.635 ms with a peak of 18.57 ms. Moving
+FrameBegin before uploads shifts some synchronization into the excluded
+wait, so these work changes are not equal-percentage CPU speedups.
+Independent cadence still failed the 59.6 drawn-FPS minimum during input.
+
+V2 private cartridge SHA-256:
+`9d0a3d661147bee08504819605d7c4457947a7f7b469ca330e0cf769dbcc93c0`.
 
 ### Scanline-only v1 evidence — historical
 

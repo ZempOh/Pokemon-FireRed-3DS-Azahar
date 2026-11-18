@@ -21,7 +21,10 @@ Both profiles passed on the AYN Thor using the APK from the same
 PokéDaisy 1.6.1 also recognized the installed English Let's Go Pikachu,
 Radical Red 4.10, and Unbound 2.1.1.1 builds on the Thor. Let's Go Pikachu
 showed its live party and map and opened the bag. Radical Red and Unbound
-reached their introductions. These three checks used the stock app.
+reached their introductions. The final Dev APK also loaded the existing
+Let's Go Pikachu save and showed the live Party and Route 1 map overlays.
+Radical Red and Unbound reached their title screens in Dev. All five stock
+saves were verified by SHA-256 when copied into the separate Dev library.
 
 ## Install and verify on Android
 

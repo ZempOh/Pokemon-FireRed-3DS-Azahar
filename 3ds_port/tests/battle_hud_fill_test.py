@@ -24,6 +24,52 @@ def function(source, signature):
     return source[start:end] + '\n'
 
 
+def check_classic_menu_band(cc, directory):
+    video = (ROOT / 'src/3ds_video.c').read_text(encoding='utf-8')
+    draw = function(video, 'static void DrawBattleText(unsigned bg)')
+    centered = draw[draw.index('    if (scrollX == 0'):draw.index('    /* The box from its left cap')]
+    source = r'''
+#include <assert.h>
+static unsigned prompt, menu, draws;
+static unsigned MapEntry(unsigned map, unsigned size, unsigned x, unsigned y)
+{
+    assert(map == 0 && size == 2 && y == 35);
+    return x == 1 ? prompt : menu;
+}
+#define BATTLE_BAND_TOP 112
+static void DrawBattleCut(unsigned bg, int x0, int x1, int y0, int y1, int shift)
+{
+    assert(bg == 0 && x0 == 0 && x1 == 240 && y0 == BATTLE_BAND_TOP && y1 == 160 && shift == 0);
+    ++draws;
+}
+static void TryMenuBand(unsigned scrollX, unsigned scrollY)
+{
+    unsigned bg = 0, map = 0, size = 2;
+''' + centered + r'''
+}
+int main(void)
+{
+    TryMenuBand(0, 320);
+    assert(draws == 1);
+    TryMenuBand(1, 320);
+    TryMenuBand(0, 0);
+    TryMenuBand(0, 160);
+    assert(draws == 1);
+    prompt = 0x51c0;
+    menu = 0x5190;
+    TryMenuBand(0, 160);
+    assert(draws == 2);
+}
+'''
+    harness = directory / 'menu_band.c'
+    binary = directory / 'menu_band.exe'
+    harness.write_text(source, encoding='utf-8')
+    subprocess.run([cc, '-std=c99', '-Wall', '-Wextra', '-Werror', str(harness), '-o', str(binary)],
+                   check=True)
+    subprocess.run([str(binary)], check=True)
+    print('PASS Classic battle menu bands: whole action and move panels, default text unchanged')
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--cc', default='gcc')
@@ -96,6 +142,7 @@ int main(int argc, char **argv)
         subprocess.run([args.cc, '-std=c99', '-O2', '-Wall', '-Wextra', '-Werror', str(harness), '-o', str(exe)],
                        check=True)
         result = subprocess.run([str(exe), str(art)] + ['%02d:%d' % item for item in FILLS.items()])
+        check_classic_menu_band(args.cc, Path(tmp))
     if result.returncode:
         sys.exit('battle_hud_fill_test: failed')
     print('PASS battle hud fill: any pixel shows ink, only a full bar the whole capsule')

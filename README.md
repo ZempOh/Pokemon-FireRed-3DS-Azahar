@@ -15,6 +15,38 @@ cartridge dump.
 
 **[Project website](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/)**
 · **[Game builder](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/build.html)**
+· **[Six-game voxel builder](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/voxel.html)**
+· **[Graphics preview release](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/tag/graphics-upgrade-2026-11-18)**
+
+## Six-game graphics preview
+
+The [shared builder](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/voxel.html)
+provides FireRed 3DS, FireRed & LeafGreen+ v1.5.1, and Pokémon Classic v1.5.1
+for Azahar. The same page links the PokéDaisy Android preview for Let's Go
+Pikachu (English translation), Radical Red 4.10, and Unbound 2.1.1.1.
+You supply each matching ROM; ROMs and saves are not included in releases.
+
+The November 18 graphics preview adds optional per-game seasons and weather,
+with **Original**, **Automatic**, and **Manual** controls. Climate defaults to
+Original, and effect detail starts at Reduced. PokéDaisy also improves
+projected sprite depth and terrain-contact shading; FireRed and FRLG+ use
+stable camera framing across connected maps.
+
+The initial preview passed the documented early-game Thor checks. See the
+[per-game results, measured performance, and known limitations](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/graphics-upgrade.html)
+for the tested routes and exact artifact hashes. This is not full-playthrough
+certification. The [release page](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/tag/graphics-upgrade-2026-11-18)
+contains the APK, clean source snapshots, patches, and ROM-free build kits.
+
+The native-fixes follow-up passed targeted AYN Thor retests: FRLG+'s Medicine
+label and all five Bag tabs are correct, and Classic's Route 1 forest gaps
+are closed with clean special/status category icons beside PP. Both games
+passed a wild battle and return to the overworld. Original saves and settings
+were restored and verified. See the [follow-up results and limits](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/native-fixes.html)
+and [native fixes bundle](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/VoxelGraphics-Native-Fixes-2026-11-18.zip).
+The original build-kit and source archives remain initial preview snapshots;
+their FRLG+/Classic contents are superseded by this follow-up. FireRed and
+the PokéDaisy APK are unchanged.
 
 ## Install and update
 
@@ -106,7 +138,9 @@ both the executable and the data pack and keep your existing save.
 ### Compatibility and troubleshooting
 
 The browser installer and its cleanup and rollback tests have been verified.
-An end-to-end install and gameplay check on the AYN Thor is still pending.
+For the current preview's Thor gameplay results, see the
+[six-game validation report](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/graphics-upgrade.html).
+The installation instructions below also cover older FireRed editions.
 Updating Azahar resolved the mirrored title screen on the target AYN Thor.
 
 If the title screen appears mirrored, fully close the game, switch Azahar

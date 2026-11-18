@@ -1,16 +1,16 @@
 # Notices
 
-Emerald 3DS combines original port code with the pret decompilation and a few
-third-party components. Each keeps its own terms; `LICENSE-PORT.md`
+Pokémon Classic Voxel combines Emerald 3DS port code with Pokémon Classic
+and third-party components. Each keeps its own terms. `LICENSE-PORT.md`
 (CC BY-NC-SA 4.0) covers only the original Emerald 3DS work.
 
 ## Upstream decompilation
 
-- **pret/pokeemerald** — https://github.com/pret/pokeemerald, pinned in
-  `upstream.lock`. Fetched by `tools/bootstrap.py`, never vendored here. The
-  repository does not state a licence; Emerald 3DS does not relicense it. The
-  files in `patches/pokeemerald/` carry the port's changes and, as patch
-  context, lines of the upstream files they modify.
+- [DaniRainbow/pokeclassic](https://github.com/DaniRainbow/pokeclassic), based
+  on [pret/pokeemerald](https://github.com/pret/pokeemerald), is pinned in
+  `upstream.lock` and fetched by `tools/bootstrap.py`. The Classic port changes
+  and their upstream context are in `patches/pokeclassic/`. The inherited
+  Emerald patches are reference material.
 
 ## Code derived from third parties
 

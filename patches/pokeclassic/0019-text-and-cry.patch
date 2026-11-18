@@ -1,0 +1,54 @@
+diff --git a/gflib/text.c b/gflib/text.c
+index 1af4cc7b81746186732650f8b076c733822d8b92..1f6caf3b8fc0b24f2204724306fcb91619f73bb0 100644
+--- a/gflib/text.c
++++ b/gflib/text.c
+@@ -353,7 +353,7 @@ s16 CtrText_PrinterPage(u8 windowId, const u8 *str)
+     const u8 *p;
+     s16 page = 0;
+ 
+-    if (windowId >= WINDOWS_MAX || str == NULL || !sTextPrinters[windowId].active)
++    if (windowId >= ARRAY_COUNT(sTextPrinters) || str == NULL || !sTextPrinters[windowId].active)
+         return -1;
+     printer = &sTextPrinters[windowId];
+     str = Port_ResolveAssetPointer(str);
+diff --git a/src/pokedex_cry_screen.c b/src/pokedex_cry_screen.c
+index 18e05928d0a488c0d3caacf8d4f8df4fcb19db7c..e1c82606b63d6ac79979bfcb46f97a37a3e45aee 100644
+--- a/src/pokedex_cry_screen.c
++++ b/src/pokedex_cry_screen.c
+@@ -8,6 +8,10 @@
+ #include "sound.h"
+ #include "trig.h"
+ #include "window.h"
++#ifdef PLATFORM_3DS
++#include "3ds_game_views.h"
++static s8 sCtrCryWave[CTR_DEX_WAVE];
++#endif
+ 
+ // Cry meter needle positions
+ //
+@@ -399,6 +403,10 @@ static void DrawWaveformSegment(u8 position, u8 amplitude)
+     u8 y;
+ 
+     temp = (amplitude + 127) * 256;
++#ifdef PLATFORM_3DS
++    memmove(sCtrCryWave, sCtrCryWave + 1, sizeof(sCtrCryWave) - 1);
++    sCtrCryWave[ARRAY_COUNT(sCtrCryWave) - 1] = (s8)amplitude;
++#endif
+     y = temp / 1152.0;
+     if (y > WAVEFORM_WINDOW_HEIGHT - 1)
+         y = WAVEFORM_WINDOW_HEIGHT - 1;
+@@ -577,13 +585,11 @@ static void SetCryMeterNeedleTarget(s8 offset)
+ }
+ 
+ #ifdef PLATFORM_3DS
+-#include "3ds_game_views.h"
+-
+ void CtrDexCry_GetView(s8 *wave, u8 *volume)
+ {
+     s16 level;
+ 
+-    memset(wave, 0, CTR_DEX_WAVE);
++    memcpy(wave, sCtrCryWave, sizeof(sCtrCryWave));
+     *volume = 0;
+     if (sCryMeterNeedle == NULL)
+         return;

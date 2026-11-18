@@ -59,6 +59,9 @@ jobs:
       - name: Build side-by-side development APK
         working-directory: pokedaisy
         run: ./gradlew :app:assembleDev --stacktrace
+      - name: Verify Classic partner and egg display
+        working-directory: pokedaisy
+        run: ./gradlew :app:testDevUnitTest --tests '*PokeClassicPartyTest' --stacktrace
       - uses: actions/upload-artifact@v4
         with:
           name: pokedaisy-profile-dev

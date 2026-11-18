@@ -1,0 +1,93 @@
+diff --git a/app/src/main/kotlin/com/pokedaisy/app/companion/data/ActiveTables.kt b/app/src/main/kotlin/com/pokedaisy/app/companion/data/ActiveTables.kt
+index 12f6f7ca1484ca15a986305dbc0d667cdfeda4cc..be0c78c8abde832c2c6e0e3c3a67733e13fc0a90 100644
+--- a/app/src/main/kotlin/com/pokedaisy/app/companion/data/ActiveTables.kt
++++ b/app/src/main/kotlin/com/pokedaisy/app/companion/data/ActiveTables.kt
+@@ -305,6 +305,8 @@ val readsRomRegionMap: Boolean get() = when {
+     activeGame == GameKind.FIRERED -> runningFireRedHack?.ownRegionMap == true
+     else -> true
+ }
++
++internal val runningPokeClassic: Boolean get() = romGameCode == "POKECLASSIC"
+ /** Super Mariomon v1.2.1 / v1.2.2 / v1.3 share their tables, v1.5.x has its own (a species and seven
+  * moves added, types and the cursor grid changed): set with [activeGame] by the Poller. */
+ var mariomonV13 = false
+@@ -357,7 +359,10 @@ var teamRocketV3 = false
+ // Odyssey reuses vanilla's unused "???" type (9) as Fairy (CLEFAIRY is 9/9).
+ 
+ 
++private val pokeClassicSpeciesNames by lazy { speciesNames + mapOf(412 to "Pikachu", 413 to "Eevee") }
++
+ val activeSpeciesNames: Map<Int, String> get() = localText?.species ?: when {
++    runningPokeClassic -> pokeClassicSpeciesNames
+     black -> NdsArt.names?.speciesMerged ?: speciesNamesBlack
+     gen4 -> NdsArt.names?.speciesMerged ?: speciesNamesPlatinum   // the cart's own words (GitHub #230)
+     pureRgb -> speciesNamesPureRgb
+@@ -610,7 +615,7 @@ val activeMapSecData: Map<Int, MapSecInfo> get() = localText?.mapSecData ?: when
+     goldSilver -> mapSecDataGoldSilver
+     crystal -> mapSecDataCrystal
+     unbound -> mapSecDataUnbound
+-    romGameCode == "POKECLASSIC" -> pokeClassicMapSections
++    runningPokeClassic -> pokeClassicMapSections
+     // Seaglass keeps vanilla Hoenn mapsec ids (0x00 = Littleroot, confirmed live).
+     emerald -> runningEmeraldHack?.emeraldMapSecsMerged ?: mapSecDataEmerald
+     seaglass || tmt2 -> mapSecDataEmerald
+diff --git a/app/src/main/kotlin/com/pokedaisy/app/companion/data/SnapshotView.kt b/app/src/main/kotlin/com/pokedaisy/app/companion/data/SnapshotView.kt
+index 7b59c69d479f0209d06a6d3445ed95dad1794dda..e618dba7d148e73afa949738e67ee5568e54e22a 100644
+--- a/app/src/main/kotlin/com/pokedaisy/app/companion/data/SnapshotView.kt
++++ b/app/src/main/kotlin/com/pokedaisy/app/companion/data/SnapshotView.kt
+@@ -357,7 +357,8 @@ fun partyMonView(m: Mon): MonView {
+             MoveView(info.name, typeName(info.type), m.pp[idx], info.power, id = moveId)
+         }
+     }
+-    val isEgg = m.isEgg || isVanillaEgg(m.species)
++    val isEgg = m.isEgg || isVanillaEgg(m.species) ||
++        (runningPokeClassic && m.species == NATIVE_POKECLASSIC_V1_5_1.eggSpecies)
+     return MonView(
+         species = m.species,
+         name = if (isEgg) gameCase("Egg") else speciesName(m.species),
+@@ -620,7 +621,7 @@ const val SPECIES_EGG_VANILLA = 412
+ 
+ fun isVanillaEgg(species: Int): Boolean =
+     // Emerald Legacy runs as EMERALD, but its 412 is a Deoxys form (its eggs are flagged: NATIVE_EMERALD_LEGACY.eggSpecies).
+-    species == SPECIES_EGG_VANILLA && !emeraldLegacy && when (activeGame) {
++    species == SPECIES_EGG_VANILLA && !emeraldLegacy && !runningPokeClassic && when (activeGame) {
+         GameKind.FIRERED, GameKind.EMERALD,
+         GameKind.UNBOUND, GameKind.RADICAL_RED, GameKind.ODYSSEY, GameKind.AMETHYST, GameKind.ORANGE_ISLANDS,
+         GameKind.SWORD_SHIELD, GameKind.RECHARGED_YELLOW, GameKind.GS_CHRONICLES -> true
+diff --git a/app/src/test/kotlin/com/pokedaisy/app/companion/data/PokeClassicPartyTest.kt b/app/src/test/kotlin/com/pokedaisy/app/companion/data/PokeClassicPartyTest.kt
+new file mode 100644
+index 0000000000000000000000000000000000000000..b6ff1bcca8197089ba389f998afbda2e45284c1b
+--- /dev/null
++++ b/app/src/test/kotlin/com/pokedaisy/app/companion/data/PokeClassicPartyTest.kt
+@@ -0,0 +1,31 @@
++package com.pokedaisy.app.companion.data
++
++import org.junit.Assert.assertEquals
++import org.junit.Assert.assertFalse
++import org.junit.Assert.assertTrue
++import org.junit.Test
++
++class PokeClassicPartyTest {
++    @Test
++    fun partnerAndEggUseClassicSpeciesIds() {
++        val previousGame = activeGame
++        val previousCode = romGameCode
++        val partner = Mon(412, 5, 18, 21, 0, intArrayOf(), intArrayOf())
++        try {
++            activeGame = GameKind.EMERALD
++            romGameCode = "POKECLASSIC"
++            val view = partyMonView(partner)
++            assertEquals("PIKACHU", view.name)
++            assertFalse(view.isEgg)
++            assertEquals(18 to 21, view.hp to view.maxHp)
++            assertTrue(partyMonView(partner.copy(species = 429)).isEgg)
++            assertTrue(partyMonView(partner.copy(species = 25, isEgg = true)).isEgg)
++
++            romGameCode = ""
++            assertTrue(partyMonView(partner).isEgg)
++        } finally {
++            romGameCode = previousCode
++            activeGame = previousGame
++        }
++    }
++}

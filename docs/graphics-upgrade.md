@@ -1,5 +1,76 @@
 # Graphics upgrade validation (2026-11-18)
 
+## FRLG+ battle pacing follow-up — Thor verified
+
+The software scanline compositor snapshots display/window/blend registers
+per scanline, builds a sparse object-window sprite list alongside the
+existing normal-sprite lists, and uses the existing constant-mask path for
+uniform mode-0 windows. Split windows, affine backgrounds and live HBlank
+effects retain their general rendering paths. Image quality, game logic,
+the game clock and the automatic frame-skip policy are unchanged.
+
+The candidate passed the focused AYN Thor retest with Azahar
+2126.2-googleplay. Both steady samples used the same Route 1 save, Bulbasaur
+level 6 at 22/22 HP, settings, voxel battle mode and move-selection phase.
+The opponent was Rattata level 4 before and level 3 after; this is a
+comparison of the same scene type, not an identical replay. The first
+potentially partial aggregate was discarded independently for each counter,
+then the first 12 complete PROF windows and five complete PACE windows were
+retained in both revisions. Each PROF window spans 300 logical game frames;
+each PACE window spans 600.
+
+| Retained steady-selection metric | Before | Qualified build |
+| --- | ---: | ---: |
+| Median of reported work-window averages | 12.660 ms | 9.265 ms |
+| Median of scanline-window averages | 9.62 ms | 6.16 ms |
+| Largest reported work peak in retained windows | 20.12 ms | 15.60 ms |
+| Median drawn FPS | 59.0 | 59.8 |
+| Minimum drawn FPS | 58.7 | 59.8 |
+| Game FPS in every retained PACE window | 59.8 | 59.8 |
+
+Reported work decreased 26.8%; every retained candidate PACE window reached
+59.8 drawn FPS. This passed the preregistered minimum of 10% lower reported
+work and at least 59.6 drawn FPS in every retained window. Active battle
+coverage was a separate visual/gameplay check: Growl lowered Attack, Tackle
+damaged and defeated Rattata, and the game returned to Route 1. Party then
+showed Bulbasaur at 12/22 HP, matching the battle. Categories and PP remained
+readable. The five Bag pockets remained present, with Potion under Medicine.
+The active Azahar track advanced with 0→0 underruns during both idle and
+active segments; system-wide mixer counters were excluded.
+
+`work` is elapsed BeginFrame-to-EndFrame time minus the renderer's recorded
+FrameBegin wait, clamped to zero. It includes FrameEnd and other blocking
+inside presentation, so it is not pure CPU or GPU execution time. Hidden
+frames use the renderer's most recent wait measurement; both revisions use
+the same profiler code. Section timings are inclusive and must not be
+summed. `lines` covers software scanline composition and HBlank callbacks/
+DMA. Cadence comes from the independent PACE counters, not a count of work
+values above 15 ms. These results do not establish zero stutter in every
+move, map or later-game scene; no active-phase timing improvement is claimed.
+
+The build workflow runs 600 pixel-differential cases against the original
+compositor: full and UI frames, normal/affine sprites, wrapped/split/object
+windows, blend, mosaic, hidden frames and HBlank/VCount register updates.
+A separate 602-case review also checked live HBlank OAM affine-parameter
+writes, including normal and object-window sprites whose output visibly
+changed. Both renderers matched byte for byte. OAM geometry is populated in
+VBlank; the slot-machine HBlank affine updates remain live per scanline.
+
+| Qualified artifact | Provenance |
+| --- | --- |
+| Binary-producing commit | `e175dd3116da8ccdaec23df5eaa695dabb3077eb` |
+| Matching build and recipe | [44377149759](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/actions/runs/44377149759) |
+| Raw blank engine SHA-256 | `f0cacb359bc2fc92bcc84b14901bfdd6b5b9893241548aacb5a600da761f89ec` |
+| Web payload ZIP SHA-256 | `ce346c23ffb5314ca192f9bff8d129996cd280df8376f0584b5906edfff3826a` |
+| Private Thor cartridge SHA-256 | `1ef165e9fe38203ca2164b4f07faae8d39585de7c4d5abd2a8be986f19ef177b` |
+
+The installed cartridge was pulled back and matched the candidate exactly.
+Use the [ground and pacing fixes bundle](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/VoxelGraphics-Ground-Pacing-Fixes-2026-11-18.zip)
+with your own matching ROM. It supersedes the earlier FRLG+ payloads; keep
+the engine and recipe from the same build. Private cartridge hashes are
+comparison identifiers only; ROMs, saves and generated game data are not
+published. Subsequent documentation-only commits retain this built code.
+
 ## FRLG+ Bag follow-up — Thor verified
 
 The November 18 follow-up corrects the main Bag to five pockets: Items,
@@ -14,8 +85,8 @@ level 6 at 22/22 HP before battle. A level 3 Pidgey was defeated with Tackle,
 and the game returned to Route 1. The Potion was then used at 16/22 HP and
 consumed, leaving Medicine empty. Host label/order and touch-boundary tests
 also passed. These results cover the affected Bag and battle-return flow;
-they do not certify every item action or every map. The prior battle-pacing
-limitation remains.
+they do not certify every item action or every map. This earlier build
+predates the battle-pacing follow-up above.
 
 | Follow-up artifact | Provenance |
 | --- | --- |

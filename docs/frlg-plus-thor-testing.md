@@ -1,5 +1,32 @@
 # FireRed & LeafGreen+ on AYN Thor
 
+## November 18 battle-pacing retest
+
+Build `e175dd3116da8ccdaec23df5eaa695dabb3077eb`, from
+[run 44377149759](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/actions/runs/44377149759),
+passed the focused Thor checks. Cold Continue loaded the Route 1 fixture.
+Bulbasaur level 6 began at 22/22 HP against Rattata level 3; the baseline
+had Rattata level 4. With the same settings and move-selection phase, the
+first 12 complete 300-frame work windows and five complete 600-frame cadence
+windows were retained after excluding partial windows. Reported work-window
+median fell from 12.660 to 9.265 ms; all candidate cadence windows were
+59.8 game/59.8 drawn FPS, compared with 58.7 minimum drawn before.
+
+Growl lowered Attack, Tackle damaged and defeated Rattata, and the game
+returned to Route 1. Party showed the resulting 12/22 HP. Move categories
+and PP remained readable; the five Bag pockets and Medicine/Potion label
+remained correct. Idle and active segments each retained an advancing
+Azahar audio track with 0→0 underruns. The installed cartridge was pulled
+back and its SHA-256 matched the candidate.
+
+The comparison uses the same scene type, not an identical battle replay.
+Work is a reported elapsed-time metric with presentation waits treated as
+described in the [full measurement notes](graphics-upgrade.md#frlg-battle-pacing-follow-up--thor-verified).
+The active segment verifies gameplay and rendering; it is not a controlled
+timing benchmark. No whole-game zero-stutter claim is made.
+
+## Earlier Thor checks — historical
+
 The native cartridge build from commit `b85c5fc` was assembled locally using the v1.5.1 recipe and ROM, then tested on Azahar 2126.2 for Android. The port uses title ID `000400000F4ED500` and the save directory `sdmc:/3ds/frlg-plus-voxel/`.
 
 - Cold-launched the cartridge, started a new FireRed-mode game and completed naming using the bottom screen.

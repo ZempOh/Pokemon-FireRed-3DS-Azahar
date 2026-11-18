@@ -6,7 +6,7 @@ This branch ports FireRed & LeafGreen+ v1.5.1 to native Nintendo 3DS with a voxe
 
 Use a locally patched FireRed & LeafGreen+ v1.5.1 GBA ROM. The matching ROM SHA-1 is `c34a4401f2fe86c515fc6d9a6d231224a98f55d5`. The cartridge builder reads the ROM locally.
 
-1. From a successful [FRLG+ native build](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/actions/workflows/frlg-port.yml?query=branch%3Agraphics%2Fazahar-frlg), download `frlg-plus-cartridge-template` and `frlg-plus-cartridge-recipe` from the same run.
+1. From the Thor-qualified [FRLG+ native build 44377149759](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/actions/runs/44377149759), download `frlg-plus-cartridge-template` and `frlg-plus-cartridge-recipe` from that same run.
 2. Unzip the template artifact. Open the release ZIP inside the recipe artifact and extract its `payload` directory.
 3. From this branch checkout, assemble a cartridge with Python 3.12 or later.
 
@@ -23,6 +23,32 @@ Use a locally patched FireRed & LeafGreen+ v1.5.1 GBA ROM. The matching ROM SHA-
 Voxel 3D starts enabled with fresh settings. Tap **3D** on the lower-screen map to switch views. The lower-screen gear opens camera and battle presentation settings. Open Party or Bag on the lower-screen dock, or press **Start** and select one with the D-pad and **A**.
 
 The [Thor test notes](docs/frlg-plus-thor-testing.md) cover the cold launch, first rival battle, lower-screen controls, and Pallet Town sprite fix.
+
+## Battle pacing follow-up — Thor verified
+
+The scanline compositor now reuses registers within each scanline, indexes
+object-window sprites once per frame, and simplifies uniform windows. The
+game clock, automatic frame skipping and image quality are unchanged.
+
+On the same Thor, Route 1 save and battle-selection setup, the median of
+reported 300-frame work averages fell from **12.660 to 9.265 ms (26.8%)**.
+All five retained candidate cadence windows measured **59.8 game and drawn
+FPS**; the baseline drawn minimum was 58.7. The opponents were Rattata level
+4 before and level 3 after, so this was not an identical battle replay.
+
+Growl lowered the opponent's Attack, Tackle defeated it, and the game
+returned to Route 1 with party HP matching battle HP. Move categories and
+PP remained readable; all five Bag pockets and Medicine/Potion remained
+correct. The active Azahar audio track reported zero underruns at both ends
+of the idle and active checks.
+
+Use the [ground and pacing fixes bundle](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/VoxelGraphics-Ground-Pacing-Fixes-2026-11-18.zip)
+for the matching ROM-free source, recipe and blank engine. The tested binary
+comes from `e175dd3116da8ccdaec23df5eaa695dabb3077eb`; later documentation
+commits do not change it. See [measurement scope, regression checks and
+exact hashes](docs/graphics-upgrade.md#frlg-battle-pacing-follow-up--thor-verified).
+This qualifies the tested steady battle-selection scene and active checks;
+it does not establish zero stutter throughout the game.
 
 ## Bag pocket correction — Thor verified
 
@@ -48,11 +74,11 @@ Do not mix a new template with an older recipe. Use your own matching local
 ROM. See the [follow-up report](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/native-fixes-report-2026-11-18.md)
 and [exact build hashes](docs/graphics-upgrade.md#frlg-bag-follow-up--thor-verified).
 
-The verified binary was built from `cf8ffae795e54800373f627821cfdb24e3642274`
+The earlier Bag-correction binary was built from `cf8ffae795e54800373f627821cfdb24e3642274`
 in [run 44362744670](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/actions/runs/44362744670).
 This is a focused Bag and battle-return retest, not certification of every
-item action or later-game scene. Existing native battle pacing limitations
-remain separate from the pocket correction.
+item action or later-game scene. The pacing follow-up above retains this
+correction and supersedes that earlier binary.
 
 ## Build from source
 

@@ -22,7 +22,7 @@ diff --git a/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt b/app/src/m
                  // As after the audio pausing below: flush() put the play head back at 0. And the frames due while
                  // it slept are not owed.
                  framesWritten = 0L
-@@ -1898,12 +1901,33 @@
+@@ -1898,12 +1901,36 @@
              if (wantPaused != paused) {
                  paused = wantPaused
                  if (paused) runCatching { track?.pause(); track?.flush() }
@@ -40,14 +40,17 @@ diff --git a/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt b/app/src/m
 +            if (track.playState == AudioTrack.PLAYSTATE_PLAYING) {
 +                return track.write(scratch, 0, n, if (trackStarted) AudioTrack.WRITE_NON_BLOCKING else AudioTrack.WRITE_BLOCKING)
 +            }
-+            if (framesWritten == 0L && android.os.Build.VERSION.SDK_INT >= 31) {
-+                track.startThresholdInFrames = bufferFrames
-+            }
++            // Reserve half the capacity for the mixer's burst-sized reads once playback
++            // starts. Priming the entire capacity left no headroom for the next frame.
++            val primeFrames = if (android.os.Build.VERSION.SDK_INT >= 31) {
++                if (framesWritten == 0L) track.startThresholdInFrames = bufferFrames / 2
++                track.startThresholdInFrames
++            } else bufferFrames
 +            val first = track.write(scratch, 0, n, AudioTrack.WRITE_NON_BLOCKING)
 +            if (first < 0) return first
-+            if (framesWritten + first / 2 >= bufferFrames || first < n) {
++            if (framesWritten + first / 2 >= primeFrames || first < n) {
 +                track.play()
-+                Log.i("pokedaisy", "audio: native playback starts with ${framesWritten + first / 2}/$bufferFrames real frames queued")
++                Log.i("pokedaisy", "audio: native playback starts with ${framesWritten + first / 2}/$primeFrames real frames queued (capacity $bufferFrames)")
 +                if (first < n) {
 +                    val tail = track.write(scratch, first, n - first, AudioTrack.WRITE_BLOCKING)
 +                    return first + tail.coerceAtLeast(0)
@@ -57,7 +60,7 @@ diff --git a/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt b/app/src/m
          }
  
          /** The frame's audio into the track: the DS copy's, 1x's (vsync or blocking) or SPED-UP's. */
-@@ -1911,6 +1935,8 @@
+@@ -1911,6 +1938,8 @@
              val track = track   // a local: smart casts inside the lambdas below
              queuedAfter = null
              val n = MgbaCore.pkReadAudio(scratch)
@@ -66,7 +69,7 @@ diff --git a/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt b/app/src/m
              fpsAudioMade += n / 2
              if (BuildConfig.DEBUG && fpsFrames and 63 == 0) tap.arm(audioTapDir)
              if (BuildConfig.DEBUG && nds) for (i in 0 until n) gamePeak = maxOf(gamePeak, kotlin.math.abs(scratch[i].toInt()))
-@@ -1984,11 +2010,8 @@
+@@ -1984,11 +2013,8 @@
                      // otherwise spent a third of its range on, GitHub #215).
                      val rate = sampleRate * (if (nds) NDS_FPS else GBA_FPS) / frameHz * drc
                      MgbaCore.pkSetAudioRate(rate)

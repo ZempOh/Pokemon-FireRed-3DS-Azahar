@@ -64,6 +64,18 @@ int main(void) {
         if(c&0xff00)wrongPixels++;
       }
     assert(trunkPixels>=3 && wrongPixels==0);
+    // Snow-capped rocks must retain both the upper cap and lower stone art.
+    struct SolidProp rock={.kind=3};rock.surface.x=32;rock.surface.y=40;
+    for(int y=0;y<48;y++)for(int x=0;x<32;x++)
+        rock.surface.art[y*32+x]=y>=27?0xff0000ff:0xff00ff00;
+    memset(depth,0,sizeof depth);memset(v.out,0,N*4);
+    solidPropDraw(&v,&rock);
+    int stonePixels=0,capPixels=0;
+    for(int i=0;i<N;i++) {
+        if(v.out[i]&255)stonePixels++;
+        if(v.out[i]&0xff00)capPixels++;
+    }
+    assert(stonePixels>10 && capPixels>10);
     puts("Solid trees and field props: clipping, volume, winding and occlusion passed");
 }
 

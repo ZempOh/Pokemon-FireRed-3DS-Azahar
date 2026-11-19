@@ -1,0 +1,57 @@
+{
+  "firered": {
+    "game": "firered",
+    "date": "2026-11-19",
+    "build_commit": "f7abf22920a69d0012ab5878ac9d2deeccbcbf14",
+    "ci_run": 44579867361,
+    "engine_sha256": "e344770e223cec1c58274d01efccb503adabf9c88d7f246dc9566c479749a62f",
+    "web_payload_sha256": "1ece417b79573f90d9d5902db4e27892726efb588a2afa869efae90cfccaee6a",
+    "data_abi": "0b683c2e",
+    "passed": true,
+    "phases": {
+      "field": {
+        "samples": 12,
+        "minimum_sampled_fps": 59.8,
+        "work_over_frame_budget": 0,
+        "active_audio_underruns": 0,
+        "audio_track_advanced": true
+      },
+      "battle": {
+        "samples": 12,
+        "minimum_sampled_fps": 59.8,
+        "work_over_frame_budget": 0,
+        "active_audio_underruns": 0,
+        "audio_track_advanced": true
+      },
+      "active": {
+        "samples": 12,
+        "minimum_sampled_fps": 59.7,
+        "work_over_frame_budget": 0,
+        "active_audio_underruns": 0,
+        "audio_track_advanced": true
+      },
+      "climate": {
+        "samples": 12,
+        "minimum_sampled_fps": 59.8,
+        "work_over_frame_budget": 0,
+        "active_audio_underruns": 0,
+        "audio_track_advanced": true
+      }
+    },
+    "checks": {
+      "visual_field": true,
+      "gallery_verified": true,
+      "season_weather_verified": true,
+      "automatic_weather_verified": true,
+      "automatic_weather_scope": "Automatic mode selected on Thor; November autumn foliage observed. Time-slot stability and seasonal distributions tested with 10000 simulated intervals per season on host.",
+      "battle_return_verified": true,
+      "strength_push_verified": true,
+      "rock_smash_verified": true,
+      "multiple_rocks_visible": true,
+      "notes": "All four pacing/audio phases passed. Field return verified. Strength moved the complete boulder mesh. Rock Smash removed the selected Mt Ember rock, triggered a normal Geodude encounter, and allowed walking into its former tile; other rocks stayed visible. Distinct seasons, precipitation and automatic mode observed."
+    },
+    "limits": "Selected field scene, idle battle, active battle through field return, Strength movement, Rock Smash removal and multiple-rock visibility. Sampled timing is not a guarantee for every scene or frame. Asset coverage remains incomplete; sprites for characters and battle creatures are retained.",
+    "asset": "FireRed-3D-Flora-Climate-2026-11-19.zip",
+    "asset_sha256": "b971fd7f1158d482c80ac38f373c89d930d69918b2ac51518f652d95f42e0288"
+  }
+}

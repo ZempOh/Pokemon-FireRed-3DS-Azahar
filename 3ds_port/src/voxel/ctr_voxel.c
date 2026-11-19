@@ -5521,7 +5521,7 @@ static void ClimateVegetation(void) {
             original[y*128+x]=pixels[CtrVideo_Texel(x,y,VOXEL_TREE_TEXTURE_DIM)];
         captured=true;
     }
-    int blend=(int)(sClimateMix*16.0f),key=blend ? blend+32*sClimateSeason : 0;
+    int blend=(int)(sClimateSeasonMix*16.0f),key=blend ? blend+32*sClimateSeason : 0;
     if(key==last)return;
     last=key;
     for(unsigned y=0;y<128;y++)for(unsigned x=0;x<128;x++) {

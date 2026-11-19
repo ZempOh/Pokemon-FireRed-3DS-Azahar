@@ -34,7 +34,7 @@ bool VoxelRelief_CutVariant(unsigned i, unsigned *layout, unsigned *metatile, co
     if (!sDerived || i >= VOXEL_CUTS) return false;
     *layout = 1; *metatile = i; *rows = cut; return true;
 }
-static uint8_t sPrimaryTiles[512 * 32], sSecondaryTiles[512 * 32];
+static uint8_t sPrimaryTiles[NUM_TILES_IN_PRIMARY * 32], sSecondaryTiles[(NUM_TILES_TOTAL-NUM_TILES_IN_PRIMARY) * 32];
 static uint16_t sPrimaryPalettes[16 * 16], sSecondaryPalettes[16 * 16];
 static uint16_t sMetatiles[1024 * 8];
 static uint8_t sUsed[1024];
@@ -47,12 +47,13 @@ bool Voxel_LoadTiles(const void *t, uint8_t *d, uint32_t n)
 {
     if (t != &kPrimary && t != &kSecondary)
         return false;
-    memcpy(d, t == &kPrimary ? sPrimaryTiles : sSecondaryTiles, n < 512 * 32 ? n : 512 * 32);
+    unsigned bytes=t == &kPrimary ? sizeof(sPrimaryTiles) : sizeof(sSecondaryTiles);
+    memcpy(d, t == &kPrimary ? sPrimaryTiles : sSecondaryTiles, n < bytes ? n : bytes);
     return true;
 }
 const uint16_t *Voxel_ResolveMetatiles(const void *t)
 {
-    return t == &kPrimary ? sMetatiles : t == &kSecondary ? sMetatiles + 512 * 8 : NULL;
+    return t == &kPrimary ? sMetatiles : t == &kSecondary ? sMetatiles + NUM_METATILES_IN_PRIMARY * 8 : NULL;
 }
 const uint16_t *Voxel_ResolvePalettes(const void *t)
 {
@@ -146,10 +147,9 @@ static uint16_t sNew[VOXEL_ATLAS_PIXELS], sOld[VOXEL_ATLAS_PIXELS];
 static void Fill(unsigned blackEvery)
 {
     for (unsigned i = 0; i < sizeof(sPrimaryTiles); ++i)
-    {
         sPrimaryTiles[i] = (uint8_t)Random();
+    for (unsigned i = 0; i < sizeof(sSecondaryTiles); ++i)
         sSecondaryTiles[i] = (uint8_t)Random();
-    }
     /* A few all-zero tiles, which only draw the backdrop and layer 1 keys out. */
     memset(sPrimaryTiles + 7 * 32, 0, 32);
     memset(sSecondaryTiles + 9 * 32, 0, 32);
@@ -380,7 +380,7 @@ static void AnimatedTiles(void)
     src.primaryPalettes = sPrimaryPalettes;
     src.secondaryPalettes = sSecondaryPalettes;
     src.primaryMetatiles = sMetatiles;
-    src.secondaryMetatiles = sMetatiles + 512 * 8;
+    src.secondaryMetatiles = sMetatiles + NUM_METATILES_IN_PRIMARY * 8;
     memset(sOld, 0, sizeof(sOld));
     ReferenceCompose(&src, sMetatiles + 8, sOld, slot1);
     for (unsigned y = 0; y < 16; ++y)
@@ -488,7 +488,7 @@ static void DerivedPages(void)
     do
     {
         while (!VoxelAtlas_JobStep(&job, 17)) {}
-        assert(job.ok && !job.map.overflowed && job.map.used == VOXEL_METATILE_IDS);
+        assert(job.ok && !job.map.overflowed && job.map.used == VOXEL_BARE_FIRST);
         assert(job.map.slotOf[1023] == 1);
         unsigned expected = job.map.used - job.page * VOXEL_SOLID_BASE;
         if (expected > VOXEL_SOLID_BASE) expected = VOXEL_SOLID_BASE;
@@ -496,7 +496,7 @@ static void DerivedPages(void)
         struct AtlasSource src = {.primaryTiles = live, .secondaryTiles = live + sizeof(sPrimaryTiles),
             .primaryPalettes = sPrimaryPalettes, .secondaryPalettes = sSecondaryPalettes};
         memset(sOld, 0, sizeof(sOld)); FillSolidSlots(sOld);
-        for (unsigned m = 0; m < VOXEL_METATILE_IDS; ++m)
+        for (unsigned m = 0; m < VOXEL_BARE_FIRST; ++m)
         {
             unsigned slot = job.map.slotOf[m] - 1u;
             assert(slot / VOXEL_ATLAS_MAX_SLOTS < VOXEL_ATLAS_PAGES);
@@ -521,6 +521,44 @@ bool Voxel_LoadTilesStep(const void *t, uint8_t *d, uint32_t n, VoxelTileLoad *l
     load->ok = Voxel_LoadTiles(t, d, n);
     load->done = load->initialized = true;
     return true;
+}
+
+/* Bounded live-VRAM refresh must exactly match a fresh winter atlas,
+ * including secondary tiles, every page, and restoration to the original. */
+static void WinterRefresh(void)
+{
+    VoxelMapInstance inst={.primaryTileset=&kPrimary,.secondaryTileset=&kSecondary};
+    static VoxelAtlasJob job;
+    static uint16_t fresh[VOXEL_ATLAS_PIXELS], refreshed[VOXEL_ATLAS_PIXELS];
+    static uint8_t live[NUM_TILES_TOTAL*32];
+    VoxelWinterSlot out[4];
+    Fill(0);
+    memcpy(live,sPrimaryTiles,sizeof(sPrimaryTiles));
+    memcpy(live+sizeof(sPrimaryTiles),sSecondaryTiles,sizeof(sSecondaryTiles));
+    for(unsigned i=0;i<sizeof(sMetatiles)/sizeof(*sMetatiles);i++)sMetatiles[i]=(uint16_t)Random();
+    memset(sUsed,1,sizeof(sUsed));
+    for(unsigned indoor=0;indoor<2;indoor++)for(unsigned mix=0;mix<=16;mix+=4) {
+        inst.indoor=indoor;VoxelAtlas_SetWinter(mix);
+        assert(VoxelAtlas_JobBegin(&job,&inst,fresh,NULL));
+        do {
+            while(!VoxelAtlas_JobStep(&job,7)){}
+            assert(job.ok);
+            memcpy(refreshed,fresh,sizeof(fresh));
+            unsigned cursor=0,visited=0;
+            do {
+                unsigned n=VoxelAtlas_WinterSlots(&inst,&job.map,job.page,live,&cursor,out,4);
+                assert(n<=4);visited+=n;
+                for(unsigned i=0;i<n;i++)for(unsigned y=0;y<16;y++)for(unsigned x=0;x<16;x++) {
+                    unsigned dx=(out[i].slot%VOXEL_ATLAS_COLUMNS)*16+x;
+                    unsigned dy=(out[i].slot/VOXEL_ATLAS_COLUMNS)*16+y;
+                    refreshed[CtrVideo_Texel(dx,dy,VOXEL_ATLAS_W)]=out[i].pixels[CtrVideo_Texel(x,y,16)];
+                }
+            }while(cursor<VOXEL_METATILE_IDS);
+            assert(visited>0);
+            assert(memcmp(refreshed,fresh,sizeof(fresh))==0);
+        }while(VoxelAtlas_JobNextPage(&job));
+    }
+    VoxelAtlas_SetWinter(0);
 }
 
 int main(void)
@@ -551,6 +589,7 @@ int main(void)
     WholeAtlases();
     AnimatedTiles();
     PagedAtlases();
+    WinterRefresh();
     VoxelGrade_Init();
     WholeAtlases();
     AnimatedTiles();

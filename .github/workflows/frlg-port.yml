@@ -34,6 +34,13 @@ jobs:
           make -C build/upstream -j2 generated
       - name: Compile native cartridge template
         run: make -C build/upstream/3ds_port -kj2 PYTHON=python3 cartridge-template
+      - name: Winter ground atlas and material regression
+        run: |
+          cd build/upstream/3ds_port
+          gcc -std=gnu99 -O2 -DPORTABLE -DMODERN=1 -D__INTELLISENSE__ -DFIRERED -iquote compat -iquote ../include -iquote ../gflib -Iinclude -Isrc/voxel tests/voxel_atlas_test.c src/voxel/voxel_grade.c -o /tmp/winter-atlas
+          /tmp/winter-atlas
+          gcc -std=c99 -Wall -Wextra -Werror -Isrc/voxel tests/voxel_winter_test.c -o /tmp/winter-material
+          /tmp/winter-material
       - uses: actions/upload-artifact@v4
         with:
           name: frlg-plus-cartridge-template

@@ -1,0 +1,57 @@
+{
+  "frlg": {
+    "game": "frlg",
+    "date": "2026-11-19",
+    "build_commit": "594c3a418629b22ac8a862e94d123e2359ab0289",
+    "ci_run": 44596143252,
+    "engine_sha256": "7b5d29bae33eb95c30240680a8d814723749c6a0e6ddc94ea4284bd8b990d4a5",
+    "web_payload_sha256": "4efd025a14715f0f678c6696df71e6e8af9a189fc9385a84f09a6e6d25983e9b",
+    "data_abi": "7ec349f4",
+    "passed": true,
+    "phases": {
+      "field": {
+        "samples": 12,
+        "minimum_sampled_fps": 59.7,
+        "work_over_frame_budget": 0,
+        "active_audio_underruns": 0,
+        "audio_track_advanced": true
+      },
+      "battle": {
+        "samples": 12,
+        "minimum_sampled_fps": 59.8,
+        "work_over_frame_budget": 0,
+        "active_audio_underruns": 0,
+        "audio_track_advanced": true
+      },
+      "active": {
+        "samples": 12,
+        "minimum_sampled_fps": 59.6,
+        "work_over_frame_budget": 0,
+        "active_audio_underruns": 0,
+        "audio_track_advanced": true
+      },
+      "climate": {
+        "samples": 12,
+        "minimum_sampled_fps": 59.7,
+        "work_over_frame_budget": 0,
+        "active_audio_underruns": 0,
+        "audio_track_advanced": true
+      }
+    },
+    "checks": {
+      "season_weather_verified": true,
+      "weather_transition_scope": "Live autumn clear-to-rain transition, eight intermediate frames; seasonal tint stayed stable.",
+      "gallery_verified": true,
+      "visual_field": true,
+      "automatic_weather_verified": true,
+      "weather_transition_season_stable": true,
+      "battle_return_verified": true,
+      "strength_push_verified": true,
+      "multiple_rocks_visible": true,
+      "rock_smash_verified": true
+    },
+    "limits": "Selected field scene, idle battle, active battle through field return, Strength movement, Rock Smash removal and multiple-rock visibility. Sampled timing is not a guarantee for every scene or frame. Asset coverage remains incomplete; sprites for characters and battle creatures are retained.",
+    "asset": "FRLG-Plus-3D-Flora-Climate-v2-2026-11-19.zip",
+    "asset_sha256": "dad65980b94edf99f215dbe5991c5ba85ea8f1f0398ec5c17e72f156bca9d18f"
+  }
+}

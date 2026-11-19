@@ -418,7 +418,7 @@ Freak, Creatures or The Pokémon Company.
 <!-- EXPANDED PROPS PREVIEW -->
 ### Expanded 3D scenery — unreleased prototype
 
-The next pass adds actual mesh volume to selected grass, flowers, shrubs and rocks, including interactive boulders in the native games. **Coverage is incomplete and the expanded builds have not passed Thor qualification.** Existing release downloads remain unchanged.
+The next pass adds actual mesh volume to selected grass, flowers, shrubs and rocks. Source now includes behavior-selected encounter grass and interactive boulders in all three native games, solid flowers in FireRed and FRLG+, and live garden-plant trunks and fronds in Let’s Go. **Coverage is incomplete and the expanded builds have not passed Thor qualification.** Existing release downloads remain unchanged.
 
 This is an offline scene rendered by the engine's C geometry code using ROM-derived textures, not a Thor capture. [Coverage and limits](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/props-preview.html).
 

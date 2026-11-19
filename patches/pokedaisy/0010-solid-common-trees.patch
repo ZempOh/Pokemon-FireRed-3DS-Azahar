@@ -1,16 +1,17 @@
 diff --git a/app/src/main/cpp/pk_wide.c b/app/src/main/cpp/pk_wide.c
-index 25be6e1..0b1e914 100644
+index 25be6e1..6171d09 100644
 --- a/app/src/main/cpp/pk_wide.c
 +++ b/app/src/main/cpp/pk_wide.c
-@@ -28,6 +28,7 @@
+@@ -28,6 +28,8 @@
  #include "pk_wide.h"
  #include "pk_cheats.h"
  #include "pk_wide_voxel.h"
 +#include "pk_wide_solid.h"
++#include "pk_wide_props.h"
  #include "pk_voxel_climate.h"
  
  #include <stdbool.h>
-@@ -2635,6 +2636,7 @@ static int lastClose;               // pk_wide_wants_close
+@@ -2635,6 +2637,7 @@ static int lastClose;               // pk_wide_wants_close
  static int lastScene = PK_WIDE_SCENE_OFF;   // pk_wide_scene
  static int overlayDim;              // 0..256: how far the map around a BG0 picture is dimmed (ramps in and out)
  static bool voxelEnabled, voxelKnown;
@@ -18,7 +19,7 @@ index 25be6e1..0b1e914 100644
  static struct PkWideView rawView;   // the window raw[] was last drawn for (w 0 = nothing yet)
  static uint32_t raw[BUF_H][BUF_W];  // the last scene drawn (map or battle) that checked out, frame pixels unused
  static uint8_t rawHole[BUF_H][BUF_W];   // ... and where it had nothing: the frame's nearest edge pixel goes on there
-@@ -2651,6 +2653,7 @@ void pk_wide_voxel(int on) { voxelEnabled = on != 0; }
+@@ -2651,6 +2654,7 @@ void pk_wide_voxel(int on) { voxelEnabled = on != 0; }
  void pk_wide_climate(int config) { voxelClimate.config = config; }
  
  int pk_wide_configure(uint32_t crc) {
@@ -26,7 +27,7 @@ index 25be6e1..0b1e914 100644
      lastFault = 0;
      voxelKnown = pk_wide_voxel_knows(crc);
      memset(&voxelClimate, 0, sizeof(voxelClimate));
-@@ -4903,6 +4906,66 @@ static int terrainRise(const struct Snap* s, int x, int y) {
+@@ -4903,6 +4907,103 @@ static int terrainRise(const struct Snap* s, int x, int y) {
      return z > VOXEL_MAX_RISE ? VOXEL_MAX_RISE : z;
  }
  
@@ -90,10 +91,47 @@ index 25be6e1..0b1e914 100644
 +    return n;
 +}
 +
++static int solidPropsPrepare(const struct Snap* s,struct VoxelView* v,int cx,int cy,
++                             uint32_t* texture,struct SolidProp* props,int cap,uint32_t alpha) {
++    // Initial verified asset profile: Let's Go's Kanto outdoor atlas.
++    if(solidRom!=0x25c3d89f || s->primary!=0x082d4a94)return 0;
++    int count=0,cellX=(cx+v->left)/16,cellY=(cy+v->top)/16;
++    for(int row=0;row<v->rows;row++)for(int col=0;col<v->cols;col++) {
++        int conn,id=blockIn(s,cellX+col,cellY+row,&conn,false),kind=0,ground=8;
++        if(conn>=0 && s->conn[conn].primary!=s->primary)continue;
++        if(id==1)kind=1;
++        else if(id==4)kind=2;
++        else if(id==5)kind=4;
++        else if(id==0x9f)kind=3;
++        else if(id==0xaf||id==0xb7){kind=3;ground=0x115;}
++        if(!kind||count==cap)continue;
++        struct SolidProp* p=&props[count++];p->kind=kind;
++        struct SolidTree* t=&p->surface;
++        t->x=v->left+col*16;t->y=v->top+row*16;t->rise=voxelRise(v,col,row);
++        for(int y=0;y<48;y++)for(int x=0;x<32;x++)
++            t->art[y*32+x]=texture[(row*16+(y/3))*v->stride+col*16+(x&15)];
++        // Replace the original flat drawing with its matching ground material.
++        const uint8_t* vram=(const uint8_t*)G->video.vram;
++        for(int y=0;y<16;y++)for(int x=0;x<16;x++) {
++            uint16_t rgb=P[0];
++            for(int i=0;i<3;i++) {
++                int b=order3[i];uint16_t e=metatile(s,ground,b)[(y/8)*2+x/8];
++                int px=x&7,py=y&7;if(e&0x400)px=7-px;if(e&0x800)py=7-py;
++                unsigned off=bgChar[b]+(e&1023)*32+py*4+px/2;if(off>=0x10000)continue;
++                int ci=(vram[off]>>(px&1?4:0))&15;
++                if(ci){rgb=P[(e>>12)*16+ci];break;}
++            }
++            uint32_t c=color(rgb,alpha);if(voxelClimate.blend)c=climateTerrain(c);
++            texture[(row*16+y)*v->stride+col*16+x]=c;
++        }
++    }
++    return count;
++}
++
  static bool drawVoxel(const struct Snap* s, int cx, int cy, int href, int vref,
                        uint32_t* out, struct PkWideView v, uint32_t alpha) {
      if (v.w > VOXEL_MAX_W || v.h > VOXEL_MAX_H || v.w < 120 || v.h < 80) return false;
-@@ -4914,7 +4977,7 @@ static bool drawVoxel(const struct Snap* s, int cx, int cy, int href, int vref,
+@@ -4914,7 +5015,7 @@ static bool drawVoxel(const struct Snap* s, int cx, int cy, int href, int vref,
      int left = voxelFloor(cx + v.x - mx, VOXEL_TILE) * VOXEL_TILE - cx;
      int right = voxelFloor(cx + v.x + v.w + mx + VOXEL_TILE - 1, VOXEL_TILE) * VOXEL_TILE - cx;
      int top = voxelFloor(cy + v.y - margin - VOXEL_TILE, VOXEL_TILE) * VOXEL_TILE - cy;
@@ -102,17 +140,97 @@ index 25be6e1..0b1e914 100644
          * VOXEL_TILE - cy;
      int w = right - left, h = bottom - top;
      if (w > BUF_W || h > BUF_H) return false;
-@@ -4961,7 +5024,10 @@ static bool drawVoxel(const struct Snap* s, int cx, int cy, int href, int vref,
+@@ -4961,7 +5062,13 @@ static bool drawVoxel(const struct Snap* s, int cx, int cy, int href, int vref,
      climateUpdate(mapType >= 1 && mapType <= 3, nativeWeather);
      if (voxelClimate.blend)
          for (size_t i=0; i<textureSize; i++) texture[i]=climateTerrain(texture[i]);
 +    static struct SolidTree trees[256];
 +    int treeCount=solidTreesPrepare(s,&voxel,cx,cy,texture,trees,256,alpha);
++    static struct SolidProp props[384];
++    int propCount=solidPropsPrepare(s,&voxel,cx,cy,texture,props,384,alpha);
      voxelTerrain(&voxel);
 +    for(int i=0;i<treeCount;i++)solidTreeDraw(&voxel,&trees[i]);
++    for(int i=0;i<propCount;i++)solidPropDraw(&voxel,&props[i]);
      drawObjects(s, cx, cy, left, top, right, bottom, texture, w, alpha, &voxel);
  
      climateAtmosphere(out, depth, v.w, v.h);
+diff --git a/app/src/main/cpp/pk_wide_props.h b/app/src/main/cpp/pk_wide_props.h
+new file mode 100644
+index 0000000..f43fd26
+--- /dev/null
++++ b/app/src/main/cpp/pk_wide_props.h
+@@ -0,0 +1,71 @@
++// Closed low-poly field props; source colors remain tied to the live ROM palette.
++// Coordinates and depth use the same world space as terrain, actors and trees.
++#pragma once
++struct SolidProp { struct SolidTree surface; int kind; };
++
++static void propFace(const struct VoxelView* v,const struct SolidTree* t,
++                     struct SolidVertex a,struct SolidVertex b,struct SolidVertex c,
++                     struct SolidVertex d,unsigned shade) {
++    solidTriangle(v,t,a,b,c,shade,0); solidTriangle(v,t,a,c,d,shade,0);
++}
++
++static void propMound(const struct VoxelView* v,const struct SolidTree* t,
++                      float x,float y,float z,float radius,float height,int rock,int inkX,int inkY) {
++    static const float dx[8]={1,.707107f,0,-.707107f,-1,-.707107f,0,.707107f};
++    static const float dy[8]={0,.707107f,1,.707107f,0,-.707107f,-1,-.707107f};
++    const float rr[4]={.72f,1,.68f,0},hh[4]={0,.32f,.78f,1};
++    for(int band=0;band<3;band++)for(int e=0;e<8;e++) {
++        int j=(e+1)&7;
++        float ra=radius*rr[band],rb=radius*rr[band+1];
++        float skew=rock?(e%3==0?.88f:1):1,skewj=rock?(j%3==0?.88f:1):1;
++        struct SolidVertex a={x+dx[e]*ra*skew,y+dy[e]*ra,z+hh[band]*height,8+dx[e]*6,16+dy[e]*6};
++        struct SolidVertex b={x+dx[j]*ra*skewj,y+dy[j]*ra,z+hh[band]*height,8+dx[j]*6,16+dy[j]*6};
++        struct SolidVertex c={x+dx[j]*rb*skewj,y+dy[j]*rb,z+hh[band+1]*height,8+dx[j]*4,12+dy[j]*4};
++        struct SolidVertex d={x+dx[e]*rb*skew,y+dy[e]*rb,z+hh[band+1]*height,8+dx[e]*4,12+dy[e]*4};
++        if(inkX>=0){a.u=b.u=c.u=d.u=inkX;a.v=b.v=c.v=d.v=inkY;}
++        propFace(v,t,a,b,c,d,170+band*22+(e<4?15:0));
++    }
++}
++
++// Four-sided tapered stalks, with a leaned tip: volume remains visible from
++// either side instead of rotating a single textured rectangle toward the camera.
++static void propBlade(const struct VoxelView* v,const struct SolidTree* t,
++                      float x,float y,float z,float h,float lean,int colorX,int colorY) {
++    const float dx[4]={-1,0,1,0},dy[4]={0,-.65f,0,.65f};
++    struct SolidVertex tip={x+lean,y+.6f,z+h,colorX,colorY};
++    for(int i=0;i<4;i++) {
++        int j=(i+1)&3;
++        struct SolidVertex a={x+dx[i],y+dy[i],z,colorX,colorY};
++        struct SolidVertex b={x+dx[j],y+dy[j],z,colorX,colorY};
++        solidTriangle(v,t,a,b,tip,180+i*20,0);
++    }
++}
++
++static void solidPropDraw(const struct VoxelView* v,const struct SolidProp* p) {
++    const struct SolidTree* t=&p->surface;
++    float x=t->x+8,y=t->y+9,z=t->rise;
++    for(int dy=-4;dy<=4;dy++)for(int dx=-7;dx<=7;dx++) {
++        if(dx*dx*16+dy*dy*49>784)continue;
++        int px=voxelX(v,(int)x+dx,(int)y+dy),py=voxelY(v,(int)y+dy,(int)z);
++        if((unsigned)px<(unsigned)v->width&&(unsigned)py<(unsigned)v->height)
++            voxelPixel(v,px,py,(int)y+dy,voxelShade(v->out[py*v->width+px],225));
++    }
++    if(p->kind==3) { propMound(v,t,x,y,z,7.2f,10.5f,1,-1,0); return; }
++    if(p->kind==4) { propMound(v,t,x,y,z,6.2f,12,0,-1,0); return; }
++    for(int i=0;i<7;i++) {
++        float px=x+(i%3-1)*3.5f,py=y+(i/3-1)*3;
++        propBlade(v,t,px,py,z,6.5f+(i%3)*1.3f,(i&1)?1.5f:-1.5f,5+(i%3)*3,36);
++    }
++    if(p->kind==2) {
++        // Petals are flattened closed mounds above stems, never a floor decal.
++        for(int i=0;i<2;i++) {
++            float px=x+(i?4:-4),py=y+(i?2:-2);
++            propBlade(v,t,px,py,z,7,0,8,18);
++            for(int petal=0;petal<5;petal++) {
++                float angle=petal*1.256637f;
++                propMound(v,t,px+cosf(angle)*2.2f,py+sinf(angle)*2.2f,z+7,1.8f,1.4f,0,i?4:2,i?9:6);
++            }
++            propMound(v,t,px,py,z+7.7f,1.4f,1.2f,0,i?2:4,i?6:9);
++        }
++    }
++}
 diff --git a/app/src/main/cpp/pk_wide_solid.h b/app/src/main/cpp/pk_wide_solid.h
 new file mode 100644
 index 0000000..047098b

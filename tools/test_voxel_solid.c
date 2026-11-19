@@ -3,6 +3,7 @@
 #include <string.h>
 #include "pk_wide_voxel.h"
 #include "pk_wide_solid.h"
+#include "pk_wide_props.h"
 
 int main(void) {
     enum { W=96,H=96,N=W*H };
@@ -35,5 +36,18 @@ int main(void) {
     memset(depth,0,sizeof depth);memset(v.out,0,N*4);
     solidTriangle(&v,&t,a,c,b,256,0);
     assert(memcmp(first,v.out,sizeof first)==0);
-    puts("Solid tree clipping, triangle winding and sprite occlusion passed");
+    for(int kind=1;kind<=4;kind++) {
+        struct SolidProp p={.surface=t,.kind=kind};
+        p.surface.x=32;p.surface.y=40;
+        memset(depth,0,sizeof depth);memset(v.out,0,N*4);
+        solidPropDraw(&v,&p);
+        int raised=0;
+        for(int y=0;y<voxelY(&v,49,8);y++)for(int x=0;x<W;x++)if(v.out[y*W+x])raised++;
+        assert(raised>12); // each category has geometry above its footprint
+        for(int y=-160;y<=160;y+=32)for(int x=-160;x<=160;x+=32) {
+            p.surface.x=x;p.surface.y=y;solidPropDraw(&v,&p);
+            assert(guarded[0]==0x12345678 && guarded[N+1]==0x12345678);
+        }
+    }
+    puts("Solid trees and field props: clipping, volume, winding and occlusion passed");
 }

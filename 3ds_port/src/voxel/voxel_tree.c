@@ -407,8 +407,8 @@ static void EmitSolidCrown(VoxelBuilder *b, int x, int y, int col, int row)
     static const float height[5] = {.55f, .90f, 1.50f, 1.98f, 2.12f};
     const int quadrant = row ? (col ? 2 : 3) : (col ? 1 : 0);
     const float cx = x - col + 1.0f, cz = y - row + 1.0f;
-    const float u0 = TEX_U(12), u1 = TEX_U(16);
-    const float v0 = TEX_V(12), v1 = TEX_V(16);
+    const float u0 = TEX_U(8), u1 = TEX_U(24);
+    const float v0 = TEX_V(8), v1 = TEX_V(24);
     for (int band = 0; band < 4; ++band)
         for (int edge = quadrant * 2; edge < quadrant * 2 + 2; ++edge)
         {

@@ -2,7 +2,7 @@ name: Compile FRLG Plus native port
 
 on:
   push:
-    branches: [voxel-frlg-plus, graphics/azahar-frlg]
+    branches: [graphics/frlg-solid-tree-sample, voxel-frlg-plus, graphics/azahar-frlg]
   workflow_dispatch:
 
 permissions:
@@ -64,3 +64,6 @@ jobs:
           name: frlg-plus-cartridge-recipe
           path: dist/FireRed3DS-v1.5.1-Windows.zip
           if-no-files-found: error
+
+      - name: Solid crown geometry regression
+        run: python3 3ds_port/tests/solid_crown_test.py

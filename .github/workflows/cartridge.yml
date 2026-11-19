@@ -62,3 +62,6 @@ jobs:
 
       - name: Solid crown geometry regression
         run: python3 3ds_port/tests/solid_crown_test.py
+
+      - name: Full live-boulder buffer regression
+        run: python3 3ds_port/tests/solid_boulder_test.py

@@ -27,6 +27,11 @@
 #define VOXEL_SPRITE_SLOT_DIM   64u
 #define VOXEL_SPRITE_COLUMNS    (VOXEL_SPRITE_ATLAS_DIM / VOXEL_SPRITE_SLOT_DIM)
 #define VOXEL_SPRITE_SLOTS      16u
+/* Sixteen live object slots can each contain a 24-quad boulder. Remaining
+ * atlas slots hold ordinary cards/effects, with spare room for the follower. */
+#define VOXEL_SOLID_BOULDER_VERTICES (3u * 8u * 6u)
+#define VOXEL_SPRITE_VERTEX_RESERVE (16u * VOXEL_SOLID_BOULDER_VERTICES + (VOXEL_SPRITE_SLOTS - 16u) * 6u + 32u)
+
 /* Below the objects' slots, a cell of its own for the Pokemon that follows
  * the player (voxel_follower.c): its sprites are larger than theirs. */
 #define VOXEL_SPRITE_ATLAS_H    512u

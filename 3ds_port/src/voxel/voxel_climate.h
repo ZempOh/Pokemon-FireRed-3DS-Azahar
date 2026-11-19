@@ -19,7 +19,7 @@ static int climateWeatherAt(time_t seconds, int season) {
     return season==3 ? 3 : 2;
 }
 
-static float sClimateMix;
+static float sClimateMix, sClimateSeasonMix;
 static int sClimateSeason, sClimateWeather;
 static uint64_t sClimateTick;
 static uint64_t sClimateClockTick;
@@ -49,21 +49,29 @@ static void ClimateUpdate(bool eligible) {
     if(season<0 || season>3) season=0;
     if(weather<0 || weather>4) weather=0;
     eligible=eligible && (mode==1 || mode==2);
-    if(!eligible || season!=sClimateSeason || weather!=sClimateWeather) {
+    /* Weather fronts must not fade the calendar's foliage back to summer. */
+    if(!eligible || season!=sClimateSeason) {
+        sClimateSeasonMix-=dt;
+        if(sClimateSeasonMix<=0) { sClimateSeasonMix=0; sClimateSeason=season; }
+    } else {
+        sClimateSeasonMix+=dt;
+        if(sClimateSeasonMix>1) sClimateSeasonMix=1;
+    }
+    if(!eligible || weather!=sClimateWeather) {
         sClimateMix-=dt;
-        if(sClimateMix<=0) { sClimateMix=0; sClimateSeason=season; sClimateWeather=weather; }
+        if(sClimateMix<=0) { sClimateMix=0; sClimateWeather=weather; }
     } else {
         sClimateMix+=dt;
         if(sClimateMix>1) sClimateMix=1;
     }
-    if(!eligible) sClimateMix=0;
+    if(!eligible) sClimateMix=sClimateSeasonMix=0;
 }
 static VoxelLight ClimateLight(VoxelLight light, bool eligible) {
     ClimateUpdate(eligible);
-    if(sClimateMix<=0) return light;
+    if(sClimateMix<=0 && sClimateSeasonMix<=0) return light;
     static const float tints[4][3]={{1.02f,1.03f,0.98f},{1,1,1},{1.08f,0.94f,0.83f},{0.91f,0.98f,1.08f}};
     for(int i=0;i<3;i++) {
-        float scale=1+(tints[sClimateSeason][i]-1)*sClimateMix;
+        float scale=1+(tints[sClimateSeason][i]-1)*sClimateSeasonMix;
         light.sun[i]*=scale; light.shade[i]*=scale;
     }
     if(sClimateWeather==4) {

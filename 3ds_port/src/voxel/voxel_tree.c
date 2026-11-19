@@ -403,25 +403,35 @@ int VoxelTree_GroundMetatile(const void *secondaryTileset, int metatileId)
     }
 }
 
-/* The card is the tree's 32:48 drawing: width 2, length 3 tiles, leaning
- * north at 50 degrees, fixed in the world rather than billboarded. Its foot
- * is at the base row's lowest leaves, sunk a little so no cut shows. */
+/* Solid common-tree canopies, retaining the game palette and ground. */
+static void EmitSolidCrown(VoxelBuilder *b, int x, int y, int col, int row)
+{
+    static const float ring[9][2] = {
+        {-1,0},{-.707107f,-.707107f},{0,-1},{.707107f,-.707107f},
+        {1,0},{.707107f,.707107f},{0,1},{-.707107f,.707107f},{-1,0}
+    };
+    static const float radius[4] = {.32f, .96f, .76f, 0};
+    static const float height[4] = {.08f, .72f, 1.48f, 2.12f};
+    const int quadrant = row ? (col ? 2 : 3) : (col ? 1 : 0);
+    const float cx = x - col + 1.0f, cz = y - row + 1.0f;
+    const float u0 = TEX_U(10), u1 = TEX_U(22);
+    const float v0 = TEX_V(20), v1 = TEX_V(28);
+    for (int band = 0; band < 3; ++band)
+        for (int edge = quadrant * 2; edge < quadrant * 2 + 2; ++edge)
+        {
+            const float shade = .78f + .07f * band + (edge >= 4 ? .05f : 0);
+            VoxelBuilder_Quad(b,
+                &(VoxelVertex){cx + ring[edge][0]*radius[band], height[band], cz + ring[edge][1]*radius[band], u0,v1,shade},
+                &(VoxelVertex){cx + ring[edge+1][0]*radius[band], height[band], cz + ring[edge+1][1]*radius[band], u1,v1,shade},
+                &(VoxelVertex){cx + ring[edge+1][0]*radius[band+1], height[band+1], cz + ring[edge+1][1]*radius[band+1], u1,v0,shade},
+                &(VoxelVertex){cx + ring[edge][0]*radius[band+1], height[band+1], cz + ring[edge][1]*radius[band+1], u0,v0,shade});
+        }
+}
+
 static void EmitCrown(VoxelBuilder *builder, int x, int y, int col)
 {
-    float wx = (float)x, wz = (float)y;
-    float u0 = TEX_U(col * 16), u1 = TEX_U(col * 16 + 16);
-    float v0 = TEX_V(0), v1 = TEX_V(48);
-    const float rise = 2.298133f, run = 1.928363f;
-    const float baseHeight = -0.10f;
-    float baseZ = wz + 1.9f;
-
-    builder->rounded = true;
-    VoxelBuilder_Quad(builder,
-        &(VoxelVertex){wx,        baseHeight + rise, baseZ - run, u0, v0, 1.0f},
-        &(VoxelVertex){wx + 1.0f, baseHeight + rise, baseZ - run, u1, v0, 1.0f},
-        &(VoxelVertex){wx + 1.0f, baseHeight,        baseZ,       u1, v1, 1.0f},
-        &(VoxelVertex){wx,        baseHeight,        baseZ,       u0, v1, 1.0f});
-    builder->rounded = false;
+    EmitSolidCrown(builder, x, y, col, 0);
+    EmitSolidCrown(builder, x, y + 1, col, 1);
 }
 
 /* A wood's card: its tree's drawing, three cells wide, from its top down

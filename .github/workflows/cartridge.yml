@@ -2,7 +2,7 @@ name: Build browser cartridge engine
 
 on:
   push:
-    branches: [standalone-browser-output, thor-rendering-tuning, graphics/azahar-firered]
+    branches: [graphics/firered-solid-tree-sample, standalone-browser-output, thor-rendering-tuning, graphics/azahar-firered]
     paths: ['.github/workflows/cartridge.yml', '3ds_port/**', 'patches/**', 'tools/**']
   workflow_dispatch:
 
@@ -59,3 +59,6 @@ jobs:
             dist/cartridge-template.3ds
             dist/FireRed3DS-v0.5.1-Windows.zip
           if-no-files-found: error
+
+      - name: Solid crown geometry regression
+        run: python3 3ds_port/tests/solid_crown_test.py

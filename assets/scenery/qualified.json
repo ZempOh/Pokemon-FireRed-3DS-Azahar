@@ -44,5 +44,51 @@
     "limits": "Selected field scene, idle battle, active battle through field return, Strength movement, Rock Smash removal and multiple-rock visibility. Sampled timing is not a guarantee for every scene or frame. Asset coverage remains incomplete; sprites for characters and battle creatures are retained.",
     "asset": "FireRed-3D-Scenery-2026-11-19.zip",
     "asset_sha256": "00a76aee90c1480882f149c5cf8b3e423615fbb291ad175e594ed2b50250644d"
+  },
+  "frlg": {
+    "game": "frlg",
+    "date": "2026-11-19",
+    "build_commit": "aeaac4dc17ae00c8f01f82466312228db90d394d",
+    "ci_run": 44484072604,
+    "engine_sha256": "d5e1616a3edb777c235141145268db9970a82b1f533999ebf8030e434fd23f10",
+    "web_payload_sha256": "21657faa90161cefb5da6e07af77baa126b1e0e62ab758df9e2e79d131ef2a91",
+    "data_abi": "f2119151",
+    "passed": true,
+    "phases": {
+      "field": {
+        "samples": 12,
+        "minimum_sampled_fps": 59.7,
+        "work_over_frame_budget": 0,
+        "active_audio_underruns": 0,
+        "audio_track_advanced": true
+      },
+      "battle": {
+        "samples": 12,
+        "minimum_sampled_fps": 59.8,
+        "work_over_frame_budget": 0,
+        "active_audio_underruns": 0,
+        "audio_track_advanced": true
+      },
+      "active": {
+        "samples": 12,
+        "minimum_sampled_fps": 59.8,
+        "work_over_frame_budget": 0,
+        "active_audio_underruns": 0,
+        "audio_track_advanced": true
+      }
+    },
+    "checks": {
+      "commit": "aeaac4dc17ae00c8f01f82466312228db90d394d",
+      "visual_field": true,
+      "battle_return_verified": true,
+      "gallery_verified": true,
+      "notes": "Field/battle/active minimum sampled FPS59.7/59.8/59.8, clean matched active audio. Route1 return verified. Victory Road boulder movement and Mt Ember Rock Smash removal with Geodude encounter and cleared path traversal verified. Multiple complete boulders remain visible.",
+      "strength_push_verified": true,
+      "rock_smash_verified": true,
+      "multiple_rocks_visible": true
+    },
+    "limits": "Selected field scene, idle battle, active battle through field return, Strength movement, Rock Smash removal and multiple-rock visibility. Sampled timing is not a guarantee for every scene or frame. Asset coverage remains incomplete; sprites for characters and battle creatures are retained.",
+    "asset": "FRLG-Plus-3D-Scenery-2026-11-19.zip",
+    "asset_sha256": "92a3e2a2a3c093c1e896d8ba8a77314453fcd269c0b1b0e62df64dc19c760174"
   }
 }

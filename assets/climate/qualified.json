@@ -108,5 +108,60 @@
     "limits": "Selected field scene, idle battle, active battle through field return, Strength movement, Rock Smash removal and multiple-rock visibility. Sampled timing is not a guarantee for every scene or frame. Asset coverage remains incomplete; sprites for characters and battle creatures are retained.",
     "asset": "FireRed-3D-Flora-Climate-v2-2026-11-19.zip",
     "asset_sha256": "7f1acc30899cbf60c4e5f0024e8b0ece6bf3b90b3ee371ffbcae818183c1606c"
+  },
+  "classic": {
+    "game": "classic",
+    "date": "2026-11-19",
+    "build_commit": "0cdbf1888d442b2b21e239c012188f03baa6e860",
+    "ci_run": 44596145578,
+    "engine_sha256": "7ca3a4c04d73d773a92d5f0e318be681207f2ca5cf745af35572718be55beec3",
+    "web_payload_sha256": "4254ec4a3659ba6b72b31761d0caf0d03c7b41008eb453d7a5ef0b593f5816c0",
+    "data_abi": "468d08f1",
+    "passed": true,
+    "phases": {
+      "field": {
+        "samples": 12,
+        "minimum_sampled_fps": 59.8,
+        "work_over_frame_budget": 0,
+        "active_audio_underruns": 0,
+        "audio_track_advanced": true
+      },
+      "battle": {
+        "samples": 12,
+        "minimum_sampled_fps": 59.8,
+        "work_over_frame_budget": 0,
+        "active_audio_underruns": 0,
+        "audio_track_advanced": true
+      },
+      "active": {
+        "samples": 12,
+        "minimum_sampled_fps": 59.8,
+        "work_over_frame_budget": 0,
+        "active_audio_underruns": 0,
+        "audio_track_advanced": true
+      },
+      "climate": {
+        "samples": 12,
+        "minimum_sampled_fps": 59.8,
+        "work_over_frame_budget": 0,
+        "active_audio_underruns": 0,
+        "audio_track_advanced": true
+      }
+    },
+    "checks": {
+      "season_weather_verified": true,
+      "battle_return_verified": true,
+      "gallery_verified": true,
+      "visual_field": true,
+      "automatic_weather_verified": true,
+      "weather_transition_season_stable": true,
+      "weather_transition_scope": "Live autumn clear-to-rain transition, eight intermediate frames; seasonal tint stayed stable.",
+      "strength_push_verified": true,
+      "multiple_rocks_visible": true,
+      "rock_smash_verified": true
+    },
+    "limits": "Selected field scene, idle battle, active battle through field return, Strength movement, Rock Smash removal and multiple-rock visibility. Sampled timing is not a guarantee for every scene or frame. Asset coverage remains incomplete; sprites for characters and battle creatures are retained.",
+    "asset": "Classic-3D-Flora-Climate-v2-2026-11-19.zip",
+    "asset_sha256": "b67fb71109bc05901e3f7cfe00fe781c5cc3ae3abec62e35cb22fcb80ab58510"
   }
 }

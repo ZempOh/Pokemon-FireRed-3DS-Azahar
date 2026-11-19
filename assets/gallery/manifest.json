@@ -1,102 +1,5 @@
 [
   {
-    "game": "classic",
-    "view": "2d",
-    "file": "classic-2d.png",
-    "source": "capacity-native/native/screenshots/classic-2d-top.png",
-    "source_sha256": "a67a579e215e7462d3b71251f73def25a452f16f2be8e072d2247bfb0642d61a",
-    "sha256": "ea0e88b1924c65771f0dd64dc914697c7d4eee7e6efd78081cab22c3a79420c4",
-    "build_reference": "scenery-3d.html",
-    "commit": "873a0fe6aadaec25ec4e621944b1eee7b0870167"
-  },
-  {
-    "game": "classic",
-    "view": "3d",
-    "file": "classic-3d.png",
-    "source": "capacity-native/native/screenshots/classic-3d-top.png",
-    "source_sha256": "5a22d69f8b6a5c5aa9b23255a6a8b4548e1eee966c5e585ee079cae72cdf4044",
-    "sha256": "f5affa24a18ffa880ed5af2b839dbf6c40c93607687350e528be158261e55db9",
-    "build_reference": "scenery-3d.html",
-    "commit": "873a0fe6aadaec25ec4e621944b1eee7b0870167"
-  },
-  {
-    "game": "classic",
-    "view": "spring",
-    "file": "classic-spring.png",
-    "source": "capacity-native/native/screenshots/classic-spring-top.png",
-    "source_sha256": "9b43b82d3e2a24c3766886b626c4b85581de6e73788ad43a7c37b0c719bb7ee4",
-    "sha256": "823f91511e375e76a0ff3087f4a2f97d39e5b1743355afb7a9446679bfdf52e3",
-    "build_reference": "scenery-3d.html",
-    "commit": "873a0fe6aadaec25ec4e621944b1eee7b0870167"
-  },
-  {
-    "game": "classic",
-    "view": "summer",
-    "file": "classic-summer.png",
-    "source": "capacity-native/native/screenshots/classic-summer-top.png",
-    "source_sha256": "f7d111156b899524ccfc68c74d94da653332336b023e65a048ab13ed9d3e8920",
-    "sha256": "da3efb6eaf93cf6604805c99f0b8350ebc24bae661f6ede9aa85bdcb1d8fcf53",
-    "build_reference": "scenery-3d.html",
-    "commit": "873a0fe6aadaec25ec4e621944b1eee7b0870167"
-  },
-  {
-    "game": "classic",
-    "view": "autumn",
-    "file": "classic-autumn.png",
-    "source": "capacity-native/native/screenshots/classic-autumn-top.png",
-    "source_sha256": "8281fc073c97db52df7b8e4befc18ba96b27c9155f335ed8c26ce9741148e20f",
-    "sha256": "e402f6e7a369f4e2790863b05da7512408172635a1e2cdadfa8248327ec2f7ca",
-    "build_reference": "scenery-3d.html",
-    "commit": "873a0fe6aadaec25ec4e621944b1eee7b0870167"
-  },
-  {
-    "game": "classic",
-    "view": "winter",
-    "file": "classic-winter.png",
-    "source": "capacity-native/native/screenshots/classic-winter-top.png",
-    "source_sha256": "4dd528629a524085c4014ac8aec62265763a08dcfb8bc1affc9a490c2c6f0d1c",
-    "sha256": "9c158a77b9b19afbf1730216e2bf941959d6b008b28b886316cb00890115bff6",
-    "build_reference": "scenery-3d.html",
-    "commit": "873a0fe6aadaec25ec4e621944b1eee7b0870167"
-  },
-  {
-    "game": "classic",
-    "view": "battle",
-    "file": "classic-battle.png",
-    "source": "capacity-native/native/screenshots/classic-battle-top.png",
-    "source_sha256": "a076b15b4658613ef9fc76fe119a02ebd263dba9ffde359730998cb9549cda2f",
-    "sha256": "bfccdae205f9e59d9dff97a8d52857a7d7a4eecddcbd67b67d3e547928ea8fd4",
-    "build_reference": "scenery-3d.html",
-    "commit": "873a0fe6aadaec25ec4e621944b1eee7b0870167"
-  },
-  {
-    "game": "classic",
-    "view": "motion",
-    "file": "classic-motion.gif",
-    "sha256": "0b768b504a7b4e5d746cd98d206e286a7dc0290cc83ca7f5fd55c88ab6fc3599",
-    "build_reference": "scenery-3d.html",
-    "commit": "873a0fe6aadaec25ec4e621944b1eee7b0870167",
-    "format": "480px,10FPS; not a pacing measurement"
-  },
-  {
-    "game": "classic",
-    "view": "boulder-moving",
-    "file": "classic-boulder-moving.gif",
-    "sha256": "d582bac25718dc27c348f07ed235c2449c82bd276f3427eb181e68f00acb47b0",
-    "commit": "873a0fe6aadaec25ec4e621944b1eee7b0870167",
-    "format": "10 FPS actual Thor capture; not a pacing measurement",
-    "build_reference": "scenery-3d.html"
-  },
-  {
-    "game": "classic",
-    "view": "rock-smash",
-    "file": "classic-rock-smash.gif",
-    "sha256": "72e1ee80664d2dc58339d896b2cd1f1871d95eabbd799cb0979ae337302f4656",
-    "commit": "873a0fe6aadaec25ec4e621944b1eee7b0870167",
-    "format": "10 FPS actual Thor capture; not a pacing measurement",
-    "build_reference": "scenery-3d.html"
-  },
-  {
     "game": "letsgo",
     "view": "2d",
     "file": "letsgo-2d.png",
@@ -868,6 +771,165 @@
     "sha256": "2b591e000c177411fd19f7e6b7a61c3f6718df537cf87068cdbe2a43a37d624a",
     "build_reference": "climate-3d.html",
     "commit": "6cd705b39660e2f049b6ba71dc806bbd67c980bd",
+    "format": "480px,10FPS; not a pacing measurement"
+  },
+  {
+    "game": "classic",
+    "view": "2d",
+    "file": "classic-2d.png",
+    "source": "climate-v2-native/native/screenshots/classic-2d-top.png",
+    "source_sha256": "f4232e3110d285791bf2e53fe57fa8c8437a3ea2bb10e68d08eb51074686914b",
+    "sha256": "2019a7da3e3f52c451f3a7f5b14d4a8f47f4b50df7776e64dbef1b029adae6b3",
+    "build_reference": "climate-3d.html",
+    "commit": "0cdbf1888d442b2b21e239c012188f03baa6e860"
+  },
+  {
+    "game": "classic",
+    "view": "3d",
+    "file": "classic-3d.png",
+    "source": "climate-v2-native/native/screenshots/classic-3d-top.png",
+    "source_sha256": "4fb089190d31ffb70ff44d6b30188456270e79f433a6a561b53e3ac10b165904",
+    "sha256": "5bcae7d07e5d1411e0c976f8bbeeabb9169c3547e4d27c2c0da7b145e7d4e6bb",
+    "build_reference": "climate-3d.html",
+    "commit": "0cdbf1888d442b2b21e239c012188f03baa6e860"
+  },
+  {
+    "game": "classic",
+    "view": "spring",
+    "file": "classic-spring.png",
+    "source": "climate-v2-native/native/screenshots/classic-spring-top.png",
+    "source_sha256": "140b5550d783cac98e49f6507dc3e5c3e0cd23f17ea955e90ea86f645b1e05fe",
+    "sha256": "5592b7f4ea5a333ee21f1b3640519440659f17eaed6e8b3599118f1421d820ad",
+    "build_reference": "climate-3d.html",
+    "commit": "0cdbf1888d442b2b21e239c012188f03baa6e860"
+  },
+  {
+    "game": "classic",
+    "view": "summer",
+    "file": "classic-summer.png",
+    "source": "climate-v2-native/native/screenshots/classic-summer-top.png",
+    "source_sha256": "c0b99a8314a5db5bda401507f1bc1bc91cd17ef721aa7305c6ff9964f724d740",
+    "sha256": "7f0aecc3c7e1d0936cab1947340f24996c3b4684309ce359eab8e8864f7b6a21",
+    "build_reference": "climate-3d.html",
+    "commit": "0cdbf1888d442b2b21e239c012188f03baa6e860"
+  },
+  {
+    "game": "classic",
+    "view": "autumn",
+    "file": "classic-autumn.png",
+    "source": "climate-v2-native/native/screenshots/classic-autumn-top.png",
+    "source_sha256": "808948bae1f9861287479e0977c7c8ed33ceede25a6e4ab758b68107af183669",
+    "sha256": "b79a52a063a71bb39fd19f9e3fdc9b77535ddef76ea7511baf1b1903beeff63d",
+    "build_reference": "climate-3d.html",
+    "commit": "0cdbf1888d442b2b21e239c012188f03baa6e860"
+  },
+  {
+    "game": "classic",
+    "view": "winter",
+    "file": "classic-winter.png",
+    "source": "climate-v2-native/native/screenshots/classic-winter-top.png",
+    "source_sha256": "a84201fe407d6eadcd4867269a66d1ed0e01291151301568dc70b21a26c3557b",
+    "sha256": "9069b4117e155f02ec7d3bd2b6cf9cba1e21087415b9543ce00f3fdbc07d908b",
+    "build_reference": "climate-3d.html",
+    "commit": "0cdbf1888d442b2b21e239c012188f03baa6e860"
+  },
+  {
+    "game": "classic",
+    "view": "clear",
+    "file": "classic-clear.png",
+    "source": "climate-v2-native/native/screenshots/classic-clear-top.png",
+    "source_sha256": "cd7884563373caedb1e21cb9959a12b87b8e78807e5f0271da655f7e32770914",
+    "sha256": "d9c693a1c4a1906408a644515a007dc8e312c1374fcec99efa3ec0c46ff46cf9",
+    "build_reference": "climate-3d.html",
+    "commit": "0cdbf1888d442b2b21e239c012188f03baa6e860"
+  },
+  {
+    "game": "classic",
+    "view": "rain",
+    "file": "classic-rain.png",
+    "source": "climate-v2-native/native/screenshots/classic-rain-top.png",
+    "source_sha256": "47d2fb16ab1f816fd781b2da977966097f775f48dacce79b425a1764754e0ea1",
+    "sha256": "25d2a5d90a48aa7737c8e15783ec4768d85aa3750e0c4ae232fc5e663a0b62e4",
+    "build_reference": "climate-3d.html",
+    "commit": "0cdbf1888d442b2b21e239c012188f03baa6e860"
+  },
+  {
+    "game": "classic",
+    "view": "snow",
+    "file": "classic-snow.png",
+    "source": "climate-v2-native/native/screenshots/classic-snow-top.png",
+    "source_sha256": "99f06efb3f92f2b84eb2e70ec8753475a1842c8448444cb3f5045d13dc8184bb",
+    "sha256": "13763fed32239895c667c7e91afe9fc1f2967059d68f70da50856df2ed0bb36b",
+    "build_reference": "climate-3d.html",
+    "commit": "0cdbf1888d442b2b21e239c012188f03baa6e860"
+  },
+  {
+    "game": "classic",
+    "view": "fog",
+    "file": "classic-fog.png",
+    "source": "climate-v2-native/native/screenshots/classic-fog-top.png",
+    "source_sha256": "14dcfa19951820faccdfff1cf2e6ba6b6e4dd1d8cbf27b63bba8e89675334cb2",
+    "sha256": "9e02d2a26bc0adbd9e7f3c6ed25721f3c5cd38698c7773942cbcb158deb639fe",
+    "build_reference": "climate-3d.html",
+    "commit": "0cdbf1888d442b2b21e239c012188f03baa6e860"
+  },
+  {
+    "game": "classic",
+    "view": "battle",
+    "file": "classic-battle.png",
+    "source": "climate-v2-native/native/screenshots/classic-battle-top.png",
+    "source_sha256": "ed07c248413ef74bfc3781fc60a10e30c486bbbbdb6da11098ee1b392dd36b0f",
+    "sha256": "49440201ad2f39f0cd03ee3ce7cbb42dcd70a106cd8786585d34aa9c54010304",
+    "build_reference": "climate-3d.html",
+    "commit": "0cdbf1888d442b2b21e239c012188f03baa6e860"
+  },
+  {
+    "game": "classic",
+    "view": "rock-smash",
+    "file": "classic-rock-smash.gif",
+    "sha256": "135af8e5bab2484d93881b9ca1fca04dfa264c5135db3572356ca7286f9114bc",
+    "commit": "0cdbf1888d442b2b21e239c012188f03baa6e860",
+    "build_reference": "climate-3d.html"
+  },
+  {
+    "game": "classic",
+    "view": "boulder-moving",
+    "file": "classic-boulder-moving.gif",
+    "sha256": "2b5af9b1aec18e5aac229b079a34e8a4a24e3b16a0ff935af1b5598cd67f118a",
+    "commit": "0cdbf1888d442b2b21e239c012188f03baa6e860",
+    "build_reference": "climate-3d.html"
+  },
+  {
+    "game": "classic",
+    "view": "rain",
+    "file": "classic-rain.gif",
+    "sha256": "9517677640c37b9dcf0ae6d68bfc826991e5b4ca65510bf82f0511e15275567d",
+    "commit": "0cdbf1888d442b2b21e239c012188f03baa6e860",
+    "build_reference": "climate-3d.html"
+  },
+  {
+    "game": "classic",
+    "view": "snow",
+    "file": "classic-snow.gif",
+    "sha256": "1197642d20b4b0612f8ad7afd28c63d9897477ef50d6a93a889708450ac9c3e8",
+    "commit": "0cdbf1888d442b2b21e239c012188f03baa6e860",
+    "build_reference": "climate-3d.html"
+  },
+  {
+    "game": "classic",
+    "view": "fog",
+    "file": "classic-fog.gif",
+    "sha256": "11f9bc41877b868b73b2caa08e1115d0454db9c833a42b72778685d6d11722f6",
+    "commit": "0cdbf1888d442b2b21e239c012188f03baa6e860",
+    "build_reference": "climate-3d.html"
+  },
+  {
+    "game": "classic",
+    "view": "motion",
+    "file": "classic-motion.gif",
+    "sha256": "d86f1a489e66da494af1b08b2a80be28d9b084c5d120703ac5521b00b0e7fcb9",
+    "build_reference": "climate-3d.html",
+    "commit": "0cdbf1888d442b2b21e239c012188f03baa6e860",
     "format": "480px,10FPS; not a pacing measurement"
   }
 ]

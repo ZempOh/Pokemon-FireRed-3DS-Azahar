@@ -3,8 +3,8 @@
     "ciaForwarder": null,
     "recipe": {
       "path": "payload/emerald3ds.recipe",
-      "sha256": "d5cb1fcfe5e2d2efabe45db058f466c136f95cbe2c38dcad5001c356bca08df2",
-      "size": 585924
+      "sha256": "eb143733ae22349ec0f433eaa64e11de0ec81234f4fe91431dd9e74be28f9483",
+      "size": 585920
     },
     "smdh": {
       "path": "payload/Emerald3DS.smdh",
@@ -15,12 +15,12 @@
     "threeDsx": {
       "path": "payload/Emerald3DS.3dsx",
       "releaseAsset": "Emerald3DS.3dsx",
-      "sha256": "7d5f0f88ad1e10eb565008958539ee79b69acef29bd545487ccd19d87cc212dc",
-      "size": 6688372
+      "sha256": "7ca3a4c04d73d773a92d5f0e318be681207f2ca5cf745af35572718be55beec3",
+      "size": 6690128
     }
   },
   "builderVersion": "0.5.0",
-  "dataAbi": "74f29b40",
+  "dataAbi": "468d08f1",
   "entrypoint": {
     "apiVersion": 2,
     "function": "run_web_build",
@@ -50,8 +50,8 @@
     },
     {
       "path": "payload/Emerald3DS.3dsx",
-      "sha256": "7d5f0f88ad1e10eb565008958539ee79b69acef29bd545487ccd19d87cc212dc",
-      "size": 6688372
+      "sha256": "7ca3a4c04d73d773a92d5f0e318be681207f2ca5cf745af35572718be55beec3",
+      "size": 6690128
     },
     {
       "path": "payload/Emerald3DS.smdh",
@@ -60,8 +60,8 @@
     },
     {
       "path": "payload/emerald3ds.recipe",
-      "sha256": "d5cb1fcfe5e2d2efabe45db058f466c136f95cbe2c38dcad5001c356bca08df2",
-      "size": 585924
+      "sha256": "eb143733ae22349ec0f433eaa64e11de0ec81234f4fe91431dd9e74be28f9483",
+      "size": 585920
     },
     {
       "path": "payload/voxelgen/assets/voxel/relief_fixes.json",

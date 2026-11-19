@@ -416,10 +416,14 @@ Freak, Creatures or The Pokémon Company.
 
 
 <!-- EXPANDED PROPS PREVIEW -->
-### Expanded 3D scenery — unreleased prototype
+### Expanded 3D scenery
 
-The next pass adds actual mesh volume to selected grass, flowers, shrubs and rocks. Source now includes behavior-selected encounter grass and interactive boulders in all three native games, solid flowers in FireRed and FRLG+, and live garden-plant trunks and fronds in Let’s Go. **Coverage is incomplete and the expanded builds have not passed Thor qualification.** Existing release downloads remain unchanged.
+Passing builds: firered. These builds passed Thor field, idle battle, active battle through return, multiple-rock visibility, Strength and Rock Smash checks. [Builds, scope and fresh media](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/scenery-3d.html). Other expanded candidates remain unpublished until qualification; coverage of every asset and tileset is not complete.
 
-This is an offline scene rendered by the engine's C geometry code using ROM-derived textures, not a Thor capture. [Coverage and limits](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/props-preview.html).
+**firered** — [matching ROM-free bundle](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/FireRed-3D-Scenery-2026-11-19.zip)
 
-![Flat assets above and volumetric prototype below](docs/screenshots/props-preview/field-props.png)
+![firered actual 3D boulder movement on Thor](docs/screenshots/graphics-gallery/firered-boulder-moving.gif)
+
+![firered actual Rock Smash on Thor](docs/screenshots/graphics-gallery/firered-rock-smash.gif)
+
+[All six games: 2D/3D, seasonal, battle screenshots and GIFs](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/gallery.html). GIFs are reduced to 10 FPS for size; measured pacing is in the verification report. The initial [offline asset prototype](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/props-preview.html) is separate from these Thor captures.

@@ -1,87 +1,8 @@
 [
   {
-    "game": "firered",
-    "view": "2d",
-    "caption": "2D view — same player position",
-    "file": "firered-2d.png",
-    "source": "android-followup/screenshots/firered-2d-top.png",
-    "source_sha256": "e641ce4e09550dc7736395b975453c943c32dc5cc044512471492037425759c0",
-    "sha256": "38c0e79da5df44e9c2b7eec85cc9f5b3a16d3c9e30121ed1749475c5664a3f47",
-    "build_reference": "ground-pacing.html"
-  },
-  {
-    "game": "firered",
-    "view": "3d",
-    "caption": "Voxel 3D view — same player position",
-    "file": "firered-3d.png",
-    "source": "android-followup/screenshots/firered-3d-top.png",
-    "source_sha256": "b030506cbad6d8fe68ad2cb5e2be2e4aa82b552093cbbe67a0d3d2e57c7096c0",
-    "sha256": "6a59e41eaf5f031582751184dfabbb7a6a86b938bf9ec932310a20c7489b0ef8",
-    "build_reference": "ground-pacing.html"
-  },
-  {
-    "game": "firered",
-    "view": "spring",
-    "caption": "Manual Spring · Original weather",
-    "file": "firered-spring.png",
-    "source": "android-followup/screenshots/firered-spring-top.png",
-    "source_sha256": "5fe76f715518306f99c499c3a96d263b8e5255b425fa19f8cdb9567ca6583505",
-    "sha256": "e9b77c7dc494bb5d8047d46e044ad1ccd6270c42b79c4ab0ab5e6860ed022ab0",
-    "build_reference": "ground-pacing.html"
-  },
-  {
-    "game": "firered",
-    "view": "summer",
-    "caption": "Manual Summer · Original weather",
-    "file": "firered-summer.png",
-    "source": "android-followup/screenshots/firered-summer-top.png",
-    "source_sha256": "8b9795896ca8f7fb8839ca85a92cd8f5e3ac20ea81236aca4b8918fefd006e10",
-    "sha256": "b623bb530d3b99292870670a7c5891c0cca03e8f12f2207ecae1144ca7f65e9c",
-    "build_reference": "ground-pacing.html"
-  },
-  {
-    "game": "firered",
-    "view": "autumn",
-    "caption": "Manual Autumn · Original weather",
-    "file": "firered-autumn.png",
-    "source": "android-followup/screenshots/firered-autumn-top.png",
-    "source_sha256": "7329890a97f936c195e820ae53ab0cd23e3cfd656d0fffb84c6b30769ffe7141",
-    "sha256": "24667e721bc248ff351395c7e4c5c23a7fe664328d712b7926a6ab4c70ed843d",
-    "build_reference": "ground-pacing.html"
-  },
-  {
-    "game": "firered",
-    "view": "winter",
-    "caption": "Manual Winter · Original weather",
-    "file": "firered-winter.png",
-    "source": "android-followup/screenshots/firered-winter-top.png",
-    "source_sha256": "54f89f16c80ae358ec6dee575bc10de900818fc6caf2f8cd063703761d8cc161",
-    "sha256": "500a2f0e20deca842f3e06959ecb2ab6175781fbc8f337d1b1ba9a21a8dbee76",
-    "build_reference": "ground-pacing.html"
-  },
-  {
-    "game": "firered",
-    "view": "battle",
-    "caption": "Battle and companion interface",
-    "file": "firered-battle.png",
-    "source": "pacing/firered-v4-moves-after-growl-pair.png",
-    "source_sha256": "4448fb0632b2bc200c4462b2d4609229eb280086b82e124168a378486faaf229",
-    "sha256": "26d022042a408e31cf2d961a032aaaebd2ae3d3e2ca16e0d63d84f0677bc7595",
-    "build_reference": "ground-pacing.html"
-  },
-  {
-    "game": "firered",
-    "view": "motion",
-    "file": "firered-motion.gif",
-    "sha256": "7d8140d0688afb078b1f3fbbf59dc0fcdd24e16a540000aae8f49b6adf82aa7a",
-    "frames": 60,
-    "fps": 10,
-    "build_reference": "ground-pacing.html"
-  },
-  {
     "game": "frlg",
     "view": "2d",
-    "caption": "2D view — same player position",
+    "caption": "2D view \u00e2\u20ac\u201d same player position",
     "file": "frlg-2d.png",
     "source": "android-followup/screenshots/frlg-2d-top.png",
     "source_sha256": "f8bafa96236783b5dc3ca5b0c0458224f9b72b23ff0d1c560ea37eb06fbbb589",
@@ -91,7 +12,7 @@
   {
     "game": "frlg",
     "view": "3d",
-    "caption": "Voxel 3D view — same player position",
+    "caption": "Voxel 3D view \u00e2\u20ac\u201d same player position",
     "file": "frlg-3d.png",
     "source": "android-followup/screenshots/frlg-3d-top.png",
     "source_sha256": "c9331702e324955234f854cfbfd7f7c8585235956ea9c211535ee17659ba436b",
@@ -101,7 +22,7 @@
   {
     "game": "frlg",
     "view": "spring",
-    "caption": "Manual Spring · Original weather",
+    "caption": "Manual Spring \u00c2\u00b7 Original weather",
     "file": "frlg-spring.png",
     "source": "android-followup/screenshots/frlg-spring-top.png",
     "source_sha256": "2018fb5210fd457cab3ab9c733496557d3a0a0d062b1b1acf9ce2d901686ede9",
@@ -111,7 +32,7 @@
   {
     "game": "frlg",
     "view": "summer",
-    "caption": "Manual Summer · Original weather",
+    "caption": "Manual Summer \u00c2\u00b7 Original weather",
     "file": "frlg-summer.png",
     "source": "android-followup/screenshots/frlg-summer-top.png",
     "source_sha256": "a6a989dcd60d1fe3bda65c688833a487b18e4e350b58d90cfbfd95e2330ec3b8",
@@ -121,7 +42,7 @@
   {
     "game": "frlg",
     "view": "autumn",
-    "caption": "Manual Autumn · Original weather",
+    "caption": "Manual Autumn \u00c2\u00b7 Original weather",
     "file": "frlg-autumn.png",
     "source": "android-followup/screenshots/frlg-autumn-top.png",
     "source_sha256": "4005c031b9e728037809fdaa2c60f1c1da47c38ad28017f14f4b947578b0fbb5",
@@ -131,7 +52,7 @@
   {
     "game": "frlg",
     "view": "winter",
-    "caption": "Manual Winter · Original weather",
+    "caption": "Manual Winter \u00c2\u00b7 Original weather",
     "file": "frlg-winter.png",
     "source": "android-followup/screenshots/frlg-winter-top.png",
     "source_sha256": "057515216690ecea9697e74631eb87ddcabca1a1cac9813ea5139a8a7613a1fc",
@@ -160,7 +81,7 @@
   {
     "game": "classic",
     "view": "2d",
-    "caption": "2D view — same player position",
+    "caption": "2D view \u00e2\u20ac\u201d same player position",
     "file": "classic-2d.png",
     "source": "android-followup/screenshots/classic-2d-top.png",
     "source_sha256": "b4c9b4e76c37e5841a7c52ca18ad76e60cb794a6192fec7116ae036de1b7e1df",
@@ -170,7 +91,7 @@
   {
     "game": "classic",
     "view": "3d",
-    "caption": "Voxel 3D view — same player position",
+    "caption": "Voxel 3D view \u00e2\u20ac\u201d same player position",
     "file": "classic-3d.png",
     "source": "android-followup/screenshots/classic-3d-top.png",
     "source_sha256": "9a648227208ef3180294b96528dd97552441164ee4e761308d43d3c80845d0a1",
@@ -180,7 +101,7 @@
   {
     "game": "classic",
     "view": "spring",
-    "caption": "Manual Spring · Original weather",
+    "caption": "Manual Spring \u00c2\u00b7 Original weather",
     "file": "classic-spring.png",
     "source": "android-followup/screenshots/classic-spring-top.png",
     "source_sha256": "76d8d4e54c6a5d582d9f049e815abd1d579508573ced1103b287b5389c8f07cb",
@@ -190,7 +111,7 @@
   {
     "game": "classic",
     "view": "summer",
-    "caption": "Manual Summer · Original weather",
+    "caption": "Manual Summer \u00c2\u00b7 Original weather",
     "file": "classic-summer.png",
     "source": "android-followup/screenshots/classic-summer-top.png",
     "source_sha256": "65c251a488eff2b7019cd58ba48f957b3f1e4a6f5429eb7600e042e10bd8ef66",
@@ -200,7 +121,7 @@
   {
     "game": "classic",
     "view": "autumn",
-    "caption": "Manual Autumn · Original weather",
+    "caption": "Manual Autumn \u00c2\u00b7 Original weather",
     "file": "classic-autumn.png",
     "source": "android-followup/screenshots/classic-autumn-top.png",
     "source_sha256": "503963a6159d4ec900611f8257f8a7711c23b898911a17173bd4b24b354946fe",
@@ -210,7 +131,7 @@
   {
     "game": "classic",
     "view": "winter",
-    "caption": "Manual Winter · Original weather",
+    "caption": "Manual Winter \u00c2\u00b7 Original weather",
     "file": "classic-winter.png",
     "source": "android-followup/screenshots/classic-winter-top.png",
     "source_sha256": "150bd4033d98f84f722aa8757c68cd2c6a872efe80de2bd5e6ffb1a8d108df4b",
@@ -239,7 +160,7 @@
   {
     "game": "letsgo",
     "view": "2d",
-    "caption": "2D view — same player position",
+    "caption": "2D view \u00e2\u20ac\u201d same player position",
     "file": "letsgo-2d.png",
     "source": "android-followup/screenshots/letsgo-2d-top.png",
     "source_sha256": "c52f846112daf2a3b1c5c048f508d07299228c88f57e6ada1286a1dfb5e82716",
@@ -249,7 +170,7 @@
   {
     "game": "letsgo",
     "view": "3d",
-    "caption": "Voxel 3D view — same player position",
+    "caption": "Voxel 3D view \u00e2\u20ac\u201d same player position",
     "file": "letsgo-3d.png",
     "source": "android-followup/screenshots/letsgo-3d-top.png",
     "source_sha256": "195c8d16ecbd3fdd8d6c50757fc4ca94a1ba806e59ae270c3549f8ed2417d09f",
@@ -259,7 +180,7 @@
   {
     "game": "letsgo",
     "view": "spring",
-    "caption": "Manual Spring · Original weather",
+    "caption": "Manual Spring \u00c2\u00b7 Original weather",
     "file": "letsgo-spring.png",
     "source": "android-followup/screenshots/letsgo-spring-top.png",
     "source_sha256": "ea00c85d84f9dd3cfce29a185f10bf808f04b1ef171711f60b4b18b21f3117b2",
@@ -269,7 +190,7 @@
   {
     "game": "letsgo",
     "view": "summer",
-    "caption": "Manual Summer · Original weather",
+    "caption": "Manual Summer \u00c2\u00b7 Original weather",
     "file": "letsgo-summer.png",
     "source": "android-followup/screenshots/letsgo-summer-top.png",
     "source_sha256": "a22d319d958fb2a85418edae5c0673414a2d4f593cf4654838314ac5f891072a",
@@ -279,7 +200,7 @@
   {
     "game": "letsgo",
     "view": "autumn",
-    "caption": "Manual Autumn · Original weather",
+    "caption": "Manual Autumn \u00c2\u00b7 Original weather",
     "file": "letsgo-autumn.png",
     "source": "android-followup/screenshots/letsgo-autumn-top.png",
     "source_sha256": "a05b14fa5029fdb444e81e5fc80c93a1d83ca9deae94d993bb9a8afa956f6b90",
@@ -289,7 +210,7 @@
   {
     "game": "letsgo",
     "view": "winter",
-    "caption": "Manual Winter · Original weather",
+    "caption": "Manual Winter \u00c2\u00b7 Original weather",
     "file": "letsgo-winter.png",
     "source": "android-followup/screenshots/letsgo-winter-top.png",
     "source_sha256": "13003d78f335d9894976fa90a9a62ff8ca74dea1bccc645e869dff8f93424a6b",
@@ -326,7 +247,7 @@
   {
     "game": "radical",
     "view": "2d",
-    "caption": "2D view — same player position",
+    "caption": "2D view \u00e2\u20ac\u201d same player position",
     "file": "radical-2d.png",
     "source": "android-followup/screenshots/radical-2d-top.png",
     "source_sha256": "dfbfe1a4c1446491d150e8b20b35acdb8337d92367faa73ce71c36b05a01e60c",
@@ -336,7 +257,7 @@
   {
     "game": "radical",
     "view": "3d",
-    "caption": "Voxel 3D view — same player position",
+    "caption": "Voxel 3D view \u00e2\u20ac\u201d same player position",
     "file": "radical-3d.png",
     "source": "android-followup/screenshots/radical-3d-top.png",
     "source_sha256": "778ac6478d044df64df23bba27e9711092db71369ee8b1a5de3238f061fe53d3",
@@ -346,7 +267,7 @@
   {
     "game": "radical",
     "view": "spring",
-    "caption": "Manual Spring · Original weather",
+    "caption": "Manual Spring \u00c2\u00b7 Original weather",
     "file": "radical-spring.png",
     "source": "android-followup/screenshots/radical-spring-top.png",
     "source_sha256": "b3cf6e40ae55de9cb36a1a392d325856770585f5701c86c725916f0c67cf019a",
@@ -356,7 +277,7 @@
   {
     "game": "radical",
     "view": "summer",
-    "caption": "Manual Summer · Original weather",
+    "caption": "Manual Summer \u00c2\u00b7 Original weather",
     "file": "radical-summer.png",
     "source": "android-followup/screenshots/radical-summer-top.png",
     "source_sha256": "778ac6478d044df64df23bba27e9711092db71369ee8b1a5de3238f061fe53d3",
@@ -366,7 +287,7 @@
   {
     "game": "radical",
     "view": "autumn",
-    "caption": "Manual Autumn · Original weather",
+    "caption": "Manual Autumn \u00c2\u00b7 Original weather",
     "file": "radical-autumn.png",
     "source": "android-followup/screenshots/radical-autumn-top.png",
     "source_sha256": "c5f30867b54732aaf0e6721061a2fc207cbc00e2b0251794200b806d0b18dabb",
@@ -376,7 +297,7 @@
   {
     "game": "radical",
     "view": "winter",
-    "caption": "Manual Winter · Original weather",
+    "caption": "Manual Winter \u00c2\u00b7 Original weather",
     "file": "radical-winter.png",
     "source": "android-followup/screenshots/radical-winter-top.png",
     "source_sha256": "7fc6b0bb5fd99539a6e992252648638d048780f304151935485d3a046e95ff94",
@@ -405,7 +326,7 @@
   {
     "game": "unbound",
     "view": "2d",
-    "caption": "2D view — same player position",
+    "caption": "2D view \u00e2\u20ac\u201d same player position",
     "file": "unbound-2d.png",
     "source": "android-followup/screenshots/unbound-2d-top.png",
     "source_sha256": "526be94b2e1d4444ead192037cfbc605140f9f7e24cf1bb4754af1b8ba0e110e",
@@ -415,7 +336,7 @@
   {
     "game": "unbound",
     "view": "3d",
-    "caption": "Voxel 3D view — same player position",
+    "caption": "Voxel 3D view \u00e2\u20ac\u201d same player position",
     "file": "unbound-3d.png",
     "source": "android-followup/screenshots/unbound-3d-top.png",
     "source_sha256": "1912f10cbe90ed54c2b3f3d71ff9e2750637649f6872189e14d787aa7641244c",
@@ -425,7 +346,7 @@
   {
     "game": "unbound",
     "view": "spring",
-    "caption": "Manual Spring · Original weather",
+    "caption": "Manual Spring \u00c2\u00b7 Original weather",
     "file": "unbound-spring.png",
     "source": "android-followup/screenshots/unbound-spring-top.png",
     "source_sha256": "95055f1394250033e257211ad18f69cf93e49483065b6c8356c842bd1c562058",
@@ -435,7 +356,7 @@
   {
     "game": "unbound",
     "view": "summer",
-    "caption": "Manual Summer · Original weather",
+    "caption": "Manual Summer \u00c2\u00b7 Original weather",
     "file": "unbound-summer.png",
     "source": "android-followup/screenshots/unbound-summer-top.png",
     "source_sha256": "6606808c5e204badefc5dabd16ddac4527a93870eba3270162c6252b410b16c3",
@@ -445,7 +366,7 @@
   {
     "game": "unbound",
     "view": "autumn",
-    "caption": "Manual Autumn · Original weather",
+    "caption": "Manual Autumn \u00c2\u00b7 Original weather",
     "file": "unbound-autumn.png",
     "source": "android-followup/screenshots/unbound-autumn-top.png",
     "source_sha256": "1912f10cbe90ed54c2b3f3d71ff9e2750637649f6872189e14d787aa7641244c",
@@ -455,7 +376,7 @@
   {
     "game": "unbound",
     "view": "winter",
-    "caption": "Manual Winter · Original weather",
+    "caption": "Manual Winter \u00c2\u00b7 Original weather",
     "file": "unbound-winter.png",
     "source": "android-followup/screenshots/unbound-winter-top.png",
     "source_sha256": "8c01497bb2ab057f24e96f81fe2f7149577c71c2c91d85c75130458d3c90ba1e",
@@ -480,5 +401,84 @@
     "frames": 60,
     "fps": 10,
     "build_reference": "android-pacing.html"
+  },
+  {
+    "game": "firered",
+    "view": "2d",
+    "file": "firered-2d.png",
+    "source": "capacity-native/native/screenshots/firered-2d-top.png",
+    "source_sha256": "91cd39dcfbeb781c0b2d902699b70cb9df1d0ef3b15aff176506347493e4b767",
+    "sha256": "9c99e52b0ecab3b310141fd93be0099a309836709d48409912e569a27cb1d7bc",
+    "build_reference": "scenery-3d.html",
+    "commit": "8a0778b88ab0fc8a0f3ddd9c8ace9071fce358ff"
+  },
+  {
+    "game": "firered",
+    "view": "3d",
+    "file": "firered-3d.png",
+    "source": "capacity-native/native/screenshots/firered-3d-top.png",
+    "source_sha256": "f406c8b00f4ea4358f399ae77cc02dd2d25b06a603104af5edf9da059a56ba69",
+    "sha256": "62583f58b5fa52a74aecd9b10a894413d98845a24ab56e8c39c87deec0e894c1",
+    "build_reference": "scenery-3d.html",
+    "commit": "8a0778b88ab0fc8a0f3ddd9c8ace9071fce358ff"
+  },
+  {
+    "game": "firered",
+    "view": "spring",
+    "file": "firered-spring.png",
+    "source": "capacity-native/native/screenshots/firered-spring-top.png",
+    "source_sha256": "305bdc597c61cc59168c72513576e94077b1e107222905fbb41f378d417904cd",
+    "sha256": "f8dfb07663dab8659f8cc106e1acb7879765f3e79b05a601c567c7941a0fcac1",
+    "build_reference": "scenery-3d.html",
+    "commit": "8a0778b88ab0fc8a0f3ddd9c8ace9071fce358ff"
+  },
+  {
+    "game": "firered",
+    "view": "summer",
+    "file": "firered-summer.png",
+    "source": "capacity-native/native/screenshots/firered-summer-top.png",
+    "source_sha256": "039ab873e7765daa4cd9a3e7fb81de84622dc02489356eeef5a5b68fb29ee3b1",
+    "sha256": "f1e5974827d0bc1c6da799fdce48f154a171a646a736acc00b74c9e41fb3bc99",
+    "build_reference": "scenery-3d.html",
+    "commit": "8a0778b88ab0fc8a0f3ddd9c8ace9071fce358ff"
+  },
+  {
+    "game": "firered",
+    "view": "autumn",
+    "file": "firered-autumn.png",
+    "source": "capacity-native/native/screenshots/firered-autumn-top.png",
+    "source_sha256": "29a95198e49ae9ad7d370fcbe503431574cbcd223d19306c0be1b90e2747909e",
+    "sha256": "3a4d773a6650129d440f3917856697e9791a60c7819afed603e05a6a47caa9e5",
+    "build_reference": "scenery-3d.html",
+    "commit": "8a0778b88ab0fc8a0f3ddd9c8ace9071fce358ff"
+  },
+  {
+    "game": "firered",
+    "view": "winter",
+    "file": "firered-winter.png",
+    "source": "capacity-native/native/screenshots/firered-winter-top.png",
+    "source_sha256": "5c7fbf753fa84e03257d94f477210aa7c5eee88ee06008c0114d503cb5a3a5b8",
+    "sha256": "c53bab3cb89d0efbb74996398725090cef2dbd8b63bc4d72db88de98a851f325",
+    "build_reference": "scenery-3d.html",
+    "commit": "8a0778b88ab0fc8a0f3ddd9c8ace9071fce358ff"
+  },
+  {
+    "game": "firered",
+    "view": "battle",
+    "file": "firered-battle.png",
+    "source": "capacity-native/native/screenshots/firered-battle-top.png",
+    "source_sha256": "53acb2b92552b6aad7b62cd01c809cfdc949582b81f5b42e7dfecfa03e3c84e1",
+    "sha256": "86451cd05970b0e8cfa858da50df0fb04d1e9a1651d0166315f1cba1e002d974",
+    "build_reference": "scenery-3d.html",
+    "commit": "8a0778b88ab0fc8a0f3ddd9c8ace9071fce358ff"
+  },
+  {
+    "game": "firered",
+    "view": "motion",
+    "file": "firered-motion.gif",
+    "sha256": "b6423e4cc5c848dfeb6505daa8263326134c64d693ee3b0063e4eaa3bfe2612c",
+    "build_reference": "scenery-3d.html",
+    "commit": "8a0778b88ab0fc8a0f3ddd9c8ace9071fce358ff",
+    "format": "480px,10FPS; not a pacing measurement"
   }
 ]

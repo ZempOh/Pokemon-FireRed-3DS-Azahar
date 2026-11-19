@@ -3,6 +3,9 @@
 #include "voxel_winter_material.h"
 int main(void) {
     assert(VoxelWinter_IsPath(0xdc) && VoxelWinter_IsPath(0x105));
+    assert(VoxelWinter_IsPath(0xd0) && VoxelWinter_IsPath(0xd9) && VoxelWinter_IsPath(0xe2));
+    assert(VoxelWinter_IsPath(0xc1) && VoxelWinter_IsPath(0xfe) && VoxelWinter_IsPath(0x107));
+    assert(!VoxelWinter_IsPath(0xde) && !VoxelWinter_IsPath(0xdf));
     assert(!VoxelWinter_IsPath(0x95) && !VoxelWinter_IsPath(0x200));
     for(unsigned c=0;c<65536;c++) {
         assert(VoxelWinter_Color(c,0,1)==c);

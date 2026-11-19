@@ -36,7 +36,7 @@ int main(void) {
     memset(depth,0,sizeof depth);memset(v.out,0,N*4);
     solidTriangle(&v,&t,a,c,b,256,0);
     assert(memcmp(first,v.out,sizeof first)==0);
-    for(int kind=1;kind<=4;kind++) {
+    for(int kind=1;kind<=5;kind++) {
         struct SolidProp p={.surface=t,.kind=kind};
         p.surface.x=32;p.surface.y=40;
         memset(depth,0,sizeof depth);memset(v.out,0,N*4);

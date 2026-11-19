@@ -714,8 +714,8 @@ static void EmitSolidBoulder(VoxelBuilder *b,const VoxelSpriteSlot *slot,unsigne
     float lift=VoxelRelief_LiftAt(cx,cz)+rise,shift=VoxelRelief_ShiftAt(cx,cz)+offZ;
     unsigned bx=(index%VOXEL_SPRITE_COLUMNS)*VOXEL_SPRITE_SLOT_DIM;
     unsigned by=(index/VOXEL_SPRITE_COLUMNS)*VOXEL_SPRITE_SLOT_DIM;
-    float u0=(bx+slot->width*.30f)/VOXEL_SPRITE_ATLAS_DIM;
-    float u1=(bx+slot->width*.70f)/VOXEL_SPRITE_ATLAS_DIM;
+    float u0=(bx+slot->atlasWidth*.30f)/VOXEL_SPRITE_ATLAS_W;
+    float u1=(bx+slot->atlasWidth*.70f)/VOXEL_SPRITE_ATLAS_W;
     float v0=1-(by+slot->height*.30f)/VOXEL_SPRITE_ATLAS_H;
     float v1=1-(by+slot->height*.60f)/VOXEL_SPRITE_ATLAS_H;
     for(int band=0;band<3;band++)for(int edge=0;edge<8;edge++)
@@ -1801,7 +1801,7 @@ unsigned VoxelEntities_Emit(VoxelBuilder *builder, uint16_t *atlas, const VoxelC
         unsigned first = builder->count;
         if(IsSolidBoulder(gObjectEvents[i].graphicsId))
         {
-            EmitSolidBoulder(builder,&sSlots[i],i,card->worldX+.5f,card->worldZ+.5f,card->standZ,rise,card->shade*dusk);
+            EmitSolidBoulder(builder,&sSlots[i],i,card->worldX+.5f,card->worldZ+.5f,card->deck,rise+card->deck,card->shade*dusk);
             continue;
         }
         EmitBillboard(builder, &sSlots[i], i, card->worldX + 0.5f, card->worldZ + 0.5f,

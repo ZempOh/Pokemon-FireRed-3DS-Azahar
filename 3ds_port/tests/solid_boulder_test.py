@@ -14,10 +14,10 @@ prelude=r'''
 #define VOXEL_PIXELS_PER_TILE 16.0f
 #define VOXEL_SPRITE_COLUMNS 8
 #define VOXEL_SPRITE_SLOT_DIM 64
-#define VOXEL_SPRITE_ATLAS_DIM 512
+#define VOXEL_SPRITE_ATLAS_W 512
 #define VOXEL_SPRITE_ATLAS_H 512
 typedef struct {float x,y,z,u,v,shade;} VoxelVertex;
-typedef struct {int width,height;} VoxelSpriteSlot;
+typedef struct {int width,height,atlasWidth;} VoxelSpriteSlot;
 typedef struct {VoxelVertex vertices[256];unsigned count;} VoxelBuilder;
 static int VisibleRows(const VoxelSpriteSlot*s){return s->height-1;}
 static float VoxelRelief_LiftAt(float x,float z){(void)x;(void)z;return .25f;}
@@ -27,7 +27,7 @@ static void VoxelBuilder_Quad(VoxelBuilder*b,const VoxelVertex*a,const VoxelVert
 main=r'''
 int main(void){
  assert(IsSolidBoulder(96)&&IsSolidBoulder(97)&&!IsSolidBoulder(0)&&!IsSolidBoulder(95));
- VoxelBuilder a={0},b={0};VoxelSpriteSlot s={16,16};
+ VoxelBuilder a={0},b={0};VoxelSpriteSlot s={16,16,16};
  EmitSolidBoulder(&a,&s,3,10,20,.2f,.5f,1);
  EmitSolidBoulder(&b,&s,3,11,22,.2f,.5f,1);
  assert(a.count>16&&a.count==b.count);

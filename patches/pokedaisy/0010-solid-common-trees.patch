@@ -1,5 +1,5 @@
 diff --git a/app/src/main/cpp/pk_wide.c b/app/src/main/cpp/pk_wide.c
-index 25be6e1..a69ac5d 100644
+index 25be6e1..0b1e914 100644
 --- a/app/src/main/cpp/pk_wide.c
 +++ b/app/src/main/cpp/pk_wide.c
 @@ -28,6 +28,7 @@
@@ -26,7 +26,7 @@ index 25be6e1..a69ac5d 100644
      lastFault = 0;
      voxelKnown = pk_wide_voxel_knows(crc);
      memset(&voxelClimate, 0, sizeof(voxelClimate));
-@@ -4903,6 +4906,54 @@ static int terrainRise(const struct Snap* s, int x, int y) {
+@@ -4903,6 +4906,66 @@ static int terrainRise(const struct Snap* s, int x, int y) {
      return z > VOXEL_MAX_RISE ? VOXEL_MAX_RISE : z;
  }
  
@@ -48,7 +48,8 @@ index 25be6e1..a69ac5d 100644
 +        if(snow) ok=ok && (ids[2]==10||ids[2]==0x184) && ids[3]==11 && ids[4]==18 && ids[5]==19;
 +        else ok=ok && (ids[0]==14||ids[0]==20||ids[0]==22) && (ids[1]==15||ids[1]==21||ids[1]==23) &&
 +            (ids[2]==28||ids[2]==30) && (ids[3]==29||ids[3]==31) &&
-+            (ids[4]==36||ids[4]==38) && (ids[5]==37||ids[5]==39);
++            (ids[4]==20||ids[4]==22||ids[4]==36||ids[4]==38) &&
++            (ids[5]==21||ids[5]==23||ids[5]==37||ids[5]==39);
 +        if(!ok || n==cap)continue;
 +        struct SolidTree* t=&trees[n++];
 +        t->x=v->left+col*16;t->y=v->top+row*16;
@@ -75,13 +76,33 @@ index 25be6e1..a69ac5d 100644
 +    }
 +    for(int i=0;i<n;i++)for(int y=snow?16:0;y<48;y++)for(int x=0;x<32;x++)
 +        texture[(trees[i].y-v->top+y)*v->stride+trees[i].x-v->left+x]=ground[(y&15)*16+(x&15)];
++    if(snow) for(int i=0;i<n;i++) {
++        int tx=(trees[i].x-v->left)/16,ty=(trees[i].y-v->top)/16+1;
++        for(int side=0;side<2;side++) {
++            int col=tx+(side?2:-1);
++            if(col<0||col>=v->cols)continue;
++            int conn,mid=blockIn(s,cellX+col,cellY+ty,&conn,false);
++            if(mid!=(side?0x179:0x178))continue;
++            if(conn>=0&&s->conn[conn].primary!=s->primary)continue;
++            for(int y=0;y<16;y++)memcpy(texture+(ty*16+y)*v->stride+col*16,ground+y*16,16*sizeof(uint32_t));
++        }
++    }
 +    return n;
 +}
 +
  static bool drawVoxel(const struct Snap* s, int cx, int cy, int href, int vref,
                        uint32_t* out, struct PkWideView v, uint32_t alpha) {
      if (v.w > VOXEL_MAX_W || v.h > VOXEL_MAX_H || v.w < 120 || v.h < 80) return false;
-@@ -4961,7 +5012,10 @@ static bool drawVoxel(const struct Snap* s, int cx, int cy, int href, int vref,
+@@ -4914,7 +4977,7 @@ static bool drawVoxel(const struct Snap* s, int cx, int cy, int href, int vref,
+     int left = voxelFloor(cx + v.x - mx, VOXEL_TILE) * VOXEL_TILE - cx;
+     int right = voxelFloor(cx + v.x + v.w + mx + VOXEL_TILE - 1, VOXEL_TILE) * VOXEL_TILE - cx;
+     int top = voxelFloor(cy + v.y - margin - VOXEL_TILE, VOXEL_TILE) * VOXEL_TILE - cy;
+-    int bottom = voxelFloor(cy + v.y + v.h + margin + 2 * VOXEL_MAX_RISE + VOXEL_TILE - 1, VOXEL_TILE)
++    int bottom = voxelFloor(cy + v.y + v.h + margin + 2 * VOXEL_MAX_RISE + 48 + VOXEL_TILE - 1, VOXEL_TILE)
+         * VOXEL_TILE - cy;
+     int w = right - left, h = bottom - top;
+     if (w > BUF_W || h > BUF_H) return false;
+@@ -4961,7 +5024,10 @@ static bool drawVoxel(const struct Snap* s, int cx, int cy, int href, int vref,
      climateUpdate(mapType >= 1 && mapType <= 3, nativeWeather);
      if (voxelClimate.blend)
          for (size_t i=0; i<textureSize; i++) texture[i]=climateTerrain(texture[i]);

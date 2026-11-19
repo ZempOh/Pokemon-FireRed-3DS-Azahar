@@ -427,7 +427,7 @@ static void EmitSolidCrown(VoxelBuilder *b, int x, int y, int col, int row)
                 &(VoxelVertex){cx + ring[edge][0]*radius[band+1], height[band+1], cz + ring[edge][1]*radius[band+1], u0,v0,shade});
         }
     /* Narrow solid trunk, colored from the existing ground's bark. */
-    const float barkU = TEX_U(47.5f), barkV = TEX_V(8.5f);
+    const float barkU = TEX_U(15.5f), barkV = TEX_V(43.5f);
     for (int edge = quadrant * 2; edge < quadrant * 2 + 2; ++edge)
         VoxelBuilder_Quad(b,
             &(VoxelVertex){cx+ring[edge][0]*.16f,.01f,cz+ring[edge][1]*.16f,barkU,barkV,.85f},

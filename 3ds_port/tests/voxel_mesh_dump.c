@@ -113,3 +113,6 @@ int main(int argc, char **argv)
     printf("%u vertices, %u dropped, %u uncovered\n", b.count, b.dropped, b.uncovered);
     return 0;
 }
+
+/* These legacy geometry fixtures supply no encounter-grass behaviors. */
+unsigned VoxelWorld_GetMetatileBehavior(int x,int y){(void)x;(void)y;return 0;}

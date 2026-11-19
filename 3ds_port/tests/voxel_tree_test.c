@@ -26,6 +26,7 @@ const struct Tileset gTileset_Fallarbor = {0};
 
 static VoxelMapInstance sMap = {.originX = 7, .originY = 7, .width = 2, .height = 2};
 static bool sGeneral = true;
+static unsigned sBehavior;
 /* Actual Pallet Town / Route 1 forest quadrants from Classic's bank. */
 static int sTiles[] = {0x01C, 0x01D, 0x014, 0x015};
 static VoxelAtlasMap sAtlas;
@@ -313,8 +314,19 @@ int main(void)
         if(parts.vertices[i].y>.4f)raised++;
     }
     assert(floor>=24 && raised>=28);
+    /* Ordinary encounter grass follows behavior metadata, not reused art IDs. */
+    sMap.secondaryTileset=NULL;
+    for(int i=0;i<4;i++)sTiles[i]=0x001;
+    sBehavior=2;
+    Init(&parts,sParts);
+    VoxelTree_EmitInstance(&parts,&sMap,-3,-5,-1,-3);
+    assert(parts.dropped==0 && parts.count==4*84);
+    sBehavior=0;
+    Init(&parts,sParts);
+    VoxelTree_EmitInstance(&parts,&sMap,-3,-5,-1,-3);
+    assert(parts.count==0);
     puts("PASS voxel trees and volumetric grass: streamed bounds, ground, height, seams and tileset scope");
     return 0;
 }
 
-unsigned VoxelWorld_GetMetatileBehavior(int x,int y){(void)x;(void)y;return 0;}
+unsigned VoxelWorld_GetMetatileBehavior(int x,int y){(void)x;(void)y;return sBehavior;}

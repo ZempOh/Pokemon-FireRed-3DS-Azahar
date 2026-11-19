@@ -212,3 +212,6 @@ int main(void)
     puts("PASS ground: flat cells, flush water, chunks, negative origins, row-by-row builds, cell drafts, whole quads, sliced models, ground variants");
     return 0;
 }
+
+/* These legacy geometry fixtures supply no encounter-grass behaviors. */
+unsigned VoxelWorld_GetMetatileBehavior(int x,int y){(void)x;(void)y;return 0;}

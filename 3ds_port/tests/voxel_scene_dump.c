@@ -266,3 +266,6 @@ int main(int argc, char **argv)
     fprintf(stderr, "\n");
     return 0;
 }
+
+/* These legacy geometry fixtures supply no encounter-grass behaviors. */
+unsigned VoxelWorld_GetMetatileBehavior(int x,int y){(void)x;(void)y;return 0;}

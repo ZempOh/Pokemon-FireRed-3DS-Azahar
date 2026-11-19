@@ -1,5 +1,5 @@
 diff --git a/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt b/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt
-index f3dce89..72806fa 100644
+index f3dce89..621aea5 100644
 --- a/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt
 +++ b/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt
 @@ -1274,6 +1274,14 @@ class EmulatorEngine(
@@ -33,3 +33,16 @@ index f3dce89..72806fa 100644
              if (half != trackHalf && track != null) {
                  trackHalf = half
                  runCatching { track.bufferSizeInFrames = if (half) bufferFrames / 2 else bufferFrames }
+@@ -1969,7 +1982,11 @@ class EmulatorEngine(
+                     // otherwise spent a third of its range on, GitHub #215).
+                     val rate = sampleRate * (if (nds) NDS_FPS else GBA_FPS) / frameHz * drc
+                     MgbaCore.pkSetAudioRate(rate)
+-                    val w = track.write(scratch, 0, n, AudioTrack.WRITE_NON_BLOCKING)
++                    // The final priming frame may straddle the start threshold. Preserve its
++                    // tail while playback starts; steady native-clock writes stay nonblocking.
++                    val writeMode = if (nativeClockAudio && !trackStarted) AudioTrack.WRITE_BLOCKING
++                        else AudioTrack.WRITE_NON_BLOCKING
++                    val w = track.write(scratch, 0, n, writeMode)
+                     tap.frame(scratch, n, w, rate, queued, 'v')
+                     if (w > 0) fpsAudioTaken += w / 2
+                     if (w > 0) framesWritten += w / 2

@@ -246,6 +246,39 @@ static void EmitPropVolume(VoxelBuilder *b,float cx,float cz,int prop,float radi
     }
 }
 
+static void EmitFlowerLobe(VoxelBuilder *b,float x,float y,float z,float rx,float rz,float thick,float u,float v)
+{
+    const float dx[4]={-1,0,1,0},dz[4]={0,-1,0,1};
+    for(int i=0;i<4;i++)
+    {
+        int j=(i+1)&3;
+        VoxelBuilder_Quad(b,
+            &(VoxelVertex){x+dx[i]*rx,y,z+dz[i]*rz,u,v,.86f},
+            &(VoxelVertex){x,y+thick,z,u,v,1.f},
+            &(VoxelVertex){x+dx[j]*rx,y,z+dz[j]*rz,u,v,.86f},
+            &(VoxelVertex){x,y-thick,z,u,v,.70f});
+    }
+}
+
+static void EmitFlowerMesh(VoxelBuilder *b,int x,int y,int prop)
+{
+    const float px[5]={1,.309017f,-.809017f,-.809017f,.309017f};
+    const float pz[5]={0,.951057f,.587785f,-.587785f,-.951057f};
+    float greenU=TEX_U(sProps[prop].x+6.5f),greenV=TEX_V(sProps[prop].y+9.5f);
+    float petalU=TEX_U(sProps[prop].x+6.5f),petalV=TEX_V(sProps[prop].y+2.5f);
+    float heartU=TEX_U(sProps[prop].x+4.5f),heartV=TEX_V(sProps[prop].y+4.5f);
+    for(int flower=0;flower<2;flower++)
+    {
+        float cx=x+.28f+flower*.43f,cz=y+.38f+flower*.23f,h=.32f+flower*.06f;
+        EmitFlowerLobe(b,cx,h*.5f,cz,.035f,.035f,h*.5f,greenU,greenV);
+        EmitFlowerLobe(b,cx-.07f,.10f,cz,.16f,.07f,.035f,greenU,greenV);
+        EmitFlowerLobe(b,cx+.07f,.15f,cz,.16f,.07f,.035f,greenU,greenV);
+        for(int petal=0;petal<5;petal++)
+            EmitFlowerLobe(b,cx+px[petal]*.12f,h,cz+pz[petal]*.12f,.11f,.11f,.045f,petalU,petalV);
+        EmitFlowerLobe(b,cx,h+.035f,cz,.075f,.075f,.035f,heartU,heartV);
+    }
+}
+
 static void EmitProp(VoxelBuilder *builder, int x, int y, int prop, int below, int north,
                      bool westFence, bool eastFence)
 {
@@ -270,13 +303,7 @@ static void EmitProp(VoxelBuilder *builder, int x, int y, int prop, int below, i
 
     if (sProps[prop].kind == 2)
     {
-        /* from the cell's south edge back to its middle, a third of a cell
-         * up: a bed of flowers rather than a wall of them */
-        VoxelBuilder_Quad(builder,
-            &(VoxelVertex){wx,        0.35f, zc - 0.5f, u0, v0, 1.0f},
-            &(VoxelVertex){wx + 1.0f, 0.35f, zc - 0.5f, u1, v0, 1.0f},
-            &(VoxelVertex){wx + 1.0f, 0.0f,  zc,        u1, v1, 1.0f},
-            &(VoxelVertex){wx,        0.0f,  zc,        u0, v1, 1.0f});
+        EmitFlowerMesh(builder,x,y,prop);
         return;
     }
     /* A fence drawn front on that turns a corner into a north-south one:

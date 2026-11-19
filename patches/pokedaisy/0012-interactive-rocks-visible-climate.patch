@@ -95,11 +95,11 @@ diff --git a/app/src/main/cpp/pk_voxel_climate.h b/app/src/main/cpp/pk_voxel_cli
 +    return season==3 ? 3 : 2;
 +}
 +
-+struct VoxelClimate { int config, season, weather; unsigned blend; uint64_t lastMs; int nativeWeather; unsigned fadeRemainder; };
++struct VoxelClimate { int config, season, weather; unsigned blend, seasonBlend; uint64_t lastMs; int nativeWeather; unsigned fadeRemainder; };
  static struct VoxelClimate voxelClimate;
  static uint32_t climateMix(uint32_t a, uint32_t b, unsigned f) {
      unsigned r = ((a & 255) * (256-f) + (b & 255) * f) >> 8;
-@@ -26,13 +42,17 @@
+@@ -26,54 +42,65 @@
          time_t t = time(NULL); struct tm tm;
          localtime_r(&t, &tm);
          season = ((tm.tm_mon + 10) % 12) / 3; // Mar-May spring, Dec-Feb winter.
@@ -109,27 +109,40 @@ diff --git a/app/src/main/cpp/pk_voxel_climate.h b/app/src/main/cpp/pk_voxel_cli
      if (weather > 4) weather = 0;
      // Change the preset only at zero opacity; never interpolate through unrelated palettes.
 -    int eligible = outdoor && !nativeWeather && mode != 0 && mode != 3;
+-    int match = voxelClimate.season == season && voxelClimate.weather == weather;
+-    unsigned step = (dt * 256 + 999)/1000;
+-    if (!eligible || !match) {
 +    voxelClimate.nativeWeather = nativeWeather;
 +    int eligible = outdoor && mode != 0 && mode != 3;
-     int match = voxelClimate.season == season && voxelClimate.weather == weather;
--    unsigned step = (dt * 256 + 999)/1000;
 +    unsigned duration = mode == 1 ? 8000 : 1000;
 +    unsigned elapsed = dt * 256 + voxelClimate.fadeRemainder;
 +    unsigned step = elapsed/duration;
 +    voxelClimate.fadeRemainder = elapsed%duration;
-     if (!eligible || !match) {
++    // Season and weather have independent fades: a front cannot repaint foliage.
++    if (!eligible || voxelClimate.season != season) {
++        voxelClimate.seasonBlend = voxelClimate.seasonBlend > step ? voxelClimate.seasonBlend-step : 0;
++        if (!voxelClimate.seasonBlend) voxelClimate.season=season;
++    } else {
++        voxelClimate.seasonBlend += step;
++        if (voxelClimate.seasonBlend > 256) voxelClimate.seasonBlend=256;
++    }
++    if (!eligible || voxelClimate.weather != weather) {
          voxelClimate.blend = voxelClimate.blend > step ? voxelClimate.blend-step : 0;
-         if (!voxelClimate.blend) { voxelClimate.season=season; voxelClimate.weather=weather; }
-@@ -41,7 +61,7 @@
+-        if (!voxelClimate.blend) { voxelClimate.season=season; voxelClimate.weather=weather; }
++        if (!voxelClimate.blend) voxelClimate.weather=weather;
+     } else {
+         voxelClimate.blend += step;
          if (voxelClimate.blend > 256) voxelClimate.blend=256;
      }
      // No residual weather or recoloring is carried into interiors or scripted effects.
 -    if (!outdoor || nativeWeather) voxelClimate.blend=0;
-+    if (!outdoor) voxelClimate.blend=0;
++    if (!outdoor) voxelClimate.blend=voxelClimate.seasonBlend=0;
  }
  static uint32_t climateTerrain(uint32_t c) {
-     if (!voxelClimate.blend) return c;
-@@ -50,30 +70,30 @@
+-    if (!voxelClimate.blend) return c;
++    if (!voxelClimate.seasonBlend) return c;
+     unsigned r=c&255, g=(c>>8)&255, b=(c>>16)&255;
+     // Select foliage hues only; protect water, stone, signs, paths and original sprite art.
      if (g <= r+8 || g <= b+8) return c;
      uint32_t target=c;
      switch (voxelClimate.season) {
@@ -142,7 +155,8 @@ diff --git a/app/src/main/cpp/pk_voxel_climate.h b/app/src/main/cpp/pk_voxel_cli
 +    case 2: target=(c&0xff000000u) | (g+(255-g)/3) | ((g/2+r/4)<<8) | ((b/3)<<16); break;
 +    case 3: target=climateMix(c,0x00fff1e5u,215); break;
      }
-     return climateMix(c,target,voxelClimate.blend);
+-    return climateMix(c,target,voxelClimate.blend);
++    return climateMix(c,target,voxelClimate.seasonBlend);
  }
  static void climateAtmosphere(uint32_t* out, const uint32_t* depth, int w, int h) {
      unsigned f=voxelClimate.blend;

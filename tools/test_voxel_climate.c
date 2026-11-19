@@ -1,7 +1,19 @@
 #define _POSIX_C_SOURCE 200809L
 #include <assert.h>
 #include <stdio.h>
+#include <stdint.h>
+#include <time.h>
+static uint64_t fakeMs;
+static time_t fakeSeconds=1795114799;
+static int fakeGetTime(int clock,struct timespec *ts) {
+    (void)clock;ts->tv_sec=fakeMs/1000;ts->tv_nsec=(fakeMs%1000)*1000000;return 0;
+}
+static time_t fakeTime(time_t *out) { if(out)*out=fakeSeconds;return fakeSeconds; }
+#define clock_gettime fakeGetTime
+#define time fakeTime
 #include "pk_voxel_climate.h"
+#undef time
+#undef clock_gettime
 int main(void) {
     for(int season=0;season<4;season++) {
         int counts[5]={0};
@@ -20,7 +32,7 @@ int main(void) {
     assert(climateTerrain(foliage)==foliage);
     uint32_t colors[4];
     for(int season=0;season<4;season++) {
-        voxelClimate.season=season; voxelClimate.blend=256;
+        voxelClimate.season=season; voxelClimate.blend=voxelClimate.seasonBlend=256;
         assert(climateTerrain(stone)==stone);
         assert((climateTerrain(foliage)&0xff000000u)==0xff000000u);
         colors[season]=climateTerrain(foliage);
@@ -43,5 +55,15 @@ int main(void) {
     voxelClimate.blend=256;
     for(int w=0;w<5;w++){voxelClimate.weather=w;climateAtmosphere(out,depth,2,2);}
     assert(out[0]==1 && out[1]==2 && out[2]==3 && out[3]==4);
+    memset(&voxelClimate,0,sizeof voxelClimate);voxelClimate.config=1;
+    for(int i=0;i<200;i++){fakeMs+=100;climateUpdate(1,0);}
+    assert(voxelClimate.season==2 && voxelClimate.weather==1 && voxelClimate.seasonBlend==256);
+    uint32_t autumn=climateTerrain(foliage);
+    fakeSeconds++;
+    for(int i=0;i<200;i++) {
+        fakeMs+=100;climateUpdate(1,0);
+        assert(climateTerrain(foliage)==autumn && voxelClimate.seasonBlend==256);
+    }
+    assert(voxelClimate.weather==4 && voxelClimate.blend==256);
     puts("climate: original identity, foliage mask, alpha, indoor/native weather and UI protection passed");
 }

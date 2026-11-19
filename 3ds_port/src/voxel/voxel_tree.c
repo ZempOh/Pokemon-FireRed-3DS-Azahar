@@ -329,19 +329,7 @@ static void EmitSmallCell(VoxelBuilder *builder, const VoxelMapInstance *inst, i
     int cx = grass ? 80 : dewford ? 64 : 32, cy = dewford ? 0 : 32;
     int tx = ground >= 0 ? kTrunks[ground][0] : cx + 16, ty = ground >= 0 ? kTrunks[ground][1] : cy;
     float wx = (float)x, wz = (float)y;
-    /* Against a mountain's face (its rock right behind the crown's cell,
-     * Route 110's cave) or under higher ground right behind the trunk (a
-     * terrace's edge) the crown stands up steeper, its top at the trunk
-     * cell's back edge: leant back at 50 degrees it ran into the rock and
-     * came out of it wherever the rock falls away, a corner's slope, and
-     * the higher ground's top cut it across. */
-    const float rise = 1.532089f, run = rock ? 0.8f : 1.285575f;
-    const float baseHeight = -0.10f;
-    /* 0.15 further forward than half the large tree's: any less and the
-     * leaves stand through the ground behind the trunk. Dewford's another
-     * 0.15, so its crown stands over the shadow drawn on its sand. */
-    float baseZ = wz + (dewford ? 0.975f : 0.825f);
-
+    (void)rock;
     EmitGround(builder, inst, x, y, TEX_U(tx), TEX_V(ty), TEX_U(tx + 16), TEX_V(ty + 16));
     if(grass)
     {
@@ -361,13 +349,19 @@ static void EmitSmallCell(VoxelBuilder *builder, const VoxelMapInstance *inst, i
         }
         return;
     }
-    builder->rounded = true;
-    VoxelBuilder_Quad(builder,
-        &(VoxelVertex){wx,        baseHeight + rise, baseZ - run, TEX_U(cx),      TEX_V(cy),      1.0f},
-        &(VoxelVertex){wx + 1.0f, baseHeight + rise, baseZ - run, TEX_U(cx + 16), TEX_V(cy),      1.0f},
-        &(VoxelVertex){wx + 1.0f, baseHeight,        baseZ,       TEX_U(cx + 16), TEX_V(cy + 32), 1.0f},
-        &(VoxelVertex){wx,        baseHeight,        baseZ,       TEX_U(cx),      TEX_V(cy + 32), 1.0f});
-    builder->rounded = false;
+    /* Six-sided foliage volume and trunk on the original one-cell footprint. */
+    static const float ring[7][2]={{1,0},{.5f,.866025f},{-.5f,.866025f},{-1,0},{-.5f,-.866025f},{.5f,-.866025f},{1,0}};
+    const float radii[5]={.10f,.10f,.48f,.35f,0};
+    const float heights[5]={.01f,.35f,.45f,1.12f,1.55f};
+    for(int band=0;band<4;band++)for(int e=0;e<6;e++) {
+        float u=TEX_U(band?cx+8:tx+8),v=TEX_V(band?cy+12:ty+9);
+        float shade=.72f+band*.06f+(e<3?.06f:0);
+        VoxelBuilder_Quad(builder,
+            &(VoxelVertex){wx+.5f+ring[e][0]*radii[band],heights[band],wz+.5f+ring[e][1]*radii[band],u,v,shade},
+            &(VoxelVertex){wx+.5f+ring[e+1][0]*radii[band],heights[band],wz+.5f+ring[e+1][1]*radii[band],u,v,shade},
+            &(VoxelVertex){wx+.5f+ring[e+1][0]*radii[band+1],heights[band+1],wz+.5f+ring[e+1][1]*radii[band+1],u,v,shade},
+            &(VoxelVertex){wx+.5f+ring[e][0]*radii[band+1],heights[band+1],wz+.5f+ring[e][1]*radii[band+1],u,v,shade});
+    }
 }
 
 /* A 2x2 tree's art: its crown (rows of `rowPx` texels), its trunk's ground,

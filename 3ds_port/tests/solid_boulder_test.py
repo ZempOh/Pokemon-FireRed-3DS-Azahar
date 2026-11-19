@@ -13,6 +13,7 @@ prelude=capacity_defines+r'''
 #include <stdbool.h>
 #include <math.h>
 #include <stdio.h>
+#define OBJ_EVENT_GFX_CUT_TREE 95
 #define OBJ_EVENT_GFX_ROCK_SMASH_ROCK 96
 #define OBJ_EVENT_GFX_PUSHABLE_BOULDER 97
 #define VOXEL_PIXELS_PER_TILE 16.0f
@@ -30,6 +31,10 @@ static void VoxelBuilder_Quad(VoxelBuilder*b,const VoxelVertex*a,const VoxelVert
 '''
 main=r'''
 int main(void){
+ assert(IsSolidCutTree(95)&&!IsSolidCutTree(96)&&!IsSolidCutTree(0));
+ VoxelBuilder tree={0};VoxelSpriteSlot treeSlot={16,24,16};
+ EmitSolidCutTree(&tree,&treeSlot,0,10,20,0,0,1);
+ assert(tree.count==144);
  assert(IsSolidBoulder(96)&&IsSolidBoulder(97)&&!IsSolidBoulder(0)&&!IsSolidBoulder(95));
  VoxelBuilder a={0},b={0};VoxelSpriteSlot s={16,16,16};
  EmitSolidBoulder(&a,&s,3,10,20,.2f,.5f,1);

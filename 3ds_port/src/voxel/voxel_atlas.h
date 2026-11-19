@@ -113,6 +113,8 @@ bool VoxelAtlas_Build(const VoxelMapInstance *inst, uint16_t *dest, VoxelAtlasMa
 typedef struct
 {
     bool active, extend, ok;
+    bool winterOutdoor;
+    unsigned winterMix;
     const void *primary, *secondary;
     int mapGroup, mapNum;
     uint16_t *dest;
@@ -248,5 +250,12 @@ unsigned VoxelAnim_RunOffset(const VoxelAnimPass *pass, unsigned first);
 /* Texture coordinates of a packed slot, in the PICA convention where v=1 is
  * the first row in memory. U includes page*2, stripped by the chunk packer. */
 void VoxelAtlas_SlotUV(unsigned slot, float *u0, float *v0, float *u1, float *v1);
+
+/* Incremental seasonal refresh shares the existing upload budget. */
+typedef struct { uint16_t pixels[256]; unsigned slot; unsigned pad[3]; } VoxelWinterSlot;
+void VoxelAtlas_SetWinter(unsigned mix);
+unsigned VoxelAtlas_GetWinter(void);
+unsigned VoxelAtlas_WinterSlots(const VoxelMapInstance *inst, const VoxelAtlasMap *map,
+    unsigned page, const uint8_t *liveTiles, unsigned *cursor, VoxelWinterSlot *out, unsigned max);
 
 #endif

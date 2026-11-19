@@ -14,6 +14,10 @@
 
 #include "3ds_video.h"
 #include "voxel_atlas.h"
+#include "voxel_winter_material.h"
+static unsigned sWinterMix;
+void VoxelAtlas_SetWinter(unsigned mix) { sWinterMix=mix>16?16:mix; }
+unsigned VoxelAtlas_GetWinter(void) { return sWinterMix; }
 #include "voxel_building.h"
 #include "voxel_grade.h"
 #include "voxel_relief.h"
@@ -95,6 +99,7 @@ struct AtlasSource
     const uint16_t *primaryMetatiles, *secondaryMetatiles;
     const uint16_t *primaryPalettes, *secondaryPalettes;
     unsigned primaryCount, secondaryCount;
+    unsigned winter;
     /* Every colour a metatile entry can name, already converted to the
      * texture format, and whether it is black in the source. Index 0 of each
      * palette is the opaque backdrop layer 0 draws with. */
@@ -446,6 +451,15 @@ static bool ComposeAt(const struct AtlasSource *src, const uint16_t *entries,
         }
 #undef SLOT_TEXEL
     }
+    if(src->winter) {
+        uintptr_t begin=(uintptr_t)src->primaryMetatiles, entry=(uintptr_t)entries;
+        unsigned id=entry>=begin ? (unsigned)((entry-begin)/(NUM_TILES_PER_METATILE*sizeof(uint16_t))) : 1024;
+        int path=id<=0x0d;
+        for(unsigned y=0;y<16;y++)for(unsigned x=0;x<16;x++) {
+            unsigned at=CtrVideo_Texel(baseX+x,baseY+y,width);
+            dest[at]=VoxelWinter_Color(dest[at],src->winter,path);
+        }
+    }
     return black;
 }
 
@@ -523,6 +537,7 @@ static void JobSource(const VoxelAtlasJob *job, struct AtlasSource *src)
 {
     /* Re-resolved every step: a payload the asset cache retires between
      * frames comes back on its next resolution. */
+    src->winter = job->winterMix;
     src->primaryTiles = job->primaryLoaded ? job->primaryTiles : NULL;
     src->secondaryTiles = job->secondaryLoaded ? job->secondaryTiles : NULL;
     src->primaryMetatiles = Voxel_ResolveMetatiles(job->primary);
@@ -550,6 +565,8 @@ bool VoxelAtlas_JobBegin(VoxelAtlasJob *job, const VoxelMapInstance *inst, uint1
         return false;
     job->primary = inst->primaryTileset;
     job->secondary = inst->secondaryTileset;
+    job->winterOutdoor = !inst->indoor && !VoxelWorld_Underground();
+    job->winterMix=job->winterOutdoor ? sWinterMix : 0;
     job->mapGroup = inst->mapGroup;
     job->mapNum = inst->mapNum;
     job->dest = dest;
@@ -748,6 +765,7 @@ unsigned VoxelAtlas_RefreshAnimatedPageRows(const VoxelMapInstance *inst, const 
     src.secondaryTiles = liveTiles + TILES_PER_TILESET * 32;
     src.primaryMetatiles = Voxel_ResolveMetatiles(inst->primaryTileset);
     src.secondaryMetatiles = Voxel_ResolveMetatiles(inst->secondaryTileset);
+    src.winter = !inst->indoor && !VoxelWorld_Underground() ? sWinterMix : 0;
     src.primaryPalettes = Voxel_ResolvePalettes(inst->primaryTileset);
     src.secondaryPalettes = Voxel_ResolvePalettes(inst->secondaryTileset);
     src.primaryCount = Voxel_MetatileCount(inst->primaryTileset, NUM_METATILES_IN_PRIMARY);
@@ -856,7 +874,7 @@ static uint8_t sAnimTiles[NUM_TILES_TOTAL * 32u] __attribute__((aligned(4)));
 
 static void AnimKey(const VoxelAnimPass *pass, const uint8_t *liveTiles, uint32_t key[2])
 {
-    uint32_t a = 2166136261u, b = 0x9E3779B9u;
+    uint32_t a = 2166136261u ^ sWinterMix, b = 0x9E3779B9u;
 
     for (unsigned i = 0; i < sizeof(pass->work); ++i)
         for (unsigned bits = pass->work[i]; bits != 0; bits &= bits - 1u)
@@ -1203,6 +1221,8 @@ static void AnimSource(const VoxelAnimPass *pass, unsigned pair, const uint8_t *
     src->primaryCount = Voxel_MetatileCount(pass->primary[pair], NUM_METATILES_IN_PRIMARY);
     src->secondaryCount = Voxel_MetatileCount(pass->secondary[pair],
                                               NUM_METATILES_TOTAL - NUM_METATILES_IN_PRIMARY);
+    const VoxelMapInstance *current=VoxelWorld_Instance(0);
+    src->winter=current && !current->indoor && !VoxelWorld_Underground() ? sWinterMix : 0;
     BuildColorTable(src);
 }
 
@@ -1377,4 +1397,30 @@ unsigned VoxelAnim_RunOffset(const VoxelAnimPass *pass, unsigned first)
     /* block (2c, 2r) of VOXEL_ATLAS_W / 8 to a row, 128 bytes each */
     return (2u * (slot / VOXEL_ATLAS_COLUMNS) * (VOXEL_ATLAS_W / 8u)
           + 2u * (slot % VOXEL_ATLAS_COLUMNS)) * 128u;
+}
+
+unsigned VoxelAtlas_WinterSlots(const VoxelMapInstance *inst,const VoxelAtlasMap *map,
+    unsigned page,const uint8_t *liveTiles,unsigned *cursor,VoxelWinterSlot *out,unsigned max) {
+    struct AtlasSource src;
+    memset(&src,0,sizeof(src));
+    src.primaryTiles=liveTiles;src.secondaryTiles=liveTiles+TILES_PER_TILESET*32;
+    src.primaryMetatiles=Voxel_ResolveMetatiles(inst->primaryTileset);
+    src.secondaryMetatiles=Voxel_ResolveMetatiles(inst->secondaryTileset);
+    src.primaryPalettes=Voxel_ResolvePalettes(inst->primaryTileset);
+    src.secondaryPalettes=Voxel_ResolvePalettes(inst->secondaryTileset);
+    src.primaryCount=Voxel_MetatileCount(inst->primaryTileset,NUM_METATILES_IN_PRIMARY);
+    src.secondaryCount=Voxel_MetatileCount(inst->secondaryTileset,NUM_METATILES_TOTAL-NUM_METATILES_IN_PRIMARY);
+    src.winter=!inst->indoor && !VoxelWorld_Underground() ? sWinterMix : 0;
+    BuildColorTable(&src);InitMorton();
+    unsigned n=0,m=*cursor;
+    for(;m<VOXEL_METATILE_IDS && n<max;m++) {
+        unsigned slot=map->slotOf[m],base,hidden;const uint8_t *cut;
+        if(!slot||slot==VOXEL_SLOT_ABSENT||slot==VOXEL_SLOT_PENDING||(slot-1)/VOXEL_ATLAS_MAX_SLOTS!=page)continue;
+        if(!AtlasSourceOf(inst->primaryTileset,inst->secondaryTileset,m,&base,&hidden,&cut))continue;
+        const uint16_t *entries=MetatileEntries(&src,base);if(!entries)continue;
+        memset(out[n].pixels,0,sizeof(out[n].pixels));
+        ComposeAt(&src,entries,out[n].pixels,0,0,16,hidden,cut);
+        out[n++].slot=(slot-1)%VOXEL_ATLAS_MAX_SLOTS;
+    }
+    *cursor=m;return n;
 }

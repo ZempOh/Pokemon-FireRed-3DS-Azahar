@@ -263,7 +263,7 @@ int main(void)
         assert(parts.vertices[i].y == 0 && parts.vertices[i].z <= 1);
     parts.count = 0;
     VoxelTree_EmitInstance(&parts, &sMap, -3, -5, -1, -3);
-    assert(parts.count == 24 && parts.dropped == 0);
+    assert(parts.count == 300 && parts.dropped == 0);
     for (unsigned i = 0; i < parts.count; ++i)
     {
         const VoxelVertex *v = &parts.vertices[i];
@@ -275,11 +275,16 @@ int main(void)
             assert(v->u >= 48.0f / VOXEL_TREE_TEXTURE_DIM
                 && v->v >= 1.0f - 48.0f / VOXEL_TREE_TEXTURE_DIM && v->z >= 1 && v->z <= 2);
         else
-            assert(v->u <= 48.0f / VOXEL_TREE_TEXTURE_DIM);
+            assert(v->u <= 64.0f / VOXEL_TREE_TEXTURE_DIM);
     }
-    /* Leaning north from its trunk into the cell above, as tall as it is long. */
-    assert(parts.vertices[6].z < parts.vertices[8].z && parts.vertices[6].y > parts.vertices[8].y);
-    assert(parts.vertices[6].z < 1 && fabsf(parts.vertices[6].y - 1.432089f) < 0.0001f);
+    /* The foliage has real depth inside its walk-blocking footprint. */
+    float minZ=2,maxZ=1,maxY=0;
+    for(unsigned i=6;i<150;i++) {
+        if(parts.vertices[i].z<minZ)minZ=parts.vertices[i].z;
+        if(parts.vertices[i].z>maxZ)maxZ=parts.vertices[i].z;
+        if(parts.vertices[i].y>maxY)maxY=parts.vertices[i].y;
+    }
+    assert(maxZ-minZ>.8f && maxY>1.5f);
 
     /* A staggered wood's lower row is a whole tree: trunks and both rows. */
     assert(VoxelTree_Part(NULL, 0x1F3) == 2 && VoxelTree_Part(NULL, 0x1F2) == 3);

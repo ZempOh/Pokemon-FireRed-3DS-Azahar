@@ -171,6 +171,7 @@ typedef struct
     const void *secondaryTileset;
     uint32_t stamp;
     uint32_t generation;
+    unsigned winterApplied;
     /* Bumped when ids are added in place (an extending atlas job): old
      * UVs stay valid, only chunks that missed an id need building again. */
     uint32_t extension;
@@ -3020,6 +3021,7 @@ static void RunAtlasJob(uint64_t started, float budget, bool inFrame)
     sAtlasJob.slot = NULL;
     bool changed = memcmp(&slot->map, &job->map, sizeof(slot->map)) != 0;
     slot->map = job->map;
+    slot->winterApplied=job->winterMix;
     if (job->extend)
     {
         /* Any new assignment, including a confirmed absence, repairs chunks
@@ -5597,6 +5599,41 @@ static void AnimBegin(const VoxelMapInstance *inst)
     sAnimActive = sAnimPass.targets != 0;
 }
 
+static void RefreshWinterGround(const VoxelMapInstance *inst) {
+    static VoxelAtlasSlot *owner;
+    static uint32_t generation;
+    static unsigned page,cursor,target;
+    VoxelAtlasSlot *slot=FindAtlas(inst);
+    if(!slot||!slot->valid||sAtlasUploadPending||AtlasJobBusy()||!sAtlasStaging)return;
+    unsigned wanted=!inst->indoor&&!VoxelWorld_Underground()?VoxelAtlas_GetWinter():0;
+    if(owner!=slot||generation!=slot->generation||target!=wanted) {
+        if(slot->winterApplied!=wanted || (owner==slot && (cursor||page)))slot->winterApplied=~0u;
+        owner=slot;generation=slot->generation;target=wanted;page=cursor=0;
+    }
+    if(slot->winterApplied==wanted && page==0 && cursor==0)return;
+    unsigned room=CtrVideo_VoxelUploadsLeft();if(room>4)room=4;
+    if(!room)return;
+    VoxelWinterSlot *out=(VoxelWinterSlot *)sAtlasStaging;
+    unsigned n=VoxelAtlas_WinterSlots(inst,&slot->map,page,CtrVideo_GetBgVram(),&cursor,out,room);
+    if(n) {
+        GSPGPU_FlushDataCache(out,n*sizeof(*out));
+        uint8_t *dest=AtlasTex(slot,page)->data;
+        for(unsigned i=0;i<n;i++) {
+            unsigned col=out[i].slot%VOXEL_ATLAS_COLUMNS,row=out[i].slot/VOXEL_ATLAS_COLUMNS;
+            unsigned first=(2*row*(VOXEL_ATLAS_W/8)+2*col)*128;
+            if(!CtrVideo_TryVoxelUpload()){cursor=0;break;}
+            unsigned gap=(VOXEL_ATLAS_W/8)*128-256;
+            C3D_SyncTextureCopy((u32 *)out[i].pixels,GX_BUFFER_DIM(16,0),
+                (u32 *)(dest+first),GX_BUFFER_DIM(16,gap>>4),512,8);
+        }
+        sAtlasUploadPending=true;
+    }
+    if(cursor>=VOXEL_METATILE_IDS) {
+        cursor=0;
+        if(++page>=VoxelAtlas_PageCount(&slot->map)){page=0;slot->winterApplied=wanted;}
+    }
+}
+
 static void AnimateTiles(const VoxelMapInstance *inst)
 {
     struct { unsigned first, count, offset; } runs[VOXEL_ANIM_RUNS_FRAME];
@@ -6035,6 +6072,7 @@ bool CtrVoxel_Update(void)
             DropTileAnimation();
         else
         {
+            RefreshWinterGround(inst);
             AnimateTiles(inst);
             AnimateBuildings(inst);
         }
@@ -7090,6 +7128,7 @@ static void MoteVertex(VoxelGpuVertex *v, float x, float y, float z, float stren
 #include "voxel_climate.h"
 
 static void ClimateVegetation(void) {
+    VoxelAtlas_SetWinter(sClimateSeason==3 ? 4u*(unsigned)(sClimateSeasonMix*4.0f) : 0);
     static uint16_t original[128*128];
     static bool captured;
     static int last=-1;

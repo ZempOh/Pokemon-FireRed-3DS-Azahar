@@ -731,6 +731,35 @@ static void EmitSolidBoulder(VoxelBuilder *b,const VoxelSpriteSlot *slot,unsigne
     }
 }
 
+static bool IsSolidCutTree(unsigned id) {
+#ifdef OBJ_EVENT_GFX_CUT_TREE
+    if(id==OBJ_EVENT_GFX_CUT_TREE)return true;
+#endif
+#ifdef OBJ_EVENT_GFX_CUTTABLE_TREE
+    if(id==OBJ_EVENT_GFX_CUTTABLE_TREE)return true;
+#endif
+    return false;
+}
+static void EmitSolidCutTree(VoxelBuilder *b,const VoxelSpriteSlot *slot,unsigned index,
+                             float cx,float cz,float offZ,float rise,float shade) {
+    static const float ring[7][2]={{1,0},{.5f,.866025f},{-.5f,.866025f},{-1,0},{-.5f,-.866025f},{.5f,-.866025f},{1,0}};
+    const float radius[5]={.12f,.12f,.52f,.43f,0},height[5]={0,.28f,.32f,.72f,1};
+    float h=VisibleRows(slot)/VOXEL_PIXELS_PER_TILE;
+    float lift=VoxelRelief_LiftAt(cx,cz)+rise,shift=VoxelRelief_ShiftAt(cx,cz)+offZ;
+    unsigned bx=(index%VOXEL_SPRITE_COLUMNS)*VOXEL_SPRITE_SLOT_DIM;
+    unsigned by=(index/VOXEL_SPRITE_COLUMNS)*VOXEL_SPRITE_SLOT_DIM;
+    for(int band=0;band<4;band++)for(int e=0;e<6;e++) {
+        float u=(bx+slot->atlasWidth*.5f)/VOXEL_SPRITE_ATLAS_W;
+        float v=1-(by+slot->height*(band==0?.75f:.40f))/VOXEL_SPRITE_ATLAS_H;
+        float light=shade*(.72f+band*.06f+(e<3?.06f:0));
+        VoxelBuilder_Quad(b,
+            &(VoxelVertex){cx+ring[e][0]*radius[band],lift+h*height[band],cz+shift+ring[e][1]*radius[band],u,v,light},
+            &(VoxelVertex){cx+ring[e+1][0]*radius[band],lift+h*height[band],cz+shift+ring[e+1][1]*radius[band],u,v,light},
+            &(VoxelVertex){cx+ring[e+1][0]*radius[band+1],lift+h*height[band+1],cz+shift+ring[e+1][1]*radius[band+1],u,v,light},
+            &(VoxelVertex){cx+ring[e][0]*radius[band+1],lift+h*height[band+1],cz+shift+ring[e][1]*radius[band+1],u,v,light});
+    }
+}
+
 static void EmitBillboard(VoxelBuilder *builder, const VoxelSpriteSlot *slot, unsigned index,
                           float cx, float cz, float offX, float offZ, float rise, float deck,
                           float rightX, float rightZ, float stretch, float shade, float scale)
@@ -1799,6 +1828,10 @@ unsigned VoxelEntities_Emit(VoxelBuilder *builder, uint16_t *atlas, const VoxelC
             EmitReflection(reflections, &sSlots[i], i, card->worldX, card->worldZ,
                            rightX, rightZ, stretch);
         unsigned first = builder->count;
+        if(IsSolidCutTree(gObjectEvents[i].graphicsId)) {
+            EmitSolidCutTree(builder,&sSlots[i],i,card->worldX+.5f,card->worldZ+.5f,card->deck,rise+card->deck,card->shade*dusk);
+            continue;
+        }
         if(IsSolidBoulder(gObjectEvents[i].graphicsId))
         {
             EmitSolidBoulder(builder,&sSlots[i],i,card->worldX+.5f,card->worldZ+.5f,card->deck,rise+card->deck,card->shade*dusk);

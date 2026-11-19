@@ -77,6 +77,13 @@ jobs:
           make -C build/upstream -j4 tools
           make -C build/upstream -j4 generated
           make -C build/upstream/3ds_port -kj4 PYTHON=python3
+      - name: Winter ground atlas and material regression
+        run: |
+          cd build/upstream/3ds_port
+          gcc -std=gnu99 -O2 -DPORTABLE -DMODERN=1 -D__INTELLISENSE__ -iquote compat -iquote ../include -iquote ../gflib -Iinclude -Isrc/voxel tests/voxel_atlas_test.c src/voxel/voxel_grade.c -o /tmp/winter-atlas
+          /tmp/winter-atlas
+          gcc -std=c99 -Wall -Wextra -Werror -Isrc/voxel tests/voxel_winter_test.c -o /tmp/winter-material
+          /tmp/winter-material
       - name: Engine-only 3DSX
         run: make -C build/upstream/3ds_port release PYTHON=python3
       - name: Audit the build outputs that would ship

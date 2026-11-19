@@ -12,6 +12,8 @@
  * whole-atlas tests below, whose tiles, metatiles, palettes and referenced
  * ids are the arrays further down.
  */
+const VoxelMapInstance *VoxelWorld_Instance(unsigned i) { static const VoxelMapInstance inst={0}; return i==0 ? &inst : NULL; }
+bool VoxelWorld_Underground(void) { return false; }
 unsigned char g_PortLogActive;
 void Port_Log_Printf(const char *fmt, ...) { (void)fmt; }
 const void *Port_ResolveAssetPointer(const void *p) { return p; }
@@ -749,6 +751,44 @@ bool Voxel_LoadTilesStep(const void *t, uint8_t *d, uint32_t n, VoxelTileLoad *l
     return true;
 }
 
+/* Bounded live-VRAM refresh must exactly match a fresh winter atlas,
+ * including secondary tiles, every page, and restoration to the original. */
+static void WinterRefresh(void)
+{
+    VoxelMapInstance inst={.primaryTileset=&kPrimary,.secondaryTileset=&kSecondary};
+    static VoxelAtlasJob job;
+    static uint16_t fresh[VOXEL_ATLAS_PIXELS], refreshed[VOXEL_ATLAS_PIXELS];
+    static uint8_t live[NUM_TILES_TOTAL*32];
+    VoxelWinterSlot out[4];
+    Fill(0);
+    memcpy(live,sPrimaryTiles,sizeof(sPrimaryTiles));
+    memcpy(live+sizeof(sPrimaryTiles),sSecondaryTiles,sizeof(sSecondaryTiles));
+    for(unsigned i=0;i<sizeof(sMetatiles)/sizeof(*sMetatiles);i++)sMetatiles[i]=(uint16_t)Random();
+    memset(sUsed,1,sizeof(sUsed));
+    for(unsigned indoor=0;indoor<2;indoor++)for(unsigned mix=0;mix<=16;mix+=4) {
+        inst.indoor=indoor;VoxelAtlas_SetWinter(mix);
+        assert(VoxelAtlas_JobBegin(&job,&inst,fresh,NULL));
+        do {
+            while(!VoxelAtlas_JobStep(&job,7)){}
+            assert(job.ok);
+            memcpy(refreshed,fresh,sizeof(fresh));
+            unsigned cursor=0,visited=0;
+            do {
+                unsigned n=VoxelAtlas_WinterSlots(&inst,&job.map,job.page,live,&cursor,out,4);
+                assert(n<=4);visited+=n;
+                for(unsigned i=0;i<n;i++)for(unsigned y=0;y<16;y++)for(unsigned x=0;x<16;x++) {
+                    unsigned dx=(out[i].slot%VOXEL_ATLAS_COLUMNS)*16+x;
+                    unsigned dy=(out[i].slot/VOXEL_ATLAS_COLUMNS)*16+y;
+                    refreshed[CtrVideo_Texel(dx,dy,VOXEL_ATLAS_W)]=out[i].pixels[CtrVideo_Texel(x,y,16)];
+                }
+            }while(cursor<VOXEL_METATILE_IDS);
+            assert(visited>0);
+            assert(memcmp(refreshed,fresh,sizeof(fresh))==0);
+        }while(VoxelAtlas_JobNextPage(&job));
+    }
+    VoxelAtlas_SetWinter(0);
+}
+
 int main(void)
 {
     struct AtlasSource src;
@@ -779,6 +819,7 @@ int main(void)
     WholeAtlases();
     AnimatedTiles();
     PagedAtlases();
+    WinterRefresh();
     VoxelGrade_Init();
     WholeAtlases();
     AnimatedTiles();

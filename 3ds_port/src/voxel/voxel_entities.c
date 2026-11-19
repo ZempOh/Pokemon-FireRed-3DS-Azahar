@@ -54,6 +54,7 @@ typedef struct
 {
     bool valid;
     unsigned winterMix;
+    bool winterGrass;
     u16 tileNum, paletteNum;
     /* The ext palette it was drawn with (sprite.c), 0xFF for paletteNum. */
     u8 extPalette;
@@ -356,7 +357,7 @@ static void DecodeSlot(VoxelSpriteSlot *slot, unsigned index, uint16_t *atlas)
     slot->drawnWidth = slot->atlasWidth;
     slot->drawnHeight = slot->height;
     for (unsigned c = 1; c < colours; ++c)
-        graded[c] = VoxelWinter_Color(VoxelGrade_RGBA5551(slot->palette[c]),slot->winterMix,0);
+        graded[c] = VoxelWinter_Color(VoxelGrade_RGBA5551(slot->palette[c]),slot->winterMix,slot->winterGrass ? 2 : 0);
 
     /* Wider than the cell (the S.S. Tidal): every second column, a texel at
      * a time. Rare, and re-decoded only when its picture changes. */
@@ -536,9 +537,14 @@ static bool RefreshSlot(unsigned index, const struct Sprite *sprite, const struc
         memcpy(palette, PLTT + 0x200 + (color256 ? 0 : sprite->oam.paletteNum * 32), paletteBytes);
 
     /* Grass rustling is environmental scenery too; never recolor actors. */
-    unsigned winterMix=((obj && IsSolidCutTree(obj->graphicsId)) || IsTileEffect(sprite->template)) ? VoxelAtlas_GetWinter() : 0;
+    bool winterGrass=IsTileEffect(sprite->template)
+        || sprite->template==gFieldEffectObjectTemplatePointers[FLDEFFOBJ_JUMP_TALL_GRASS]
+        || sprite->template==gFieldEffectObjectTemplatePointers[FLDEFFOBJ_JUMP_LONG_GRASS]
+        || sprite->template==gFieldEffectObjectTemplatePointers[FLDEFFOBJ_SHORT_GRASS];
+    unsigned winterMix=((obj && IsSolidCutTree(obj->graphicsId)) || winterGrass) ? VoxelAtlas_GetWinter() : 0;
     changed = !slot->valid
            || slot->winterMix != winterMix
+           || slot->winterGrass != winterGrass
            || slot->width != w || slot->height != h
            || slot->color256 != color256
            || slot->flipX != flipX || slot->flipY != flipY
@@ -552,6 +558,7 @@ static bool RefreshSlot(unsigned index, const struct Sprite *sprite, const struc
         return false;
 
     slot->winterMix=winterMix;
+    slot->winterGrass=winterGrass;
     slot->valid = true;
     slot->width = w;
     slot->height = h;

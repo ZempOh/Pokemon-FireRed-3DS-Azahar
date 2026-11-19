@@ -20,6 +20,17 @@ int main(void) {
     assert(VoxelWinter_Color(water,16,1)==water);
     assert(VoxelWinter_Color(wall,16,0)==wall);
     assert(VoxelWinter_Color(dirt,16,1)!=dirt);
+    /* Known grass-effect artwork includes equal red/green olive shades. */
+    unsigned olive=(12<<11)|(12<<6)|(3<<1)|1;
+    unsigned dark=(4<<11)|(5<<6)|(2<<1)|1;
+    assert(VoxelWinter_Color(olive,16,0)==olive);
+    assert(VoxelWinter_Color(olive,16,2)!=olive);
+    assert(VoxelWinter_Color(dark,16,2)!=dark);
+    for(unsigned c=0;c<65536;c++) {
+        assert(VoxelWinter_Color(c,0,2)==c);
+        assert((VoxelWinter_Color(c,16,2)&1)==(c&1));
+        if(!(c&1))assert(VoxelWinter_Color(c,16,2)==c);
+    }
     unsigned prev=0;
     for(unsigned m=0;m<=16;m++){unsigned red=VoxelWinter_Color(grass,m,0)>>11;assert(red>=prev);prev=red;}
     puts("PASS snow alpha, water, wall protection, paths, shading and fade");

@@ -472,12 +472,16 @@ Let’s Go, Radical Red and Unbound passed the same APK on the Thor. [Download A
 <!-- FLORA CLIMATE START -->
 ### 3D flowers and changing weather
 
-Qualified builds: FRLG+. [Thor results and captures](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/climate-3d.html).
+Qualified builds: FRLG+, FireRed. [Thor results and captures](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/climate-3d.html).
 
 Set **Visual Climate → Automatic** for calendar seasons and season-weighted randomized weather. Weather is selected every 15 minutes of real time and fades over eight seconds; repeated selections can last longer. Reloading a map does not reroll it. Manual keeps fixed season/weather choices. Native scripted weather takes priority and cosmetic precipitation stays outdoors. This does not change battle weather or gameplay RNG. Winter currently whitens vegetation, not all ground. Asset coverage remains incomplete.
 
 **frlg** — [verified bundle](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/FRLG-Plus-3D-Flora-Climate-v2-2026-11-19.zip)
 
 ![frlg fresh Thor gameplay](docs/screenshots/graphics-gallery/frlg-motion.gif)
+
+**firered** — [verified bundle](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/FireRed-3D-Flora-Climate-v2-2026-11-19.zip)
+
+![firered fresh Thor gameplay](docs/screenshots/graphics-gallery/firered-motion.gif)
 
 <!-- FLORA CLIMATE END -->

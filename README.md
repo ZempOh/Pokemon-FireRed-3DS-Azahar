@@ -418,7 +418,7 @@ Freak, Creatures or The Pokémon Company.
 <!-- EXPANDED PROPS PREVIEW -->
 ### Expanded 3D scenery
 
-Passing builds: firered, frlg. These builds passed Thor field, idle battle, active battle through return, multiple-rock visibility, Strength and Rock Smash checks. [Builds, scope and fresh media](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/scenery-3d.html). Other expanded candidates remain unpublished until qualification; coverage of every asset and tileset is not complete.
+Passing builds: firered, frlg, classic. These builds passed Thor field, idle battle, active battle through return, multiple-rock visibility, Strength and Rock Smash checks. [Builds, scope and fresh media](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/scenery-3d.html). Other expanded candidates remain unpublished until qualification; coverage of every asset and tileset is not complete.
 
 **firered** — [matching ROM-free bundle](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/FireRed-3D-Scenery-2026-11-19.zip)
 
@@ -431,5 +431,11 @@ Passing builds: firered, frlg. These builds passed Thor field, idle battle, acti
 ![frlg actual 3D boulder movement on Thor](docs/screenshots/graphics-gallery/frlg-boulder-moving.gif)
 
 ![frlg actual Rock Smash on Thor](docs/screenshots/graphics-gallery/frlg-rock-smash.gif)
+
+**classic** — [matching ROM-free bundle](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/Classic-3D-Scenery-2026-11-19.zip)
+
+![classic actual 3D boulder movement on Thor](docs/screenshots/graphics-gallery/classic-boulder-moving.gif)
+
+![classic actual Rock Smash on Thor](docs/screenshots/graphics-gallery/classic-rock-smash.gif)
 
 [All six games: 2D/3D, seasonal, battle screenshots and GIFs](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/gallery.html). GIFs are reduced to 10 FPS for size; measured pacing is in the verification report. The initial [offline asset prototype](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/props-preview.html) is separate from these Thor captures.

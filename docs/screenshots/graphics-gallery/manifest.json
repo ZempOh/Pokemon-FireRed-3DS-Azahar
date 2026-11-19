@@ -1,84 +1,5 @@
 [
   {
-    "game": "classic",
-    "view": "2d",
-    "caption": "2D view \u00e2\u20ac\u201d same player position",
-    "file": "classic-2d.png",
-    "source": "android-followup/screenshots/classic-2d-top.png",
-    "source_sha256": "b4c9b4e76c37e5841a7c52ca18ad76e60cb794a6192fec7116ae036de1b7e1df",
-    "sha256": "7afe39a2411ca3d7e4fcff3c200c370cc3e3db38ebf822808fa58a687f5db0cd",
-    "build_reference": "ground-pacing.html"
-  },
-  {
-    "game": "classic",
-    "view": "3d",
-    "caption": "Voxel 3D view \u00e2\u20ac\u201d same player position",
-    "file": "classic-3d.png",
-    "source": "android-followup/screenshots/classic-3d-top.png",
-    "source_sha256": "9a648227208ef3180294b96528dd97552441164ee4e761308d43d3c80845d0a1",
-    "sha256": "13541e775579171e8c0d4ce6e1a7841a2c16aa34a73e505dda0a769b4533ce4f",
-    "build_reference": "ground-pacing.html"
-  },
-  {
-    "game": "classic",
-    "view": "spring",
-    "caption": "Manual Spring \u00c2\u00b7 Original weather",
-    "file": "classic-spring.png",
-    "source": "android-followup/screenshots/classic-spring-top.png",
-    "source_sha256": "76d8d4e54c6a5d582d9f049e815abd1d579508573ced1103b287b5389c8f07cb",
-    "sha256": "53c0419e767a474691728dee29693260fa148a3a4b5c0ddcfe390b11c611df8f",
-    "build_reference": "ground-pacing.html"
-  },
-  {
-    "game": "classic",
-    "view": "summer",
-    "caption": "Manual Summer \u00c2\u00b7 Original weather",
-    "file": "classic-summer.png",
-    "source": "android-followup/screenshots/classic-summer-top.png",
-    "source_sha256": "65c251a488eff2b7019cd58ba48f957b3f1e4a6f5429eb7600e042e10bd8ef66",
-    "sha256": "774a2d17221cf016ac548d3b3b3b3ca17dca4a869c8193f88ddb64dfbe849b59",
-    "build_reference": "ground-pacing.html"
-  },
-  {
-    "game": "classic",
-    "view": "autumn",
-    "caption": "Manual Autumn \u00c2\u00b7 Original weather",
-    "file": "classic-autumn.png",
-    "source": "android-followup/screenshots/classic-autumn-top.png",
-    "source_sha256": "503963a6159d4ec900611f8257f8a7711c23b898911a17173bd4b24b354946fe",
-    "sha256": "323fa29b3bdb31ea843ca605a0708060bf56296f96141862e0242614684fee01",
-    "build_reference": "ground-pacing.html"
-  },
-  {
-    "game": "classic",
-    "view": "winter",
-    "caption": "Manual Winter \u00c2\u00b7 Original weather",
-    "file": "classic-winter.png",
-    "source": "android-followup/screenshots/classic-winter-top.png",
-    "source_sha256": "150bd4033d98f84f722aa8757c68cd2c6a872efe80de2bd5e6ffb1a8d108df4b",
-    "sha256": "b4eba74deed8b9c48d553bd7ca70441bf6d827897f5f7192654436a7b8b3f621",
-    "build_reference": "ground-pacing.html"
-  },
-  {
-    "game": "classic",
-    "view": "battle",
-    "caption": "Battle and companion interface",
-    "file": "classic-battle.png",
-    "source": "pacing/classic-after-moves-pair.png",
-    "source_sha256": "8ed211e11dc6c5fc6b3333859c671912c61db78936fcbac481686e072d1374b1",
-    "sha256": "41fdf0e81f35e12dbb2fba7e06e434407be452d11e39f055f1ff4f1e02c087dd",
-    "build_reference": "ground-pacing.html"
-  },
-  {
-    "game": "classic",
-    "view": "motion",
-    "file": "classic-motion.gif",
-    "sha256": "b8d2b05358ff83d00c054fb3f1be9b24d32fd893737dc5c3ffc13f918604ee9a",
-    "frames": 60,
-    "fps": 10,
-    "build_reference": "ground-pacing.html"
-  },
-  {
     "game": "letsgo",
     "view": "2d",
     "caption": "2D view \u00e2\u20ac\u201d same player position",
@@ -479,6 +400,85 @@
     "sha256": "3dd9308801b05d5eb3bbb59f0c4189f870bd35f490f99a3c06e6f1e587a8f3c6",
     "build_reference": "scenery-3d.html",
     "commit": "aeaac4dc17ae00c8f01f82466312228db90d394d",
+    "format": "480px,10FPS; not a pacing measurement"
+  },
+  {
+    "game": "classic",
+    "view": "2d",
+    "file": "classic-2d.png",
+    "source": "capacity-native/native/screenshots/classic-2d-top.png",
+    "source_sha256": "a67a579e215e7462d3b71251f73def25a452f16f2be8e072d2247bfb0642d61a",
+    "sha256": "ea0e88b1924c65771f0dd64dc914697c7d4eee7e6efd78081cab22c3a79420c4",
+    "build_reference": "scenery-3d.html",
+    "commit": "873a0fe6aadaec25ec4e621944b1eee7b0870167"
+  },
+  {
+    "game": "classic",
+    "view": "3d",
+    "file": "classic-3d.png",
+    "source": "capacity-native/native/screenshots/classic-3d-top.png",
+    "source_sha256": "5a22d69f8b6a5c5aa9b23255a6a8b4548e1eee966c5e585ee079cae72cdf4044",
+    "sha256": "f5affa24a18ffa880ed5af2b839dbf6c40c93607687350e528be158261e55db9",
+    "build_reference": "scenery-3d.html",
+    "commit": "873a0fe6aadaec25ec4e621944b1eee7b0870167"
+  },
+  {
+    "game": "classic",
+    "view": "spring",
+    "file": "classic-spring.png",
+    "source": "capacity-native/native/screenshots/classic-spring-top.png",
+    "source_sha256": "9b43b82d3e2a24c3766886b626c4b85581de6e73788ad43a7c37b0c719bb7ee4",
+    "sha256": "823f91511e375e76a0ff3087f4a2f97d39e5b1743355afb7a9446679bfdf52e3",
+    "build_reference": "scenery-3d.html",
+    "commit": "873a0fe6aadaec25ec4e621944b1eee7b0870167"
+  },
+  {
+    "game": "classic",
+    "view": "summer",
+    "file": "classic-summer.png",
+    "source": "capacity-native/native/screenshots/classic-summer-top.png",
+    "source_sha256": "f7d111156b899524ccfc68c74d94da653332336b023e65a048ab13ed9d3e8920",
+    "sha256": "da3efb6eaf93cf6604805c99f0b8350ebc24bae661f6ede9aa85bdcb1d8fcf53",
+    "build_reference": "scenery-3d.html",
+    "commit": "873a0fe6aadaec25ec4e621944b1eee7b0870167"
+  },
+  {
+    "game": "classic",
+    "view": "autumn",
+    "file": "classic-autumn.png",
+    "source": "capacity-native/native/screenshots/classic-autumn-top.png",
+    "source_sha256": "8281fc073c97db52df7b8e4befc18ba96b27c9155f335ed8c26ce9741148e20f",
+    "sha256": "e402f6e7a369f4e2790863b05da7512408172635a1e2cdadfa8248327ec2f7ca",
+    "build_reference": "scenery-3d.html",
+    "commit": "873a0fe6aadaec25ec4e621944b1eee7b0870167"
+  },
+  {
+    "game": "classic",
+    "view": "winter",
+    "file": "classic-winter.png",
+    "source": "capacity-native/native/screenshots/classic-winter-top.png",
+    "source_sha256": "4dd528629a524085c4014ac8aec62265763a08dcfb8bc1affc9a490c2c6f0d1c",
+    "sha256": "9c158a77b9b19afbf1730216e2bf941959d6b008b28b886316cb00890115bff6",
+    "build_reference": "scenery-3d.html",
+    "commit": "873a0fe6aadaec25ec4e621944b1eee7b0870167"
+  },
+  {
+    "game": "classic",
+    "view": "battle",
+    "file": "classic-battle.png",
+    "source": "capacity-native/native/screenshots/classic-battle-top.png",
+    "source_sha256": "a076b15b4658613ef9fc76fe119a02ebd263dba9ffde359730998cb9549cda2f",
+    "sha256": "bfccdae205f9e59d9dff97a8d52857a7d7a4eecddcbd67b67d3e547928ea8fd4",
+    "build_reference": "scenery-3d.html",
+    "commit": "873a0fe6aadaec25ec4e621944b1eee7b0870167"
+  },
+  {
+    "game": "classic",
+    "view": "motion",
+    "file": "classic-motion.gif",
+    "sha256": "0b768b504a7b4e5d746cd98d206e286a7dc0290cc83ca7f5fd55c88ab6fc3599",
+    "build_reference": "scenery-3d.html",
+    "commit": "873a0fe6aadaec25ec4e621944b1eee7b0870167",
     "format": "480px,10FPS; not a pacing measurement"
   }
 ]

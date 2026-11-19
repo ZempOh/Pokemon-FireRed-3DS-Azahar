@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "kind": "voxel-cartridge-payload",
   "releaseTag": "v0.5.1",
-  "dataAbi": "0b683c2e",
+  "dataAbi": "ed9cc3b8",
   "entrypoint": {
     "pythonPath": "python"
   },
@@ -13,7 +13,7 @@
       "name": "FireRed (USA Rev 1)"
     }
   ],
-  "cartridgeSha256": "1cde8ff34295f7847a3c0a368bb9c3eaa295955c141868178c5935cf11fcca41",
+  "cartridgeSha256": "d6e669a591a9799e1bd02a615dffcd5fa99f9a000fa9e7d398abd7cf0be1d7b7",
   "files": [
     {
       "path": "licenses/NOTICE.md",
@@ -27,8 +27,8 @@
     },
     {
       "path": "payload/FireRed3DS.3dsx",
-      "sha256": "c86de8ac44fea2e97e826d76dc6ead20c691642ec8f83d5aa804083b1605a357",
-      "size": 4620044
+      "sha256": "3ee093d6f805a0f13daa01e94fd6b67973dcd6eb4f3ee610b873b186d1817b7b",
+      "size": 4619340
     },
     {
       "path": "payload/FireRed3DS.smdh",
@@ -37,8 +37,8 @@
     },
     {
       "path": "payload/firered3ds.recipe",
-      "sha256": "950c6b64d9da01ba3e7472c915d9354cd723e5c58b814c4d590173d0c6c641c6",
-      "size": 339972
+      "sha256": "10261babaf206c781813ade11fcceb3395be1508c0eecca43ffb7ed7912d57e1",
+      "size": 340112
     },
     {
       "path": "payload/voxelgen/scripts/fr_art.py",

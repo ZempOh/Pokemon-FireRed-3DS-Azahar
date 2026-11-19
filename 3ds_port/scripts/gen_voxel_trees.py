@@ -51,6 +51,11 @@ def pack(assets):
                 value = ((r >> 3) << 11 | (g >> 3) << 6 |
                          (b >> 3) << 1 | int(a >= 128))
                 struct.pack_into("<H", pixels, 2 * texel_offset(ox + x, oy + y), value)
+    # Original procedural flower materials in an unused row, with opaque
+    # sample centers. No new bitmap dependency or copyrighted asset payload.
+    for x, (red, green, blue) in enumerate(((64,152,48),(240,96,176),(248,216,72))):
+        value = (red >> 3) << 11 | (green >> 3) << 6 | (blue >> 3) << 1 | 1
+        struct.pack_into("<H", pixels, 2 * texel_offset(x,112), value)
     return pixels
 
 

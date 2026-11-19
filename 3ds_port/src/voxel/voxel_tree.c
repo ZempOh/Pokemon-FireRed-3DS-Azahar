@@ -249,6 +249,7 @@ int VoxelTree_GroundMetatile(const void *secondaryTileset, int metatileId)
     }
     switch (metatileId)
     {
+    case 0x004: return 0x001; /* ground under raised flowers */
     case 0x1C6: case 0x1C7: return 0x00D; /* tall grass without canopy */
     case 0x1CE: case 0x1CF: return 0x001; /* ordinary grass */
     /* A small tree's canopy top, over whatever it stood in front of. The
@@ -590,6 +591,34 @@ static bool AgainstRock(const VoxelMapInstance *inst, int x, int y, float lift)
 
 /* MB_TALL_GRASS is 0x02 in both native engines. Use behavior rather than
  * metatile numbers: Classic's repacked Kanto art reuses Emerald IDs. */
+static void EmitFlowerLobe(VoxelBuilder *b,float x,float y,float z,float rx,float rz,float thick,float u,float v)
+{
+    VoxelVertex p[4]={{x-rx,y,z-rz*.6f,u,v,.82f},{x+rx,y,z-rz*.6f,u,v,.90f},{x,y,z+rz,u,v,.76f},{x,y+thick,z,u,v,1.f}};
+    VoxelBuilder_Tri(b,&p[0],&p[1],&p[3]);
+    VoxelBuilder_Tri(b,&p[1],&p[2],&p[3]);
+    VoxelBuilder_Tri(b,&p[2],&p[0],&p[3]);
+    VoxelBuilder_Tri(b,&p[2],&p[1],&p[0]);
+}
+
+static void EmitFlowerMesh(VoxelBuilder *b,int x,int y)
+{
+    const float px[5]={1,.309017f,-.809017f,-.809017f,.309017f};
+    const float pz[5]={0,.951057f,.587785f,-.587785f,-.951057f};
+    float greenU=TEX_U(0.5f),greenV=TEX_V(112.5f);
+    float petalU=TEX_U(1.5f),petalV=TEX_V(112.5f);
+    float heartU=TEX_U(2.5f),heartV=TEX_V(112.5f);
+    for(int flower=0;flower<1;flower++)
+    {
+        float cx=x+.5f,cz=y+.55f,h=.38f;
+        EmitFlowerLobe(b,cx,0,cz,.035f,.035f,h,greenU,greenV);
+        EmitFlowerLobe(b,cx-.07f,.10f,cz,.16f,.07f,.035f,greenU,greenV);
+        EmitFlowerLobe(b,cx+.07f,.15f,cz,.16f,.07f,.035f,greenU,greenV);
+        for(int petal=0;petal<5;petal++)
+            EmitFlowerLobe(b,cx+px[petal]*.12f,h,cz+pz[petal]*.12f,.11f,.11f,.045f,petalU,petalV);
+        EmitFlowerLobe(b,cx,h+.035f,cz,.075f,.075f,.035f,heartU,heartV);
+    }
+}
+
 static void EmitEncounterGrass(VoxelBuilder *b, int x, int y)
 {
     static const float dx[4]={-1,0,1,0}, dz[4]={0,-1,0,1};
@@ -624,6 +653,15 @@ void VoxelTree_EmitInstance(VoxelBuilder *builder, const VoxelMapInstance *inst,
         {
             int metatileId = VoxelWorld_GetMetatileId(x, y);
             int part = VoxelTree_Part(inst->secondaryTileset, metatileId);
+            /* Classic's Kanto General flower cell. Trees and encounter grass
+             * retain their independent identities and collision behavior. */
+            if (metatileId == 0x004) {
+                builder->lift = VoxelRelief_CellLift(inst, x, y);
+                builder->shift = VoxelRelief_CellShift(inst, x, y);
+                EmitFlowerMesh(builder, x, y);
+                builder->lift = builder->shift = 0;
+            }
+
             if (part < 0 && VoxelWorld_GetMetatileBehavior(x, y) == 0x02)
             {
                 builder->lift = VoxelRelief_CellLift(inst, x, y);

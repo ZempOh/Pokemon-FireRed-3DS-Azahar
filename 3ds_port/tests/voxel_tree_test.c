@@ -325,7 +325,18 @@ int main(void)
     Init(&parts,sParts);
     VoxelTree_EmitInstance(&parts,&sMap,-3,-5,-1,-3);
     assert(parts.count==0);
-    puts("PASS voxel trees and volumetric grass: streamed bounds, ground, height, seams and tileset scope");
+    for(int i=0;i<4;i++)sTiles[i]=0x004;
+    Init(&parts,sParts);
+    VoxelTree_EmitInstance(&parts,&sMap,-3,-5,-1,-3);
+    assert(parts.dropped==0 && parts.count==4*108);
+    assert(VoxelTree_GroundMetatile(NULL,0x004)==0x001);
+    unsigned petals=0;
+    for(unsigned i=0;i<parts.count;i++) {
+        assert(isfinite(parts.vertices[i].y));
+        if(parts.vertices[i].y>.35f)petals++;
+    }
+    assert(petals>80);
+    puts("PASS voxel trees, volumetric grass and raised flowers: bounded geometry and matching ground");
     return 0;
 }
 

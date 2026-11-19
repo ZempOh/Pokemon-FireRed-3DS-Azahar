@@ -37,6 +37,24 @@ for the tested routes and exact artifact hashes. This is not full-playthrough
 certification. The [release page](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/tag/graphics-upgrade-2026-11-18)
 contains the APK, clean source snapshots, patches, and ROM-free build kits.
 
+## Android pacing follow-up and graphics gallery
+
+Let’s Go Pikachu, Radical Red and Unbound passed the targeted AYN Thor field and battle retests. The shared APK uses native GBA timing (about 59.7275 FPS) instead of following the Thor’s fluctuating display ticks, and Let’s Go’s settings header now shows its own title. [Measured results and limits](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/android-pacing.html) · [Download the passing APK](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/PokeDaisy-Voxel-NativeClock-2026-11-18.apk).
+
+All six games now have [2D/3D comparisons, four seasons and battle screenshots](docs/screenshots/graphics-gallery/README.md), also on the [website gallery](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/gallery.html). The GIFs below show real Thor gameplay, compressed to 480 px / 10 FPS; they are not performance measurements.
+
+| FireRed 3DS | FireRed & LeafGreen+ |
+| --- | --- |
+| ![FireRed 3DS gameplay](docs/screenshots/graphics-gallery/firered-motion.gif) | ![FireRed & LeafGreen+ gameplay](docs/screenshots/graphics-gallery/frlg-motion.gif) |
+
+| Pokémon Classic | Pokémon Let’s Go Pikachu |
+| --- | --- |
+| ![Pokémon Classic gameplay](docs/screenshots/graphics-gallery/classic-motion.gif) | ![Pokémon Let’s Go Pikachu gameplay](docs/screenshots/graphics-gallery/letsgo-motion.gif) |
+
+| Pokémon Radical Red | Pokémon Unbound |
+| --- | --- |
+| ![Pokémon Radical Red gameplay](docs/screenshots/graphics-gallery/radical-motion.gif) | ![Pokémon Unbound gameplay](docs/screenshots/graphics-gallery/unbound-motion.gif) |
+
 ## Ground animation and native battle pacing
 
 The three native follow-up builds passed the targeted AYN Thor checks.
@@ -72,7 +90,7 @@ defeated Pidgey with ThunderShock and returned to the field; Route 1 → Pallet
 map/ground checks also passed.
 FireRed used Growl and three Scratch turns, defeated Rattata and returned to Route 1; Party agreed at 11/21 HP and the standard three-pocket Bag remained correct. In the measured phases, active Azahar audio tracks advanced with zero endpoint underruns. Original saves, settings and diagnostics were restored and verified, and all installed executable/data hashes matched the qualified candidates.
 These are targeted early-game checks, not a guarantee that every scene is
-free of stutter. The PokéDaisy APK is unchanged.
+free of stutter. That native follow-up retained the original PokéDaisy APK; the Android follow-up above supersedes it.
 
 Use the [shared voxel builder](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/voxel.html) or the
 [ground/pacing follow-up bundle](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/VoxelGraphics-Ground-Pacing-Fixes-2026-11-18.zip). The [release page](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/tag/graphics-upgrade-2026-11-18)

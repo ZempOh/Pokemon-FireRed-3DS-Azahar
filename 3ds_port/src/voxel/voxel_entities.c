@@ -26,6 +26,7 @@
 #include "voxel_atlas.h"
 #include "voxel_winter_material.h"
 static bool IsSolidCutTree(unsigned id);
+static bool IsTileEffect(const struct SpriteTemplate *template);
 #include "voxel_relief.h"
 #include "voxel_room.h"
 #include "voxel_world.h"
@@ -438,7 +439,8 @@ static bool RefreshSlot(unsigned index, const struct Sprite *sprite, uint16_t *a
     /* OBJ palettes are the second half of PLTT; 8bpp uses it as one bank. */
     memcpy(palette, PLTT + 0x200 + (color256 ? 0 : sprite->oam.paletteNum * 32), paletteBytes);
 
-    unsigned winterMix=(index<OBJECT_EVENTS_COUNT && IsSolidCutTree(gObjectEvents[index].graphicsId)) ? VoxelAtlas_GetWinter() : 0;
+    /* Grass rustling is environmental scenery too; never recolor actors. */
+    unsigned winterMix=((index<OBJECT_EVENTS_COUNT && gObjectEvents[index].active && gObjectEvents[index].spriteId==(unsigned)(sprite-gSprites) && IsSolidCutTree(gObjectEvents[index].graphicsId)) || IsTileEffect(sprite->template)) ? VoxelAtlas_GetWinter() : 0;
     changed = !slot->valid
            || slot->winterMix != winterMix
            || slot->width != w || slot->height != h

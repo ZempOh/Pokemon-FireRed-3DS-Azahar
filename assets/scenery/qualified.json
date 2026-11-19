@@ -1,0 +1,48 @@
+{
+  "firered": {
+    "game": "firered",
+    "date": "2026-11-19",
+    "build_commit": "8a0778b88ab0fc8a0f3ddd9c8ace9071fce358ff",
+    "ci_run": 44484068990,
+    "engine_sha256": "325f8ed0b1164216871ed93cfaefc1bfc974225c1a546cb187628b4745943911",
+    "web_payload_sha256": "3a1cc7598de8b88caffba9e8f87b4df404c3863628402056e54019eebefcd27c",
+    "data_abi": "ed9cc3b8",
+    "passed": true,
+    "phases": {
+      "field": {
+        "samples": 12,
+        "minimum_sampled_fps": 59.8,
+        "work_over_frame_budget": 0,
+        "active_audio_underruns": 0,
+        "audio_track_advanced": true
+      },
+      "battle": {
+        "samples": 12,
+        "minimum_sampled_fps": 59.8,
+        "work_over_frame_budget": 0,
+        "active_audio_underruns": 0,
+        "audio_track_advanced": true
+      },
+      "active": {
+        "samples": 12,
+        "minimum_sampled_fps": 59.6,
+        "work_over_frame_budget": 0,
+        "active_audio_underruns": 0,
+        "audio_track_advanced": true
+      }
+    },
+    "checks": {
+      "commit": "8a0778b88ab0fc8a0f3ddd9c8ace9071fce358ff",
+      "visual_field": true,
+      "battle_return_verified": true,
+      "gallery_verified": true,
+      "strength_push_verified": true,
+      "rock_smash_verified": true,
+      "multiple_rocks_visible": true,
+      "notes": "Field/battle/active minimum sampled FPS59.8/59.8/59.6, clean active audio. Returned to Route1. Mt Ember multi-rock visibility and Rock Smash removal/path traversal verified, including generated Geodude encounter. Victory Road Strength moved complete boulder mesh with the game object; captured before/after and GIF."
+    },
+    "limits": "Selected field scene, idle battle, active battle through field return, Strength movement, Rock Smash removal and multiple-rock visibility. Sampled timing is not a guarantee for every scene or frame. Asset coverage remains incomplete; sprites for characters and battle creatures are retained.",
+    "asset": "FireRed-3D-Scenery-2026-11-19.zip",
+    "asset_sha256": "00a76aee90c1480882f149c5cf8b3e423615fbb291ad175e594ed2b50250644d"
+  }
+}

@@ -14,6 +14,7 @@
 #include "event_object_movement.h"
 #include "field_player_avatar.h"
 #include "constants/field_effects.h"
+#include "constants/event_objects.h"
 #include "constants/event_object_movement.h"
 #include "gba/io_reg.h"
 #include "port_platform.h"
@@ -689,6 +690,46 @@ static float SpriteScale(const struct Sprite *sprite)
 
 /* How far the cards lie down this update (VoxelCamera.lay), 0 upright. */
 static float sLay;
+
+/* Event-object boulders follow the game's moving coordinates and visibility.
+ * Only the documented rock graphics IDs use this mesh; actors keep their art. */
+static bool IsSolidBoulder(unsigned graphicsId)
+{
+#ifdef OBJ_EVENT_GFX_ROCK_SMASH_ROCK
+    if(graphicsId==OBJ_EVENT_GFX_ROCK_SMASH_ROCK)return true;
+#endif
+#ifdef OBJ_EVENT_GFX_BREAKABLE_ROCK
+    if(graphicsId==OBJ_EVENT_GFX_BREAKABLE_ROCK)return true;
+#endif
+    return graphicsId==OBJ_EVENT_GFX_PUSHABLE_BOULDER;
+}
+
+static void EmitSolidBoulder(VoxelBuilder *b,const VoxelSpriteSlot *slot,unsigned index,
+                             float cx,float cz,float offZ,float rise,float shade)
+{
+    static const float ring[9][2]={{1,0},{.707107f,.707107f},{0,1},{-.707107f,.707107f},{-1,0},{-.707107f,-.707107f},{0,-1},{.707107f,-.707107f},{1,0}};
+    const float radii[4]={.72f,1,.64f,0},heights[4]={0,.30f,.78f,1};
+    float radius=slot->width/VOXEL_PIXELS_PER_TILE*.43f;
+    float height=VisibleRows(slot)/VOXEL_PIXELS_PER_TILE*.83f;
+    float lift=VoxelRelief_LiftAt(cx,cz)+rise,shift=VoxelRelief_ShiftAt(cx,cz)+offZ;
+    unsigned bx=(index%VOXEL_SPRITE_COLUMNS)*VOXEL_SPRITE_SLOT_DIM;
+    unsigned by=(index/VOXEL_SPRITE_COLUMNS)*VOXEL_SPRITE_SLOT_DIM;
+    float u0=(bx+slot->width*.30f)/VOXEL_SPRITE_ATLAS_DIM;
+    float u1=(bx+slot->width*.70f)/VOXEL_SPRITE_ATLAS_DIM;
+    float v0=1-(by+slot->height*.30f)/VOXEL_SPRITE_ATLAS_H;
+    float v1=1-(by+slot->height*.60f)/VOXEL_SPRITE_ATLAS_H;
+    for(int band=0;band<3;band++)for(int edge=0;edge<8;edge++)
+    {
+        float a=radius*radii[band],c=radius*radii[band+1];
+        float h0=lift+height*heights[band],h1=lift+height*heights[band+1];
+        float light=shade*(.72f+band*.09f+(edge>=4?.07f:0));
+        VoxelBuilder_Quad(b,
+            &(VoxelVertex){cx+ring[edge][0]*a,h0,cz+shift+ring[edge][1]*a,u0,v1,light},
+            &(VoxelVertex){cx+ring[edge+1][0]*a,h0,cz+shift+ring[edge+1][1]*a,u1,v1,light},
+            &(VoxelVertex){cx+ring[edge+1][0]*c,h1,cz+shift+ring[edge+1][1]*c,u1,v0,light},
+            &(VoxelVertex){cx+ring[edge][0]*c,h1,cz+shift+ring[edge][1]*c,u0,v0,light});
+    }
+}
 
 static void EmitBillboard(VoxelBuilder *builder, const VoxelSpriteSlot *slot, unsigned index,
                           float cx, float cz, float offX, float offZ, float rise, float deck,
@@ -1758,6 +1799,11 @@ unsigned VoxelEntities_Emit(VoxelBuilder *builder, uint16_t *atlas, const VoxelC
             EmitReflection(reflections, &sSlots[i], i, card->worldX, card->worldZ,
                            rightX, rightZ, stretch);
         unsigned first = builder->count;
+        if(IsSolidBoulder(gObjectEvents[i].graphicsId))
+        {
+            EmitSolidBoulder(builder,&sSlots[i],i,card->worldX+.5f,card->worldZ+.5f,card->standZ,rise,card->shade*dusk);
+            continue;
+        }
         EmitBillboard(builder, &sSlots[i], i, card->worldX + 0.5f, card->worldZ + 0.5f,
                       0.0f, 0.0f, rise, card->deck, rightX, rightZ, stretch, card->shade * dusk, 1.0f);
         if (i == gPlayerAvatar.objectEventId && builder->count == first + 6)

@@ -59,7 +59,7 @@
              texture[(row*16+y)*v->stride+col*16+x]=c;
          }
      }
-@@ -5129,8 +5129,18 @@
+@@ -5129,8 +5129,19 @@
      for (int i=0; i<npieces[shown]; i++)
          if (!pieces[shown][i].world) nativeWeather = 1;
      climateUpdate(mapType >= 1 && mapType <= 3, nativeWeather);
@@ -70,7 +70,8 @@
 +            int conn,id=blockIn(s,cellX+col,cellY+row,&conn,false);
 +            /* Primary basic ground cells only: secondary IDs can be furniture,
 +             * walls or roofs in another tileset. Blue water stays unchanged. */
-+            int path=id>=0 && id<=0x0d;
++            int kanto=(solidRom==0x25c3d89f || solidRom==0xfba55dd8) && s->primary==0x082d4a94;
++            int path=id>=0 && (id<=0x0d || (kanto && climateKantoPath(id)));
 +            for(int y=0;y<16;y++)for(int x=0;x<16;x++) {
 +                size_t at=(size_t)(row*16+y)*w+col*16+x;
 +                texture[at]=climateGround(texture[at],path);
@@ -82,12 +83,16 @@
      static struct SolidProp props[384];
 --- a/app/src/main/cpp/pk_voxel_climate.h
 +++ b/app/src/main/cpp/pk_voxel_climate.h
-@@ -84,6 +84,20 @@
+@@ -84,6 +84,24 @@
      }
      return climateMix(c,target,voxelClimate.seasonBlend);
  }
 +/* Ground material, before projection. Water and neutral/blue materials keep
 + * their palette; snow on earth is lighter than on grass to preserve paths. */
++static int climateKantoPath(int id) {
++    return (id>=0xd3 && id<=0xd5) || (id>=0xdb && id<=0xdd)
++        || (id>=0xe3 && id<=0xe5) || (id>=0x102 && id<=0x105);
++}
 +static uint32_t climateGround(uint32_t c,int path) {
 +    if(voxelClimate.season!=3 || !voxelClimate.seasonBlend)return climateTerrain(c);
 +    unsigned r=c&255,g=(c>>8)&255,b=(c>>16)&255;

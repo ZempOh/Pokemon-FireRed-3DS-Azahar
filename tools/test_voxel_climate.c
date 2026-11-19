@@ -15,6 +15,8 @@ static time_t fakeTime(time_t *out) { if(out)*out=fakeSeconds;return fakeSeconds
 #undef time
 #undef clock_gettime
 int main(void) {
+    assert(climateKantoPath(0xdc) && climateKantoPath(0x105));
+    assert(!climateKantoPath(0x95) && !climateKantoPath(0x200));
     for(int season=0;season<4;season++) {
         int counts[5]={0};
         for(int slot=0;slot<10000;slot++) {

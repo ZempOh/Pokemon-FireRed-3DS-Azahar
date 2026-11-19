@@ -203,3 +203,5 @@ int main(void)
     puts("PASS voxel trees: ground/crown, chunk seams, map origins, border, tileset scope, grass fringes, small trees");
     return 0;
 }
+
+unsigned VoxelWorld_GetMetatileBehavior(int x,int y){(void)x;(void)y;return 0;}

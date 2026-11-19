@@ -1,0 +1,82 @@
+diff --git a/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt b/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt
+--- a/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt
++++ b/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt
+@@ -1156,7 +1156,10 @@
+         val sampleRate = MgbaCore.pkSampleRate()
+         // Out of audio resources (or a device mid-reroute) mustn't take the process down:
+         // the game runs without sound instead.
+-        val track: AudioTrack? = runCatching { buildAudioTrack(sampleRate).also { it.play() } }
++        val track: AudioTrack? = runCatching { buildAudioTrack(sampleRate).also {
++            // Fill native-clock audio before play(), including resumed battle scenes.
++            if (!(voxelNativeClock && gba && effectiveSpeed() == 1f)) it.play()
++        } }
+             .onFailure { Log.e("pokedaisy", "audio track failed", it) }
+             .getOrNull()
+ 
+@@ -1539,7 +1542,7 @@
+                 // lid closed and opened on the Thor left FF silent). The song held meanwhile: its start moves on.
+                 ffClipNotice.forget()
+                 songStartedAt += android.os.SystemClock.elapsedRealtime() - sleptAt
+-                if (!paused) runCatching { track?.play() }
++                if (!paused && !nativeClockAudio) runCatching { track?.play() }
+                 // As after the audio pausing below: flush() put the play head back at 0. And the frames due while
+                 // it slept are not owed.
+                 framesWritten = 0L
+@@ -1898,12 +1901,33 @@
+             if (wantPaused != paused) {
+                 paused = wantPaused
+                 if (paused) runCatching { track?.pause(); track?.flush() }
+-                else runCatching { track?.play() }
++                else if (!nativeClockAudio) runCatching { track?.play() }
+                 // flush() empties the buffer and puts the play head back at 0.
+                 framesWritten = 0L
+                 trackStarted = false
+                 vsyncSettledAt = System.nanoTime() + VSYNC_SETTLE_NANOS
+             }
++        }
++
++        /** Prime real samples before play(), preserving a frame that straddles the buffer end. */
++        private fun writeNativeAudio(track: AudioTrack, n: Int): Int {
++            if (track.playState == AudioTrack.PLAYSTATE_PLAYING) {
++                return track.write(scratch, 0, n, if (trackStarted) AudioTrack.WRITE_NON_BLOCKING else AudioTrack.WRITE_BLOCKING)
++            }
++            if (framesWritten == 0L && android.os.Build.VERSION.SDK_INT >= 31) {
++                track.startThresholdInFrames = bufferFrames
++            }
++            val first = track.write(scratch, 0, n, AudioTrack.WRITE_NON_BLOCKING)
++            if (first < 0) return first
++            if (framesWritten + first / 2 >= bufferFrames || first < n) {
++                track.play()
++                Log.i("pokedaisy", "audio: native playback starts with ${framesWritten + first / 2}/$bufferFrames real frames queued")
++                if (first < n) {
++                    val tail = track.write(scratch, first, n - first, AudioTrack.WRITE_BLOCKING)
++                    return first + tail.coerceAtLeast(0)
++                }
++            }
++            return first
+         }
+ 
+         /** The frame's audio into the track: the DS copy's, 1x's (vsync or blocking) or SPED-UP's. */
+@@ -1911,6 +1935,8 @@
+             val track = track   // a local: smart casts inside the lambdas below
+             queuedAfter = null
+             val n = MgbaCore.pkReadAudio(scratch)
++            // A speed-mode change during priming may hand the track to the existing FF path.
++            if (!nativeClockAudio && !paused && track != null && track.playState != AudioTrack.PLAYSTATE_PLAYING) track.play()
+             fpsAudioMade += n / 2
+             if (BuildConfig.DEBUG && fpsFrames and 63 == 0) tap.arm(audioTapDir)
+             if (BuildConfig.DEBUG && nds) for (i in 0 until n) gamePeak = maxOf(gamePeak, kotlin.math.abs(scratch[i].toInt()))
+@@ -1984,11 +2010,8 @@
+                     // otherwise spent a third of its range on, GitHub #215).
+                     val rate = sampleRate * (if (nds) NDS_FPS else GBA_FPS) / frameHz * drc
+                     MgbaCore.pkSetAudioRate(rate)
+-                    // The final priming frame may straddle the start threshold. Preserve its
+-                    // tail while playback starts; steady native-clock writes stay nonblocking.
+-                    val writeMode = if (nativeClockAudio && !trackStarted) AudioTrack.WRITE_BLOCKING
+-                        else AudioTrack.WRITE_NON_BLOCKING
+-                    val w = track.write(scratch, 0, n, writeMode)
++                    val w = if (nativeClockAudio) writeNativeAudio(track, n)
++                        else track.write(scratch, 0, n, AudioTrack.WRITE_NON_BLOCKING)
+                     tap.frame(scratch, n, w, rate, queued, 'v')
+                     if (w > 0) fpsAudioTaken += w / 2
+                     if (w > 0) framesWritten += w / 2

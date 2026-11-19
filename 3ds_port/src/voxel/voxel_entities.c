@@ -23,6 +23,9 @@
 #include "voxel_entities.h"
 #include "voxel_follower.h"
 #include "voxel_grade.h"
+#include "voxel_atlas.h"
+#include "voxel_winter_material.h"
+static bool IsSolidCutTree(unsigned id);
 #include "voxel_relief.h"
 #include "voxel_room.h"
 #include "voxel_world.h"
@@ -47,6 +50,7 @@ static const int sStepFrames[] = { 16, 8, 6, 4, 2 };
 typedef struct
 {
     bool valid;
+    unsigned winterMix;
     u16 tileNum, paletteNum;
     u8 shape, size;
     bool flipX, flipY, color256;
@@ -312,7 +316,7 @@ static void DecodeSlot(VoxelSpriteSlot *slot, unsigned index, uint16_t *atlas)
     slot->drawnWidth = slot->width;
     slot->drawnHeight = slot->height;
     for (unsigned c = 1; c < colours; ++c)
-        graded[c] = VoxelGrade_RGBA5551(slot->palette[c]);
+        graded[c] = VoxelWinter_Color(VoxelGrade_RGBA5551(slot->palette[c]),slot->winterMix,0);
 
     for (int ty = 0; ty < tilesY; ++ty)
     {
@@ -434,7 +438,9 @@ static bool RefreshSlot(unsigned index, const struct Sprite *sprite, uint16_t *a
     /* OBJ palettes are the second half of PLTT; 8bpp uses it as one bank. */
     memcpy(palette, PLTT + 0x200 + (color256 ? 0 : sprite->oam.paletteNum * 32), paletteBytes);
 
+    unsigned winterMix=(index<OBJECT_EVENTS_COUNT && IsSolidCutTree(gObjectEvents[index].graphicsId)) ? VoxelAtlas_GetWinter() : 0;
     changed = !slot->valid
+           || slot->winterMix != winterMix
            || slot->width != w || slot->height != h
            || slot->color256 != color256
            || slot->flipX != flipX || slot->flipY != flipY
@@ -446,6 +452,7 @@ static bool RefreshSlot(unsigned index, const struct Sprite *sprite, uint16_t *a
     if (!changed)
         return false;
 
+    slot->winterMix=winterMix;
     slot->valid = true;
     slot->width = w;
     slot->height = h;

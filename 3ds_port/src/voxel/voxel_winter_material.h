@@ -4,8 +4,8 @@
 #include <stdint.h>
 /* Verified Kanto dirt-path center, edges and inner corners. */
 static inline int VoxelWinter_IsPath(unsigned id) {
-    return id<=0x0d || (id>=0xd3 && id<=0xd5) || (id>=0xdb && id<=0xdd)
-        || (id>=0xe3 && id<=0xe5) || (id>=0x102 && id<=0x105);
+    return id<=0x0d || id==0xc1 || (id>=0xd0 && id<=0xd5) || (id>=0xd8 && id<=0xdd)
+        || (id>=0xe0 && id<=0xe5) || id==0xfe || id==0xff || (id>=0x102 && id<=0x107);
 }
 static inline uint16_t VoxelWinter_Color(uint16_t c, unsigned mix, int path) {
     unsigned r=(c>>11)&31,g=(c>>6)&31,b=(c>>1)&31;

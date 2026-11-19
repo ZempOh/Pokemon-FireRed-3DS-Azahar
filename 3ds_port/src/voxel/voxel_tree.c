@@ -354,13 +354,14 @@ static void EmitSmallCell(VoxelBuilder *builder, const VoxelMapInstance *inst, i
     const float radii[5]={.10f,.10f,.48f,.35f,0};
     const float heights[5]={.01f,.35f,.45f,1.12f,1.55f};
     for(int band=0;band<4;band++)for(int e=0;e<6;e++) {
-        float u=TEX_U(band?cx+8:tx+8),v=TEX_V(band?cy+12:ty+9);
+        float u=TEX_U(band?cx+3:tx+8),v=TEX_V(band?cy+21:ty+9);
+        float u1=band?TEX_U(cx+13):u,v1=band?TEX_V(cy+5):v;
         float shade=.72f+band*.06f+(e<3?.06f:0);
         VoxelBuilder_Quad(builder,
             &(VoxelVertex){wx+.5f+ring[e][0]*radii[band],heights[band],wz+.5f+ring[e][1]*radii[band],u,v,shade},
-            &(VoxelVertex){wx+.5f+ring[e+1][0]*radii[band],heights[band],wz+.5f+ring[e+1][1]*radii[band],u,v,shade},
-            &(VoxelVertex){wx+.5f+ring[e+1][0]*radii[band+1],heights[band+1],wz+.5f+ring[e+1][1]*radii[band+1],u,v,shade},
-            &(VoxelVertex){wx+.5f+ring[e][0]*radii[band+1],heights[band+1],wz+.5f+ring[e][1]*radii[band+1],u,v,shade});
+            &(VoxelVertex){wx+.5f+ring[e+1][0]*radii[band],heights[band],wz+.5f+ring[e+1][1]*radii[band],u1,v,shade},
+            &(VoxelVertex){wx+.5f+ring[e+1][0]*radii[band+1],heights[band+1],wz+.5f+ring[e+1][1]*radii[band+1],u1,v1,shade},
+            &(VoxelVertex){wx+.5f+ring[e][0]*radii[band+1],heights[band+1],wz+.5f+ring[e][1]*radii[band+1],u,v1,shade});
     }
 }
 

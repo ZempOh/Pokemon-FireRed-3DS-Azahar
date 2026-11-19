@@ -756,14 +756,16 @@ static void EmitSolidCutTree(VoxelBuilder *b,const VoxelSpriteSlot *slot,unsigne
     unsigned bx=(index%VOXEL_SPRITE_COLUMNS)*VOXEL_SPRITE_SLOT_DIM;
     unsigned by=(index/VOXEL_SPRITE_COLUMNS)*VOXEL_SPRITE_SLOT_DIM;
     for(int band=0;band<4;band++)for(int e=0;e<6;e++) {
-        float u=(bx+slot->atlasWidth*.5f)/VOXEL_SPRITE_ATLAS_W;
-        float v=1-(by+slot->height*(band==0?.75f:.40f))/VOXEL_SPRITE_ATLAS_H;
+        float u=(bx+slot->atlasWidth*(band?.28f:.5f))/VOXEL_SPRITE_ATLAS_W;
+        float u1=band?(bx+slot->atlasWidth*.72f)/VOXEL_SPRITE_ATLAS_W:u;
+        float v=1-(by+slot->height*(band==0?.75f:.44f))/VOXEL_SPRITE_ATLAS_H;
+        float v1=band?1-(by+slot->height*.19f)/VOXEL_SPRITE_ATLAS_H:v;
         float light=shade*(.72f+band*.06f+(e<3?.06f:0));
         VoxelBuilder_Quad(b,
             &(VoxelVertex){cx+ring[e][0]*radius[band],lift+h*height[band],cz+shift+ring[e][1]*radius[band],u,v,light},
-            &(VoxelVertex){cx+ring[e+1][0]*radius[band],lift+h*height[band],cz+shift+ring[e+1][1]*radius[band],u,v,light},
-            &(VoxelVertex){cx+ring[e+1][0]*radius[band+1],lift+h*height[band+1],cz+shift+ring[e+1][1]*radius[band+1],u,v,light},
-            &(VoxelVertex){cx+ring[e][0]*radius[band+1],lift+h*height[band+1],cz+shift+ring[e][1]*radius[band+1],u,v,light});
+            &(VoxelVertex){cx+ring[e+1][0]*radius[band],lift+h*height[band],cz+shift+ring[e+1][1]*radius[band],u1,v,light},
+            &(VoxelVertex){cx+ring[e+1][0]*radius[band+1],lift+h*height[band+1],cz+shift+ring[e+1][1]*radius[band+1],u1,v1,light},
+            &(VoxelVertex){cx+ring[e][0]*radius[band+1],lift+h*height[band+1],cz+shift+ring[e][1]*radius[band+1],u,v1,light});
     }
 }
 

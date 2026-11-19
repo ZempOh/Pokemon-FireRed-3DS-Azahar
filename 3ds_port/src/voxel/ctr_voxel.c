@@ -132,7 +132,7 @@ typedef struct
  * each, rounded up. Without the reserve a dense town would leave the player
  * undrawn, which is a far worse failure than a missing wall.
  */
-#define VOXEL_SPRITE_RESERVE 128u
+#define VOXEL_SPRITE_RESERVE VOXEL_SPRITE_VERTEX_RESERVE
 #define VOXEL_REFLECTION_RESERVE (VOXEL_SPRITE_SLOTS * VOXEL_REFLECTION_VERTICES)
 #define VOXEL_DYNAMIC_VERTICES (VOXEL_SPRITE_RESERVE + VOXEL_SHADOW_RESERVE + VOXEL_REFLECTION_RESERVE)
 #define VOXEL_SHADOW_FIRST VOXEL_SPRITE_RESERVE

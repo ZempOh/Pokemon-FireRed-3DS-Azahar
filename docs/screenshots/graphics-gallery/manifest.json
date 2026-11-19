@@ -79,85 +79,6 @@
     "format": "480px,10FPS; not a pacing measurement"
   },
   {
-    "game": "frlg",
-    "view": "2d",
-    "file": "frlg-2d.png",
-    "source": "capacity-native/native/screenshots/frlg-2d-top.png",
-    "source_sha256": "397593db9c36f7383f2fdbca533e1865a4640f58cdb2bb4217e6f7e2545aa8e3",
-    "sha256": "8f2a3caaa39a86abd334514f6772deb0d2284f14302cac2ffcbeff4c96f85b04",
-    "build_reference": "scenery-3d.html",
-    "commit": "aeaac4dc17ae00c8f01f82466312228db90d394d"
-  },
-  {
-    "game": "frlg",
-    "view": "3d",
-    "file": "frlg-3d.png",
-    "source": "capacity-native/native/screenshots/frlg-3d-top.png",
-    "source_sha256": "c4b0e58023f1807e36f11b91d080b19ee319a2be2d6280e62c6bfdaf90a4ffbc",
-    "sha256": "a18b8734c839b3c169909bbf20af2fb6b6555dba9263786009f9b7b48522d785",
-    "build_reference": "scenery-3d.html",
-    "commit": "aeaac4dc17ae00c8f01f82466312228db90d394d"
-  },
-  {
-    "game": "frlg",
-    "view": "spring",
-    "file": "frlg-spring.png",
-    "source": "capacity-native/native/screenshots/frlg-spring-top.png",
-    "source_sha256": "b4c2f9a108fae3ead3f74c587bca2050d52b24407de087c4bc08af8a868f5a14",
-    "sha256": "9eef36b9aa4cadee614f6edeb4860d3d01ea1e7ca1baac1e01c43be115de2a63",
-    "build_reference": "scenery-3d.html",
-    "commit": "aeaac4dc17ae00c8f01f82466312228db90d394d"
-  },
-  {
-    "game": "frlg",
-    "view": "summer",
-    "file": "frlg-summer.png",
-    "source": "capacity-native/native/screenshots/frlg-summer-top.png",
-    "source_sha256": "a20061843aca9eaf31ef98b104f11dee311cf34a06921c33c1df3ea5835e721b",
-    "sha256": "b814e5b8fbe49ca20f4153796b139bbdd0365c05cbc97a7fd27d121928341b0e",
-    "build_reference": "scenery-3d.html",
-    "commit": "aeaac4dc17ae00c8f01f82466312228db90d394d"
-  },
-  {
-    "game": "frlg",
-    "view": "autumn",
-    "file": "frlg-autumn.png",
-    "source": "capacity-native/native/screenshots/frlg-autumn-top.png",
-    "source_sha256": "b77e78c02757e6d211708c9592b8e92f9888cd36a47028c274a9cba6917abf9f",
-    "sha256": "403f55e4fe2af8039d6dd149b56f2d8332030dc99fd45ebe0f5167cc232b269f",
-    "build_reference": "scenery-3d.html",
-    "commit": "aeaac4dc17ae00c8f01f82466312228db90d394d"
-  },
-  {
-    "game": "frlg",
-    "view": "winter",
-    "file": "frlg-winter.png",
-    "source": "capacity-native/native/screenshots/frlg-winter-top.png",
-    "source_sha256": "1515aec067091171343716b8115553f52a0515d40fca23e4af85b806901e31d7",
-    "sha256": "a220471643584ac9d7401db7ebac712cc23c22c18ced0a16181d08a190105b43",
-    "build_reference": "scenery-3d.html",
-    "commit": "aeaac4dc17ae00c8f01f82466312228db90d394d"
-  },
-  {
-    "game": "frlg",
-    "view": "battle",
-    "file": "frlg-battle.png",
-    "source": "capacity-native/native/screenshots/frlg-battle-top.png",
-    "source_sha256": "cba67fb3b3c7de360afe756e93bca63506be261ffc54b8036459b539e3955bfd",
-    "sha256": "ae4e0032cc9f9818a9efaf1daf2a5fcf823284458bdbe73b95b52c130a9de51a",
-    "build_reference": "scenery-3d.html",
-    "commit": "aeaac4dc17ae00c8f01f82466312228db90d394d"
-  },
-  {
-    "game": "frlg",
-    "view": "motion",
-    "file": "frlg-motion.gif",
-    "sha256": "3dd9308801b05d5eb3bbb59f0c4189f870bd35f490f99a3c06e6f1e587a8f3c6",
-    "build_reference": "scenery-3d.html",
-    "commit": "aeaac4dc17ae00c8f01f82466312228db90d394d",
-    "format": "480px,10FPS; not a pacing measurement"
-  },
-  {
     "game": "classic",
     "view": "2d",
     "file": "classic-2d.png",
@@ -251,24 +172,6 @@
     "file": "firered-rock-smash.gif",
     "sha256": "72b2045eabbb263909081da2463a341938b5463694bc47dbd8ab27db0cfbe57f",
     "commit": "8a0778b88ab0fc8a0f3ddd9c8ace9071fce358ff",
-    "format": "10 FPS actual Thor capture; not a pacing measurement",
-    "build_reference": "scenery-3d.html"
-  },
-  {
-    "game": "frlg",
-    "view": "boulder-moving",
-    "file": "frlg-boulder-moving.gif",
-    "sha256": "655db07a8bbe41a997358236df1a6daa0f59b3343206dbe76f3b7bdc14cf79a4",
-    "commit": "aeaac4dc17ae00c8f01f82466312228db90d394d",
-    "format": "10 FPS actual Thor capture; not a pacing measurement",
-    "build_reference": "scenery-3d.html"
-  },
-  {
-    "game": "frlg",
-    "view": "rock-smash",
-    "file": "frlg-rock-smash.gif",
-    "sha256": "17ade94ab366ff344e11aaa2890c8fa5b8fc729c0f2a0c3682c6e73aae455bfb",
-    "commit": "aeaac4dc17ae00c8f01f82466312228db90d394d",
     "format": "10 FPS actual Thor capture; not a pacing measurement",
     "build_reference": "scenery-3d.html"
   },
@@ -745,5 +648,164 @@
     "sha256": "280563b9dc3f5a0d974bfe348ee44462edcac226caee0f80eecdde5d354b040a",
     "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
     "build_reference": "android-climate.html"
+  },
+  {
+    "game": "frlg",
+    "view": "2d",
+    "file": "frlg-2d.png",
+    "source": "climate-v2-native/native/screenshots/frlg-2d-top.png",
+    "source_sha256": "7d2843f02bd950e1816146474f01583a2ab376c874fa56a27e34ef31ef01ee64",
+    "sha256": "1bfa3c11414aabaef000a1fc613c28837da831044235405074ac21da6766b25a",
+    "build_reference": "climate-3d.html",
+    "commit": "594c3a418629b22ac8a862e94d123e2359ab0289"
+  },
+  {
+    "game": "frlg",
+    "view": "3d",
+    "file": "frlg-3d.png",
+    "source": "climate-v2-native/native/screenshots/frlg-3d-top.png",
+    "source_sha256": "13a8808cb545a602a8bfb235cb6c7b6899bd9ae1e174938319d9f3aff6e9adcc",
+    "sha256": "f91f8d052165951bbb6e1e6a7a70e57ee2e124a7bb7037eaf38f9d4949609ae1",
+    "build_reference": "climate-3d.html",
+    "commit": "594c3a418629b22ac8a862e94d123e2359ab0289"
+  },
+  {
+    "game": "frlg",
+    "view": "spring",
+    "file": "frlg-spring.png",
+    "source": "climate-v2-native/native/screenshots/frlg-spring-top.png",
+    "source_sha256": "6e757a2c2cef2f5564ad401104c3991c42d42d9ec3c59a187da00e79303645a3",
+    "sha256": "3b19039275dc1ff5a89110355bfe4670904f66a57775a2366054f694b5bc0d29",
+    "build_reference": "climate-3d.html",
+    "commit": "594c3a418629b22ac8a862e94d123e2359ab0289"
+  },
+  {
+    "game": "frlg",
+    "view": "summer",
+    "file": "frlg-summer.png",
+    "source": "climate-v2-native/native/screenshots/frlg-summer-top.png",
+    "source_sha256": "ea610eac119c970c8a0c881390c13f87b7391e7a6a4fdb23835c4939e53cf7e5",
+    "sha256": "8d54faedddc941776bd81ff202171edc78d05f62263cd96c46956b0328b3dd56",
+    "build_reference": "climate-3d.html",
+    "commit": "594c3a418629b22ac8a862e94d123e2359ab0289"
+  },
+  {
+    "game": "frlg",
+    "view": "autumn",
+    "file": "frlg-autumn.png",
+    "source": "climate-v2-native/native/screenshots/frlg-autumn-top.png",
+    "source_sha256": "ad44c2a09a04c66e3ec80b29c993ae15222b72dc6c578b1b5104d81ca5fe777f",
+    "sha256": "99a15ad0868c04e97ee61e44eaa415141e5f8edabdfa99106de587ab1474745c",
+    "build_reference": "climate-3d.html",
+    "commit": "594c3a418629b22ac8a862e94d123e2359ab0289"
+  },
+  {
+    "game": "frlg",
+    "view": "winter",
+    "file": "frlg-winter.png",
+    "source": "climate-v2-native/native/screenshots/frlg-winter-top.png",
+    "source_sha256": "4c69f56dcffa7ec60c31742af563175d66297d2ac9d9339d4925730c173c6f78",
+    "sha256": "721999c55f6f873777b634eff729ae2563f0be72f5b6bfdbb1a427a7a5a218b8",
+    "build_reference": "climate-3d.html",
+    "commit": "594c3a418629b22ac8a862e94d123e2359ab0289"
+  },
+  {
+    "game": "frlg",
+    "view": "clear",
+    "file": "frlg-clear.png",
+    "source": "climate-v2-native/native/screenshots/frlg-clear-top.png",
+    "source_sha256": "76102d9bddaf4d8d8172c7c51d0ca0f79c48d8a49ba05e18fd9614055f57fc4c",
+    "sha256": "ccbd31ee4383c920e5ded1f073f2cac8fdfe3a74cef83ce3a0509c70915c9821",
+    "build_reference": "climate-3d.html",
+    "commit": "594c3a418629b22ac8a862e94d123e2359ab0289"
+  },
+  {
+    "game": "frlg",
+    "view": "rain",
+    "file": "frlg-rain.png",
+    "source": "climate-v2-native/native/screenshots/frlg-rain-top.png",
+    "source_sha256": "e87b254bd2e566acd751004a2e62758704ad69eae244d31e2bd97d4d29b3278a",
+    "sha256": "a7ec573089fa133c7c8ea71b6c82e22a8e8453e486c2853c3b9deaa584e0dee7",
+    "build_reference": "climate-3d.html",
+    "commit": "594c3a418629b22ac8a862e94d123e2359ab0289"
+  },
+  {
+    "game": "frlg",
+    "view": "snow",
+    "file": "frlg-snow.png",
+    "source": "climate-v2-native/native/screenshots/frlg-snow-top.png",
+    "source_sha256": "14b1738706d63ff98b6500555f1605352b90e9472fe8f5ab9cb15199c95df510",
+    "sha256": "11a19e89173dfe96ef33cdf8cc25aff8b53cd1d1dc0d0f5823dd115058a6c6eb",
+    "build_reference": "climate-3d.html",
+    "commit": "594c3a418629b22ac8a862e94d123e2359ab0289"
+  },
+  {
+    "game": "frlg",
+    "view": "fog",
+    "file": "frlg-fog.png",
+    "source": "climate-v2-native/native/screenshots/frlg-fog-top.png",
+    "source_sha256": "ca4c357fc170f26bff0f06bfa19533d3b4c4d94a7f578dcb5472ecb4b34c3b07",
+    "sha256": "50b3447373a4fd015c8422826baa6dcd7205c52f8d0e1f3f90eb5d1e41b19a02",
+    "build_reference": "climate-3d.html",
+    "commit": "594c3a418629b22ac8a862e94d123e2359ab0289"
+  },
+  {
+    "game": "frlg",
+    "view": "battle",
+    "file": "frlg-battle.png",
+    "source": "climate-v2-native/native/screenshots/frlg-battle-top.png",
+    "source_sha256": "6178dc7310de26e4d9cba760cf27b75857b6e630553ca534a59857d1f963c16d",
+    "sha256": "1ce66b030b76337b44b680570b7e365acc0edcfc6e3ef89044dc427d58e8b36a",
+    "build_reference": "climate-3d.html",
+    "commit": "594c3a418629b22ac8a862e94d123e2359ab0289"
+  },
+  {
+    "game": "frlg",
+    "view": "rock-smash",
+    "file": "frlg-rock-smash.gif",
+    "sha256": "920eff249f496ccf4e8426be85732e8d764caecc66aeeda1d19519dfb682ccfe",
+    "commit": "594c3a418629b22ac8a862e94d123e2359ab0289",
+    "build_reference": "climate-3d.html"
+  },
+  {
+    "game": "frlg",
+    "view": "boulder-moving",
+    "file": "frlg-boulder-moving.gif",
+    "sha256": "dfda419ea9f9725bbbd2ce340ada5dd4c54ac9cbcc4d93f157148ddb0529a1c2",
+    "commit": "594c3a418629b22ac8a862e94d123e2359ab0289",
+    "build_reference": "climate-3d.html"
+  },
+  {
+    "game": "frlg",
+    "view": "rain",
+    "file": "frlg-rain.gif",
+    "sha256": "f59ba9b599a4e7c30f60420017b8bf6bacd1d463d663743504cc510a2c9f9c29",
+    "commit": "594c3a418629b22ac8a862e94d123e2359ab0289",
+    "build_reference": "climate-3d.html"
+  },
+  {
+    "game": "frlg",
+    "view": "snow",
+    "file": "frlg-snow.gif",
+    "sha256": "b2896bc433ad6816b76e4b5efd981647ca5193e11f030554c0dc6e86aabc7411",
+    "commit": "594c3a418629b22ac8a862e94d123e2359ab0289",
+    "build_reference": "climate-3d.html"
+  },
+  {
+    "game": "frlg",
+    "view": "fog",
+    "file": "frlg-fog.gif",
+    "sha256": "feabd81bfd5dddcf47f869ef801210902831eb9cf2dd7f46175d0b7aebcb5aec",
+    "commit": "594c3a418629b22ac8a862e94d123e2359ab0289",
+    "build_reference": "climate-3d.html"
+  },
+  {
+    "game": "frlg",
+    "view": "motion",
+    "file": "frlg-motion.gif",
+    "sha256": "093754f798a0c03ad794bb7dca75c21c14a708d76f6c37d344b8369d83a2bb51",
+    "build_reference": "climate-3d.html",
+    "commit": "594c3a418629b22ac8a862e94d123e2359ab0289",
+    "format": "480px,10FPS; not a pacing measurement"
   }
 ]

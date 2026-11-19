@@ -5,16 +5,27 @@
 int main(void) {
     uint32_t foliage=0xff409040u, stone=0xff888888u;
     assert(climateTerrain(foliage)==foliage);
+    uint32_t colors[4];
     for(int season=0;season<4;season++) {
         voxelClimate.season=season; voxelClimate.blend=256;
         assert(climateTerrain(stone)==stone);
         assert((climateTerrain(foliage)&0xff000000u)==0xff000000u);
+        colors[season]=climateTerrain(foliage);
+        for(int i=0;i<season;i++)assert(colors[i]!=colors[season]);
     }
     voxelClimate.config=2|(3<<2)|(3<<4);
     voxelClimate.blend=256;
     climateUpdate(0,0); assert(voxelClimate.blend==0);
     voxelClimate.blend=256;
-    climateUpdate(1,1); assert(voxelClimate.blend==0);
+    voxelClimate.season=3; voxelClimate.weather=3;
+    climateUpdate(1,1); assert(voxelClimate.blend==256);
+    /* Native weather retains foliage season but owns precipitation. */
+    uint32_t native[4]={1,2,3,4},ground[4]={0,0,0,0};
+    climateAtmosphere(native,ground,2,2);
+    assert(native[0]==1 && native[1]==2 && native[2]==3 && native[3]==4);
+    voxelClimate.nativeWeather=0;
+    climateAtmosphere(native,ground,2,2);
+    assert(native[0]!=1 || native[1]!=2 || native[2]!=3 || native[3]!=4);
     uint32_t out[4]={1,2,3,4},depth[4]={UINT32_MAX,UINT32_MAX,UINT32_MAX,UINT32_MAX};
     voxelClimate.blend=256;
     for(int w=0;w<5;w++){voxelClimate.weather=w;climateAtmosphere(out,depth,2,2);}

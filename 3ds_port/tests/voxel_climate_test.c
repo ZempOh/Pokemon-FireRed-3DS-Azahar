@@ -15,7 +15,17 @@ static int CtrSettings_GetInt(const char *key,int fallback) {
     return fallback;
 }
 typedef struct {float sun[3],shade[3],haze,dappleLow,dappleHigh,rays,bloom,motes,hazeRgb[3],hazeStart,hazeRamp;} VoxelLight;
+#include <time.h>
+static int clockReads;
+static time_t testClock(time_t *dest) {
+    time_t value=1795094400; /* Stable November clock for the polling test. */
+    clockReads++;
+    if(dest)*dest=value;
+    return value;
+}
+#define time testClock
 #include "voxel_climate.h"
+#undef time
 int main(void) {
     for(int s=0;s<4;s++) {
         int counts[5]={0};
@@ -43,6 +53,9 @@ int main(void) {
         assert(sClimateSeason==season && sClimateWeather==weather && sClimateMix==1);
         for(int j=0;j<3;j++) assert(isfinite(out.sun[j]) && out.sun[j]>.8f && out.sun[j]<1.2f);
     }
+    mode=1; clockReads=0;
+    for(int i=0;i<200;i++){ticks+=100;out=ClimateLight(original,true);}
+    assert(clockReads==20 && sClimateSeason==2 && sClimateMix==1);
     mode=0; out=ClimateLight(original,true); assert(memcmp(&out,&original,sizeof out)==0);
     puts("climate: original identity, all presets, indoor suppression passed");
 }

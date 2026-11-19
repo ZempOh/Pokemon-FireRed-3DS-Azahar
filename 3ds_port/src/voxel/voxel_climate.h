@@ -22,6 +22,8 @@ static int climateWeatherAt(time_t seconds, int season) {
 static float sClimateMix;
 static int sClimateSeason, sClimateWeather;
 static uint64_t sClimateTick;
+static uint64_t sClimateClockTick;
+static int sClimateClockSeason, sClimateClockWeather;
 static void ClimateUpdate(bool eligible) {
     uint64_t now=svcGetSystemTick();
     float dt=sClimateTick ? (float)(now-sClimateTick)/SYSCLOCK_ARM11 : 0.0f;
@@ -31,9 +33,18 @@ static void ClimateUpdate(bool eligible) {
     int season=CtrSettings_GetInt("visual_season",0);
     int weather=CtrSettings_GetInt("visual_weather",0);
     if(mode==1) {
-        time_t t=time(NULL); struct tm *tm=gmtime(&t);
-        if(tm) { season=((tm->tm_mon+10)%12)/3; weather=climateWeatherAt(t,season); }
-    }
+        /* The calendar and 15-minute fronts do not need per-frame conversion.
+         * Poll once a second; animation still advances every frame. */
+        if(!sClimateClockTick || now-sClimateClockTick >= SYSCLOCK_ARM11) {
+            time_t t=time(NULL); struct tm *tm=gmtime(&t);
+            if(tm) {
+                sClimateClockSeason=((tm->tm_mon+10)%12)/3;
+                sClimateClockWeather=climateWeatherAt(t,sClimateClockSeason);
+            }
+            sClimateClockTick=now;
+        }
+        season=sClimateClockSeason; weather=sClimateClockWeather;
+    } else sClimateClockTick=0;
     if(mode==1) dt/=8.0f; /* Eight-second automatic fades. */
     if(season<0 || season>3) season=0;
     if(weather<0 || weather>4) weather=0;

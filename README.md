@@ -450,3 +450,8 @@ Let’s Go, Radical Red and Unbound passed the same November 19 APK on the Thor.
 ![radical actual Thor gameplay](docs/screenshots/graphics-gallery/radical-motion.gif)
 
 ![unbound actual Thor gameplay](docs/screenshots/graphics-gallery/unbound-motion.gif)
+
+
+<!-- FLORA CLIMATE HOLD -->
+The first natural-weather FireRed candidate was withdrawn after a real-clock boundary exposed a brief seasonal-color reset. The builder retains the previously qualified scenery build while corrected candidates undergo fresh Thor tests.
+<!-- FLORA CLIMATE HOLD END -->

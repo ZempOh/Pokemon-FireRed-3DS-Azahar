@@ -38,12 +38,12 @@ static VoxelLight ClimateLight(VoxelLight light, bool eligible) {
         light.sun[i]*=scale; light.shade[i]*=scale;
     }
     if(sClimateWeather==4) {
-        light.haze+=(0.35f-light.haze)*sClimateMix;
+        light.haze+=(0.60f-light.haze)*sClimateMix;
         light.hazeRgb[0]=0.80f; light.hazeRgb[1]=0.84f; light.hazeRgb[2]=0.88f;
         light.rays*=1-sClimateMix;
     }
     if(sClimateWeather==2 || sClimateWeather==3) {
-        light.motes=0.6f*sClimateMix;
+        light.motes=0.95f*sClimateMix;
         light.rays*=1-sClimateMix;
         light.bloom*=1-sClimateMix;
     }

@@ -5510,6 +5510,42 @@ static void MoteVertex(VoxelGpuVertex *v, float x, float y, float z, float stren
  */
 #include "voxel_climate.h"
 
+static void ClimateVegetation(void) {
+    static uint16_t original[128*128];
+    static bool captured;
+    static int last=-1;
+    if (!sTreeAtlas.data) return;
+    uint16_t *pixels=sTreeAtlas.data;
+    if (!captured) {
+        for(unsigned y=0;y<128;y++)for(unsigned x=0;x<128;x++)
+            original[y*128+x]=pixels[CtrVideo_Texel(x,y,VOXEL_TREE_TEXTURE_DIM)];
+        captured=true;
+    }
+    int blend=(int)(sClimateMix*16.0f),key=blend ? blend+32*sClimateSeason : 0;
+    if(key==last)return;
+    last=key;
+    for(unsigned y=0;y<128;y++)for(unsigned x=0;x<128;x++) {
+        uint16_t c=original[y*128+x];
+        unsigned r=(c>>11)&31,g=(c>>6)&31,b=(c>>1)&31;
+        if((c&1) && g>r+1 && g>b+1) {
+            unsigned nr=r,ng=g,nb=b;
+            switch(sClimateSeason) {
+            case 0: nr=(r+g)/2; ng=g+(31-g)/5; nb=b+1; break;
+            case 1: nr=r*3/4; ng=g*9/10; nb=b*3/4; break;
+            case 2: nr=g+(31-g)/3; ng=g/2+r/4; nb=b/3; break;
+            case 3: nr=(r+29*5)/6; ng=(g+30*5)/6; nb=(b+31*5)/6; break;
+            }
+            r=(r*(16-blend)+nr*blend)/16;
+            g=(g*(16-blend)+ng*blend)/16;
+            b=(b*(16-blend)+nb*blend)/16;
+            c=(uint16_t)(r<<11|g<<6|b<<1|(c&1));
+        }
+        pixels[CtrVideo_Texel(x,y,VOXEL_TREE_TEXTURE_DIM)]=c;
+    }
+    C3D_TexFlush(&sTreeAtlas);
+}
+
+
 static void DrawMotes(const C3D_Mtx *view, const VoxelLight *light, const VoxelLight *unlit)
 {
     int originX = (int)floorf(sCamera.targetX), originZ = (int)floorf(sCamera.targetZ);
@@ -5526,8 +5562,9 @@ static void DrawMotes(const C3D_Mtx *view, const VoxelLight *light, const VoxelL
     C3D_TexEnv *env;
 
     bool precipitation = sClimateMix > 0 && (sClimateWeather == 2 || sClimateWeather == 3);
-    unsigned count = precipitation && CtrSettings_GetInt("visual_detail",0)==0 ? VOXEL_MOTES/2 : VOXEL_MOTES;
-    if (precipitation && sClimateWeather == 2) { ux*=4; uy*=4; uz*=4; rx*=0.3f; ry*=0.3f; rz*=0.3f; }
+    unsigned count = VOXEL_MOTES;
+    if (precipitation && sClimateWeather == 2) { ux*=7; uy*=7; uz*=7; rx*=0.5f; ry*=0.5f; rz*=0.5f; }
+    if (precipitation && sClimateWeather == 3) { ux*=2; uy*=2; uz*=2; rx*=2; ry*=2; rz*=2; }
     for (unsigned i = 0; i < count; ++i)
     {
         float phase = MoteRandom(i, 1) * 6.2832f;
@@ -6091,6 +6128,7 @@ void CtrVoxel_Draw(C3D_RenderTarget *target, float eyeOffset)
 #if CTR_VOXEL_LIGHTING
     light = ClimateLight(light, current != NULL && !indoor && !current->cave && !sBattle.on
                          && VoxelWorld_ClimateAllowed());
+    ClimateVegetation();
 #endif
     bool dapples = DapplesOn(&light);
 #if CTR_VOXEL_LIGHTING

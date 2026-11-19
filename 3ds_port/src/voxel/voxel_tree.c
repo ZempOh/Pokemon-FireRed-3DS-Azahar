@@ -588,6 +588,28 @@ static bool AgainstRock(const VoxelMapInstance *inst, int x, int y, float lift)
     return large && y - 2 >= inst->originY && VoxelRelief_CellLift(inst, x, y - 2) > lift + 0.25f;
 }
 
+/* MB_TALL_GRASS is 0x02 in both native engines. Use behavior rather than
+ * metatile numbers: Classic's repacked Kanto art reuses Emerald IDs. */
+static void EmitEncounterGrass(VoxelBuilder *b, int x, int y)
+{
+    static const float dx[4]={-1,0,1,0}, dz[4]={0,-1,0,1};
+    for(int blade=0;blade<7;blade++)
+    {
+        float cx=x+.22f+(blade%3)*.28f,cz=y+.24f+(blade/3)*.27f;
+        float h=.32f+(blade%3)*.065f,lean=(blade&1)?.075f:-.075f;
+        float u=TEX_U(12.5f+(blade%3)*2),v=TEX_V(20.5f);
+        for(int side=0;side<4;side++)
+        {
+            int next=(side+1)&3;
+            VoxelVertex tip={cx+lean,h,cz+.025f,u,v,.92f};
+            VoxelBuilder_Quad(b,
+                &(VoxelVertex){cx+dx[side]*.055f,.01f,cz+dz[side]*.035f,u,v,.70f+side*.06f},
+                &(VoxelVertex){cx+dx[next]*.055f,.01f,cz+dz[next]*.035f,u,v,.70f+side*.06f},
+                &tip,&tip);
+        }
+    }
+}
+
 void VoxelTree_EmitInstance(VoxelBuilder *builder, const VoxelMapInstance *inst,
                             int x0, int y0, int x1, int y1)
 {
@@ -602,6 +624,15 @@ void VoxelTree_EmitInstance(VoxelBuilder *builder, const VoxelMapInstance *inst,
         {
             int metatileId = VoxelWorld_GetMetatileId(x, y);
             int part = VoxelTree_Part(inst->secondaryTileset, metatileId);
+            if (part < 0 && VoxelWorld_GetMetatileBehavior(x, y) == 0x02)
+            {
+                builder->lift = VoxelRelief_CellLift(inst, x, y);
+                builder->shift = VoxelRelief_CellShift(inst, x, y);
+                EmitEncounterGrass(builder, x, y);
+                builder->lift = 0;
+                builder->shift = 0;
+            }
+
             if (part >= 0)
             {
                 float lift = VoxelRelief_CellLift(inst, x, y);

@@ -316,3 +316,5 @@ int main(void)
     puts("PASS voxel trees and volumetric grass: streamed bounds, ground, height, seams and tileset scope");
     return 0;
 }
+
+unsigned VoxelWorld_GetMetatileBehavior(int x,int y){(void)x;(void)y;return 0;}

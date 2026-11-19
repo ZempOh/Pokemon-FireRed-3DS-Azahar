@@ -248,16 +248,11 @@ static void EmitPropVolume(VoxelBuilder *b,float cx,float cz,int prop,float radi
 
 static void EmitFlowerLobe(VoxelBuilder *b,float x,float y,float z,float rx,float rz,float thick,float u,float v)
 {
-    const float dx[4]={-1,0,1,0},dz[4]={0,-1,0,1};
-    for(int i=0;i<4;i++)
-    {
-        int j=(i+1)&3;
-        VoxelBuilder_Quad(b,
-            &(VoxelVertex){x+dx[i]*rx,y,z+dz[i]*rz,u,v,.86f},
-            &(VoxelVertex){x,y+thick,z,u,v,1.f},
-            &(VoxelVertex){x+dx[j]*rx,y,z+dz[j]*rz,u,v,.86f},
-            &(VoxelVertex){x,y-thick,z,u,v,.70f});
-    }
+    VoxelVertex p[4]={{x-rx,y,z-rz*.6f,u,v,.82f},{x+rx,y,z-rz*.6f,u,v,.90f},{x,y,z+rz,u,v,.76f},{x,y+thick,z,u,v,1.f}};
+    VoxelBuilder_Tri(b,&p[0],&p[1],&p[3]);
+    VoxelBuilder_Tri(b,&p[1],&p[2],&p[3]);
+    VoxelBuilder_Tri(b,&p[2],&p[0],&p[3]);
+    VoxelBuilder_Tri(b,&p[2],&p[1],&p[0]);
 }
 
 static void EmitFlowerMesh(VoxelBuilder *b,int x,int y,int prop)
@@ -267,10 +262,10 @@ static void EmitFlowerMesh(VoxelBuilder *b,int x,int y,int prop)
     float greenU=TEX_U(sProps[prop].x+6.5f),greenV=TEX_V(sProps[prop].y+9.5f);
     float petalU=TEX_U(sProps[prop].x+6.5f),petalV=TEX_V(sProps[prop].y+2.5f);
     float heartU=TEX_U(sProps[prop].x+4.5f),heartV=TEX_V(sProps[prop].y+4.5f);
-    for(int flower=0;flower<2;flower++)
+    for(int flower=0;flower<1;flower++)
     {
-        float cx=x+.28f+flower*.43f,cz=y+.38f+flower*.23f,h=.32f+flower*.06f;
-        EmitFlowerLobe(b,cx,h*.5f,cz,.035f,.035f,h*.5f,greenU,greenV);
+        float cx=x+.5f,cz=y+.55f,h=.38f;
+        EmitFlowerLobe(b,cx,0,cz,.035f,.035f,h,greenU,greenV);
         EmitFlowerLobe(b,cx-.07f,.10f,cz,.16f,.07f,.035f,greenU,greenV);
         EmitFlowerLobe(b,cx+.07f,.15f,cz,.16f,.07f,.035f,greenU,greenV);
         for(int petal=0;petal<5;petal++)
@@ -576,10 +571,10 @@ static void EmitEncounterGrass(VoxelBuilder *b, int x, int y)
         {
             int next=(side+1)&3;
             VoxelVertex tip={cx+lean,h,cz+.025f,u,v,.92f};
-            VoxelBuilder_Quad(b,
+            VoxelBuilder_Tri(b,
                 &(VoxelVertex){cx+dx[side]*.055f,.01f,cz+dz[side]*.035f,u,v,.70f+side*.06f},
                 &(VoxelVertex){cx+dx[next]*.055f,.01f,cz+dz[next]*.035f,u,v,.70f+side*.06f},
-                &tip,&tip);
+                &tip);
         }
     }
 }

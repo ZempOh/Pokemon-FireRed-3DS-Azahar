@@ -24,6 +24,9 @@
 #include "voxel_building.h"
 #include "voxel_entities.h"
 #include "voxel_grade.h"
+#include "voxel_atlas.h"
+#include "voxel_winter_material.h"
+static bool IsSolidCutTree(unsigned id);
 #include "voxel_relief.h"
 #include "voxel_sprite_slots.h"
 #include "voxel_tree.h"
@@ -49,6 +52,7 @@ static const int sStepFrames[] = { 16, 8, 6, 4, 2 };
 typedef struct
 {
     bool valid;
+    unsigned winterMix;
     u16 tileNum, paletteNum;
     /* The ext palette it was drawn with (sprite.c), 0xFF for paletteNum. */
     u8 extPalette;
@@ -351,7 +355,7 @@ static void DecodeSlot(VoxelSpriteSlot *slot, unsigned index, uint16_t *atlas)
     slot->drawnWidth = slot->atlasWidth;
     slot->drawnHeight = slot->height;
     for (unsigned c = 1; c < colours; ++c)
-        graded[c] = VoxelGrade_RGBA5551(slot->palette[c]);
+        graded[c] = VoxelWinter_Color(VoxelGrade_RGBA5551(slot->palette[c]),slot->winterMix,0);
 
     /* Wider than the cell (the S.S. Tidal): every second column, a texel at
      * a time. Rare, and re-decoded only when its picture changes. */
@@ -530,7 +534,9 @@ static bool RefreshSlot(unsigned index, const struct Sprite *sprite, const struc
     else
         memcpy(palette, PLTT + 0x200 + (color256 ? 0 : sprite->oam.paletteNum * 32), paletteBytes);
 
+    unsigned winterMix=(obj && IsSolidCutTree(obj->graphicsId)) ? VoxelAtlas_GetWinter() : 0;
     changed = !slot->valid
+           || slot->winterMix != winterMix
            || slot->width != w || slot->height != h
            || slot->color256 != color256
            || slot->flipX != flipX || slot->flipY != flipY
@@ -543,6 +549,7 @@ static bool RefreshSlot(unsigned index, const struct Sprite *sprite, const struc
     if (!changed)
         return false;
 
+    slot->winterMix=winterMix;
     slot->valid = true;
     slot->width = w;
     slot->height = h;

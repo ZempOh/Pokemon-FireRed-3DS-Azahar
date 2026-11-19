@@ -52,6 +52,7 @@ typedef struct
 {
     bool valid;
     unsigned winterMix;
+    bool winterGrass;
     u16 tileNum, paletteNum;
     u8 shape, size;
     bool flipX, flipY, color256;
@@ -317,7 +318,7 @@ static void DecodeSlot(VoxelSpriteSlot *slot, unsigned index, uint16_t *atlas)
     slot->drawnWidth = slot->width;
     slot->drawnHeight = slot->height;
     for (unsigned c = 1; c < colours; ++c)
-        graded[c] = VoxelWinter_Color(VoxelGrade_RGBA5551(slot->palette[c]),slot->winterMix,0);
+        graded[c] = VoxelWinter_Color(VoxelGrade_RGBA5551(slot->palette[c]),slot->winterMix,slot->winterGrass ? 2 : 0);
 
     for (int ty = 0; ty < tilesY; ++ty)
     {
@@ -440,9 +441,14 @@ static bool RefreshSlot(unsigned index, const struct Sprite *sprite, uint16_t *a
     memcpy(palette, PLTT + 0x200 + (color256 ? 0 : sprite->oam.paletteNum * 32), paletteBytes);
 
     /* Grass rustling is environmental scenery too; never recolor actors. */
-    unsigned winterMix=((index<OBJECT_EVENTS_COUNT && gObjectEvents[index].active && gObjectEvents[index].spriteId==(unsigned)(sprite-gSprites) && IsSolidCutTree(gObjectEvents[index].graphicsId)) || IsTileEffect(sprite->template)) ? VoxelAtlas_GetWinter() : 0;
+    bool winterGrass=IsTileEffect(sprite->template)
+        || sprite->template==gFieldEffectObjectTemplatePointers[FLDEFFOBJ_JUMP_TALL_GRASS]
+        || sprite->template==gFieldEffectObjectTemplatePointers[FLDEFFOBJ_JUMP_LONG_GRASS]
+        || sprite->template==gFieldEffectObjectTemplatePointers[FLDEFFOBJ_SHORT_GRASS];
+    unsigned winterMix=((index<OBJECT_EVENTS_COUNT && gObjectEvents[index].active && gObjectEvents[index].spriteId==(unsigned)(sprite-gSprites) && IsSolidCutTree(gObjectEvents[index].graphicsId)) || winterGrass) ? VoxelAtlas_GetWinter() : 0;
     changed = !slot->valid
            || slot->winterMix != winterMix
+           || slot->winterGrass != winterGrass
            || slot->width != w || slot->height != h
            || slot->color256 != color256
            || slot->flipX != flipX || slot->flipY != flipY
@@ -455,6 +461,7 @@ static bool RefreshSlot(unsigned index, const struct Sprite *sprite, uint16_t *a
         return false;
 
     slot->winterMix=winterMix;
+    slot->winterGrass=winterGrass;
     slot->valid = true;
     slot->width = w;
     slot->height = h;

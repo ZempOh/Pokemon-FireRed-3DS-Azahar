@@ -10,8 +10,9 @@ static inline int VoxelWinter_IsPath(unsigned id) {
 static inline uint16_t VoxelWinter_Color(uint16_t c, unsigned mix, int path) {
     unsigned r=(c>>11)&31,g=(c>>6)&31,b=(c>>1)&31;
     if (!mix || !(c&1)) return c;
-    int grass=g>r+1 && g>b+1;
-    int earth=path && r>=g && g>b+2 && r>9;
+    /* Material 2 is a verified grass-effect sprite, including its olive outlines. */
+    int grass=path==2 || (g>r+1 && g>b+1);
+    int earth=path==1 && r>=g && g>b+2 && r>9;
     if (!grass && !earth) return c;
     if(mix>16)mix=16;
     unsigned lum=(r+2*g+b)/4;

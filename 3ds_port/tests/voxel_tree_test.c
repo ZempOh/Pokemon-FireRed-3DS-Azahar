@@ -299,6 +299,20 @@ int main(void)
         if (parts.vertices[i].y == 0 && parts.vertices[i].u >= 32.0f / VOXEL_TREE_TEXTURE_DIM)
             assert(parts.vertices[i].z <= 8); /* trunk ground only in the tree's row */
 
-    puts("PASS voxel trees: ground/crown, chunk seams, map origins, border, tileset scope, grass fringes, small trees, staggered and covered rows");
+    /* Grass retains a floor and has real height and depth, including at a
+     * streamed chunk edge. The bounded mesh must fit the staging buffer. */
+    sMap.secondaryTileset=&gTileset_Fortree;
+    for(int i=0;i<4;i++)sTiles[i]=0x208;
+    Init(&parts,sParts);
+    VoxelTree_EmitInstance(&parts,&sMap,-3,-5,-1,-3);
+    assert(parts.dropped==0 && parts.count>24);
+    unsigned floor=0,raised=0;
+    for(unsigned i=0;i<parts.count;i++) {
+        assert(isfinite(parts.vertices[i].x)&&isfinite(parts.vertices[i].y)&&isfinite(parts.vertices[i].z));
+        if(parts.vertices[i].y==0)floor++;
+        if(parts.vertices[i].y>.4f)raised++;
+    }
+    assert(floor>=24 && raised>=28);
+    puts("PASS voxel trees and volumetric grass: streamed bounds, ground, height, seams and tileset scope");
     return 0;
 }

@@ -1,0 +1,1 @@
+document.querySelectorAll("[data-motion]").forEach(button=>{button.addEventListener("click",()=>{const img=button.closest("figure").querySelector("img");const playing=button.getAttribute("aria-pressed")==="true";img.src=playing?img.dataset.still:img.dataset.gif;button.setAttribute("aria-pressed",String(!playing));button.textContent=playing?"Play GIF":"Pause GIF";});});

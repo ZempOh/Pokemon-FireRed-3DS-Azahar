@@ -8,7 +8,7 @@
   <link rel="icon" href="img/icon.png">
   <link rel="stylesheet" href="assets/css/site.css?v=3">
   <link rel="stylesheet" href="assets/css/voxel.css">
-</head>
+<link rel="stylesheet" href="assets/css/gallery.css"></head>
 <body>
   <header class="top">
     <div class="wrap">
@@ -23,7 +23,7 @@
     <h1>Voxel game builder</h1>
     <p class="lead">Build a voxel 3D game for Azahar. Your ROM stays on this device.</p>
     <p class="small" id="ground-pacing-notice">Thor-tested fixes: Classic ground animation; FireRed and FRLG+ battle pacing. <a href="ground-pacing.html">Retest results and measured limits</a>. Climate defaults to Original.</p>
-    <div class="voxel-layout">
+    <p id="android-pacing-notice" class="small">Android follow-up: corrected Let’s Go title and native-clock pacing for all three Android profiles. <a href="android-pacing.html">Thor retest and measured limits</a>.</p><div class="voxel-layout">
       <section aria-labelledby="ports-title">
         <h2 id="ports-title">Choose a game</h2>
         <div class="voxel-games" data-games></div>
@@ -59,11 +59,11 @@
         <li>Pokémon Unbound 2.1.1.1</li>
       </ul>
       <div class="actions voxel-actions">
-        <a class="btn btn-primary" href="https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/PokeDaisy-Voxel-Graphics.apk">Download the PokéDaisy APK</a>
+        <a class="btn btn-primary" href="https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/PokeDaisy-Voxel-NativeClock-2026-11-18.apk">Download the PokéDaisy APK</a>
         <a class="btn btn-ghost" href="https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/blob/graphics/pokedaisy-upgrade/docs/pokedaisy-voxel-field.md">Install instructions and ROM versions</a>
       </div>
     </section>
-  </main>
+  <!-- THOR GALLERY START --><section aria-labelledby="gallery-title"><h2 id="gallery-title">See every game in motion</h2><p>Gameplay captured on the AYN Thor. <a href="gallery.html">Open the complete 2D/3D, season and battle gallery</a>. GIFs play on request.</p><div class="motion-grid"><article class="panel"><h3>FireRed 3DS</h3><figure class="motion"><img src="assets/gallery/firered-3d.png" data-still="assets/gallery/firered-3d.png" data-gif="assets/gallery/firered-motion.gif" alt="FireRed 3DS gameplay recording" loading="lazy" width="480" height="270"><figcaption><button type="button" class="btn btn-ghost" data-motion aria-pressed="false">Play GIF</button> <a href="assets/gallery/firered-motion.gif">Open GIF</a></figcaption></figure><a href="gallery.html#firered">2D / 3D, seasons and battle screenshots →</a></article><article class="panel"><h3>FireRed &amp; LeafGreen+</h3><figure class="motion"><img src="assets/gallery/frlg-3d.png" data-still="assets/gallery/frlg-3d.png" data-gif="assets/gallery/frlg-motion.gif" alt="FireRed &amp; LeafGreen+ gameplay recording" loading="lazy" width="480" height="270"><figcaption><button type="button" class="btn btn-ghost" data-motion aria-pressed="false">Play GIF</button> <a href="assets/gallery/frlg-motion.gif">Open GIF</a></figcaption></figure><a href="gallery.html#frlg">2D / 3D, seasons and battle screenshots →</a></article><article class="panel"><h3>Pokémon Classic</h3><figure class="motion"><img src="assets/gallery/classic-3d.png" data-still="assets/gallery/classic-3d.png" data-gif="assets/gallery/classic-motion.gif" alt="Pokémon Classic gameplay recording" loading="lazy" width="480" height="270"><figcaption><button type="button" class="btn btn-ghost" data-motion aria-pressed="false">Play GIF</button> <a href="assets/gallery/classic-motion.gif">Open GIF</a></figcaption></figure><a href="gallery.html#classic">2D / 3D, seasons and battle screenshots →</a></article><article class="panel"><h3>Pokémon Let’s Go Pikachu</h3><figure class="motion"><img src="assets/gallery/letsgo-3d.png" data-still="assets/gallery/letsgo-3d.png" data-gif="assets/gallery/letsgo-motion.gif" alt="Pokémon Let’s Go Pikachu gameplay recording" loading="lazy" width="480" height="270"><figcaption><button type="button" class="btn btn-ghost" data-motion aria-pressed="false">Play GIF</button> <a href="assets/gallery/letsgo-motion.gif">Open GIF</a></figcaption></figure><a href="gallery.html#letsgo">2D / 3D, seasons and battle screenshots →</a></article><article class="panel"><h3>Pokémon Radical Red</h3><figure class="motion"><img src="assets/gallery/radical-3d.png" data-still="assets/gallery/radical-3d.png" data-gif="assets/gallery/radical-motion.gif" alt="Pokémon Radical Red gameplay recording" loading="lazy" width="480" height="270"><figcaption><button type="button" class="btn btn-ghost" data-motion aria-pressed="false">Play GIF</button> <a href="assets/gallery/radical-motion.gif">Open GIF</a></figcaption></figure><a href="gallery.html#radical">2D / 3D, seasons and battle screenshots →</a></article><article class="panel"><h3>Pokémon Unbound</h3><figure class="motion"><img src="assets/gallery/unbound-3d.png" data-still="assets/gallery/unbound-3d.png" data-gif="assets/gallery/unbound-motion.gif" alt="Pokémon Unbound gameplay recording" loading="lazy" width="480" height="270"><figcaption><button type="button" class="btn btn-ghost" data-motion aria-pressed="false">Play GIF</button> <a href="assets/gallery/unbound-motion.gif">Open GIF</a></figcaption></figure><a href="gallery.html#unbound">2D / 3D, seasons and battle screenshots →</a></article></div></section><!-- THOR GALLERY END --></main>
   <script type="module" src="assets/js/voxel.js"></script>
-</body>
+<script src="assets/js/gallery.js"></script></body>
 </html>

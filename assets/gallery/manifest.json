@@ -1,0 +1,484 @@
+[
+  {
+    "game": "firered",
+    "view": "2d",
+    "caption": "2D view — same player position",
+    "file": "firered-2d.png",
+    "source": "android-followup/screenshots/firered-2d-top.png",
+    "source_sha256": "e641ce4e09550dc7736395b975453c943c32dc5cc044512471492037425759c0",
+    "sha256": "38c0e79da5df44e9c2b7eec85cc9f5b3a16d3c9e30121ed1749475c5664a3f47",
+    "build_reference": "ground-pacing.html"
+  },
+  {
+    "game": "firered",
+    "view": "3d",
+    "caption": "Voxel 3D view — same player position",
+    "file": "firered-3d.png",
+    "source": "android-followup/screenshots/firered-3d-top.png",
+    "source_sha256": "b030506cbad6d8fe68ad2cb5e2be2e4aa82b552093cbbe67a0d3d2e57c7096c0",
+    "sha256": "6a59e41eaf5f031582751184dfabbb7a6a86b938bf9ec932310a20c7489b0ef8",
+    "build_reference": "ground-pacing.html"
+  },
+  {
+    "game": "firered",
+    "view": "spring",
+    "caption": "Manual Spring · Original weather",
+    "file": "firered-spring.png",
+    "source": "android-followup/screenshots/firered-spring-top.png",
+    "source_sha256": "5fe76f715518306f99c499c3a96d263b8e5255b425fa19f8cdb9567ca6583505",
+    "sha256": "e9b77c7dc494bb5d8047d46e044ad1ccd6270c42b79c4ab0ab5e6860ed022ab0",
+    "build_reference": "ground-pacing.html"
+  },
+  {
+    "game": "firered",
+    "view": "summer",
+    "caption": "Manual Summer · Original weather",
+    "file": "firered-summer.png",
+    "source": "android-followup/screenshots/firered-summer-top.png",
+    "source_sha256": "8b9795896ca8f7fb8839ca85a92cd8f5e3ac20ea81236aca4b8918fefd006e10",
+    "sha256": "b623bb530d3b99292870670a7c5891c0cca03e8f12f2207ecae1144ca7f65e9c",
+    "build_reference": "ground-pacing.html"
+  },
+  {
+    "game": "firered",
+    "view": "autumn",
+    "caption": "Manual Autumn · Original weather",
+    "file": "firered-autumn.png",
+    "source": "android-followup/screenshots/firered-autumn-top.png",
+    "source_sha256": "7329890a97f936c195e820ae53ab0cd23e3cfd656d0fffb84c6b30769ffe7141",
+    "sha256": "24667e721bc248ff351395c7e4c5c23a7fe664328d712b7926a6ab4c70ed843d",
+    "build_reference": "ground-pacing.html"
+  },
+  {
+    "game": "firered",
+    "view": "winter",
+    "caption": "Manual Winter · Original weather",
+    "file": "firered-winter.png",
+    "source": "android-followup/screenshots/firered-winter-top.png",
+    "source_sha256": "54f89f16c80ae358ec6dee575bc10de900818fc6caf2f8cd063703761d8cc161",
+    "sha256": "500a2f0e20deca842f3e06959ecb2ab6175781fbc8f337d1b1ba9a21a8dbee76",
+    "build_reference": "ground-pacing.html"
+  },
+  {
+    "game": "firered",
+    "view": "battle",
+    "caption": "Battle and companion interface",
+    "file": "firered-battle.png",
+    "source": "pacing/firered-v4-moves-after-growl-pair.png",
+    "source_sha256": "4448fb0632b2bc200c4462b2d4609229eb280086b82e124168a378486faaf229",
+    "sha256": "26d022042a408e31cf2d961a032aaaebd2ae3d3e2ca16e0d63d84f0677bc7595",
+    "build_reference": "ground-pacing.html"
+  },
+  {
+    "game": "firered",
+    "view": "motion",
+    "file": "firered-motion.gif",
+    "sha256": "7d8140d0688afb078b1f3fbbf59dc0fcdd24e16a540000aae8f49b6adf82aa7a",
+    "frames": 60,
+    "fps": 10,
+    "build_reference": "ground-pacing.html"
+  },
+  {
+    "game": "frlg",
+    "view": "2d",
+    "caption": "2D view — same player position",
+    "file": "frlg-2d.png",
+    "source": "android-followup/screenshots/frlg-2d-top.png",
+    "source_sha256": "f8bafa96236783b5dc3ca5b0c0458224f9b72b23ff0d1c560ea37eb06fbbb589",
+    "sha256": "ebe3744fdfa61eeced50596c66c6b376003734194e25ddecf901b32a1bbdf553",
+    "build_reference": "ground-pacing.html"
+  },
+  {
+    "game": "frlg",
+    "view": "3d",
+    "caption": "Voxel 3D view — same player position",
+    "file": "frlg-3d.png",
+    "source": "android-followup/screenshots/frlg-3d-top.png",
+    "source_sha256": "c9331702e324955234f854cfbfd7f7c8585235956ea9c211535ee17659ba436b",
+    "sha256": "9969c3508e55b05bcef9a606c02eee198738df92e3cb9878d62fda7db49f4cee",
+    "build_reference": "ground-pacing.html"
+  },
+  {
+    "game": "frlg",
+    "view": "spring",
+    "caption": "Manual Spring · Original weather",
+    "file": "frlg-spring.png",
+    "source": "android-followup/screenshots/frlg-spring-top.png",
+    "source_sha256": "2018fb5210fd457cab3ab9c733496557d3a0a0d062b1b1acf9ce2d901686ede9",
+    "sha256": "b8edd7097f06a3df36c8a3696f333add01ff7abb7a34e43026cf46af28b65ae2",
+    "build_reference": "ground-pacing.html"
+  },
+  {
+    "game": "frlg",
+    "view": "summer",
+    "caption": "Manual Summer · Original weather",
+    "file": "frlg-summer.png",
+    "source": "android-followup/screenshots/frlg-summer-top.png",
+    "source_sha256": "a6a989dcd60d1fe3bda65c688833a487b18e4e350b58d90cfbfd95e2330ec3b8",
+    "sha256": "1e4b953871e0f262a34043b8e2e0a5ecf51cca031242e40ff54ea53830c581bc",
+    "build_reference": "ground-pacing.html"
+  },
+  {
+    "game": "frlg",
+    "view": "autumn",
+    "caption": "Manual Autumn · Original weather",
+    "file": "frlg-autumn.png",
+    "source": "android-followup/screenshots/frlg-autumn-top.png",
+    "source_sha256": "4005c031b9e728037809fdaa2c60f1c1da47c38ad28017f14f4b947578b0fbb5",
+    "sha256": "a932319f9b9504fa5dcc34b8ccc6378da82b3f8db43deee16c79f9ff009ca561",
+    "build_reference": "ground-pacing.html"
+  },
+  {
+    "game": "frlg",
+    "view": "winter",
+    "caption": "Manual Winter · Original weather",
+    "file": "frlg-winter.png",
+    "source": "android-followup/screenshots/frlg-winter-top.png",
+    "source_sha256": "057515216690ecea9697e74631eb87ddcabca1a1cac9813ea5139a8a7613a1fc",
+    "sha256": "8833a7849003c9de42002cbfa660c542c6cc712c345c8a2510597aa69b1527fb",
+    "build_reference": "ground-pacing.html"
+  },
+  {
+    "game": "frlg",
+    "view": "battle",
+    "caption": "Battle and companion interface",
+    "file": "frlg-battle.png",
+    "source": "pacing/frlg-v3-moves-after-growl-pair.png",
+    "source_sha256": "5f2c32a4e331273e08af10992ca6808e676556a149527a255c773830951487f7",
+    "sha256": "977e88274973fa7f7208d826cbd23c07c09e34d72626f4f1c9c2ac2c4f9b7339",
+    "build_reference": "ground-pacing.html"
+  },
+  {
+    "game": "frlg",
+    "view": "motion",
+    "file": "frlg-motion.gif",
+    "sha256": "f9a5e0327ae806931805cae7d1092a8b92cffec851fff9b619059f4c64afa78c",
+    "frames": 60,
+    "fps": 10,
+    "build_reference": "ground-pacing.html"
+  },
+  {
+    "game": "classic",
+    "view": "2d",
+    "caption": "2D view — same player position",
+    "file": "classic-2d.png",
+    "source": "android-followup/screenshots/classic-2d-top.png",
+    "source_sha256": "b4c9b4e76c37e5841a7c52ca18ad76e60cb794a6192fec7116ae036de1b7e1df",
+    "sha256": "7afe39a2411ca3d7e4fcff3c200c370cc3e3db38ebf822808fa58a687f5db0cd",
+    "build_reference": "ground-pacing.html"
+  },
+  {
+    "game": "classic",
+    "view": "3d",
+    "caption": "Voxel 3D view — same player position",
+    "file": "classic-3d.png",
+    "source": "android-followup/screenshots/classic-3d-top.png",
+    "source_sha256": "9a648227208ef3180294b96528dd97552441164ee4e761308d43d3c80845d0a1",
+    "sha256": "13541e775579171e8c0d4ce6e1a7841a2c16aa34a73e505dda0a769b4533ce4f",
+    "build_reference": "ground-pacing.html"
+  },
+  {
+    "game": "classic",
+    "view": "spring",
+    "caption": "Manual Spring · Original weather",
+    "file": "classic-spring.png",
+    "source": "android-followup/screenshots/classic-spring-top.png",
+    "source_sha256": "76d8d4e54c6a5d582d9f049e815abd1d579508573ced1103b287b5389c8f07cb",
+    "sha256": "53c0419e767a474691728dee29693260fa148a3a4b5c0ddcfe390b11c611df8f",
+    "build_reference": "ground-pacing.html"
+  },
+  {
+    "game": "classic",
+    "view": "summer",
+    "caption": "Manual Summer · Original weather",
+    "file": "classic-summer.png",
+    "source": "android-followup/screenshots/classic-summer-top.png",
+    "source_sha256": "65c251a488eff2b7019cd58ba48f957b3f1e4a6f5429eb7600e042e10bd8ef66",
+    "sha256": "774a2d17221cf016ac548d3b3b3b3ca17dca4a869c8193f88ddb64dfbe849b59",
+    "build_reference": "ground-pacing.html"
+  },
+  {
+    "game": "classic",
+    "view": "autumn",
+    "caption": "Manual Autumn · Original weather",
+    "file": "classic-autumn.png",
+    "source": "android-followup/screenshots/classic-autumn-top.png",
+    "source_sha256": "503963a6159d4ec900611f8257f8a7711c23b898911a17173bd4b24b354946fe",
+    "sha256": "323fa29b3bdb31ea843ca605a0708060bf56296f96141862e0242614684fee01",
+    "build_reference": "ground-pacing.html"
+  },
+  {
+    "game": "classic",
+    "view": "winter",
+    "caption": "Manual Winter · Original weather",
+    "file": "classic-winter.png",
+    "source": "android-followup/screenshots/classic-winter-top.png",
+    "source_sha256": "150bd4033d98f84f722aa8757c68cd2c6a872efe80de2bd5e6ffb1a8d108df4b",
+    "sha256": "b4eba74deed8b9c48d553bd7ca70441bf6d827897f5f7192654436a7b8b3f621",
+    "build_reference": "ground-pacing.html"
+  },
+  {
+    "game": "classic",
+    "view": "battle",
+    "caption": "Battle and companion interface",
+    "file": "classic-battle.png",
+    "source": "pacing/classic-after-moves-pair.png",
+    "source_sha256": "8ed211e11dc6c5fc6b3333859c671912c61db78936fcbac481686e072d1374b1",
+    "sha256": "41fdf0e81f35e12dbb2fba7e06e434407be452d11e39f055f1ff4f1e02c087dd",
+    "build_reference": "ground-pacing.html"
+  },
+  {
+    "game": "classic",
+    "view": "motion",
+    "file": "classic-motion.gif",
+    "sha256": "b8d2b05358ff83d00c054fb3f1be9b24d32fd893737dc5c3ffc13f918604ee9a",
+    "frames": 60,
+    "fps": 10,
+    "build_reference": "ground-pacing.html"
+  },
+  {
+    "game": "letsgo",
+    "view": "2d",
+    "caption": "2D view — same player position",
+    "file": "letsgo-2d.png",
+    "source": "android-followup/screenshots/letsgo-2d-top.png",
+    "source_sha256": "c52f846112daf2a3b1c5c048f508d07299228c88f57e6ada1286a1dfb5e82716",
+    "sha256": "7c1f6d17ca7a5074c8e7cb8070d8306a95ec3f79685812dc81a382abf330a58e",
+    "build_reference": "android-pacing.html"
+  },
+  {
+    "game": "letsgo",
+    "view": "3d",
+    "caption": "Voxel 3D view — same player position",
+    "file": "letsgo-3d.png",
+    "source": "android-followup/screenshots/letsgo-3d-top.png",
+    "source_sha256": "195c8d16ecbd3fdd8d6c50757fc4ca94a1ba806e59ae270c3549f8ed2417d09f",
+    "sha256": "0f852206765d62ed25643da6a771fdd1f648bfa97e99381311e40a7072d8a4bc",
+    "build_reference": "android-pacing.html"
+  },
+  {
+    "game": "letsgo",
+    "view": "spring",
+    "caption": "Manual Spring · Original weather",
+    "file": "letsgo-spring.png",
+    "source": "android-followup/screenshots/letsgo-spring-top.png",
+    "source_sha256": "ea00c85d84f9dd3cfce29a185f10bf808f04b1ef171711f60b4b18b21f3117b2",
+    "sha256": "8a406abe3344228cc9bc086d0ae33fb1f23b3bc7e9d970d94acb11aa5895f01d",
+    "build_reference": "android-pacing.html"
+  },
+  {
+    "game": "letsgo",
+    "view": "summer",
+    "caption": "Manual Summer · Original weather",
+    "file": "letsgo-summer.png",
+    "source": "android-followup/screenshots/letsgo-summer-top.png",
+    "source_sha256": "a22d319d958fb2a85418edae5c0673414a2d4f593cf4654838314ac5f891072a",
+    "sha256": "cb157d219478df29e4bc5dd5f9445a4bd9ac956289415db67add8e9b34c4cd7c",
+    "build_reference": "android-pacing.html"
+  },
+  {
+    "game": "letsgo",
+    "view": "autumn",
+    "caption": "Manual Autumn · Original weather",
+    "file": "letsgo-autumn.png",
+    "source": "android-followup/screenshots/letsgo-autumn-top.png",
+    "source_sha256": "a05b14fa5029fdb444e81e5fc80c93a1d83ca9deae94d993bb9a8afa956f6b90",
+    "sha256": "c170cddf169c5894af78b64d93c9fff213a29209cbba41755ab44c8c130bc282",
+    "build_reference": "android-pacing.html"
+  },
+  {
+    "game": "letsgo",
+    "view": "winter",
+    "caption": "Manual Winter · Original weather",
+    "file": "letsgo-winter.png",
+    "source": "android-followup/screenshots/letsgo-winter-top.png",
+    "source_sha256": "13003d78f335d9894976fa90a9a62ff8ca74dea1bccc645e869dff8f93424a6b",
+    "sha256": "1fbbbe5b64c7826af1e9614206e980d353ea993e1c6f9d6191251e3b2829e272",
+    "build_reference": "android-pacing.html"
+  },
+  {
+    "game": "letsgo",
+    "view": "battle",
+    "caption": "Battle and companion interface",
+    "file": "letsgo-battle.png",
+    "source": "android-followup/screenshots/letsgo-battle-pair.png",
+    "source_sha256": "e3a910439844331685ad395b4caa4cfe0b6642c2d6d8ed5d3e34d52386ee553d",
+    "sha256": "55f0a5d18ea6397583b1f7da08350b720845a45b5be4c4b89307c9762103c54a",
+    "build_reference": "android-pacing.html"
+  },
+  {
+    "game": "letsgo",
+    "view": "title",
+    "file": "letsgo-title.png",
+    "source_sha256": "ea80b9aea310759393c2ab64b0de0aedc5d065502469181d3b3ffe7725d6232e",
+    "sha256": "8ceb18b143d6a438ed48b96b5284935868582406f39f8749ddf577378d88dc17",
+    "build_reference": "android-pacing.html"
+  },
+  {
+    "game": "letsgo",
+    "view": "motion",
+    "file": "letsgo-motion.gif",
+    "sha256": "d36484a7a55a0c47bc6b62a3e5b62d7a64e93efee31845d9bd514f4aae3285fe",
+    "frames": 60,
+    "fps": 10,
+    "build_reference": "android-pacing.html"
+  },
+  {
+    "game": "radical",
+    "view": "2d",
+    "caption": "2D view — same player position",
+    "file": "radical-2d.png",
+    "source": "android-followup/screenshots/radical-2d-top.png",
+    "source_sha256": "dfbfe1a4c1446491d150e8b20b35acdb8337d92367faa73ce71c36b05a01e60c",
+    "sha256": "84793e968d84ab74bd2219371466c9b4e11c7e20f01f887ea354ff2872f9f381",
+    "build_reference": "android-pacing.html"
+  },
+  {
+    "game": "radical",
+    "view": "3d",
+    "caption": "Voxel 3D view — same player position",
+    "file": "radical-3d.png",
+    "source": "android-followup/screenshots/radical-3d-top.png",
+    "source_sha256": "778ac6478d044df64df23bba27e9711092db71369ee8b1a5de3238f061fe53d3",
+    "sha256": "f9c016a4eb6d512bd890c44c4398b4cfa5e0765d85cdbaaab0dea3b379ca4981",
+    "build_reference": "android-pacing.html"
+  },
+  {
+    "game": "radical",
+    "view": "spring",
+    "caption": "Manual Spring · Original weather",
+    "file": "radical-spring.png",
+    "source": "android-followup/screenshots/radical-spring-top.png",
+    "source_sha256": "b3cf6e40ae55de9cb36a1a392d325856770585f5701c86c725916f0c67cf019a",
+    "sha256": "4a247c5eda72910cad220d6142d86893494fcc65633f422cf9f6a1893a60fe5f",
+    "build_reference": "android-pacing.html"
+  },
+  {
+    "game": "radical",
+    "view": "summer",
+    "caption": "Manual Summer · Original weather",
+    "file": "radical-summer.png",
+    "source": "android-followup/screenshots/radical-summer-top.png",
+    "source_sha256": "778ac6478d044df64df23bba27e9711092db71369ee8b1a5de3238f061fe53d3",
+    "sha256": "f9c016a4eb6d512bd890c44c4398b4cfa5e0765d85cdbaaab0dea3b379ca4981",
+    "build_reference": "android-pacing.html"
+  },
+  {
+    "game": "radical",
+    "view": "autumn",
+    "caption": "Manual Autumn · Original weather",
+    "file": "radical-autumn.png",
+    "source": "android-followup/screenshots/radical-autumn-top.png",
+    "source_sha256": "c5f30867b54732aaf0e6721061a2fc207cbc00e2b0251794200b806d0b18dabb",
+    "sha256": "779d40a7d020dcb55480d5472db7a8e95bc73c764683185513ef83ce7be662fb",
+    "build_reference": "android-pacing.html"
+  },
+  {
+    "game": "radical",
+    "view": "winter",
+    "caption": "Manual Winter · Original weather",
+    "file": "radical-winter.png",
+    "source": "android-followup/screenshots/radical-winter-top.png",
+    "source_sha256": "7fc6b0bb5fd99539a6e992252648638d048780f304151935485d3a046e95ff94",
+    "sha256": "c33ddfdffdfc0ece5f59f68ec2449d350391ce522f788e8ba208bb39212b088e",
+    "build_reference": "android-pacing.html"
+  },
+  {
+    "game": "radical",
+    "view": "battle",
+    "caption": "Battle and companion interface",
+    "file": "radical-battle.png",
+    "source": "android-followup/screenshots/radical-battle-pair.png",
+    "source_sha256": "cd6faa659f054267cd20c1e136f7448df9a1e6f9730b932017ae3a2548351cec",
+    "sha256": "533b0935bbaa76dcf80ad6c6dc131cad5580837e33ec5d6c586b383b264fa7bc",
+    "build_reference": "android-pacing.html"
+  },
+  {
+    "game": "radical",
+    "view": "motion",
+    "file": "radical-motion.gif",
+    "sha256": "40b53f2c2e8a8df9af87cbb13543b4cba0268e5cd42633d7d739ae55675a75fa",
+    "frames": 60,
+    "fps": 10,
+    "build_reference": "android-pacing.html"
+  },
+  {
+    "game": "unbound",
+    "view": "2d",
+    "caption": "2D view — same player position",
+    "file": "unbound-2d.png",
+    "source": "android-followup/screenshots/unbound-2d-top.png",
+    "source_sha256": "526be94b2e1d4444ead192037cfbc605140f9f7e24cf1bb4754af1b8ba0e110e",
+    "sha256": "839aa06645aaeac700d6ccf2586f60e632d458a510a463d18b86762f7ed03aea",
+    "build_reference": "android-pacing.html"
+  },
+  {
+    "game": "unbound",
+    "view": "3d",
+    "caption": "Voxel 3D view — same player position",
+    "file": "unbound-3d.png",
+    "source": "android-followup/screenshots/unbound-3d-top.png",
+    "source_sha256": "1912f10cbe90ed54c2b3f3d71ff9e2750637649f6872189e14d787aa7641244c",
+    "sha256": "2855d008c6ca9e78350913dea809ecd5999f64dffac638ffc364b6c7f4ae3805",
+    "build_reference": "android-pacing.html"
+  },
+  {
+    "game": "unbound",
+    "view": "spring",
+    "caption": "Manual Spring · Original weather",
+    "file": "unbound-spring.png",
+    "source": "android-followup/screenshots/unbound-spring-top.png",
+    "source_sha256": "95055f1394250033e257211ad18f69cf93e49483065b6c8356c842bd1c562058",
+    "sha256": "c5919a67a9cbfe40d6363372f53744902cd2b021b1c930545b293f32c39712a6",
+    "build_reference": "android-pacing.html"
+  },
+  {
+    "game": "unbound",
+    "view": "summer",
+    "caption": "Manual Summer · Original weather",
+    "file": "unbound-summer.png",
+    "source": "android-followup/screenshots/unbound-summer-top.png",
+    "source_sha256": "6606808c5e204badefc5dabd16ddac4527a93870eba3270162c6252b410b16c3",
+    "sha256": "9c72859cb8a830e8cbc1956ce98521c3bf8b7d2c531087522e4e6d6bed64c752",
+    "build_reference": "android-pacing.html"
+  },
+  {
+    "game": "unbound",
+    "view": "autumn",
+    "caption": "Manual Autumn · Original weather",
+    "file": "unbound-autumn.png",
+    "source": "android-followup/screenshots/unbound-autumn-top.png",
+    "source_sha256": "1912f10cbe90ed54c2b3f3d71ff9e2750637649f6872189e14d787aa7641244c",
+    "sha256": "2855d008c6ca9e78350913dea809ecd5999f64dffac638ffc364b6c7f4ae3805",
+    "build_reference": "android-pacing.html"
+  },
+  {
+    "game": "unbound",
+    "view": "winter",
+    "caption": "Manual Winter · Original weather",
+    "file": "unbound-winter.png",
+    "source": "android-followup/screenshots/unbound-winter-top.png",
+    "source_sha256": "8c01497bb2ab057f24e96f81fe2f7149577c71c2c91d85c75130458d3c90ba1e",
+    "sha256": "0e7ba1f8510201ffec94a195c78ad643771d87f38f77ff40fc93036ce74145c0",
+    "build_reference": "android-pacing.html"
+  },
+  {
+    "game": "unbound",
+    "view": "battle",
+    "caption": "Battle and companion interface",
+    "file": "unbound-battle.png",
+    "source": "android-followup/screenshots/unbound-battle-pair.png",
+    "source_sha256": "6803638dd079168bd58ab8f457e75d9ff86c3366095f141a96fe18026ff33181",
+    "sha256": "6d2983e70b43d57870fbcfc0c7d4b1f5d14575eb0e2aa3c04dc4ad80c68b4381",
+    "build_reference": "android-pacing.html"
+  },
+  {
+    "game": "unbound",
+    "view": "motion",
+    "file": "unbound-motion.gif",
+    "sha256": "d89f9cb94b9d3a8ec3605f871acdbf25629552f458307613fc028dbfbde959ed",
+    "frames": 60,
+    "fps": 10,
+    "build_reference": "android-pacing.html"
+  }
+]

@@ -1,84 +1,5 @@
 [
   {
-    "game": "firered",
-    "view": "2d",
-    "file": "firered-2d.png",
-    "source": "capacity-native/native/screenshots/firered-2d-top.png",
-    "source_sha256": "91cd39dcfbeb781c0b2d902699b70cb9df1d0ef3b15aff176506347493e4b767",
-    "sha256": "9c99e52b0ecab3b310141fd93be0099a309836709d48409912e569a27cb1d7bc",
-    "build_reference": "scenery-3d.html",
-    "commit": "8a0778b88ab0fc8a0f3ddd9c8ace9071fce358ff"
-  },
-  {
-    "game": "firered",
-    "view": "3d",
-    "file": "firered-3d.png",
-    "source": "capacity-native/native/screenshots/firered-3d-top.png",
-    "source_sha256": "f406c8b00f4ea4358f399ae77cc02dd2d25b06a603104af5edf9da059a56ba69",
-    "sha256": "62583f58b5fa52a74aecd9b10a894413d98845a24ab56e8c39c87deec0e894c1",
-    "build_reference": "scenery-3d.html",
-    "commit": "8a0778b88ab0fc8a0f3ddd9c8ace9071fce358ff"
-  },
-  {
-    "game": "firered",
-    "view": "spring",
-    "file": "firered-spring.png",
-    "source": "capacity-native/native/screenshots/firered-spring-top.png",
-    "source_sha256": "305bdc597c61cc59168c72513576e94077b1e107222905fbb41f378d417904cd",
-    "sha256": "f8dfb07663dab8659f8cc106e1acb7879765f3e79b05a601c567c7941a0fcac1",
-    "build_reference": "scenery-3d.html",
-    "commit": "8a0778b88ab0fc8a0f3ddd9c8ace9071fce358ff"
-  },
-  {
-    "game": "firered",
-    "view": "summer",
-    "file": "firered-summer.png",
-    "source": "capacity-native/native/screenshots/firered-summer-top.png",
-    "source_sha256": "039ab873e7765daa4cd9a3e7fb81de84622dc02489356eeef5a5b68fb29ee3b1",
-    "sha256": "f1e5974827d0bc1c6da799fdce48f154a171a646a736acc00b74c9e41fb3bc99",
-    "build_reference": "scenery-3d.html",
-    "commit": "8a0778b88ab0fc8a0f3ddd9c8ace9071fce358ff"
-  },
-  {
-    "game": "firered",
-    "view": "autumn",
-    "file": "firered-autumn.png",
-    "source": "capacity-native/native/screenshots/firered-autumn-top.png",
-    "source_sha256": "29a95198e49ae9ad7d370fcbe503431574cbcd223d19306c0be1b90e2747909e",
-    "sha256": "3a4d773a6650129d440f3917856697e9791a60c7819afed603e05a6a47caa9e5",
-    "build_reference": "scenery-3d.html",
-    "commit": "8a0778b88ab0fc8a0f3ddd9c8ace9071fce358ff"
-  },
-  {
-    "game": "firered",
-    "view": "winter",
-    "file": "firered-winter.png",
-    "source": "capacity-native/native/screenshots/firered-winter-top.png",
-    "source_sha256": "5c7fbf753fa84e03257d94f477210aa7c5eee88ee06008c0114d503cb5a3a5b8",
-    "sha256": "c53bab3cb89d0efbb74996398725090cef2dbd8b63bc4d72db88de98a851f325",
-    "build_reference": "scenery-3d.html",
-    "commit": "8a0778b88ab0fc8a0f3ddd9c8ace9071fce358ff"
-  },
-  {
-    "game": "firered",
-    "view": "battle",
-    "file": "firered-battle.png",
-    "source": "capacity-native/native/screenshots/firered-battle-top.png",
-    "source_sha256": "53acb2b92552b6aad7b62cd01c809cfdc949582b81f5b42e7dfecfa03e3c84e1",
-    "sha256": "86451cd05970b0e8cfa858da50df0fb04d1e9a1651d0166315f1cba1e002d974",
-    "build_reference": "scenery-3d.html",
-    "commit": "8a0778b88ab0fc8a0f3ddd9c8ace9071fce358ff"
-  },
-  {
-    "game": "firered",
-    "view": "motion",
-    "file": "firered-motion.gif",
-    "sha256": "b6423e4cc5c848dfeb6505daa8263326134c64d693ee3b0063e4eaa3bfe2612c",
-    "build_reference": "scenery-3d.html",
-    "commit": "8a0778b88ab0fc8a0f3ddd9c8ace9071fce358ff",
-    "format": "480px,10FPS; not a pacing measurement"
-  },
-  {
     "game": "classic",
     "view": "2d",
     "file": "classic-2d.png",
@@ -156,24 +77,6 @@
     "build_reference": "scenery-3d.html",
     "commit": "873a0fe6aadaec25ec4e621944b1eee7b0870167",
     "format": "480px,10FPS; not a pacing measurement"
-  },
-  {
-    "game": "firered",
-    "view": "boulder-moving",
-    "file": "firered-boulder-moving.gif",
-    "sha256": "50da6316ad2f69e279abb85d0e04bff5546be49cea25b84d36cf9d853ae23bb0",
-    "commit": "8a0778b88ab0fc8a0f3ddd9c8ace9071fce358ff",
-    "format": "10 FPS actual Thor capture; not a pacing measurement",
-    "build_reference": "scenery-3d.html"
-  },
-  {
-    "game": "firered",
-    "view": "rock-smash",
-    "file": "firered-rock-smash.gif",
-    "sha256": "72b2045eabbb263909081da2463a341938b5463694bc47dbd8ab27db0cfbe57f",
-    "commit": "8a0778b88ab0fc8a0f3ddd9c8ace9071fce358ff",
-    "format": "10 FPS actual Thor capture; not a pacing measurement",
-    "build_reference": "scenery-3d.html"
   },
   {
     "game": "classic",
@@ -806,6 +709,165 @@
     "sha256": "093754f798a0c03ad794bb7dca75c21c14a708d76f6c37d344b8369d83a2bb51",
     "build_reference": "climate-3d.html",
     "commit": "594c3a418629b22ac8a862e94d123e2359ab0289",
+    "format": "480px,10FPS; not a pacing measurement"
+  },
+  {
+    "game": "firered",
+    "view": "2d",
+    "file": "firered-2d.png",
+    "source": "climate-v2-native/native/screenshots/firered-2d-top.png",
+    "source_sha256": "5596f72a58d80334e17dac9f473b6f2a48c39519b88608dac3d8744219ebd747",
+    "sha256": "7d5f7f95732f6dc804ae31e8e04acb00ad12297d1c3bccc7db4d84ecf0746903",
+    "build_reference": "climate-3d.html",
+    "commit": "6cd705b39660e2f049b6ba71dc806bbd67c980bd"
+  },
+  {
+    "game": "firered",
+    "view": "3d",
+    "file": "firered-3d.png",
+    "source": "climate-v2-native/native/screenshots/firered-3d-top.png",
+    "source_sha256": "5fd928e1c803bea93073b11fcf5828797fda49bc02b7a41a9ac811db524a40e3",
+    "sha256": "2e339a1dd0066b01ac513ac93511a027297fb110ea0f735db6be5cffc96394ce",
+    "build_reference": "climate-3d.html",
+    "commit": "6cd705b39660e2f049b6ba71dc806bbd67c980bd"
+  },
+  {
+    "game": "firered",
+    "view": "spring",
+    "file": "firered-spring.png",
+    "source": "climate-v2-native/native/screenshots/firered-spring-top.png",
+    "source_sha256": "1264c1058805ebb8a07c3bd4fe622e7a5cb03544f8ae18e7d6282611734fa0b0",
+    "sha256": "aae4728108399c0de3d57760ed59c3b98f71a8c1ffe3f40095f275b0efc5b474",
+    "build_reference": "climate-3d.html",
+    "commit": "6cd705b39660e2f049b6ba71dc806bbd67c980bd"
+  },
+  {
+    "game": "firered",
+    "view": "summer",
+    "file": "firered-summer.png",
+    "source": "climate-v2-native/native/screenshots/firered-summer-top.png",
+    "source_sha256": "c54cd365445567ef0211ea8562b6f587fa17da726a5dd50e250524d2a781d767",
+    "sha256": "5fce51bcd7bf63920edd6f9cf3791fd65149e347d93580bae2f6ef48b12658d3",
+    "build_reference": "climate-3d.html",
+    "commit": "6cd705b39660e2f049b6ba71dc806bbd67c980bd"
+  },
+  {
+    "game": "firered",
+    "view": "autumn",
+    "file": "firered-autumn.png",
+    "source": "climate-v2-native/native/screenshots/firered-autumn-top.png",
+    "source_sha256": "6069359da167d19355fffc5a84f5246a7525c76822d229fcb1b26896d8b9a762",
+    "sha256": "6d650bb2b4eea586c92dc1ea81ac9761f891532f22799150fae25ef2e1df1a24",
+    "build_reference": "climate-3d.html",
+    "commit": "6cd705b39660e2f049b6ba71dc806bbd67c980bd"
+  },
+  {
+    "game": "firered",
+    "view": "winter",
+    "file": "firered-winter.png",
+    "source": "climate-v2-native/native/screenshots/firered-winter-top.png",
+    "source_sha256": "6e31fc096508cd7fc1926a58411dfe9ab55d025425b0e4edb5ed1aff06066b71",
+    "sha256": "91bf9d8ab373f6984130422e80ce91b640308e86098ea38738a98247c15153ec",
+    "build_reference": "climate-3d.html",
+    "commit": "6cd705b39660e2f049b6ba71dc806bbd67c980bd"
+  },
+  {
+    "game": "firered",
+    "view": "clear",
+    "file": "firered-clear.png",
+    "source": "climate-v2-native/native/screenshots/firered-clear-top.png",
+    "source_sha256": "beca8f70fed1e18c7fca28f53889d38752a3d1b90387cd2e0f31a0ee888b3700",
+    "sha256": "62559b882b28bbad43db2bcd5815bfe7ddcb2dc4fb0aa5c8646807d9799f794a",
+    "build_reference": "climate-3d.html",
+    "commit": "6cd705b39660e2f049b6ba71dc806bbd67c980bd"
+  },
+  {
+    "game": "firered",
+    "view": "rain",
+    "file": "firered-rain.png",
+    "source": "climate-v2-native/native/screenshots/firered-rain-top.png",
+    "source_sha256": "43e3c53c9c22808c12b9234ce3e0b6b9e11eea219085d1904e704f67afb977bd",
+    "sha256": "c9b294ac3fa64b4441d5c169e8efa5c210083bf4d16b083694850f1e15d391f2",
+    "build_reference": "climate-3d.html",
+    "commit": "6cd705b39660e2f049b6ba71dc806bbd67c980bd"
+  },
+  {
+    "game": "firered",
+    "view": "snow",
+    "file": "firered-snow.png",
+    "source": "climate-v2-native/native/screenshots/firered-snow-top.png",
+    "source_sha256": "3c4808501d47650146a90cc01d32f8e6fe7c686c133dcaf968da96508cfd4aff",
+    "sha256": "55335bac46e14f75118d69d513691ddd57e4be39147c1318690c0f1f1c61920d",
+    "build_reference": "climate-3d.html",
+    "commit": "6cd705b39660e2f049b6ba71dc806bbd67c980bd"
+  },
+  {
+    "game": "firered",
+    "view": "fog",
+    "file": "firered-fog.png",
+    "source": "climate-v2-native/native/screenshots/firered-fog-top.png",
+    "source_sha256": "cc772fb9af2c2a9ba2b11c2bbdca3cca26e71cc8f85e58b3bdb9a3c361112186",
+    "sha256": "18988056ca207905bbf8072f11df87f83d0491e4ae4eea54122d5e196a2f2ae7",
+    "build_reference": "climate-3d.html",
+    "commit": "6cd705b39660e2f049b6ba71dc806bbd67c980bd"
+  },
+  {
+    "game": "firered",
+    "view": "battle",
+    "file": "firered-battle.png",
+    "source": "climate-v2-native/native/screenshots/firered-battle-top.png",
+    "source_sha256": "ada417793bbdea17457ddec1bca7ebf0d5565cb69071ff5da6562822e3ad12b4",
+    "sha256": "ea9f088c16bfb54c64931366e1ecf58c1901c03fe8a9358f636e69870062057d",
+    "build_reference": "climate-3d.html",
+    "commit": "6cd705b39660e2f049b6ba71dc806bbd67c980bd"
+  },
+  {
+    "game": "firered",
+    "view": "rock-smash",
+    "file": "firered-rock-smash.gif",
+    "sha256": "df4e9fc1cb376eb14dc6048e850ed96aff0bc53eca8afea55d3411d3e78f7c06",
+    "commit": "6cd705b39660e2f049b6ba71dc806bbd67c980bd",
+    "build_reference": "climate-3d.html"
+  },
+  {
+    "game": "firered",
+    "view": "boulder-moving",
+    "file": "firered-boulder-moving.gif",
+    "sha256": "f8fe39f23c05b0ea64082bd7d853670f803fa7f133dd17410ea3f6d71fe6222d",
+    "commit": "6cd705b39660e2f049b6ba71dc806bbd67c980bd",
+    "build_reference": "climate-3d.html"
+  },
+  {
+    "game": "firered",
+    "view": "rain",
+    "file": "firered-rain.gif",
+    "sha256": "da6f3bfa3a68905a3c6d69939a134a68e275e3e0434ed96b380fc81c38a648bf",
+    "commit": "6cd705b39660e2f049b6ba71dc806bbd67c980bd",
+    "build_reference": "climate-3d.html"
+  },
+  {
+    "game": "firered",
+    "view": "snow",
+    "file": "firered-snow.gif",
+    "sha256": "e0ed6d674841ecf4ba8a67962e4139076618921622a20635fd6d27702b0bf907",
+    "commit": "6cd705b39660e2f049b6ba71dc806bbd67c980bd",
+    "build_reference": "climate-3d.html"
+  },
+  {
+    "game": "firered",
+    "view": "fog",
+    "file": "firered-fog.gif",
+    "sha256": "35a3e2bd0b0bd3707a73565cb606a5ebddaad4e1b2c9588d4f26e72de11409f5",
+    "commit": "6cd705b39660e2f049b6ba71dc806bbd67c980bd",
+    "build_reference": "climate-3d.html"
+  },
+  {
+    "game": "firered",
+    "view": "motion",
+    "file": "firered-motion.gif",
+    "sha256": "2b591e000c177411fd19f7e6b7a61c3f6718df537cf87068cdbe2a43a37d624a",
+    "build_reference": "climate-3d.html",
+    "commit": "6cd705b39660e2f049b6ba71dc806bbd67c980bd",
     "format": "480px,10FPS; not a pacing measurement"
   }
 ]

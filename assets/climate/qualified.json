@@ -53,5 +53,60 @@
     "limits": "Selected field scene, idle battle, active battle through field return, Strength movement, Rock Smash removal and multiple-rock visibility. Sampled timing is not a guarantee for every scene or frame. Asset coverage remains incomplete; sprites for characters and battle creatures are retained.",
     "asset": "FRLG-Plus-3D-Flora-Climate-v2-2026-11-19.zip",
     "asset_sha256": "dad65980b94edf99f215dbe5991c5ba85ea8f1f0398ec5c17e72f156bca9d18f"
+  },
+  "firered": {
+    "game": "firered",
+    "date": "2026-11-19",
+    "build_commit": "6cd705b39660e2f049b6ba71dc806bbd67c980bd",
+    "ci_run": 44596143508,
+    "engine_sha256": "e42384e0e32e6276b19fe4d70a9b4043029ba2f02966192addb59b0d6a6f045e",
+    "web_payload_sha256": "2cddb6569dd77ea36daacb9e633a4a2791129e135ce2e57ef22961f544865a7b",
+    "data_abi": "0b683c2e",
+    "passed": true,
+    "phases": {
+      "field": {
+        "samples": 12,
+        "minimum_sampled_fps": 59.8,
+        "work_over_frame_budget": 0,
+        "active_audio_underruns": 0,
+        "audio_track_advanced": true
+      },
+      "battle": {
+        "samples": 12,
+        "minimum_sampled_fps": 59.8,
+        "work_over_frame_budget": 0,
+        "active_audio_underruns": 0,
+        "audio_track_advanced": true
+      },
+      "active": {
+        "samples": 12,
+        "minimum_sampled_fps": 59.7,
+        "work_over_frame_budget": 0,
+        "active_audio_underruns": 0,
+        "audio_track_advanced": true
+      },
+      "climate": {
+        "samples": 12,
+        "minimum_sampled_fps": 59.8,
+        "work_over_frame_budget": 0,
+        "active_audio_underruns": 0,
+        "audio_track_advanced": true
+      }
+    },
+    "checks": {
+      "season_weather_verified": true,
+      "weather_transition_scope": "Live autumn clear-to-rain transition, eight intermediate frames; seasonal tint stayed stable.",
+      "gallery_verified": true,
+      "visual_field": true,
+      "automatic_weather_verified": true,
+      "weather_transition_season_stable": true,
+      "battle_return_verified": true,
+      "rock_smash_verified": true,
+      "multiple_rocks_visible": true,
+      "strength_push_verified": true
+    },
+    "limits": "Selected field scene, idle battle, active battle through field return, Strength movement, Rock Smash removal and multiple-rock visibility. Sampled timing is not a guarantee for every scene or frame. Asset coverage remains incomplete; sprites for characters and battle creatures are retained.",
+    "asset": "FireRed-3D-Flora-Climate-v2-2026-11-19.zip",
+    "asset_sha256": "7f1acc30899cbf60c4e5f0024e8b0ece6bf3b90b3ee371ffbcae818183c1606c"
   }
 }

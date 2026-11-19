@@ -38,6 +38,14 @@ int main(void) {
         colors[season]=climateTerrain(foliage);
         for(int i=0;i<season;i++)assert(colors[i]!=colors[season]);
     }
+    voxelClimate.season=3;voxelClimate.seasonBlend=256;
+    assert(climateGround(foliage,0)!=foliage);
+    assert(climateGround(stone,1)==stone);
+    assert(climateGround(0xffcc7733u,1)==0xffcc7733u); /* water */
+    assert(climateGround(0xff4488bbu,1)!=0xff4488bbu); /* earth */
+    assert(climateGround(0xff4488bbu,0)==0xff4488bbu); /* wall */
+    for(unsigned a=0;a<256;a++)assert((climateGround((a<<24)|0x409040,1)>>24)==a);
+    voxelClimate.seasonBlend=0;assert(climateGround(foliage,1)==foliage);
     voxelClimate.config=2|(3<<2)|(3<<4);
     voxelClimate.blend=256;
     climateUpdate(0,0); assert(voxelClimate.blend==0);

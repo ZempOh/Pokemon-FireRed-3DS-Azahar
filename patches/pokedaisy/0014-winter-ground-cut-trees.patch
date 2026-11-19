@@ -1,0 +1,127 @@
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -1501,11 +1501,11 @@
+             /* CFRU reuses low graphics IDs in other banks. Require the live
+              * sprite's image table to match the base-bank rock record too. */
+             int gfx=oe[5];
+-            if(gfx==96 || gfx==97) {
++            if(gfx==95 || gfx==96 || gfx==97) {
+                 uint32_t record=r32((uint32_t)C[PK_WIDE_OBJ_GFX_INFO]+4u*gfx);
+                 uint32_t images=record?r32(record+0x1c):0;
+                 if(images && le32(s->sprites+0x44*id+0x0c)==images)
+-                    propKind[id]=gfx==96?8:7;
++                    propKind[id]=gfx==95?9:gfx==96?8:7;
+             }
+         }
+     }
+@@ -2065,7 +2065,7 @@
+             vx = voxelX(voxel, p[i].x, foot);
+             vy = voxelY(voxel, foot, z) - bh + 1;
+         }
+-        if(voxel && p[i].world && (p[i].solidKind==7 || p[i].solidKind==8) &&
++        if(voxel && p[i].world && (p[i].solidKind==7 || p[i].solidKind==8 || p[i].solidKind==9) &&
+            !(p[i].rot&1) && p[i].mode==0 && sw>=16 && sh>=16) {
+             struct SolidProp prop={.kind=p[i].solidKind};
+             struct SolidTree* t=&prop.surface;
+@@ -2080,7 +2080,7 @@
+                 unsigned off=(p[i].tile+(py/8)*(sw/8)+px/8)*32+(py&7)*4+(px&7)/2;
+                 int ci=(vram[0x10000+(off&0x7fff)]>>((px&1)*4))&15;
+                 if(!ci)ci=1;
+-                t->art[y*32+x]=color(P[256+p[i].pal*16+ci],alpha);
++                t->art[y*32+x]=p[i].solidKind==9?climateTerrain(color(P[256+p[i].pal*16+ci],alpha)):color(P[256+p[i].pal*16+ci],alpha);
+             }
+             solidPropDraw(voxel,&prop);
+             continue;
+@@ -4969,7 +4969,7 @@
+ }
+ 
+ // Profiles are tied to verified ROM CRC + primary tileset, never to green pixels.
+-// Unknown trees/tilesets retain the original art. Dynamic cut trees are not replaced.
++// Unknown trees/tilesets retain the original art. Live cut trees use the object pass.
+ static int solidTreesPrepare(const struct Snap* s, struct VoxelView* v, int cx, int cy,
+                              uint32_t* texture, struct SolidTree* trees, int cap, uint32_t alpha) {
+     int snow = solidRom == 0x4b3d4957 && s->primary == 0x08725ab4;
+@@ -5010,7 +5010,7 @@
+             if(ci){rgb=P[(e>>12)*16+ci];break;}
+         }
+         ground[y*16+x]=color(rgb,alpha);
+-        if(voxelClimate.blend)ground[y*16+x]=climateTerrain(ground[y*16+x]);
++        if(voxelClimate.seasonBlend)ground[y*16+x]=climateGround(ground[y*16+x],1);
+     }
+     for(int i=0;i<n;i++)for(int y=snow?16:0;y<48;y++)for(int x=0;x<32;x++)
+         texture[(trees[i].y-v->top+y)*v->stride+trees[i].x-v->left+x]=ground[(y&15)*16+(x&15)];
+@@ -5066,7 +5066,7 @@
+                 int ci=(vram[off]>>(px&1?4:0))&15;
+                 if(ci){rgb=P[(e>>12)*16+ci];break;}
+             }
+-            uint32_t c=color(rgb,alpha);if(voxelClimate.blend)c=climateTerrain(c);
++            uint32_t c=color(rgb,alpha);if(voxelClimate.seasonBlend)c=climateGround(c,1);
+             texture[(row*16+y)*v->stride+col*16+x]=c;
+         }
+     }
+@@ -5129,8 +5129,18 @@
+     for (int i=0; i<npieces[shown]; i++)
+         if (!pieces[shown][i].world) nativeWeather = 1;
+     climateUpdate(mapType >= 1 && mapType <= 3, nativeWeather);
+-    if (voxelClimate.blend)
+-        for (size_t i=0; i<textureSize; i++) texture[i]=climateTerrain(texture[i]);
++    if (voxelClimate.seasonBlend) {
++        for(int row=0;row<rows;row++)for(int col=0;col<cols;col++) {
++            int conn,id=blockIn(s,cellX+col,cellY+row,&conn,false);
++            /* Primary basic ground cells only: secondary IDs can be furniture,
++             * walls or roofs in another tileset. Blue water stays unchanged. */
++            int path=id>=0 && id<=0x0d;
++            for(int y=0;y<16;y++)for(int x=0;x<16;x++) {
++                size_t at=(size_t)(row*16+y)*w+col*16+x;
++                texture[at]=climateGround(texture[at],path);
++            }
++        }
++    }
+     static struct SolidTree trees[256];
+     int treeCount=solidTreesPrepare(s,&voxel,cx,cy,texture,trees,256,alpha);
+     static struct SolidProp props[384];
+--- a/app/src/main/cpp/pk_voxel_climate.h
++++ b/app/src/main/cpp/pk_voxel_climate.h
+@@ -84,6 +84,20 @@
+     }
+     return climateMix(c,target,voxelClimate.seasonBlend);
+ }
++/* Ground material, before projection. Water and neutral/blue materials keep
++ * their palette; snow on earth is lighter than on grass to preserve paths. */
++static uint32_t climateGround(uint32_t c,int path) {
++    if(voxelClimate.season!=3 || !voxelClimate.seasonBlend)return climateTerrain(c);
++    unsigned r=c&255,g=(c>>8)&255,b=(c>>16)&255;
++    int grass=g>r+8 && g>b+8;
++    int earth=path && r>=g && g>b+16 && r>72;
++    if(!grass&&!earth)return c;
++    unsigned lum=(r+2*g+b)/4;
++    unsigned nr=184+lum/5,ng=192+lum/5,nb=200+lum/5;
++    unsigned f=voxelClimate.seasonBlend;
++    if(earth)f=f*3/4;
++    return climateMix(c,(c&0xff000000u)|nr|(ng<<8)|(nb<<16),f);
++}
+ static void climateAtmosphere(uint32_t* out, const uint32_t* depth, int w, int h) {
+     unsigned f=voxelClimate.blend;
+     if (!f || voxelClimate.nativeWeather) return;
+--- a/app/src/main/cpp/pk_wide_props.h
++++ b/app/src/main/cpp/pk_wide_props.h
+@@ -59,6 +59,19 @@
+ static void solidPropDraw(const struct VoxelView* v,const struct SolidProp* p) {
+     const struct SolidTree* t=&p->surface;
+     float x=t->x+8,y=t->y+9,z=t->rise;
++    if(p->kind==9) {
++        const float dx[7]={1,.5f,-.5f,-1,-.5f,.5f,1},dy[7]={0,.866025f,.866025f,0,-.866025f,-.866025f,0};
++        const float radius[5]={1.8f,1.8f,8.3f,6.8f,0},height[5]={0,5,6,14,20};
++        for(int band=0;band<4;band++)for(int e=0;e<6;e++) {
++            float u=8.5f,ink=band==0?40.5f:12.5f;
++            struct SolidVertex a={x+dx[e]*radius[band],y+dy[e]*radius[band],z+height[band],u,ink};
++            struct SolidVertex b={x+dx[e+1]*radius[band],y+dy[e+1]*radius[band],z+height[band],u,ink};
++            struct SolidVertex c={x+dx[e+1]*radius[band+1],y+dy[e+1]*radius[band+1],z+height[band+1],u,ink};
++            struct SolidVertex d={x+dx[e]*radius[band+1],y+dy[e]*radius[band+1],z+height[band+1],u,ink};
++            propFace(v,t,a,b,c,d,185+band*15+(e<3?15:0));
++        }
++        return;
++    }
+     if(p->kind==6) {
+         // Berry palms are live event objects. Their stems and broad, thick
+         // fronds share the object's foot and disappear with its visibility.

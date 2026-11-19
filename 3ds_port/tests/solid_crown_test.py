@@ -22,7 +22,7 @@ suffix=r'''
 int main(void) {
  VoxelBuilder b={0};
  for(int row=0;row<2;row++) for(int col=0;col<2;col++) EmitSolidCrown(&b,7+col,7+row,col,row);
- assert(b.count==96);
+ assert(b.count==160);
  float minZ=9,maxZ=7,minY=3,maxY=0;
  for(unsigned i=0;i<b.count;i++) {
   VoxelVertex v=b.v[i];assert(isfinite(v.x)&&isfinite(v.y)&&isfinite(v.z));

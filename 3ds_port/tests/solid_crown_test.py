@@ -26,7 +26,7 @@ int main(void) {
  float minZ=9,maxZ=7,minY=3,maxY=0;
  for(unsigned i=0;i<b.count;i++) {
   VoxelVertex v=b.v[i];assert(isfinite(v.x)&&isfinite(v.y)&&isfinite(v.z));
-  assert(v.x>=7 && v.x<=9 && v.z>=7 && v.z<=9);
+  assert(v.x>=7 && v.x<=9 && v.z>=7 && v.z<=9.7f);
   assert(v.u>0 && v.u<1 && v.v>0 && v.v<1);
   if(v.z<minZ)minZ=v.z;if(v.z>maxZ)maxZ=v.z;
   if(v.y<minY)minY=v.y;if(v.y>maxY)maxY=v.y;

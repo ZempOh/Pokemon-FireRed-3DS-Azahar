@@ -220,7 +220,7 @@ index 25be6e1..54adaf4 100644
      climateAtmosphere(out, depth, v.w, v.h);
 diff --git a/app/src/main/cpp/pk_wide_props.h b/app/src/main/cpp/pk_wide_props.h
 new file mode 100644
-index 0000000..ca31f3f
+index 0000000..de6e842
 --- /dev/null
 +++ b/app/src/main/cpp/pk_wide_props.h
 @@ -0,0 +1,99 @@
@@ -248,7 +248,7 @@ index 0000000..ca31f3f
 +        struct SolidVertex b={x+dx[j]*ra*skewj,y+dy[j]*ra,z+hh[band]*height,8+dx[j]*6,16+dy[j]*6};
 +        struct SolidVertex c={x+dx[j]*rb*skewj,y+dy[j]*rb,z+hh[band+1]*height,8+dx[j]*4,12+dy[j]*4};
 +        struct SolidVertex d={x+dx[e]*rb*skew,y+dy[e]*rb,z+hh[band+1]*height,8+dx[e]*4,12+dy[e]*4};
-+        if(inkX>=0){a.u=b.u=c.u=d.u=inkX;a.v=b.v=c.v=d.v=inkY;}
++        if(inkX>=0){a.u=b.u=c.u=d.u=inkX+.5f;a.v=b.v=c.v=d.v=inkY+.5f;}
 +        propFace(v,t,a,b,c,d,170+band*22+(e<4?15:0));
 +    }
 +}
@@ -258,11 +258,11 @@ index 0000000..ca31f3f
 +static void propBlade(const struct VoxelView* v,const struct SolidTree* t,
 +                      float x,float y,float z,float h,float lean,int colorX,int colorY) {
 +    const float dx[4]={-1,0,1,0},dy[4]={0,-.65f,0,.65f};
-+    struct SolidVertex tip={x+lean,y+.6f,z+h,colorX,colorY};
++    struct SolidVertex tip={x+lean,y+.6f,z+h,colorX+.5f,colorY+.5f};
 +    for(int i=0;i<4;i++) {
 +        int j=(i+1)&3;
-+        struct SolidVertex a={x+dx[i],y+dy[i],z,colorX,colorY};
-+        struct SolidVertex b={x+dx[j],y+dy[j],z,colorX,colorY};
++        struct SolidVertex a={x+dx[i],y+dy[i],z,colorX+.5f,colorY+.5f};
++        struct SolidVertex b={x+dx[j],y+dy[j],z,colorX+.5f,colorY+.5f};
 +        solidTriangle(v,t,a,b,tip,180+i*20,0);
 +    }
 +}
@@ -276,20 +276,20 @@ index 0000000..ca31f3f
 +        const float dx[4]={-1,1,1,-1},dy[4]={-1,-1,1,1};
 +        for(int e=0;e<4;e++) {
 +            int j=(e+1)&3;
-+            struct SolidVertex a={x+dx[e]*1.8f,y+dy[e]*1.8f,z,15,43};
-+            struct SolidVertex b={x+dx[j]*1.8f,y+dy[j]*1.8f,z,15,43};
-+            struct SolidVertex c={x+dx[j]*1.3f,y+dy[j]*1.3f,z+19,15,43};
-+            struct SolidVertex d={x+dx[e]*1.3f,y+dy[e]*1.3f,z+19,15,43};
++            struct SolidVertex a={x+dx[e]*1.8f,y+dy[e]*1.8f,z,15.5f,43.5f};
++            struct SolidVertex b={x+dx[j]*1.8f,y+dy[j]*1.8f,z,15.5f,43.5f};
++            struct SolidVertex c={x+dx[j]*1.3f,y+dy[j]*1.3f,z+19,15.5f,43.5f};
++            struct SolidVertex d={x+dx[e]*1.3f,y+dy[e]*1.3f,z+19,15.5f,43.5f};
 +            propFace(v,t,a,b,c,d,185+e*15);
 +        }
 +        for(int leaf=0;leaf<7;leaf++) {
 +            float angle=leaf*.897598f,dx=cosf(angle),dy=sinf(angle);
-+            struct SolidVertex root={x,y,z+19,8,12};
-+            struct SolidVertex left={x+dx*6-dy*3,y+dy*6+dx*3,z+23,8,12};
-+            struct SolidVertex tip={x+dx*14,y+dy*14,z+13,8,12};
-+            struct SolidVertex right={x+dx*6+dy*3,y+dy*6-dx*3,z+23,8,12};
-+            struct SolidVertex ridge={x+dx*6,y+dy*6,z+25,8,12};
-+            struct SolidVertex under={x+dx*6,y+dy*6,z+21,8,12};
++            struct SolidVertex root={x,y,z+19,8.5f,12.5f};
++            struct SolidVertex left={x+dx*6-dy*3,y+dy*6+dx*3,z+23,8.5f,12.5f};
++            struct SolidVertex tip={x+dx*14,y+dy*14,z+13,8.5f,12.5f};
++            struct SolidVertex right={x+dx*6+dy*3,y+dy*6-dx*3,z+23,8.5f,12.5f};
++            struct SolidVertex ridge={x+dx*6,y+dy*6,z+25,8.5f,12.5f};
++            struct SolidVertex under={x+dx*6,y+dy*6,z+21,8.5f,12.5f};
 +            struct SolidVertex rim[4]={root,left,tip,right};
 +            for(int e=0;e<4;e++) {
 +                solidTriangle(v,t,rim[e],rim[(e+1)&3],ridge,220+e*8,0);

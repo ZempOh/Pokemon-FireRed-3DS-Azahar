@@ -49,5 +49,21 @@ int main(void) {
             assert(guarded[0]==0x12345678 && guarded[N+1]==0x12345678);
         }
     }
+    // A single bark texel must color the complete trunk, including faces
+    // whose barycentric weights round just below an integer UV boundary.
+    struct SolidProp palm={.kind=6};palm.surface.x=32;palm.surface.y=40;
+    for(int i=0;i<32*48;i++)palm.surface.art[i]=0xff00ff00;
+    palm.surface.art[43*32+15]=0xff0000ff;
+    memset(depth,0,sizeof depth);memset(v.out,0,N*4);
+    solidPropDraw(&v,&palm);
+    int trunkPixels=0,wrongPixels=0;
+    for(int y=voxelY(&v,49,2);y<voxelY(&v,49,0);y++)
+      for(int x=voxelX(&v,40,49)-1;x<=voxelX(&v,40,49);x++) {
+        uint32_t c=v.out[y*W+x];
+        if(c&255)trunkPixels++;
+        if(c&0xff00)wrongPixels++;
+      }
+    assert(trunkPixels>=3 && wrongPixels==0);
     puts("Solid trees and field props: clipping, volume, winding and occlusion passed");
 }
+

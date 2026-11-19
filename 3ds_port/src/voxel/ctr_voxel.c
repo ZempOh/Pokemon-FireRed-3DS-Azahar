@@ -8602,7 +8602,8 @@ void CtrVoxel_Draw(C3D_RenderTarget *target, int eye)
     bool indoor = current != NULL && current->indoor;
     VoxelLight light = LightFor(indoor), unlit = LightFor(true);
 #if CTR_VOXEL_LIGHTING
-    light = ClimateLight(light, current != NULL && !indoor && !VoxelWorld_Underground() && !sBattle.on
+    /* The battle camera still draws this outdoor map; retain its season. */
+    light = ClimateLight(light, current != NULL && !indoor && !VoxelWorld_Underground()
                          && VoxelWorld_ClimateAllowed());
     ClimateVegetation();
 #endif

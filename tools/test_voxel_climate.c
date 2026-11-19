@@ -3,6 +3,19 @@
 #include <stdio.h>
 #include "pk_voxel_climate.h"
 int main(void) {
+    for(int season=0;season<4;season++) {
+        int counts[5]={0};
+        for(int slot=0;slot<10000;slot++) {
+            time_t t=(time_t)slot*900;
+            int w=climateWeatherAt(t,season);
+            assert(w==climateWeatherAt(t+899,season));
+            assert(w==1 || w==4 || w==(season==3?3:2));
+            counts[w]++;
+        }
+        assert(counts[1]>3500 && counts[4]>700 && counts[4]<1300);
+        assert(counts[season==3?3:2]>1500);
+    }
+
     uint32_t foliage=0xff409040u, stone=0xff888888u;
     assert(climateTerrain(foliage)==foliage);
     uint32_t colors[4];

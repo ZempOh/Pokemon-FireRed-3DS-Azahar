@@ -439,3 +439,14 @@ Passing builds: firered, frlg, classic. These builds passed Thor field, idle bat
 ![classic actual Rock Smash on Thor](docs/screenshots/graphics-gallery/classic-rock-smash.gif)
 
 [All six games: 2D/3D, seasonal, battle screenshots and GIFs](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/gallery.html). GIFs are reduced to 10 FPS for size; measured pacing is in the verification report. The initial [offline asset prototype](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/props-preview.html) is separate from these Thor captures.
+
+<!-- ANDROID SCENERY VERIFIED -->
+### Android scenery update
+
+Let’s Go, Radical Red and Unbound passed the same November 19 APK on the Thor. [Download APK](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/PokeDaisy-3D-Scenery-2026-11-19.apk). [Test scope and fresh 2D/3D, seasonal and battle media](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/android-scenery.html). Selected scenery now uses solid geometry; coverage is incomplete, including Android moving and breakable rock objects.
+
+![letsgo actual Thor gameplay](docs/screenshots/graphics-gallery/letsgo-motion.gif)
+
+![radical actual Thor gameplay](docs/screenshots/graphics-gallery/radical-motion.gif)
+
+![unbound actual Thor gameplay](docs/screenshots/graphics-gallery/unbound-motion.gif)

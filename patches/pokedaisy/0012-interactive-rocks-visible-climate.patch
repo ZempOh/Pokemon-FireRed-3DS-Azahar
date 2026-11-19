@@ -1,19 +1,26 @@
 diff --git a/app/src/main/cpp/pk_wide.c b/app/src/main/cpp/pk_wide.c
 --- a/app/src/main/cpp/pk_wide.c
 +++ b/app/src/main/cpp/pk_wide.c
-@@ -1496,6 +1496,11 @@
+@@ -1496,6 +1496,18 @@
          int id = C[PK_WIDE_SPRITE_ID_OFF] >= 0 && C[PK_WIDE_SPRITE_ID_OFF] < 0x24 ? oe[C[PK_WIDE_SPRITE_ID_OFF]] : 0xFF;
          if ((flags & 1) && (flags & (1 << 14)) && !(flags & (1 << 13)) && id < nspr) offscreen[id] = true;
          if((flags&1)&&!(flags&(1<<13))&&id<nspr&&solidRom==0x25c3d89f&&oe[5]==0xd7)propKind[id]=6;
 +        if ((flags&1) && !(flags&(1<<13)) && id<nspr &&
 +            (solidRom==0x25c3d89f || solidRom==0xfba55dd8 || solidRom==0x4b3d4957)) {
-+            if (oe[5]==96) propKind[id]=8; /* Rock Smash */
-+            if (oe[5]==97) propKind[id]=7; /* Strength */
++            /* CFRU reuses low graphics IDs in other banks. Require the live
++             * sprite's image table to match the base-bank rock record too. */
++            int gfx=oe[5];
++            if(gfx==96 || gfx==97) {
++                uint32_t record=r32((uint32_t)C[PK_WIDE_OBJ_GFX_INFO]+4u*gfx);
++                uint32_t images=record?r32(record+0x1c):0;
++                if(images && le32(s->sprites+0x44*id+0x0c)==images)
++                    propKind[id]=gfx==96?8:7;
++            }
 +        }
      }
      int n = 0;
      for (int k = 0; k < nspr && n < 256; k++) {
-@@ -2053,6 +2058,26 @@
+@@ -2053,6 +2065,26 @@
              vx = voxelX(voxel, p[i].x, foot);
              vy = voxelY(voxel, foot, z) - bh + 1;
          }
@@ -40,7 +47,7 @@ diff --git a/app/src/main/cpp/pk_wide.c b/app/src/main/cpp/pk_wide.c
          if(voxel&&p[i].world&&p[i].solidKind==6&&!(p[i].rot&1)&&p[i].mode==0&&bw>=24&&bh>=24) {
              unsigned counts[16]={0};
              for(int y=0;y<sh;y++)for(int x=0;x<sw;x++) {
-@@ -2071,7 +2096,7 @@
+@@ -2071,7 +2103,7 @@
              if(leafCount&&barkCount) {
                  struct SolidProp prop={.kind=6};struct SolidTree* t=&prop.surface;
                  t->x=p[i].x+bw/2-8;t->y=foot-9;t->rise=voxelRiseAt(voxel,p[i].x+bw/2,foot);

@@ -17,6 +17,19 @@ static int CtrSettings_GetInt(const char *key,int fallback) {
 typedef struct {float sun[3],shade[3],haze,dappleLow,dappleHigh,rays,bloom,motes,hazeRgb[3],hazeStart,hazeRamp;} VoxelLight;
 #include "voxel_climate.h"
 int main(void) {
+    for(int s=0;s<4;s++) {
+        int counts[5]={0};
+        for(int slot=0;slot<10000;slot++) {
+            time_t t=(time_t)slot*900;
+            int w=climateWeatherAt(t,s);
+            assert(w==climateWeatherAt(t+899,s));
+            assert(w==1 || w==4 || w==(s==3?3:2));
+            counts[w]++;
+        }
+        assert(counts[1]>3500 && counts[4]>700 && counts[4]<1300);
+        assert(counts[s==3?3:2]>1500);
+    }
+
     VoxelLight original={.sun={1,1,1},.shade={1,1,1},.haze=.1f,.motes=.5f};
     VoxelLight out=ClimateLight(original,true);
     assert(memcmp(&out,&original,sizeof out)==0);

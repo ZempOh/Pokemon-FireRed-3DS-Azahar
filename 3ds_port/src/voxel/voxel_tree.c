@@ -602,10 +602,10 @@ static void EmitEncounterGrass(VoxelBuilder *b, int x, int y)
         {
             int next=(side+1)&3;
             VoxelVertex tip={cx+lean,h,cz+.025f,u,v,.92f};
-            VoxelBuilder_Quad(b,
+            VoxelBuilder_Tri(b,
                 &(VoxelVertex){cx+dx[side]*.055f,.01f,cz+dz[side]*.035f,u,v,.70f+side*.06f},
                 &(VoxelVertex){cx+dx[next]*.055f,.01f,cz+dz[next]*.035f,u,v,.70f+side*.06f},
-                &tip,&tip);
+                &tip);
         }
     }
 }

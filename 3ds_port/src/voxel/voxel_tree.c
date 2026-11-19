@@ -226,6 +226,26 @@ static void EmitDrawnBlock(VoxelBuilder *builder, int x, int y, int prop, bool w
     }
 }
 
+/* Closed rings replace the old single-card silhouette for verified small
+ * outdoor objects. Ground, interaction and collision remain the game's. */
+static void EmitPropVolume(VoxelBuilder *b,float cx,float cz,int prop,float radius,float height)
+{
+    static const float ring[9][2]={{1,0},{.707107f,.707107f},{0,1},{-.707107f,.707107f},{-1,0},{-.707107f,-.707107f},{0,-1},{.707107f,-.707107f},{1,0}};
+    const float radii[4]={.70f,1,.68f,0},heights[4]={0,.30f,.76f,1};
+    float u0=TEX_U(sProps[prop].x+4),u1=TEX_U(sProps[prop].x+12);
+    float v0=TEX_V(sProps[prop].y+4),v1=TEX_V(sProps[prop].y+10);
+    for(int band=0;band<3;band++)for(int edge=0;edge<8;edge++)
+    {
+        float r0=radius*radii[band],r1=radius*radii[band+1],h0=height*heights[band],h1=height*heights[band+1];
+        float shade=.70f+band*.09f+(edge>=4?.08f:0);
+        VoxelBuilder_Quad(b,
+            &(VoxelVertex){cx+ring[edge][0]*r0,h0,cz+ring[edge][1]*r0,u0,v1,shade},
+            &(VoxelVertex){cx+ring[edge+1][0]*r0,h0,cz+ring[edge+1][1]*r0,u1,v1,shade},
+            &(VoxelVertex){cx+ring[edge+1][0]*r1,h1,cz+ring[edge+1][1]*r1,u1,v0,shade},
+            &(VoxelVertex){cx+ring[edge][0]*r1,h1,cz+ring[edge][1]*r1,u0,v0,shade});
+    }
+}
+
 static void EmitProp(VoxelBuilder *builder, int x, int y, int prop, int below, int north,
                      bool westFence, bool eastFence)
 {
@@ -236,6 +256,17 @@ static void EmitProp(VoxelBuilder *builder, int x, int y, int prop, int below, i
     float h = (sProps[prop].r1 - sProps[prop].r0) / 16.0f;
     float u0 = TEX_U(sProps[prop].x), u1 = TEX_U(sProps[prop].x + 16);
     float v0 = TEX_V(sProps[prop].y + sProps[prop].r0), v1 = TEX_V(sProps[prop].y + sProps[prop].r1);
+
+    if(sProps[prop].set==0)
+    {
+        int id=sProps[prop].id;
+        if(id==0xA7||id==0xAF||id==0xB7||id==5||id==0xFA||id==0xFB)
+        {
+            bool rock=id==0xA7||id==0xAF||id==0xB7;
+            EmitPropVolume(builder,x+.5f,y+.58f,prop,rock?.45f:.40f,rock?.65f:.75f);
+            return;
+        }
+    }
 
     if (sProps[prop].kind == 2)
     {

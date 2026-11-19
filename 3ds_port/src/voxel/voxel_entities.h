@@ -35,6 +35,11 @@
 #define VOXEL_SPRITE_SLOT_DIM   64u
 #define VOXEL_SPRITE_COLUMNS    (VOXEL_SPRITE_ATLAS_W / VOXEL_SPRITE_SLOT_DIM)
 #define VOXEL_SPRITE_SLOTS      32u
+/* Sixteen live object slots can each contain a 24-quad boulder. Remaining
+ * atlas slots hold ordinary cards/effects, with spare room for the follower. */
+#define VOXEL_SOLID_BOULDER_VERTICES (3u * 8u * 6u)
+#define VOXEL_SPRITE_VERTEX_RESERVE (16u * VOXEL_SOLID_BOULDER_VERTICES + (VOXEL_SPRITE_SLOTS - 16u) * 6u + 32u)
+
 /* The last of them holds no sprite: it is the frame of a door opening or
  * closing (voxel_entities.c, EmitDoor), 32x32 at most. */
 #define VOXEL_DOOR_SLOT         (VOXEL_SPRITE_SLOTS - 1u)

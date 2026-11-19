@@ -42,6 +42,8 @@ jobs:
           cd 3ds_port
           gcc -std=c99 -O2 -Wall -Wextra -Werror -Iinclude tests/input_test.c src/3ds_input_decode.c -o input_test && ./input_test
           gcc -std=c99 -O2 -Wall -Wextra -Werror -Iinclude tests/video_decode_test.c src/3ds_video_decode.c -o video_test && ./video_test
+      - name: Full live-boulder buffer regression
+        run: python3 3ds_port/tests/solid_boulder_test.py
       - name: Day/night clock and lighting
         run: make -C 3ds_port verify-daynight verify-clock-store verify-encounters verify-night-lamps
       - name: Standalone voxel shadows and mesh fixtures

@@ -29,7 +29,7 @@ static bool sGeneral = true;
 /* Actual Pallet Town / Route 1 forest quadrants from Classic's bank. */
 static int sTiles[] = {0x01C, 0x01D, 0x014, 0x015};
 static VoxelAtlasMap sAtlas;
-static VoxelVertex sWhole[1024], sParts[1024];
+static VoxelVertex sWhole[4096], sParts[4096];
 
 bool VoxelWorld_UsesTreeSprites(const VoxelMapInstance *inst)
 {
@@ -89,7 +89,7 @@ void VoxelAtlas_SolidUV(VoxelSolidColor color, float *u0, float *v0, float *u1, 
 
 static void Init(VoxelBuilder *b, VoxelVertex *v)
 {
-    VoxelBuilder_Init(b, v, 1024);
+    VoxelBuilder_Init(b, v, 4096);
     VoxelBuilder_SetAtlas(b, &sAtlas);
     VoxelBuilder_SetOrigin(b, sMap.originX, sMap.originY);
     VoxelMesh_BeginWindow(sMap.originX - 2, sMap.originY - 2,
@@ -105,7 +105,7 @@ int main(void)
     VoxelMesh_EmitInstance(&whole, &sMap, 7, 7, 9, 9);
     assert(whole.count == 0); /* no original ground artwork or extruded region */
     VoxelTree_EmitInstance(&whole, &sMap, 7, 7, 9, 9);
-    assert(whole.count == 48 && whole.dropped == 0);
+    assert(whole.count == 168 && whole.dropped == 0);
     for (unsigned i = 0; i < whole.count; ++i)
     {
         const VoxelVertex *v = &whole.vertices[i];
@@ -123,8 +123,8 @@ int main(void)
             assert(v->u >= 0 && v->u <= 32.0f / VOXEL_TREE_TEXTURE_DIM);
         }
     }
-    assert(ground == 24 && crown == 24);
-    assert(sWhole[6].z < sWhole[8].z && sWhole[6].y > sWhole[8].y);
+    assert(ground == 24 && crown == 144);
+    assert(sWhole[6].y < sWhole[8].y); /* solid side rises */
 
     Init(&parts, sParts);
     for (int y = 0; y < 2; ++y)
@@ -160,14 +160,14 @@ int main(void)
     VoxelMesh_EmitBorder(&parts, -5, -7, 1, 1);
     assert(parts.count == 0); /* no raised belt under the replacement */
     VoxelTree_EmitBorder(&parts, -5, -7, 1, 1);
-    assert(parts.count == (6 * 8 - 4) * 12 && parts.dropped == 0);
-    /* Each repeated cell supplies one opaque ground quad and one crown,
+    assert(parts.count == (6 * 8 - 4) * 42 && parts.dropped == 0);
+    /* Each repeated cell supplies one opaque ground quad and six solid crown faces,
      * even across a chunk edge. No alternating grass/empty cell remains. */
-    for (unsigned i = 0; i < parts.count; i += 12)
+    for (unsigned i = 0; i < parts.count; i += 42)
     {
         for (unsigned j = 0; j < 6; ++j)
             assert(parts.vertices[i + j].y == 0);
-        assert(parts.vertices[i + 6].y > parts.vertices[i + 8].y);
+        assert(parts.vertices[i + 6].y < parts.vertices[i + 8].y);
         assert(parts.vertices[i + 6].u < 32.0f / VOXEL_TREE_TEXTURE_DIM);
     }
 
@@ -287,14 +287,14 @@ int main(void)
     sTiles[2] = 0x1F3; sTiles[3] = 0x1F2;
     Init(&parts, sParts);
     VoxelTree_EmitInstance(&parts, &sMap, -3, -5, -1, -3);
-    assert(parts.count == 4 * 2 * 6 && parts.dropped == 0);
+    assert(parts.count == 4 * 42 && parts.dropped == 0);
 
     /* A roof over the lower row: the crown keeps that row, its ground does
      * not become a trunk. */
     sTiles[2] = 0x008; sTiles[3] = 0x009;
     Init(&parts, sParts);
     VoxelTree_EmitInstance(&parts, &sMap, -3, -5, -1, -3);
-    assert(parts.count == (2 * 2 + 2) * 6 && parts.dropped == 0);
+    assert(parts.count == 2 * 42 + 2 * 36 && parts.dropped == 0);
     for (unsigned i = 0; i < parts.count; ++i)
         if (parts.vertices[i].y == 0 && parts.vertices[i].u >= 32.0f / VOXEL_TREE_TEXTURE_DIM)
             assert(parts.vertices[i].z <= 8); /* trunk ground only in the tree's row */

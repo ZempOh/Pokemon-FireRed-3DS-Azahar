@@ -394,9 +394,41 @@ static const LargeArt *LargeArtOf(const void *secondaryTileset, int metatileId)
 /* One row of a large crown: the card that stands over the cell (x, y) as
  * the half of row `row`, column `col`, of a tree whose trunk row is
  * y - row + 1. */
+/* Small native experiment: an eight-sided crown split into the same four
+ * independently streamed cells as the original card. Sample only opaque
+ * interior leaves from the existing ROM-derived atlas. No new asset pack. */
+static void EmitSolidCrown(VoxelBuilder *b, int x, int y, int col, int row)
+{
+    static const float ring[9][2] = {
+        {-1,0},{-.707107f,-.707107f},{0,-1},{.707107f,-.707107f},
+        {1,0},{.707107f,.707107f},{0,1},{-.707107f,.707107f},{-1,0}
+    };
+    static const float radius[4] = {.32f, .96f, .76f, 0};
+    static const float height[4] = {.08f, .72f, 1.48f, 2.12f};
+    const int quadrant = row ? (col ? 2 : 3) : (col ? 1 : 0);
+    const float cx = x - col + 1.0f, cz = y - row + 1.0f;
+    const float u0 = TEX_U(10), u1 = TEX_U(22);
+    const float v0 = TEX_V(10), v1 = TEX_V(18);
+    for (int band = 0; band < 3; ++band)
+        for (int edge = quadrant * 2; edge < quadrant * 2 + 2; ++edge)
+        {
+            const float shade = .78f + .07f * band + (edge >= 4 ? .05f : 0);
+            VoxelBuilder_Quad(b,
+                &(VoxelVertex){cx + ring[edge][0]*radius[band], height[band], cz + ring[edge][1]*radius[band], u0,v1,shade},
+                &(VoxelVertex){cx + ring[edge+1][0]*radius[band], height[band], cz + ring[edge+1][1]*radius[band], u1,v1,shade},
+                &(VoxelVertex){cx + ring[edge+1][0]*radius[band+1], height[band+1], cz + ring[edge+1][1]*radius[band+1], u1,v0,shade},
+                &(VoxelVertex){cx + ring[edge][0]*radius[band+1], height[band+1], cz + ring[edge][1]*radius[band+1], u0,v0,shade});
+        }
+}
+
 static void EmitCrownCard(VoxelBuilder *builder, const LargeArt *art, int x, int y, int col, int row,
                           bool steep)
 {
+    if (art == &kLargeTree)
+    {
+        EmitSolidCrown(builder, x, y, col, row);
+        return;
+    }
     float wx = (float)x, wz = (float)y;
     float u0 = (art->crownX + col * 16.0f) / VOXEL_TREE_TEXTURE_DIM;
     float u1 = u0 + 16.0f / VOXEL_TREE_TEXTURE_DIM;

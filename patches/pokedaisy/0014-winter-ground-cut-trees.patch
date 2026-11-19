@@ -70,7 +70,7 @@
 +            int conn,id=blockIn(s,cellX+col,cellY+row,&conn,false);
 +            /* Primary basic ground cells only: secondary IDs can be furniture,
 +             * walls or roofs in another tileset. Blue water stays unchanged. */
-+            int kanto=(solidRom==0x25c3d89f || solidRom==0xfba55dd8) && s->primary==0x082d4a94;
++            int kanto=(solidRom==0x25c3d89f || solidRom==0xfba55dd8 || solidRom==0x4b3d4957) && s->primary==0x082d4a94;
 +            int path=id>=0 && (id<=0x0d || (kanto && climateKantoPath(id)));
 +            for(int y=0;y<16;y++)for(int x=0;x<16;x++) {
 +                size_t at=(size_t)(row*16+y)*w+col*16+x;

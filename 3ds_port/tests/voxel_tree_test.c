@@ -105,7 +105,7 @@ int main(void)
     VoxelMesh_EmitInstance(&whole, &sMap, 7, 7, 9, 9);
     assert(whole.count == 0); /* no original ground artwork or extruded region */
     VoxelTree_EmitInstance(&whole, &sMap, 7, 7, 9, 9);
-    assert(whole.count == 168 && whole.dropped == 0);
+    assert(whole.count == 264 && whole.dropped == 0);
     for (unsigned i = 0; i < whole.count; ++i)
     {
         const VoxelVertex *v = &whole.vertices[i];
@@ -120,10 +120,10 @@ int main(void)
         else
         {
             ++crown;
-            assert(v->u >= 0 && v->u <= 32.0f / VOXEL_TREE_TEXTURE_DIM);
+            assert(v->u >= 0 && v->u <= 64.0f / VOXEL_TREE_TEXTURE_DIM);
         }
     }
-    assert(ground == 24 && crown == 144);
+    assert(ground == 24 && crown == 240);
     assert(sWhole[6].y < sWhole[8].y); /* solid side rises */
 
     Init(&parts, sParts);
@@ -160,10 +160,10 @@ int main(void)
     VoxelMesh_EmitBorder(&parts, -5, -7, 1, 1);
     assert(parts.count == 0); /* no raised belt under the replacement */
     VoxelTree_EmitBorder(&parts, -5, -7, 1, 1);
-    assert(parts.count == (6 * 8 - 4) * 42 && parts.dropped == 0);
-    /* Each repeated cell supplies one opaque ground quad and six solid crown faces,
+    assert(parts.count == (6 * 8 - 4) * 66 && parts.dropped == 0);
+    /* Each repeated cell supplies one opaque ground quad and eight crown faces and two trunk faces,
      * even across a chunk edge. No alternating grass/empty cell remains. */
-    for (unsigned i = 0; i < parts.count; i += 42)
+    for (unsigned i = 0; i < parts.count; i += 66)
     {
         for (unsigned j = 0; j < 6; ++j)
             assert(parts.vertices[i + j].y == 0);
@@ -287,14 +287,14 @@ int main(void)
     sTiles[2] = 0x1F3; sTiles[3] = 0x1F2;
     Init(&parts, sParts);
     VoxelTree_EmitInstance(&parts, &sMap, -3, -5, -1, -3);
-    assert(parts.count == 4 * 42 && parts.dropped == 0);
+    assert(parts.count == 4 * 66 && parts.dropped == 0);
 
     /* A roof over the lower row: the crown keeps that row, its ground does
      * not become a trunk. */
     sTiles[2] = 0x008; sTiles[3] = 0x009;
     Init(&parts, sParts);
     VoxelTree_EmitInstance(&parts, &sMap, -3, -5, -1, -3);
-    assert(parts.count == 2 * 42 + 2 * 36 && parts.dropped == 0);
+    assert(parts.count == 2 * 66 + 2 * 60 && parts.dropped == 0);
     for (unsigned i = 0; i < parts.count; ++i)
         if (parts.vertices[i].y == 0 && parts.vertices[i].u >= 32.0f / VOXEL_TREE_TEXTURE_DIM)
             assert(parts.vertices[i].z <= 8); /* trunk ground only in the tree's row */

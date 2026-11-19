@@ -403,13 +403,13 @@ static void EmitSolidCrown(VoxelBuilder *b, int x, int y, int col, int row)
         {-1,0},{-.707107f,-.707107f},{0,-1},{.707107f,-.707107f},
         {1,0},{.707107f,.707107f},{0,1},{-.707107f,.707107f},{-1,0}
     };
-    static const float radius[4] = {.32f, .96f, .76f, 0};
-    static const float height[4] = {.08f, .72f, 1.48f, 2.12f};
+    static const float radius[5] = {.52f, .96f, .85f, .42f, 0};
+    static const float height[5] = {.55f, .90f, 1.50f, 1.98f, 2.12f};
     const int quadrant = row ? (col ? 2 : 3) : (col ? 1 : 0);
     const float cx = x - col + 1.0f, cz = y - row + 1.0f;
-    const float u0 = TEX_U(10), u1 = TEX_U(22);
-    const float v0 = TEX_V(10), v1 = TEX_V(18);
-    for (int band = 0; band < 3; ++band)
+    const float u0 = TEX_U(12), u1 = TEX_U(16);
+    const float v0 = TEX_V(12), v1 = TEX_V(16);
+    for (int band = 0; band < 4; ++band)
         for (int edge = quadrant * 2; edge < quadrant * 2 + 2; ++edge)
         {
             const float shade = .78f + .07f * band + (edge >= 4 ? .05f : 0);
@@ -419,6 +419,14 @@ static void EmitSolidCrown(VoxelBuilder *b, int x, int y, int col, int row)
                 &(VoxelVertex){cx + ring[edge+1][0]*radius[band+1], height[band+1], cz + ring[edge+1][1]*radius[band+1], u1,v0,shade},
                 &(VoxelVertex){cx + ring[edge][0]*radius[band+1], height[band+1], cz + ring[edge][1]*radius[band+1], u0,v0,shade});
         }
+    /* Narrow solid trunk, colored from the existing ground's bark. */
+    const float barkU = TEX_U(47.5f), barkV = TEX_V(20.5f);
+    for (int edge = quadrant * 2; edge < quadrant * 2 + 2; ++edge)
+        VoxelBuilder_Quad(b,
+            &(VoxelVertex){cx+ring[edge][0]*.16f,.01f,cz+ring[edge][1]*.16f,barkU,barkV,.85f},
+            &(VoxelVertex){cx+ring[edge+1][0]*.16f,.01f,cz+ring[edge+1][1]*.16f,barkU,barkV,.85f},
+            &(VoxelVertex){cx+ring[edge+1][0]*.16f,.80f,cz+ring[edge+1][1]*.16f,barkU,barkV,.85f},
+            &(VoxelVertex){cx+ring[edge][0]*.16f,.80f,cz+ring[edge][1]*.16f,barkU,barkV,.85f});
 }
 
 static void EmitCrownCard(VoxelBuilder *builder, const LargeArt *art, int x, int y, int col, int row,

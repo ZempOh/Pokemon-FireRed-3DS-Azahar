@@ -1,0 +1,12 @@
+diff --git a/app/src/main/kotlin/com/pokedaisy/app/companion/ui/CompanionSettingsScreen.kt b/app/src/main/kotlin/com/pokedaisy/app/companion/ui/CompanionSettingsScreen.kt
+--- a/app/src/main/kotlin/com/pokedaisy/app/companion/ui/CompanionSettingsScreen.kt
++++ b/app/src/main/kotlin/com/pokedaisy/app/companion/ui/CompanionSettingsScreen.kt
+@@ -794,7 +794,7 @@
+         ) { s.setVoxelField(!s.voxelField); changed() } else null,
+         if (s.voxelFieldSupported) SettingRow(
+             "VISUAL CLIMATE", listOf("Original", "Automatic", "Manual").getOrElse(s.voxelClimate and 3) { "Original" },
+-            subtitle = "Cosmetic only; Automatic follows the calendar",
++            subtitle = "Automatic: calendar seasons and changing weather",
+         ) { s.setVoxelClimate((s.voxelClimate and 3.inv()) or (((s.voxelClimate and 3) + 1) % 3)); changed() } else null,
+         if (s.voxelFieldSupported && (s.voxelClimate and 3) == 2) SettingRow(
+             "SEASON", listOf("Spring", "Summer", "Autumn", "Winter")[(s.voxelClimate shr 2) and 3],

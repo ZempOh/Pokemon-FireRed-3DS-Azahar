@@ -76,6 +76,10 @@ int main(void) {
         if(v.out[i]&0xff00)capPixels++;
     }
     assert(stonePixels>10 && capPixels>10);
+    assert(solidSnowRockId(0x24) && solidSnowRockId(0x53));
+    assert(solidSnowRockId(0x159) && solidSnowRockId(0x15f));
+    assert(!solidSnowRockId(0xe8) && !solidSnowRockId(0xf1));
+    assert(!solidSnowRockId(0xfc) && !solidSnowRockId(0x158));
     puts("Solid trees and field props: clipping, volume, winding and occlusion passed");
 }
 

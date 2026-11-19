@@ -1,5 +1,5 @@
 diff --git a/app/src/main/cpp/pk_wide.c b/app/src/main/cpp/pk_wide.c
-index 25be6e1..54adaf4 100644
+index 25be6e1..e6a3ad0 100644
 --- a/app/src/main/cpp/pk_wide.c
 +++ b/app/src/main/cpp/pk_wide.c
 @@ -28,6 +28,8 @@
@@ -159,7 +159,7 @@ index 25be6e1..54adaf4 100644
 +        if(conn>=0 && s->conn[conn].primary!=s->primary)continue;
 +        if(snow) {
 +            ground=0;
-+            if(id==0x24||id==0x53||id==0xe8||id==0xf1||id==0xfc||id==0x158||id==0x159||id==0x15f)kind=3;
++            if(solidSnowRockId(id))kind=3;
 +        } else {
 +            ground=letsgo?8:1;
 +            if((letsgo&&id==1)||(radical&&(id==0x12||id==0x1a)))kind=1;
@@ -220,14 +220,19 @@ index 25be6e1..54adaf4 100644
      climateAtmosphere(out, depth, v.w, v.h);
 diff --git a/app/src/main/cpp/pk_wide_props.h b/app/src/main/cpp/pk_wide_props.h
 new file mode 100644
-index 0000000..72016c9
+index 0000000..da97473
 --- /dev/null
 +++ b/app/src/main/cpp/pk_wide_props.h
-@@ -0,0 +1,108 @@
+@@ -0,0 +1,114 @@
 +// Closed low-poly field props; source colors remain tied to the live ROM palette.
 +// Coordinates and depth use the same world space as terrain, actors and trees.
 +#pragma once
 +struct SolidProp { struct SolidTree surface; int kind; };
++static int solidSnowRockId(int id) {
++    // Full single-cell rocks only. e8 is stairs; fc and 158 contain scenery
++    // edges, and f1 includes a border that must not be replaced with snow.
++    return id==0x24 || id==0x53 || id==0x159 || id==0x15f;
++}
 +
 +static void propFace(const struct VoxelView* v,const struct SolidTree* t,
 +                     struct SolidVertex a,struct SolidVertex b,struct SolidVertex c,
@@ -254,8 +259,9 @@ index 0000000..72016c9
 +            // Sampling only rows 4-7 erased snow rocks' dark stone bases.
 +            a.u=8.5f+dx[e]*3;b.u=8.5f+dx[j]*3;
 +            c.u=8.5f+dx[j]*2;d.u=8.5f+dx[e]*2;
-+            a.v=b.v=36.5f-hh[band]*24;
-+            c.v=d.v=36.5f-hh[band+1]*24;
++            const float rockV[4]={40.5f,36.5f,30.5f,12.5f};
++            a.v=b.v=rockV[band];
++            c.v=d.v=rockV[band+1];
 +        }
 +        if(inkX>=0){a.u=b.u=c.u=d.u=inkX+.5f;a.v=b.v=c.v=d.v=inkY+.5f;}
 +        propFace(v,t,a,b,c,d,170+band*22+(e<4?15:0));

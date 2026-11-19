@@ -41,8 +41,24 @@ cosmetic effects and do not change battle weather, encounters or saves.
 
 ## AYN Thor validation
 
-The [final build](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/actions/runs/44341672959)
-was installed and checked on the Thor with all three listed ROMs. See the
-[per-game checks, measured performance, limitations and exact hashes](graphics-upgrade.md).
+The [native-clock follow-up](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/actions/runs/44421988072)
+passed fresh Thor checks with all three listed ROMs. Patch 0009 corrects the
+Let’s Go settings title, uses the native GBA clock at normal speed, keeps audio
+writes nonblocking with bounded buffer rate control, and waits at most one
+cartridge frame before reusing a pending video frame. Fast-forward retains its
+existing refresh grouping and overwrite behavior.
+
+Across nine final field, battle, and active-battle phases, the measured
+120-frame windows held 59.6–59.8 FPS with zero unshown frames, dropped audio
+samples, or audio underruns. Field and steady battle phases were 65 seconds;
+active phases were 90 seconds. Battles and overworld returns were verified.
+These are targeted early-game checks, not a full-playthrough guarantee.
+
+- APK SHA-256: `2467e8063f73030ac745e2e449fb6f34c67a60503cffb242ad22dc785065a68a`
+- Patch/workflow commit: `18259de0421456a50ed695ec94da50dab30b3d5f`
+- [Measured results, rejected candidates, method and limits](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/android-pacing.html)
+- [Six-game lossless screenshots and gameplay GIFs](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/gallery.html)
+
+The earlier [initial validation](graphics-upgrade.md) remains historical context.
 The shared [voxel builder](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/voxel.html)
 also provides the three separately tested native Azahar titles.

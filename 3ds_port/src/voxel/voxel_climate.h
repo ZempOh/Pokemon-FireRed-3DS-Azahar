@@ -2,6 +2,23 @@
 #ifndef VOXEL_CLIMATE_H
 #define VOXEL_CLIMATE_H
 #include <time.h>
+#include <stdint.h>
+/* Stable pseudo-random fronts change on real-clock 15-minute boundaries.
+ * Reloading a map does not reroll weather. Seasons weight precipitation;
+ * consecutive equal fronts naturally last longer. No gameplay RNG is used. */
+static int climateWeatherAt(time_t seconds, int season) {
+    if (seconds < 0) return 1;
+    uint32_t x=(uint32_t)((uint64_t)seconds/900u) ^ 0x6d2b79f5u;
+    x ^= x >> 16; x *= 0x7feb352du; x ^= x >> 15;
+    x *= 0x846ca68bu; x ^= x >> 16;
+    unsigned roll=x%100u;
+    static const unsigned clear[4]={50,70,45,45};
+    if (season<0 || season>3) season=0;
+    if (roll<clear[season]) return 1;
+    if (roll>=90) return 4;
+    return season==3 ? 3 : 2;
+}
+
 static float sClimateMix;
 static int sClimateSeason, sClimateWeather;
 static uint64_t sClimateTick;
@@ -15,8 +32,9 @@ static void ClimateUpdate(bool eligible) {
     int weather=CtrSettings_GetInt("visual_weather",0);
     if(mode==1) {
         time_t t=time(NULL); struct tm *tm=gmtime(&t);
-        if(tm) { season=((tm->tm_mon+10)%12)/3; weather=tm->tm_yday%5?1:season==3?3:2; }
+        if(tm) { season=((tm->tm_mon+10)%12)/3; weather=climateWeatherAt(t,season); }
     }
+    if(mode==1) dt/=8.0f; /* Eight-second automatic fades. */
     if(season<0 || season>3) season=0;
     if(weather<0 || weather>4) weather=0;
     eligible=eligible && (mode==1 || mode==2);

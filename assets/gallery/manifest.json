@@ -480,5 +480,59 @@
     "build_reference": "scenery-3d.html",
     "commit": "873a0fe6aadaec25ec4e621944b1eee7b0870167",
     "format": "480px,10FPS; not a pacing measurement"
+  },
+  {
+    "game": "firered",
+    "view": "boulder-moving",
+    "file": "firered-boulder-moving.gif",
+    "sha256": "50da6316ad2f69e279abb85d0e04bff5546be49cea25b84d36cf9d853ae23bb0",
+    "commit": "8a0778b88ab0fc8a0f3ddd9c8ace9071fce358ff",
+    "format": "10 FPS actual Thor capture; not a pacing measurement",
+    "build_reference": "scenery-3d.html"
+  },
+  {
+    "game": "firered",
+    "view": "rock-smash",
+    "file": "firered-rock-smash.gif",
+    "sha256": "72b2045eabbb263909081da2463a341938b5463694bc47dbd8ab27db0cfbe57f",
+    "commit": "8a0778b88ab0fc8a0f3ddd9c8ace9071fce358ff",
+    "format": "10 FPS actual Thor capture; not a pacing measurement",
+    "build_reference": "scenery-3d.html"
+  },
+  {
+    "game": "frlg",
+    "view": "boulder-moving",
+    "file": "frlg-boulder-moving.gif",
+    "sha256": "655db07a8bbe41a997358236df1a6daa0f59b3343206dbe76f3b7bdc14cf79a4",
+    "commit": "aeaac4dc17ae00c8f01f82466312228db90d394d",
+    "format": "10 FPS actual Thor capture; not a pacing measurement",
+    "build_reference": "scenery-3d.html"
+  },
+  {
+    "game": "frlg",
+    "view": "rock-smash",
+    "file": "frlg-rock-smash.gif",
+    "sha256": "17ade94ab366ff344e11aaa2890c8fa5b8fc729c0f2a0c3682c6e73aae455bfb",
+    "commit": "aeaac4dc17ae00c8f01f82466312228db90d394d",
+    "format": "10 FPS actual Thor capture; not a pacing measurement",
+    "build_reference": "scenery-3d.html"
+  },
+  {
+    "game": "classic",
+    "view": "boulder-moving",
+    "file": "classic-boulder-moving.gif",
+    "sha256": "d582bac25718dc27c348f07ed235c2449c82bd276f3427eb181e68f00acb47b0",
+    "commit": "873a0fe6aadaec25ec4e621944b1eee7b0870167",
+    "format": "10 FPS actual Thor capture; not a pacing measurement",
+    "build_reference": "scenery-3d.html"
+  },
+  {
+    "game": "classic",
+    "view": "rock-smash",
+    "file": "classic-rock-smash.gif",
+    "sha256": "72e1ee80664d2dc58339d896b2cd1f1871d95eabbd799cb0979ae337302f4656",
+    "commit": "873a0fe6aadaec25ec4e621944b1eee7b0870167",
+    "format": "10 FPS actual Thor capture; not a pacing measurement",
+    "build_reference": "scenery-3d.html"
   }
 ]

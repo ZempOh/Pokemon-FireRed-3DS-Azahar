@@ -27,6 +27,7 @@
 #include "voxel_atlas.h"
 #include "voxel_winter_material.h"
 static bool IsSolidCutTree(unsigned id);
+static bool IsTileEffect(const struct SpriteTemplate *template);
 #include "voxel_relief.h"
 #include "voxel_sprite_slots.h"
 #include "voxel_tree.h"
@@ -534,7 +535,8 @@ static bool RefreshSlot(unsigned index, const struct Sprite *sprite, const struc
     else
         memcpy(palette, PLTT + 0x200 + (color256 ? 0 : sprite->oam.paletteNum * 32), paletteBytes);
 
-    unsigned winterMix=(obj && IsSolidCutTree(obj->graphicsId)) ? VoxelAtlas_GetWinter() : 0;
+    /* Grass rustling is environmental scenery too; never recolor actors. */
+    unsigned winterMix=((obj && IsSolidCutTree(obj->graphicsId)) || IsTileEffect(sprite->template)) ? VoxelAtlas_GetWinter() : 0;
     changed = !slot->valid
            || slot->winterMix != winterMix
            || slot->width != w || slot->height != h

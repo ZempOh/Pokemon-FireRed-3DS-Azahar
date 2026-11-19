@@ -90,5 +90,51 @@
     "limits": "Selected field scene, idle battle, active battle through field return, Strength movement, Rock Smash removal and multiple-rock visibility. Sampled timing is not a guarantee for every scene or frame. Asset coverage remains incomplete; sprites for characters and battle creatures are retained.",
     "asset": "FRLG-Plus-3D-Scenery-2026-11-19.zip",
     "asset_sha256": "92a3e2a2a3c093c1e896d8ba8a77314453fcd269c0b1b0e62df64dc19c760174"
+  },
+  "classic": {
+    "game": "classic",
+    "date": "2026-11-19",
+    "build_commit": "873a0fe6aadaec25ec4e621944b1eee7b0870167",
+    "ci_run": 44484077403,
+    "engine_sha256": "7d5f0f88ad1e10eb565008958539ee79b69acef29bd545487ccd19d87cc212dc",
+    "web_payload_sha256": "b78425128a361d97ef79e36b9df0ad48a7a82c04eaa00eae2d53d15f9d7391ec",
+    "data_abi": "74f29b40",
+    "passed": true,
+    "phases": {
+      "field": {
+        "samples": 12,
+        "minimum_sampled_fps": 59.8,
+        "work_over_frame_budget": 0,
+        "active_audio_underruns": 0,
+        "audio_track_advanced": true
+      },
+      "battle": {
+        "samples": 12,
+        "minimum_sampled_fps": 59.8,
+        "work_over_frame_budget": 0,
+        "active_audio_underruns": 0,
+        "audio_track_advanced": true
+      },
+      "active": {
+        "samples": 12,
+        "minimum_sampled_fps": 59.8,
+        "work_over_frame_budget": 0,
+        "active_audio_underruns": 0,
+        "audio_track_advanced": true
+      }
+    },
+    "checks": {
+      "commit": "873a0fe6aadaec25ec4e621944b1eee7b0870167",
+      "visual_field": true,
+      "battle_return_verified": true,
+      "gallery_verified": true,
+      "notes": "Field, idle and active battle minimum sampled FPS59.8; clean active audio and field return. Victory Road Strength moved full boulder. Mt Moon Rock Smash removed boulder, awarded Big Pearl, and allowed path traversal; other complete rocks stayed visible. Common trees and raised grass verified. Coverage incomplete, including Classic flowers.",
+      "strength_push_verified": true,
+      "rock_smash_verified": true,
+      "multiple_rocks_visible": true
+    },
+    "limits": "Selected field scene, idle battle, active battle through field return, Strength movement, Rock Smash removal and multiple-rock visibility. Sampled timing is not a guarantee for every scene or frame. Asset coverage remains incomplete; sprites for characters and battle creatures are retained.",
+    "asset": "Classic-3D-Scenery-2026-11-19.zip",
+    "asset_sha256": "30130a3efdc4e2458d7b613c3c1e762707930eb65610c8216df14238c0e505a5"
   }
 }

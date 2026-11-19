@@ -455,3 +455,17 @@ Let’s Go, Radical Red and Unbound passed the same November 19 APK on the Thor.
 <!-- FLORA CLIMATE HOLD -->
 The first natural-weather FireRed candidate was withdrawn after a real-clock boundary exposed a brief seasonal-color reset. The builder retains the previously qualified scenery build while corrected candidates undergo fresh Thor tests.
 <!-- FLORA CLIMATE HOLD END -->
+
+
+<!-- ANDROID CLIMATE START -->
+### Android 3D rocks and natural weather
+
+Let’s Go, Radical Red and Unbound passed the same APK on the Thor. [Download APK](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/PokeDaisy-3D-Flora-Climate-v2-2026-11-19.apk). [Tests, seasons, weather and fresh media](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/android-climate.html). Select **Visual Climate → Automatic** for calendar seasons and season-weighted randomized weather every 15 minutes. Repeated selections can last longer; weather fades gradually. Native scripted weather takes priority, and cosmetic weather stays outdoors. Gameplay RNG and battle weather are unchanged. Manual presets remain available. Live movable and breakable rocks use solid geometry in tested scenes; full asset coverage remains incomplete.
+
+![letsgo actual Thor gameplay](docs/screenshots/graphics-gallery/letsgo-motion.gif)
+
+![radical actual Thor gameplay](docs/screenshots/graphics-gallery/radical-motion.gif)
+
+![unbound actual Thor gameplay](docs/screenshots/graphics-gallery/unbound-motion.gif)
+
+<!-- ANDROID CLIMATE END -->

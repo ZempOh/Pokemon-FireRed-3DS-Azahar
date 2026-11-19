@@ -237,206 +237,6 @@
     "format": "480px,10FPS; not a pacing measurement"
   },
   {
-    "game": "letsgo",
-    "view": "2d",
-    "file": "letsgo-2d.png",
-    "sha256": "815c0130a4b6aca0f97b083cd284f3fbbdc906db023f6e5bcd798867b76c7820",
-    "commit": "a6ec5250e01ed573604d2717cafc6d6110d82d7b",
-    "build_reference": "android-scenery.html"
-  },
-  {
-    "game": "letsgo",
-    "view": "3d",
-    "file": "letsgo-3d.png",
-    "sha256": "649efd221fb9ef17c3993c56169235be5be3a787ed2a2035d17059a36275b9c7",
-    "commit": "a6ec5250e01ed573604d2717cafc6d6110d82d7b",
-    "build_reference": "android-scenery.html"
-  },
-  {
-    "game": "letsgo",
-    "view": "spring",
-    "file": "letsgo-spring.png",
-    "sha256": "cef9a9b11eb68400624ee5ce60df86ed430163638204d2b5143193878c057a78",
-    "commit": "a6ec5250e01ed573604d2717cafc6d6110d82d7b",
-    "build_reference": "android-scenery.html"
-  },
-  {
-    "game": "letsgo",
-    "view": "summer",
-    "file": "letsgo-summer.png",
-    "sha256": "e675c36756ed2ad6dcc4a57100f6948fa59fcad9be30364bf8bb2fdb46d5f923",
-    "commit": "a6ec5250e01ed573604d2717cafc6d6110d82d7b",
-    "build_reference": "android-scenery.html"
-  },
-  {
-    "game": "letsgo",
-    "view": "autumn",
-    "file": "letsgo-autumn.png",
-    "sha256": "ecd86055f9e9b36dc35f6339dd792ad1ad7046118afc06df2e73d7f75bfac51f",
-    "commit": "a6ec5250e01ed573604d2717cafc6d6110d82d7b",
-    "build_reference": "android-scenery.html"
-  },
-  {
-    "game": "letsgo",
-    "view": "winter",
-    "file": "letsgo-winter.png",
-    "sha256": "a74b0374565b3797b3bea91152fa35ecf8602b822b01f19dfb0cbfa73129df72",
-    "commit": "a6ec5250e01ed573604d2717cafc6d6110d82d7b",
-    "build_reference": "android-scenery.html"
-  },
-  {
-    "game": "letsgo",
-    "view": "battle",
-    "file": "letsgo-battle.png",
-    "sha256": "b368470e7f0f57b32ccd8087637a5fa8389cea85a464dbeb8bff260912dc4327",
-    "commit": "a6ec5250e01ed573604d2717cafc6d6110d82d7b",
-    "build_reference": "android-scenery.html"
-  },
-  {
-    "game": "letsgo",
-    "view": "motion",
-    "file": "letsgo-motion.gif",
-    "sha256": "4a9fab0515427777a098fa8a189c053115e7e1b1834fbb979b8f75972e3612d4",
-    "commit": "a6ec5250e01ed573604d2717cafc6d6110d82d7b",
-    "build_reference": "android-scenery.html"
-  },
-  {
-    "game": "radical",
-    "view": "2d",
-    "file": "radical-2d.png",
-    "sha256": "a7ef91d5aff0b856ed1769f9ac13cb076ee59348e4c6af083239db83bced4fe1",
-    "commit": "a6ec5250e01ed573604d2717cafc6d6110d82d7b",
-    "build_reference": "android-scenery.html"
-  },
-  {
-    "game": "radical",
-    "view": "3d",
-    "file": "radical-3d.png",
-    "sha256": "337fee6572990a27747d365f5684ac258957edbaec6dc518c85240f5291801c7",
-    "commit": "a6ec5250e01ed573604d2717cafc6d6110d82d7b",
-    "build_reference": "android-scenery.html"
-  },
-  {
-    "game": "radical",
-    "view": "spring",
-    "file": "radical-spring.png",
-    "sha256": "c3d94a18fee90f739883509ee77838fd98be2dd63cbdca41e15269e44d3791af",
-    "commit": "a6ec5250e01ed573604d2717cafc6d6110d82d7b",
-    "build_reference": "android-scenery.html"
-  },
-  {
-    "game": "radical",
-    "view": "summer",
-    "file": "radical-summer.png",
-    "sha256": "14289b39399819cabce4cb04a67154cf8c6a1b2bba6c735960c3d27200b0b33c",
-    "commit": "a6ec5250e01ed573604d2717cafc6d6110d82d7b",
-    "build_reference": "android-scenery.html"
-  },
-  {
-    "game": "radical",
-    "view": "autumn",
-    "file": "radical-autumn.png",
-    "sha256": "79ecc478740010b33c2ffaf81b6d9fdadc76c0832dad026f3b798f323b3ef55b",
-    "commit": "a6ec5250e01ed573604d2717cafc6d6110d82d7b",
-    "build_reference": "android-scenery.html"
-  },
-  {
-    "game": "radical",
-    "view": "winter",
-    "file": "radical-winter.png",
-    "sha256": "f29203cc702454107839bac15a508d8485d4494de5672f49887d7deb8a6e8658",
-    "commit": "a6ec5250e01ed573604d2717cafc6d6110d82d7b",
-    "build_reference": "android-scenery.html"
-  },
-  {
-    "game": "radical",
-    "view": "battle",
-    "file": "radical-battle.png",
-    "sha256": "42cdfcb4633bb4eecb8620d854d6bb77737f878de7dd214496df988741ccbca2",
-    "commit": "a6ec5250e01ed573604d2717cafc6d6110d82d7b",
-    "build_reference": "android-scenery.html"
-  },
-  {
-    "game": "radical",
-    "view": "motion",
-    "file": "radical-motion.gif",
-    "sha256": "c73848536a67078c9a5ca878f288cad556d6220a498cea011c15ff7d1e6fbdf6",
-    "commit": "a6ec5250e01ed573604d2717cafc6d6110d82d7b",
-    "build_reference": "android-scenery.html"
-  },
-  {
-    "game": "unbound",
-    "view": "2d",
-    "file": "unbound-2d.png",
-    "sha256": "9c7096ceba47c3e411e2d18a2ddd7fb774cbb06dc9b478c371ed74a4440f3a97",
-    "commit": "a6ec5250e01ed573604d2717cafc6d6110d82d7b",
-    "build_reference": "android-scenery.html"
-  },
-  {
-    "game": "unbound",
-    "view": "3d",
-    "file": "unbound-3d.png",
-    "sha256": "f00156c5f7705d4436bfa013d05153424596ec767c9574c9963a4e12a59dc95a",
-    "commit": "a6ec5250e01ed573604d2717cafc6d6110d82d7b",
-    "build_reference": "android-scenery.html"
-  },
-  {
-    "game": "unbound",
-    "view": "spring",
-    "file": "unbound-spring.png",
-    "sha256": "ac9c6a3756f5d87a582598aff88bbd2810cb120351146091f766b68da11ba530",
-    "commit": "a6ec5250e01ed573604d2717cafc6d6110d82d7b",
-    "build_reference": "android-scenery.html"
-  },
-  {
-    "game": "unbound",
-    "view": "summer",
-    "file": "unbound-summer.png",
-    "sha256": "5a62fa5a98e521ab827fd720bfff4f4a644fbd664462b1979d34cfe49a5872e2",
-    "commit": "a6ec5250e01ed573604d2717cafc6d6110d82d7b",
-    "build_reference": "android-scenery.html"
-  },
-  {
-    "game": "unbound",
-    "view": "autumn",
-    "file": "unbound-autumn.png",
-    "sha256": "ac9c6a3756f5d87a582598aff88bbd2810cb120351146091f766b68da11ba530",
-    "commit": "a6ec5250e01ed573604d2717cafc6d6110d82d7b",
-    "build_reference": "android-scenery.html"
-  },
-  {
-    "game": "unbound",
-    "view": "winter",
-    "file": "unbound-winter.png",
-    "sha256": "ac9c6a3756f5d87a582598aff88bbd2810cb120351146091f766b68da11ba530",
-    "commit": "a6ec5250e01ed573604d2717cafc6d6110d82d7b",
-    "build_reference": "android-scenery.html"
-  },
-  {
-    "game": "unbound",
-    "view": "battle",
-    "file": "unbound-battle.png",
-    "sha256": "b96f3771da8956c94304c75404c41130e919627963005c2a293fcc0b264c6843",
-    "commit": "a6ec5250e01ed573604d2717cafc6d6110d82d7b",
-    "build_reference": "android-scenery.html"
-  },
-  {
-    "game": "unbound",
-    "view": "motion",
-    "file": "unbound-motion.gif",
-    "sha256": "a57031410b62f4dfbcf72b559e1a6e2dce4a15ddd7ff7f263298d919693bedeb",
-    "commit": "a6ec5250e01ed573604d2717cafc6d6110d82d7b",
-    "build_reference": "android-scenery.html"
-  },
-  {
-    "game": "letsgo",
-    "view": "title",
-    "file": "letsgo-title.png",
-    "sha256": "ea80b9aea310759393c2ab64b0de0aedc5d065502469181d3b3ffe7725d6232e",
-    "commit": "a6ec5250e01ed573604d2717cafc6d6110d82d7b",
-    "build_reference": "android-scenery.html"
-  },
-  {
     "game": "firered",
     "view": "boulder-moving",
     "file": "firered-boulder-moving.gif",
@@ -489,5 +289,461 @@
     "commit": "873a0fe6aadaec25ec4e621944b1eee7b0870167",
     "format": "10 FPS actual Thor capture; not a pacing measurement",
     "build_reference": "scenery-3d.html"
+  },
+  {
+    "game": "letsgo",
+    "view": "2d",
+    "file": "letsgo-2d.png",
+    "sha256": "48fd471ee5a21ea7b193d117d1d31498ef604b9351fc8950ad142f364bad7643",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "letsgo",
+    "view": "3d",
+    "file": "letsgo-3d.png",
+    "sha256": "649efd221fb9ef17c3993c56169235be5be3a787ed2a2035d17059a36275b9c7",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "letsgo",
+    "view": "spring",
+    "file": "letsgo-spring.png",
+    "sha256": "fe1c7c0c012b53a391c8a65345a731d5025a8b852975dd0ca0829e6c955b321a",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "letsgo",
+    "view": "summer",
+    "file": "letsgo-summer.png",
+    "sha256": "f52ced98d5ae28fe3959f07f376ab5e270429c78816038431f563b7054f5b80e",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "letsgo",
+    "view": "autumn",
+    "file": "letsgo-autumn.png",
+    "sha256": "a3a1d3eb2c4aa3d6218392d9e1853f5ae698773e1369e38e46ad6cf937910821",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "letsgo",
+    "view": "winter",
+    "file": "letsgo-winter.png",
+    "sha256": "8b2201af33d3c2a12b067568c9d30800fa7a4586cd984af2b3cc4700553b6eb5",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "letsgo",
+    "view": "clear",
+    "file": "letsgo-clear.png",
+    "sha256": "7d0f1ad9f506ccb29d274cac5baab6936ef42724ffae899104e61354e05c08c5",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "letsgo",
+    "view": "rain",
+    "file": "letsgo-rain.png",
+    "sha256": "d203b069937b82164054bc5d4852397485e5d3324de2142e0f2457c4f1b749f4",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "letsgo",
+    "view": "snow",
+    "file": "letsgo-snow.png",
+    "sha256": "0f043e897a6dc242da830463944419160db471e122434aae1764e46164e903c4",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "letsgo",
+    "view": "fog",
+    "file": "letsgo-fog.png",
+    "sha256": "f43764903f1263f4c5340d38afa36ab3a8b69e3141eeda66d1d6a617a5fe4f49",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "letsgo",
+    "view": "battle",
+    "file": "letsgo-battle.png",
+    "sha256": "b368470e7f0f57b32ccd8087637a5fa8389cea85a464dbeb8bff260912dc4327",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "letsgo",
+    "view": "motion",
+    "file": "letsgo-motion.gif",
+    "sha256": "1440471296a32e00eed61ec22b04e01409f07fd59896dab8a84473a3be06319c",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "radical",
+    "view": "2d",
+    "file": "radical-2d.png",
+    "sha256": "f364fe2c0fbe4a7f6b6fc3c564d3441676758db3ba23b4bae2a29e30f9211799",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "radical",
+    "view": "3d",
+    "file": "radical-3d.png",
+    "sha256": "ee4e79c9a7e6cd2db671a3a9c1e05fd8c6ebebafbf47833d59e15beef2c4ff89",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "radical",
+    "view": "spring",
+    "file": "radical-spring.png",
+    "sha256": "891fa9375ef5cb21ca3d20bc082c79d28157b34439ff3cb806021a1af93e0cea",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "radical",
+    "view": "summer",
+    "file": "radical-summer.png",
+    "sha256": "688fd3f0ec92ea60c21597c072e7cbac54802f4435768049c5b09e6e49ca7c11",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "radical",
+    "view": "autumn",
+    "file": "radical-autumn.png",
+    "sha256": "124e4e6a5305a4781438a12431c8f84ebd3814553d8b343eb910dcd1289379db",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "radical",
+    "view": "winter",
+    "file": "radical-winter.png",
+    "sha256": "02557decf86a932419b0864ae1f6fbebeaf1cf51c01528206e138a97f1a7351f",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "radical",
+    "view": "clear",
+    "file": "radical-clear.png",
+    "sha256": "891fa9375ef5cb21ca3d20bc082c79d28157b34439ff3cb806021a1af93e0cea",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "radical",
+    "view": "rain",
+    "file": "radical-rain.png",
+    "sha256": "e6a4e871c1aa3f688ea7237d3d916481c13f8d6fc7314261628f6e2ea3d78598",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "radical",
+    "view": "snow",
+    "file": "radical-snow.png",
+    "sha256": "c01a68df9b4d3192482313bd678dc9c36c475ee98de15673dccf3b3bcd6a9255",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "radical",
+    "view": "fog",
+    "file": "radical-fog.png",
+    "sha256": "cc412af4a1b770822dbbc9ad0e59dc8c8e0fb8d1415e0ae8cc198d89c3f2e436",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "radical",
+    "view": "battle",
+    "file": "radical-battle.png",
+    "sha256": "42cdfcb4633bb4eecb8620d854d6bb77737f878de7dd214496df988741ccbca2",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "radical",
+    "view": "motion",
+    "file": "radical-motion.gif",
+    "sha256": "0f60e3d23d1f9cece3cb83963993ac2bbd666c7be2b54a60f8e0deaf39e16055",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "unbound",
+    "view": "2d",
+    "file": "unbound-2d.png",
+    "sha256": "1a129ad20739b2238a744e52be683dad0f48eb7a469d37f85e007e6407c3d6f6",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "unbound",
+    "view": "3d",
+    "file": "unbound-3d.png",
+    "sha256": "2dbe45b009609573be8ebb0e8b14ad8407607e6c14bcb9cdd76c32165446f403",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "unbound",
+    "view": "spring",
+    "file": "unbound-spring.png",
+    "sha256": "129d716cc162a711492c7127bce88174279d2fa059356c8eddef0cbad662a838",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "unbound",
+    "view": "summer",
+    "file": "unbound-summer.png",
+    "sha256": "b76670c7aca7944bcffc91adf164cc104b7e376d7d94e1e2566c510d3a9a961f",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "unbound",
+    "view": "autumn",
+    "file": "unbound-autumn.png",
+    "sha256": "46e0a04f59ac1b193801e7b5e38672ca18b84dbf8bcc4959094bbbf3ef7b645d",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "unbound",
+    "view": "winter",
+    "file": "unbound-winter.png",
+    "sha256": "cd00c78a9e6e5a0cd29e8c3025fd838908a7fc8b4437f96c66608f4da421038b",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "unbound",
+    "view": "clear",
+    "file": "unbound-clear.png",
+    "sha256": "ebbd835414f702c6b6559ca78381cdfe3390e1966ce3df9fd8cab29366973c67",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "unbound",
+    "view": "rain",
+    "file": "unbound-rain.png",
+    "sha256": "c47b1cb447095ff985f2f5e4de193bfb82ab6d1769d6402d2d7cf5cab67da6fc",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "unbound",
+    "view": "snow",
+    "file": "unbound-snow.png",
+    "sha256": "7f89beaaaa2d562be5f99c6d2c70eca6225678dce24268eaccd03ca088fb396e",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "unbound",
+    "view": "fog",
+    "file": "unbound-fog.png",
+    "sha256": "87e76c6a6660a6290b71daea199059154423222abc813df3440703dee8f2e9c2",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "unbound",
+    "view": "battle",
+    "file": "unbound-battle.png",
+    "sha256": "b96f3771da8956c94304c75404c41130e919627963005c2a293fcc0b264c6843",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "unbound",
+    "view": "motion",
+    "file": "unbound-motion.gif",
+    "sha256": "c88ab73e661b22357151446184d4e8b66bfa146c6c378ec055188b6a055837b9",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "letsgo",
+    "view": "rain",
+    "file": "letsgo-rain.gif",
+    "sha256": "77403a9e066ef2560d37ab751045be07971ef6b86fc92cf1394b32b966163e1d",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "letsgo",
+    "view": "snow",
+    "file": "letsgo-snow.gif",
+    "sha256": "e55cae812d38b814ededd834b357a562a8150737db0f19bdd4e6819adad6f2b2",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "letsgo",
+    "view": "fog",
+    "file": "letsgo-fog.gif",
+    "sha256": "368ab24b7eacb5ce8ecf80d1cfc7ec45e2ab27097f98bdd812ebe34b2e6254e1",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "letsgo",
+    "view": "boulder-moving",
+    "file": "letsgo-boulder-moving.gif",
+    "sha256": "86dcc94bdc96f709024170c0fb0a29f77d49baf0da5927b7bbe1d109cc46ab90",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "letsgo",
+    "view": "rock-smash",
+    "file": "letsgo-rock-smash.gif",
+    "sha256": "f027e52e7cc9c07a84ff5a5f76e7f33fa3218ee8f5883d9c9398ac35d3667f3a",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "radical",
+    "view": "rain",
+    "file": "radical-rain.gif",
+    "sha256": "a0f9baf0c33f9f66cef5117f63bfaad4f58646a3bd1f26a2b554e2f4e10adbb6",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "radical",
+    "view": "snow",
+    "file": "radical-snow.gif",
+    "sha256": "554100f79aca11540a1aa942701f0d96dbb8b11196a630a60940ea9e2588a185",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "radical",
+    "view": "fog",
+    "file": "radical-fog.gif",
+    "sha256": "146a56923cb16e8b8d92ccd8ac989d1434d3991c6daf6e92d6e74c361299c36a",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "radical",
+    "view": "boulder-moving",
+    "file": "radical-boulder-moving.gif",
+    "sha256": "09555e6e01c6065d8fd4b1ecf337eda83e65028a6f5cc1d7eb042a813aec5716",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "radical",
+    "view": "rock-smash",
+    "file": "radical-rock-smash.gif",
+    "sha256": "d373ad12f420bbe85bc478f926d10fa430076fa6471bdefb83d60ba868f5655d",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "unbound",
+    "view": "rain",
+    "file": "unbound-rain.gif",
+    "sha256": "6b0cd9a1615775cb09f5d43aac7ec220ebe4909ebe138b45fe6c4efe8b8c37ef",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "unbound",
+    "view": "snow",
+    "file": "unbound-snow.gif",
+    "sha256": "23401aea3baffe701be53210b78956f7085494d0f9520f877325ffd2d43d6a80",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "unbound",
+    "view": "fog",
+    "file": "unbound-fog.gif",
+    "sha256": "770aee61129c10a3434844d7ec5702c1f7418ffc3501d3420140213802547364",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "unbound",
+    "view": "boulder-moving",
+    "file": "unbound-boulder-moving.gif",
+    "sha256": "437462f71d8fad22298a28daf18aaf2133d6393536a55e25da03ba9ad918abb3",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "unbound",
+    "view": "rock-smash",
+    "file": "unbound-rock-smash.gif",
+    "sha256": "d0acd9f8b2386feb693eec3110a97eea4b240b3f4a3dc4f24058f372e100bc6c",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "unbound",
+    "view": "green-spring",
+    "file": "unbound-green-spring.png",
+    "sha256": "ebbd835414f702c6b6559ca78381cdfe3390e1966ce3df9fd8cab29366973c67",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "unbound",
+    "view": "green-summer",
+    "file": "unbound-green-summer.png",
+    "sha256": "7181732d9d7e5aa27f89305244ea217f49aadd70985440a4e9227fdbd949f6a7",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "unbound",
+    "view": "green-autumn",
+    "file": "unbound-green-autumn.png",
+    "sha256": "f09801449d0f925dc624bb12b218f199224861381c71ce4b39260366e6ecb0cd",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "unbound",
+    "view": "green-winter",
+    "file": "unbound-green-winter.png",
+    "sha256": "89ee4d556c43b3a3933ac55ff94c70f6f39b67cf3c693e1f077e7d1fb73df8c1",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "letsgo",
+    "view": "title",
+    "file": "letsgo-title.png",
+    "sha256": "ea80b9aea310759393c2ab64b0de0aedc5d065502469181d3b3ffe7725d6232e",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
+  },
+  {
+    "game": "unbound",
+    "view": "natural-transition",
+    "file": "unbound-natural-transition.gif",
+    "sha256": "280563b9dc3f5a0d974bfe348ee44462edcac226caee0f80eecdde5d354b040a",
+    "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
+    "build_reference": "android-climate.html"
   }
 ]

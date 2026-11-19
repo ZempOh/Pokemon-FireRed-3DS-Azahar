@@ -342,6 +342,24 @@ static void EmitSmallCell(VoxelBuilder *builder, const VoxelMapInstance *inst, i
     float baseZ = wz + (dewford ? 0.975f : 0.825f);
 
     EmitGround(builder, inst, x, y, TEX_U(tx), TEX_V(ty), TEX_U(tx + 16), TEX_V(ty + 16));
+    if(grass)
+    {
+        /* Each tuft has four solid sides, rather than one leaned card. */
+        static const float dx[5]={-1,0,1,0,-1},dz[5]={0,-1,0,1,0};
+        for(int stalk=0;stalk<7;stalk++)
+        {
+            float sx=wx+.22f+(stalk%3)*.28f,sz=wz+.25f+(stalk/3)*.24f;
+            float h=.42f+(stalk%3)*.10f,lean=(stalk&1)?.08f:-.08f;
+            float u=TEX_U(cx+5+(stalk%3)*3),v=TEX_V(cy+18);
+            for(int face=0;face<4;face++)
+                VoxelBuilder_Quad(builder,
+                    &(VoxelVertex){sx+dx[face]*.055f,0,sz+dz[face]*.035f,u,v,.72f+face*.07f},
+                    &(VoxelVertex){sx+dx[face+1]*.055f,0,sz+dz[face+1]*.035f,u,v,.72f+face*.07f},
+                    &(VoxelVertex){sx+lean,h,sz+.025f,u,v,.95f},
+                    &(VoxelVertex){sx+lean,h,sz+.025f,u,v,.95f});
+        }
+        return;
+    }
     builder->rounded = true;
     VoxelBuilder_Quad(builder,
         &(VoxelVertex){wx,        baseHeight + rise, baseZ - run, TEX_U(cx),      TEX_V(cy),      1.0f},

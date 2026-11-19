@@ -344,7 +344,7 @@ static bool ComposeAt(const struct AtlasSource *src, const uint16_t *entries,
     if(src->winter) {
         uintptr_t begin=(uintptr_t)src->primaryMetatiles, entry=(uintptr_t)entries;
         unsigned id=entry>=begin ? (unsigned)((entry-begin)/(NUM_TILES_PER_METATILE*sizeof(uint16_t))) : 1024;
-        int path=id<=0x0d;
+        int path=VoxelWinter_IsPath(id);
         for(unsigned y=0;y<16;y++)for(unsigned x=0;x<16;x++) {
             unsigned at=CtrVideo_Texel(baseX+x,baseY+y,width);
             dest[at]=VoxelWinter_Color(dest[at],src->winter,path);

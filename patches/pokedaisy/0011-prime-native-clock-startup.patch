@@ -1,8 +1,8 @@
 diff --git a/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt b/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt
-index f3dce89..621aea5 100644
+index f3dce89..c65c681 100644
 --- a/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt
 +++ b/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt
-@@ -1274,6 +1274,14 @@ class EmulatorEngine(
+@@ -1274,6 +1274,16 @@ class EmulatorEngine(
          // Vsync pacing (see the class comment): the device buffer's size, and what's been
          // written to it since it started or was flushed (every write counts) - minus its play head, what's still queued.
          val bufferFrames = track?.bufferSizeInFrames ?: 0
@@ -10,14 +10,16 @@ index f3dce89..621aea5 100644
 +            // Native-clock launches can spend a frame compiling the companion and renderer.
 +            // Prime a full buffer before the first audible frame, then return to the normal
 +            // half-buffer threshold once playback advances. Do not insert silence or skip audio.
-+            if (nativeClockAudio && track != null && android.os.Build.VERSION.SDK_INT >= 31) {
-+                runCatching { track.startThresholdInFrames = bufferFrames }
++            track?.let { startupTrack ->
++                if (nativeClockAudio && android.os.Build.VERSION.SDK_INT >= 31) {
++                    runCatching { startupTrack.startThresholdInFrames = bufferFrames }
++                }
 +            }
 +        }
          var framesWritten = 0L
          var underruns = track?.underrunCount ?: 0
          var vsyncMode = false
-@@ -1869,8 +1877,13 @@ class EmulatorEngine(
+@@ -1869,8 +1879,13 @@ class EmulatorEngine(
              }
              // The timer fallback keeps the whole buffer: it's there for devices that ran dry. So does a DS game's
              // STEADY copy, which fills it to the top on purpose (a track starts once its buffer is full).
@@ -33,7 +35,7 @@ index f3dce89..621aea5 100644
              if (half != trackHalf && track != null) {
                  trackHalf = half
                  runCatching { track.bufferSizeInFrames = if (half) bufferFrames / 2 else bufferFrames }
-@@ -1969,7 +1982,11 @@ class EmulatorEngine(
+@@ -1969,7 +1984,11 @@ class EmulatorEngine(
                      // otherwise spent a third of its range on, GitHub #215).
                      val rate = sampleRate * (if (nds) NDS_FPS else GBA_FPS) / frameHz * drc
                      MgbaCore.pkSetAudioRate(rate)

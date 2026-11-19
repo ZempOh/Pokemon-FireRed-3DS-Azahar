@@ -413,3 +413,13 @@ pokefirered decompilation.
 See [NOTICE.md](NOTICE.md) for credits and licences. Pokémon FireRed 3DS is an
 unofficial fan project, not affiliated with or endorsed by Nintendo, Game
 Freak, Creatures or The Pokémon Company.
+
+
+<!-- EXPANDED PROPS PREVIEW -->
+### Expanded 3D scenery — unreleased prototype
+
+The next pass adds actual mesh volume to selected grass, flowers, shrubs and rocks, including interactive boulders in the native games. **Coverage is incomplete and the expanded builds have not passed Thor qualification.** Existing release downloads remain unchanged.
+
+This is an offline scene rendered by the engine's C geometry code using ROM-derived textures, not a Thor capture. [Coverage and limits](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/props-preview.html).
+
+![Flat assets above and volumetric prototype below](docs/screenshots/props-preview/field-props.png)

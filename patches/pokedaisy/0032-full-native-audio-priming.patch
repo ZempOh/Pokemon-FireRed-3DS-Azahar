@@ -1,0 +1,50 @@
+--- a/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt
++++ b/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt
+@@ -1918,7 +1918,12 @@
+             }
+             val starting = track.playState != AudioTrack.PLAYSTATE_PLAYING
+             val primeFrames = if (android.os.Build.VERSION.SDK_INT >= 31) {
+-                if (starting && framesWritten == 0L) track.startThresholdInFrames = bufferFrames * 3 / 4
++                // Startup UI/JIT/GC work can consume the old three-quarter
++                // reserve before steady rendering begins. Prime the actual
++                // full buffer with real PCM; nonblocking short writes stay in
++                // nativeAudioQueue. Once playback advances, the existing path
++                // restores the normal half-buffer restart threshold.
++                if (starting && framesWritten == 0L) track.startThresholdInFrames = bufferFrames
+                 track.startThresholdInFrames
+             } else bufferFrames
+             val written = nativeAudioQueue.drain { data, count ->
+--- a/app/src/test/kotlin/com/pokedaisy/app/NativeAudioQueueTest.kt
++++ b/app/src/test/kotlin/com/pokedaisy/app/NativeAudioQueueTest.kt
+@@ -4,6 +4,31 @@
+ import org.junit.Test
+ 
+ class NativeAudioQueueTest {
++    @Test fun fullTrackPrimingRetainsThePartialLastFrame() {
++        val trackCapacity = 7688 * 2 // stereo samples; not a whole cartridge frame
++        val queue = NativeAudioQueue(4096)
++        val produced = mutableListOf<Short>()
++        val played = mutableListOf<Short>()
++        var written = 0
++        repeat(10) { frame ->
++            val pcm = ShortArray(1608) { (frame * 1608 + it).toShort() }
++            produced.addAll(pcm.toList())
++            assertTrue(queue.append(pcm, pcm.size))
++            written += queue.drain { data, count ->
++                val accepted = minOf(count, trackCapacity - written)
++                played.addAll(data.take(accepted))
++                accepted
++            }
++        }
++        assertEquals(trackCapacity, written)
++        assertEquals(produced.size - trackCapacity, queue.size)
++        assertTrue(queue.size > 0)
++        assertEquals(0, queue.drain { _, _ -> 0 })
++        // Once the full track begins playing, its retained PCM tail comes next.
++        queue.drain { data, count -> played.addAll(data.take(count)); count }
++        assertEquals(produced, played)
++    }
++
+     @Test fun partialAndZeroWritesPreserveOrderAcrossFrames() {
+         val queue = NativeAudioQueue(12)
+         val received = mutableListOf<Short>()

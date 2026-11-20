@@ -618,3 +618,25 @@ expected `5b5e4ecb`. This invalid input is held from qualification. Its retained
 screenshots and failed attack probes do not establish compatibility or a bug
 in the author's correctly patched game. The other six BPS/UPS expansion inputs
 and outputs matched their embedded checksums in the independent audit.
+
+Run `python tools/scenery_patch_audit.py BASE PATCH OUTPUT` as a reusable
+preflight. It prints only hashes/checksum results and exits unsuccessfully for
+a mismatch or an IPS patch without separate provenance. For IPS, verify the
+known clean-base hash and compare a fresh deterministic patch application with
+the candidate bytes. Keep invalid inputs explicitly held, preserve their failed
+evidence, and list only independently qualified games in release counts. A held
+game must appear in the report and public release scope; it must not inherit a
+pass or disappear from the requested-game accounting.
+
+Rocket Edition exposed a cold-start audio deficit after the steady-state pacing
+checks were clean. Retained startup logs show UI/JIT work and blocking GC, two
+underruns before measurement, and no further endpoint underruns during the
+65-second field run. Keep that run failed: startup counters must not be reset
+or ignored to manufacture a pass. Patch 0032 fills the actual AudioTrack buffer
+with real PCM before native playback starts, replacing the three-quarter start
+reserve. On the Thor this adds at most about 40 ms to startup priming, using
+the same 7,688-frame capacity. Short writes remain queued; audio samples are
+not fabricated or discarded. The existing half-buffer restart threshold still
+applies once playback advances. Steady-state pacing and buffer capacity are
+unchanged. Recheck repeated cold starts and every exact-APK gate; earlier APK
+results cannot qualify this change.

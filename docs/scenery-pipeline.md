@@ -92,9 +92,10 @@ shared shape. These profiles establish recognition, not complete scenery coverag
 - Fakemon and Better Than Better Emerald 2 pass PokeDaisy's existing retail-engine
   fingerprint proof, which supplies a derived renderer row at runtime. Fakemon
   also passes the exact artwork checks and reuses Rocket's scenery families.
-  Better Than Better Emerald 2, Lazarus and Seaglass are climate/terrain candidates;
-  their object families still need profiles. Modern Emerald and Dragonsden fail
-  the retail proof and have no mapped renderer: both remain disabled.
+  Better Than Better Emerald 2, Lazarus and Seaglass are climate/terrain candidates.
+  Patch 0019 adds reviewed live-object profiles and complete tree patterns. Modern
+  Emerald and Dragonsden fail the retail proof; their separate EX engine mappings
+  are candidates, not device-qualified builds.
 - `tools/scenery-profiles/android-capabilities.json` and the plant profiles generate
   the recognition headers with `tools/gen_scenery_registry.py --output DIR`.
   CI checks these byte-for-byte against the applied patch stack. Adding a game
@@ -120,6 +121,33 @@ shared shape. These profiles establish recognition, not complete scenery coverag
   scope. A passing geometry test or generator is not a Thor pass.
 
 ## Qualification record
+
+### Reusable expansion findings
+
+`scenery_inventory.py` inventories bounded map banks, tileset pairs and observed
+metatile combinations from hash-verified local ROMs. Optional atlases are local
+review inputs, never release screenshots. It supports two/three-layer art and
+Modern Emerald's compression bitfield. Preserve and investigate inventory failures.
+
+`android-engines.json`, `android-live-objects.json`, and `android-tree-quads.json`
+generate candidate runtime headers; CI checks reproduction. Modern Emerald 3.6
+uses EX objects (16-bit graphics ID at +4, sprite ID +35), not vanilla Emerald's
+layout. Its exact source compiler gives SaveBlock1 templates/flags/vars at
+3428/4964/5264. Dragonsden's fixture verifies EX objects, graphics table 0x08ba3760,
+and save templates/flags/vars at 0x16a8/0x1ca8/0x1f6c. Its bank lists are halfword
+aligned; do not reinterpret their low bit as an XOR key.
+
+The 38 reviewed live profiles match ROM CRC plus the actual sprite image table,
+preserve visibility and movement, and sample the live palette. Let's Go's movable
+slot is a metal bin; Rocket's corresponding blank slot stays blank. Source palette
+indices preserve Ash Gray's yellow cut-tree canopy. Never infer semantics solely
+from a numeric graphics ID.
+
+The 79 complete 2x2 tree patterns cover Better Emerald 2, Seaglass, Lazarus and
+Modern Emerald. Source tiles and palettes must be primary-owned. Lazarus patterns
+containing a neighboring canopy are excluded. Dragonsden's same numeric IDs contain
+different artwork and are excluded. Ground reconstruction caches one tile instead
+of sampling it for every tree pixel. These counts describe partial coverage only.
 
 Required fields: `game`, `build_commit`, `source_sha256`, `artifact_sha256`,
 `device: "AYN Thor"`, `claim`, `coverage`, and `checks`. Every check named in the

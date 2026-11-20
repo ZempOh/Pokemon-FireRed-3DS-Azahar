@@ -1,0 +1,1345 @@
+[
+  {
+    "game": "better-emerald-2",
+    "rom_crc32": "70823957",
+    "primary": "0x83df704",
+    "secondary": "0x83df734",
+    "cells": [
+      468,
+      469,
+      476,
+      477
+    ],
+    "ground": 1,
+    "instances": 952,
+    "source_sha256": "2533c47d6f4b0964f08c2dc43c3fa6fbc4f7283e4c9f20e6173a67e506320b4f",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "better-emerald-2",
+    "rom_crc32": "70823957",
+    "primary": "0x83df704",
+    "secondary": "0x83df734",
+    "cells": [
+      470,
+      471,
+      478,
+      479
+    ],
+    "ground": 1,
+    "instances": 638,
+    "source_sha256": "d18c9db81fb3d8d1cc504262c9570c57436a3840ba65b9b4524000be116e11f5",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "better-emerald-2",
+    "rom_crc32": "70823957",
+    "primary": "0x83df704",
+    "secondary": "0x83df734",
+    "cells": [
+      468,
+      469,
+      484,
+      485
+    ],
+    "ground": 1,
+    "instances": 131,
+    "source_sha256": "d8f6cb6f6ea9075d71bcc472526205203a68f1e0959f33cdbd65e2237b86bca0",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "better-emerald-2",
+    "rom_crc32": "70823957",
+    "primary": "0x83df704",
+    "secondary": "0x83df734",
+    "cells": [
+      470,
+      471,
+      476,
+      477
+    ],
+    "ground": 1,
+    "instances": 106,
+    "source_sha256": "2aa998b6bbe12a0d10527f837dc9667f875eefe0052308184bea8d82b33cfbc1",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "better-emerald-2",
+    "rom_crc32": "70823957",
+    "primary": "0x83df704",
+    "secondary": "0x83df734",
+    "cells": [
+      470,
+      471,
+      484,
+      485
+    ],
+    "ground": 1,
+    "instances": 106,
+    "source_sha256": "752221a2d478b9a5737706473d9bedcd7cd68a2e68e2a1c3541c74153f2a438d",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "better-emerald-2",
+    "rom_crc32": "70823957",
+    "primary": "0x83df704",
+    "secondary": "0x83df734",
+    "cells": [
+      468,
+      471,
+      476,
+      477
+    ],
+    "ground": 1,
+    "instances": 79,
+    "source_sha256": "867789fabe529b952b2c551a8c8d772ffec1379f68dc1b0b799023964831b43c",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "better-emerald-2",
+    "rom_crc32": "70823957",
+    "primary": "0x83df704",
+    "secondary": "0x83df734",
+    "cells": [
+      468,
+      469,
+      484,
+      487
+    ],
+    "ground": 1,
+    "instances": 77,
+    "source_sha256": "ee4dc575174747755556446bb5615b36ddbe705437bbe6f0510db30e347503fd",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "better-emerald-2",
+    "rom_crc32": "70823957",
+    "primary": "0x83df704",
+    "secondary": "0x83df734",
+    "cells": [
+      468,
+      469,
+      486,
+      485
+    ],
+    "ground": 1,
+    "instances": 71,
+    "source_sha256": "6d2a8905e780a3fa024afaa64b73a4e8ddbb0f9c291c28d8fdb91b4bcfe55334",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "better-emerald-2",
+    "rom_crc32": "70823957",
+    "primary": "0x83df704",
+    "secondary": "0x83df734",
+    "cells": [
+      470,
+      469,
+      476,
+      477
+    ],
+    "ground": 1,
+    "instances": 68,
+    "source_sha256": "4fd9618ac55ce27ef04f5bc662b367264ae9dca75cedea30a7cf310727246677",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "better-emerald-2",
+    "rom_crc32": "70823957",
+    "primary": "0x83df704",
+    "secondary": "0x83df734",
+    "cells": [
+      470,
+      471,
+      486,
+      487
+    ],
+    "ground": 1,
+    "instances": 32,
+    "source_sha256": "394bfda5b375bbb654e36bfa72bfef00b65530a6cfe70b64963d4acc15c49ee2",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "better-emerald-2",
+    "rom_crc32": "70823957",
+    "primary": "0x83df704",
+    "secondary": "0x83df824",
+    "cells": [
+      470,
+      471,
+      476,
+      479
+    ],
+    "ground": 1,
+    "instances": 18,
+    "source_sha256": "e1617368dbd455e41eba7a2c25134f72b704baf52dcd1963879ae278045ba7ef",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "better-emerald-2",
+    "rom_crc32": "70823957",
+    "primary": "0x83df704",
+    "secondary": "0x83df77c",
+    "cells": [
+      468,
+      469,
+      486,
+      487
+    ],
+    "ground": 1,
+    "instances": 13,
+    "source_sha256": "587c77ed6934284f817afcd00456c2eadb56ac915e061f6b7d95d4ead420bb21",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "better-emerald-2",
+    "rom_crc32": "70823957",
+    "primary": "0x83df704",
+    "secondary": "0x83df7dc",
+    "cells": [
+      468,
+      471,
+      484,
+      487
+    ],
+    "ground": 1,
+    "instances": 11,
+    "source_sha256": "91707f4d4eaa07f4ba797e04b0ec228f683cde12d78317fe291a2d7e9c52871a",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "better-emerald-2",
+    "rom_crc32": "70823957",
+    "primary": "0x83df704",
+    "secondary": "0x83df7dc",
+    "cells": [
+      468,
+      471,
+      478,
+      479
+    ],
+    "ground": 1,
+    "instances": 8,
+    "source_sha256": "8871385ca371b858a87c1f0b891f5cf6e369c5234542bb1265e21ae666e01f36",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "better-emerald-2",
+    "rom_crc32": "70823957",
+    "primary": "0x83df704",
+    "secondary": "0x83df7dc",
+    "cells": [
+      470,
+      469,
+      486,
+      485
+    ],
+    "ground": 1,
+    "instances": 7,
+    "source_sha256": "2530519b09bbfa4ffdbbe71b3992fe754ed2f00e116c1ec641dc97c34c1b475b",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "better-emerald-2",
+    "rom_crc32": "70823957",
+    "primary": "0x83df704",
+    "secondary": "0x83df734",
+    "cells": [
+      468,
+      471,
+      486,
+      485
+    ],
+    "ground": 1,
+    "instances": 5,
+    "source_sha256": "7cc2fa44e87295281b87c6b24113051450752e27f1039eeb4c52b6b714a923dc",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "better-emerald-2",
+    "rom_crc32": "70823957",
+    "primary": "0x83df704",
+    "secondary": "0x83df83c",
+    "cells": [
+      470,
+      471,
+      486,
+      485
+    ],
+    "ground": 1,
+    "instances": 5,
+    "source_sha256": "5db743d6d0a9675c9f529a6514dbd7dd0c2eac6c707af0d2f41f233e6c4f1936",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "better-emerald-2",
+    "rom_crc32": "70823957",
+    "primary": "0x83df704",
+    "secondary": "0x83df764",
+    "cells": [
+      468,
+      471,
+      478,
+      477
+    ],
+    "ground": 1,
+    "instances": 4,
+    "source_sha256": "a3271a47c6ff1705c27e2d8160b24cdec906e08bdc46fc62197afcd771a45bb7",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "better-emerald-2",
+    "rom_crc32": "70823957",
+    "primary": "0x83df704",
+    "secondary": "0x83df764",
+    "cells": [
+      470,
+      469,
+      478,
+      477
+    ],
+    "ground": 1,
+    "instances": 4,
+    "source_sha256": "480638b719a48220b1a30a828692f2ca4610ebb39c7a1a6f2ce09979c7e4af6c",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "better-emerald-2",
+    "rom_crc32": "70823957",
+    "primary": "0x83df704",
+    "secondary": "0x83df764",
+    "cells": [
+      468,
+      471,
+      476,
+      479
+    ],
+    "ground": 1,
+    "instances": 4,
+    "source_sha256": "454dd421d69371c4f455c914afc3590badee0830bf4c7de58057cf6548ed20d4",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "better-emerald-2",
+    "rom_crc32": "70823957",
+    "primary": "0x83df704",
+    "secondary": "0x83df7dc",
+    "cells": [
+      470,
+      469,
+      484,
+      485
+    ],
+    "ground": 1,
+    "instances": 3,
+    "source_sha256": "87136f746e9177d17bcea37fe6e3b1acfc22ded5ded752767f96cdf91e7efc6d",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "better-emerald-2",
+    "rom_crc32": "70823957",
+    "primary": "0x83df704",
+    "secondary": "0x83df71c",
+    "cells": [
+      470,
+      469,
+      484,
+      487
+    ],
+    "ground": 1,
+    "instances": 2,
+    "source_sha256": "d08158936cef023263cf920de09eb89894c1a7f8b892b5a04b1ee9313f379dcf",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "better-emerald-2",
+    "rom_crc32": "70823957",
+    "primary": "0x83df704",
+    "secondary": "0x83df734",
+    "cells": [
+      468,
+      471,
+      484,
+      485
+    ],
+    "ground": 1,
+    "instances": 1,
+    "source_sha256": "0ed9842073401fb9042e7ea49269aa890210faf7e94ae021d550e1bba884a0a8",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "better-emerald-2",
+    "rom_crc32": "70823957",
+    "primary": "0x83df704",
+    "secondary": "0x83df83c",
+    "cells": [
+      470,
+      471,
+      476,
+      485
+    ],
+    "ground": 1,
+    "instances": 1,
+    "source_sha256": "3e569e16f269cf1535de707f9b82c77958c938d5c65db144888cac857007f1e3",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "seaglass",
+    "rom_crc32": "14465a33",
+    "primary": "0x8a2e6ac",
+    "secondary": "0x8a2e6c4",
+    "cells": [
+      468,
+      469,
+      476,
+      477
+    ],
+    "ground": 1,
+    "instances": 1312,
+    "source_sha256": "6126c95be091d3a5d6f6967102d02ee19c55930b8ba843515dcd4a3197878037",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "seaglass",
+    "rom_crc32": "14465a33",
+    "primary": "0x8a2e6ac",
+    "secondary": "0x8a2e6c4",
+    "cells": [
+      468,
+      469,
+      484,
+      485
+    ],
+    "ground": 1,
+    "instances": 187,
+    "source_sha256": "6126c95be091d3a5d6f6967102d02ee19c55930b8ba843515dcd4a3197878037",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "seaglass",
+    "rom_crc32": "14465a33",
+    "primary": "0x8a2e6ac",
+    "secondary": "0x8a2e6c4",
+    "cells": [
+      470,
+      469,
+      476,
+      477
+    ],
+    "ground": 1,
+    "instances": 141,
+    "source_sha256": "6126c95be091d3a5d6f6967102d02ee19c55930b8ba843515dcd4a3197878037",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "seaglass",
+    "rom_crc32": "14465a33",
+    "primary": "0x8a2e6ac",
+    "secondary": "0x8a2e6c4",
+    "cells": [
+      468,
+      471,
+      476,
+      477
+    ],
+    "ground": 1,
+    "instances": 106,
+    "source_sha256": "6126c95be091d3a5d6f6967102d02ee19c55930b8ba843515dcd4a3197878037",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "seaglass",
+    "rom_crc32": "14465a33",
+    "primary": "0x8a2e6ac",
+    "secondary": "0x8a2e6c4",
+    "cells": [
+      468,
+      469,
+      486,
+      485
+    ],
+    "ground": 1,
+    "instances": 95,
+    "source_sha256": "6126c95be091d3a5d6f6967102d02ee19c55930b8ba843515dcd4a3197878037",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "seaglass",
+    "rom_crc32": "14465a33",
+    "primary": "0x8a2e6ac",
+    "secondary": "0x8a2e6c4",
+    "cells": [
+      468,
+      469,
+      484,
+      487
+    ],
+    "ground": 1,
+    "instances": 88,
+    "source_sha256": "6126c95be091d3a5d6f6967102d02ee19c55930b8ba843515dcd4a3197878037",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "seaglass",
+    "rom_crc32": "14465a33",
+    "primary": "0x8a2e6ac",
+    "secondary": "0x8a2e70c",
+    "cells": [
+      470,
+      471,
+      478,
+      479
+    ],
+    "ground": 1,
+    "instances": 39,
+    "source_sha256": "6126c95be091d3a5d6f6967102d02ee19c55930b8ba843515dcd4a3197878037",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "seaglass",
+    "rom_crc32": "14465a33",
+    "primary": "0x8a2e6ac",
+    "secondary": "0x8a2e6c4",
+    "cells": [
+      470,
+      471,
+      476,
+      477
+    ],
+    "ground": 1,
+    "instances": 30,
+    "source_sha256": "6126c95be091d3a5d6f6967102d02ee19c55930b8ba843515dcd4a3197878037",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "seaglass",
+    "rom_crc32": "14465a33",
+    "primary": "0x8a2e6ac",
+    "secondary": "0x8a2e6c4",
+    "cells": [
+      468,
+      469,
+      486,
+      487
+    ],
+    "ground": 1,
+    "instances": 26,
+    "source_sha256": "6126c95be091d3a5d6f6967102d02ee19c55930b8ba843515dcd4a3197878037",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "seaglass",
+    "rom_crc32": "14465a33",
+    "primary": "0x8a2e6ac",
+    "secondary": "0x8a2e6c4",
+    "cells": [
+      468,
+      471,
+      484,
+      487
+    ],
+    "ground": 1,
+    "instances": 25,
+    "source_sha256": "6126c95be091d3a5d6f6967102d02ee19c55930b8ba843515dcd4a3197878037",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "seaglass",
+    "rom_crc32": "14465a33",
+    "primary": "0x8a2e6ac",
+    "secondary": "0x8a2e6c4",
+    "cells": [
+      470,
+      469,
+      486,
+      485
+    ],
+    "ground": 1,
+    "instances": 8,
+    "source_sha256": "6126c95be091d3a5d6f6967102d02ee19c55930b8ba843515dcd4a3197878037",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "seaglass",
+    "rom_crc32": "14465a33",
+    "primary": "0x8a2e6ac",
+    "secondary": "0x8a2e784",
+    "cells": [
+      468,
+      471,
+      478,
+      479
+    ],
+    "ground": 1,
+    "instances": 8,
+    "source_sha256": "6126c95be091d3a5d6f6967102d02ee19c55930b8ba843515dcd4a3197878037",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "seaglass",
+    "rom_crc32": "14465a33",
+    "primary": "0x8a2e6ac",
+    "secondary": "0x8a2e6dc",
+    "cells": [
+      470,
+      471,
+      486,
+      487
+    ],
+    "ground": 1,
+    "instances": 5,
+    "source_sha256": "6126c95be091d3a5d6f6967102d02ee19c55930b8ba843515dcd4a3197878037",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "seaglass",
+    "rom_crc32": "14465a33",
+    "primary": "0x8a2e6ac",
+    "secondary": "0x8a2e784",
+    "cells": [
+      470,
+      469,
+      484,
+      485
+    ],
+    "ground": 1,
+    "instances": 3,
+    "source_sha256": "6126c95be091d3a5d6f6967102d02ee19c55930b8ba843515dcd4a3197878037",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "seaglass",
+    "rom_crc32": "14465a33",
+    "primary": "0x8a2e6ac",
+    "secondary": "0x8a2e6c4",
+    "cells": [
+      470,
+      471,
+      486,
+      485
+    ],
+    "ground": 1,
+    "instances": 2,
+    "source_sha256": "6126c95be091d3a5d6f6967102d02ee19c55930b8ba843515dcd4a3197878037",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "seaglass",
+    "rom_crc32": "14465a33",
+    "primary": "0x8a2e6ac",
+    "secondary": "0x8a2e6c4",
+    "cells": [
+      468,
+      471,
+      486,
+      487
+    ],
+    "ground": 1,
+    "instances": 1,
+    "source_sha256": "6126c95be091d3a5d6f6967102d02ee19c55930b8ba843515dcd4a3197878037",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "lazarus",
+    "rom_crc32": "558ae42f",
+    "primary": "0x8e3e21c",
+    "secondary": "0x8e3e234",
+    "cells": [
+      468,
+      469,
+      476,
+      477
+    ],
+    "ground": 1,
+    "instances": 3281,
+    "source_sha256": "bbf4d8f63a68258015066cc8ca82bd7fedd8bc61d8e6fa395b4b362e0d1868aa",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "lazarus",
+    "rom_crc32": "558ae42f",
+    "primary": "0x8e3e21c",
+    "secondary": "0x8e3e92c",
+    "cells": [
+      470,
+      471,
+      478,
+      479
+    ],
+    "ground": 1,
+    "instances": 378,
+    "source_sha256": "aee7fbfd9963b230e4eb62baa0347a262701f06501320c379ad5490c30384922",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "lazarus",
+    "rom_crc32": "558ae42f",
+    "primary": "0x8e3e21c",
+    "secondary": "0x8e3e234",
+    "cells": [
+      468,
+      471,
+      476,
+      477
+    ],
+    "ground": 1,
+    "instances": 217,
+    "source_sha256": "7c5554363c2f83560c88e0527a6cc51a9df0acde276c7f822407b93ea34a7086",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "lazarus",
+    "rom_crc32": "558ae42f",
+    "primary": "0x8e3e21c",
+    "secondary": "0x8e3e234",
+    "cells": [
+      470,
+      469,
+      476,
+      477
+    ],
+    "ground": 1,
+    "instances": 205,
+    "source_sha256": "20193a318e3662c102cb0cb950d85e2c48c958f42de06c2b874dbd91e303d013",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "lazarus",
+    "rom_crc32": "558ae42f",
+    "primary": "0x8e3e21c",
+    "secondary": "0x8e3e234",
+    "cells": [
+      468,
+      469,
+      484,
+      485
+    ],
+    "ground": 1,
+    "instances": 190,
+    "source_sha256": "c050811daf92b4d4db674aa2310ae7c200de695cedc061a9b03c0691d3570227",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "lazarus",
+    "rom_crc32": "558ae42f",
+    "primary": "0x8e3e21c",
+    "secondary": "0x8e3e92c",
+    "cells": [
+      468,
+      469,
+      478,
+      479
+    ],
+    "ground": 1,
+    "instances": 138,
+    "source_sha256": "3a558d0aa6cb3792891f1f3bbe1a82f0bf04b40de5940a832687bebc6ac119d8",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "lazarus",
+    "rom_crc32": "558ae42f",
+    "primary": "0x8e3e21c",
+    "secondary": "0x8e3e234",
+    "cells": [
+      470,
+      471,
+      476,
+      477
+    ],
+    "ground": 1,
+    "instances": 133,
+    "source_sha256": "7baa99d49270e0681aa47d54bc6cc08b59b3a925e866c9abd3aa065275ca53fb",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "lazarus",
+    "rom_crc32": "558ae42f",
+    "primary": "0x8e3e21c",
+    "secondary": "0x8e3e92c",
+    "cells": [
+      470,
+      469,
+      478,
+      477
+    ],
+    "ground": 1,
+    "instances": 111,
+    "source_sha256": "bbd0faba924b24420eb47ccd65bfff89d50a8e1f7cfba582010ceef2e68d1796",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "lazarus",
+    "rom_crc32": "558ae42f",
+    "primary": "0x8e3e21c",
+    "secondary": "0x8e3e92c",
+    "cells": [
+      468,
+      469,
+      476,
+      479
+    ],
+    "ground": 1,
+    "instances": 109,
+    "source_sha256": "589c8e0c15b152907143efdce3bd7c83ec1ecbacdfb77ddb971c0c98f51c64a9",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "lazarus",
+    "rom_crc32": "558ae42f",
+    "primary": "0x8e3e21c",
+    "secondary": "0x8e3e92c",
+    "cells": [
+      468,
+      471,
+      476,
+      479
+    ],
+    "ground": 1,
+    "instances": 99,
+    "source_sha256": "d65554ca98991565f7069018921054b37244649d74617b802857d02108d82712",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "lazarus",
+    "rom_crc32": "558ae42f",
+    "primary": "0x8e3e21c",
+    "secondary": "0x8e3e92c",
+    "cells": [
+      468,
+      469,
+      478,
+      477
+    ],
+    "ground": 1,
+    "instances": 89,
+    "source_sha256": "2273fa42b2da0779d076c7eafd1f6437d002c6dbfe1c7fc8517faf2a36087781",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "lazarus",
+    "rom_crc32": "558ae42f",
+    "primary": "0x8e3e21c",
+    "secondary": "0x8e3e92c",
+    "cells": [
+      470,
+      471,
+      478,
+      477
+    ],
+    "ground": 1,
+    "instances": 39,
+    "source_sha256": "60c12c4a52c3eb947c820f0e1c7b552990cc72db913e41346ece5dc6dda641bc",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "lazarus",
+    "rom_crc32": "558ae42f",
+    "primary": "0x8e3e21c",
+    "secondary": "0x8e3e92c",
+    "cells": [
+      470,
+      469,
+      478,
+      479
+    ],
+    "ground": 1,
+    "instances": 39,
+    "source_sha256": "22bf669e2cd8eab4ac3196c8d806fa3ec47dac207cf0018e2fd6cfc859e06e57",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "lazarus",
+    "rom_crc32": "558ae42f",
+    "primary": "0x8e3e21c",
+    "secondary": "0x8e3e2f4",
+    "cells": [
+      468,
+      471,
+      478,
+      479
+    ],
+    "ground": 1,
+    "instances": 35,
+    "source_sha256": "f4c729e055158477e0240855f4213a3a99b702c39c9f1ebf8b6b3cf908420567",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "lazarus",
+    "rom_crc32": "558ae42f",
+    "primary": "0x8e3e21c",
+    "secondary": "0x8e3e92c",
+    "cells": [
+      470,
+      471,
+      476,
+      479
+    ],
+    "ground": 1,
+    "instances": 23,
+    "source_sha256": "f998a1affc3cb60a4f54d82bed90eb2c876add9ca9a01acba1f7f2f873fb059a",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "lazarus",
+    "rom_crc32": "558ae42f",
+    "primary": "0x8e3e21c",
+    "secondary": "0x8e3e2f4",
+    "cells": [
+      470,
+      469,
+      484,
+      485
+    ],
+    "ground": 1,
+    "instances": 3,
+    "source_sha256": "72c38bc97e466f48c7e877dcb30434354d7a1f84504b66d468b219ac5af3d439",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "lazarus",
+    "rom_crc32": "558ae42f",
+    "primary": "0x8e3e21c",
+    "secondary": "0x8e3e974",
+    "cells": [
+      468,
+      469,
+      476,
+      485
+    ],
+    "ground": 1,
+    "instances": 3,
+    "source_sha256": "dffd71c0cadbf09fc4e5e3bcd3083c77cf9602db2b3e84935b661bbe0117b2f3",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "lazarus",
+    "rom_crc32": "558ae42f",
+    "primary": "0x8e3e21c",
+    "secondary": "0x8e3e974",
+    "cells": [
+      468,
+      469,
+      484,
+      477
+    ],
+    "ground": 1,
+    "instances": 3,
+    "source_sha256": "0135cd5856c88c183d9cee49aaa6fbc0d309a5ce4d147ab3e318863c8ca316fe",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "lazarus",
+    "rom_crc32": "558ae42f",
+    "primary": "0x8e3e21c",
+    "secondary": "0x8e3e974",
+    "cells": [
+      470,
+      469,
+      484,
+      477
+    ],
+    "ground": 1,
+    "instances": 3,
+    "source_sha256": "26a2745b206c1b52029fd59531230eab7cd8d1753d4107813af7a2f2f23bfcad",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "lazarus",
+    "rom_crc32": "558ae42f",
+    "primary": "0x8e3e21c",
+    "secondary": "0x8e3e95c",
+    "cells": [
+      470,
+      469,
+      476,
+      479
+    ],
+    "ground": 1,
+    "instances": 2,
+    "source_sha256": "51359b82e0c055c5b103865d87babf414e8f8af05c9ed2f2e697a9bf4970b418",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "lazarus",
+    "rom_crc32": "558ae42f",
+    "primary": "0x8e3e21c",
+    "secondary": "0x8e3e9a4",
+    "cells": [
+      468,
+      471,
+      478,
+      477
+    ],
+    "ground": 1,
+    "instances": 2,
+    "source_sha256": "76e428b00cead418cea17a610b160edc10971ebaebb0ce3a582fa0270fc7bb5f",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "lazarus",
+    "rom_crc32": "558ae42f",
+    "primary": "0x8e3e21c",
+    "secondary": "0x8e3e974",
+    "cells": [
+      470,
+      471,
+      476,
+      485
+    ],
+    "ground": 1,
+    "instances": 1,
+    "source_sha256": "58406e808f24f25f6c4ca312a16993601dd8e2d7e6dd926c3f2a7f88e1c3f593",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "lazarus",
+    "rom_crc32": "558ae42f",
+    "primary": "0x8e3e21c",
+    "secondary": "0x8e3e9d4",
+    "cells": [
+      468,
+      471,
+      476,
+      485
+    ],
+    "ground": 1,
+    "instances": 1,
+    "source_sha256": "a4705c578f867446a45b04f7472b559500abe7fb370eeca2ffa2ea873fc00103",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "modern-emerald",
+    "rom_crc32": "263a1187",
+    "primary": "0x8bb3ac8",
+    "secondary": "0x8bb3ae0",
+    "cells": [
+      468,
+      469,
+      476,
+      477
+    ],
+    "ground": 1,
+    "instances": 1648,
+    "source_sha256": "2533c47d6f4b0964f08c2dc43c3fa6fbc4f7283e4c9f20e6173a67e506320b4f",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "modern-emerald",
+    "rom_crc32": "263a1187",
+    "primary": "0x8bb3ac8",
+    "secondary": "0x8bb3ae0",
+    "cells": [
+      468,
+      469,
+      484,
+      485
+    ],
+    "ground": 1,
+    "instances": 224,
+    "source_sha256": "d8f6cb6f6ea9075d71bcc472526205203a68f1e0959f33cdbd65e2237b86bca0",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "modern-emerald",
+    "rom_crc32": "263a1187",
+    "primary": "0x8bb3ac8",
+    "secondary": "0x8bb3ae0",
+    "cells": [
+      468,
+      471,
+      476,
+      477
+    ],
+    "ground": 1,
+    "instances": 117,
+    "source_sha256": "867789fabe529b952b2c551a8c8d772ffec1379f68dc1b0b799023964831b43c",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "modern-emerald",
+    "rom_crc32": "263a1187",
+    "primary": "0x8bb3ac8",
+    "secondary": "0x8bb3ae0",
+    "cells": [
+      470,
+      469,
+      476,
+      477
+    ],
+    "ground": 1,
+    "instances": 117,
+    "source_sha256": "4fd9618ac55ce27ef04f5bc662b367264ae9dca75cedea30a7cf310727246677",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "modern-emerald",
+    "rom_crc32": "263a1187",
+    "primary": "0x8bb3ac8",
+    "secondary": "0x8bb3ae0",
+    "cells": [
+      468,
+      469,
+      486,
+      485
+    ],
+    "ground": 1,
+    "instances": 110,
+    "source_sha256": "6d2a8905e780a3fa024afaa64b73a4e8ddbb0f9c291c28d8fdb91b4bcfe55334",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "modern-emerald",
+    "rom_crc32": "263a1187",
+    "primary": "0x8bb3ac8",
+    "secondary": "0x8bb3ae0",
+    "cells": [
+      468,
+      469,
+      484,
+      487
+    ],
+    "ground": 1,
+    "instances": 105,
+    "source_sha256": "ee4dc575174747755556446bb5615b36ddbe705437bbe6f0510db30e347503fd",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "modern-emerald",
+    "rom_crc32": "263a1187",
+    "primary": "0x8bb3ac8",
+    "secondary": "0x8bb3ae0",
+    "cells": [
+      470,
+      471,
+      476,
+      477
+    ],
+    "ground": 1,
+    "instances": 33,
+    "source_sha256": "2aa998b6bbe12a0d10527f837dc9667f875eefe0052308184bea8d82b33cfbc1",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "modern-emerald",
+    "rom_crc32": "263a1187",
+    "primary": "0x8bb3ac8",
+    "secondary": "0x8bb3ae0",
+    "cells": [
+      468,
+      469,
+      486,
+      487
+    ],
+    "ground": 1,
+    "instances": 21,
+    "source_sha256": "587c77ed6934284f817afcd00456c2eadb56ac915e061f6b7d95d4ead420bb21",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "modern-emerald",
+    "rom_crc32": "263a1187",
+    "primary": "0x8bb3ac8",
+    "secondary": "0x8bb3ae0",
+    "cells": [
+      468,
+      471,
+      484,
+      487
+    ],
+    "ground": 1,
+    "instances": 16,
+    "source_sha256": "91707f4d4eaa07f4ba797e04b0ec228f683cde12d78317fe291a2d7e9c52871a",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "modern-emerald",
+    "rom_crc32": "263a1187",
+    "primary": "0x8bb3ac8",
+    "secondary": "0x8bb3ae0",
+    "cells": [
+      470,
+      469,
+      486,
+      485
+    ],
+    "ground": 1,
+    "instances": 8,
+    "source_sha256": "2530519b09bbfa4ffdbbe71b3992fe754ed2f00e116c1ec641dc97c34c1b475b",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "modern-emerald",
+    "rom_crc32": "263a1187",
+    "primary": "0x8bb3ac8",
+    "secondary": "0x8bb3ba0",
+    "cells": [
+      468,
+      471,
+      478,
+      479
+    ],
+    "ground": 1,
+    "instances": 8,
+    "source_sha256": "8871385ca371b858a87c1f0b891f5cf6e369c5234542bb1265e21ae666e01f36",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "modern-emerald",
+    "rom_crc32": "263a1187",
+    "primary": "0x8bb3ac8",
+    "secondary": "0x8bb3af8",
+    "cells": [
+      470,
+      471,
+      486,
+      487
+    ],
+    "ground": 1,
+    "instances": 6,
+    "source_sha256": "394bfda5b375bbb654e36bfa72bfef00b65530a6cfe70b64963d4acc15c49ee2",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "modern-emerald",
+    "rom_crc32": "263a1187",
+    "primary": "0x8bb3ac8",
+    "secondary": "0x8bb3ae0",
+    "cells": [
+      470,
+      471,
+      486,
+      485
+    ],
+    "ground": 1,
+    "instances": 3,
+    "source_sha256": "5db743d6d0a9675c9f529a6514dbd7dd0c2eac6c707af0d2f41f233e6c4f1936",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "modern-emerald",
+    "rom_crc32": "263a1187",
+    "primary": "0x8bb3ac8",
+    "secondary": "0x8bb3ba0",
+    "cells": [
+      470,
+      469,
+      484,
+      485
+    ],
+    "ground": 1,
+    "instances": 3,
+    "source_sha256": "87136f746e9177d17bcea37fe6e3b1acfc22ded5ded752767f96cdf91e7efc6d",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "modern-emerald",
+    "rom_crc32": "263a1187",
+    "primary": "0x8bb3ac8",
+    "secondary": "0x8bb3ae0",
+    "cells": [
+      468,
+      471,
+      486,
+      487
+    ],
+    "ground": 1,
+    "instances": 1,
+    "source_sha256": "519be72bea8f58fe33b0cfde6aeecb1b0e1d0d233504684262da3329b2d57f55",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "modern-emerald",
+    "rom_crc32": "263a1187",
+    "primary": "0x8bb3ac8",
+    "secondary": "0x8bb3be8",
+    "cells": [
+      470,
+      471,
+      484,
+      487
+    ],
+    "ground": 1,
+    "instances": 1,
+    "source_sha256": "23c3869ad49a3e4518768dfb12c696fabbb795b9897ff14ee362e3c2939ad965",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  }
+]

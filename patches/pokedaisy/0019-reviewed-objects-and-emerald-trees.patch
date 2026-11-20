@@ -1,0 +1,398 @@
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -32,6 +32,8 @@
+ #include "pk_wide_props.h"
+ #include "pk_voxel_climate.h"
+ #include "pk_scenery_candidates.h"
++#include "pk_scenery_object_profiles.h"
++#include "pk_scenery_tree_profiles.h"
+ 
+ #include <stdbool.h>
+ #include <stdio.h>
+@@ -1448,7 +1450,7 @@
+ 
+ static uint32_t solidRom;
+ struct Piece {
+-    int solidKind;
++    int solidKind,solidLeaf,solidBark;
+     bool vegetation;
+     int x, y, w, h, tile, prio, pal, mode;   // mode: OAM objMode (0 normal, 1 semi-transparent, 2 OBJ window)
+     bool hflip, vflip;
+@@ -1491,24 +1493,17 @@
+ static int buildPieces(const struct Snap* s, struct Piece* out) {
+     int nspr = C[PK_WIDE_MAX_SPRITES];
+     bool offscreen[SPRITES_CAP] = { false };   // sprites the game hid only for being off screen
+-    int propKind[SPRITES_CAP]={0};
++    int propKind[SPRITES_CAP]={0},propLeaf[SPRITES_CAP]={0},propBark[SPRITES_CAP]={0};
+     for (int i = 0; i < 16; i++) {
+         const uint8_t* oe = s->objects + 0x24 * i;
+         uint32_t flags = (uint32_t) oe[0] | (uint32_t) oe[1] << 8;
+         int id = C[PK_WIDE_SPRITE_ID_OFF] >= 0 && C[PK_WIDE_SPRITE_ID_OFF] < 0x24 ? oe[C[PK_WIDE_SPRITE_ID_OFF]] : 0xFF;
+         if ((flags & 1) && (flags & (1 << 14)) && !(flags & (1 << 13)) && id < nspr) offscreen[id] = true;
+         if((flags&1)&&!(flags&(1<<13))&&id<nspr&&solidRom==0x25c3d89f&&oe[5]==0xd7)propKind[id]=6;
+-        if ((flags&1) && !(flags&(1<<13)) && id<nspr &&
+-            (solidRom==0x25c3d89f || solidRom==0xfba55dd8 || solidRom==0x4b3d4957)) {
+-            /* CFRU reuses low graphics IDs in other banks. Require the live
+-             * sprite's image table to match the base-bank rock record too. */
+-            int gfx=oe[5];
+-            if(gfx==95 || gfx==96 || gfx==97) {
+-                uint32_t record=r32((uint32_t)C[PK_WIDE_OBJ_GFX_INFO]+4u*gfx);
+-                uint32_t images=record?r32(record+0x1c):0;
+-                if(images && le32(s->sprites+0x44*id+0x0c)==images)
+-                    propKind[id]=gfx==95?9:gfx==96?8:7;
+-            }
++        if ((flags&1) && !(flags&(1<<13)) && id<nspr) {
++            // Match the live image table, not an engine-dependent graphics byte.
++            const struct SceneryObjectProfile *profile=sceneryObjectProfile(solidRom,le32(s->sprites+0x44*id+0x0c));
++            if(profile) { propKind[id]=profile->kind; propLeaf[id]=profile->leaf; propBark[id]=profile->bark; }
+         }
+     }
+     int n = 0;
+@@ -1537,7 +1532,7 @@
+             if (y > 255 - bh) y -= 256;    // reaching past 255 shows at the top, as the hardware wraps it
+         }
+         struct Piece base = { .tile = (int) (a2 & 0x3FF), .prio = (int) ((a2 >> 10) & 3), .pal = (int) (a2 >> 12),
+-                              .solidKind=propKind[id],
++                              .solidKind=propKind[id],.solidLeaf=propLeaf[id],.solidBark=propBark[id],
+                               .vegetation=climateGrassEffect(solidRom,le32(sp+0x14),le32(sp+0x0c)),
+                               .mode = (int) ((a0 >> 10) & 3), .hflip = !(rot & 1) && (a1 & 0x1000), .vflip = !(rot & 1) && (a1 & 0x2000),
+                               .copy = false, .world = world, .rot = rot, .mat = (int) ((a1 >> 9) & 31) };
+@@ -2068,14 +2063,14 @@
+             vx = voxelX(voxel, p[i].x, foot);
+             vy = voxelY(voxel, foot, z) - bh + 1;
+         }
+-        if(voxel && p[i].world && (p[i].solidKind==7 || p[i].solidKind==8 || p[i].solidKind==9) &&
++        if(voxel && p[i].world && (p[i].solidKind==7 || p[i].solidKind==8 || p[i].solidKind==9 || p[i].solidKind==12) &&
+            !(p[i].rot&1) && p[i].mode==0 && sw>=16 && sh>=16) {
+             struct SolidProp prop={.kind=p[i].solidKind};
+             struct SolidTree* t=&prop.surface;
+             t->x=p[i].x+bw/2-8; t->y=foot-9;
+             t->rise=voxelRiseAt(voxel,p[i].x+bw/2,foot);
+-            int leaf=0,bark=0;unsigned counts[16]={0};
+-            if(p[i].solidKind==9) {
++            int leaf=p[i].solidLeaf,bark=p[i].solidBark;unsigned counts[16]={0};
++            if(p[i].solidKind==9 && !leaf) {
+                 // Narrow cut-tree sprites have transparent centers beside their
+                 // trunk. Never turn palette index zero into the black outline.
+                 for(int y=0;y<sh;y++)for(int x=0;x<sw;x++) {
+@@ -2101,7 +2096,7 @@
+                 int ci=(vram[0x10000+(off&0x7fff)]>>((px&1)*4))&15;
+                 if(p[i].solidKind==9) {
+                     if(y>=36)ci=bark?bark:leaf;
+-                    else if(!ci||!solidCutLeaf(P[256+p[i].pal*16+ci]))ci=leaf;
++                    else if(!ci||(!p[i].solidLeaf&&!solidCutLeaf(P[256+p[i].pal*16+ci])))ci=leaf;
+                 } else if(!ci)ci=1;
+                 uint32_t ink=color(P[256+p[i].pal*16+ci],alpha);
+                 t->art[y*32+x]=p[i].solidKind==9&&y<36?climateLeafColor(ink):ink;
+@@ -4997,11 +4992,44 @@
+ 
+ // Profiles are tied to verified ROM CRC + primary tileset, never to green pixels.
+ // Unknown trees/tilesets retain the original art. Live cut trees use the object pass.
++static uint32_t solidMaterialPixel(const struct Snap* s,int id,int x,int y,uint32_t alpha);
++static int solidQuadTreesPrepare(const struct Snap* s,struct VoxelView* v,int cx,int cy,
++                                uint32_t* texture,struct SolidTree* trees,int cap,uint32_t alpha) {
++    if(!sceneryTreeTileset(solidRom,s->primary))return 0;
++    int n=0,grounds[256],cellX=(cx+v->left)/16,cellY=(cy+v->top)/16;
++    if(cap>256)cap=256;
++    for(int row=0;row+1<v->rows;row++)for(int col=0;col+1<v->cols;col++) {
++        int cells[4],ok=1;
++        for(int y=0;y<2;y++)for(int x=0;x<2;x++) {
++            int conn;cells[y*2+x]=blockIn(s,cellX+col+x,cellY+row+y,&conn,false);
++            if(conn>=0&&s->conn[conn].primary!=s->primary)ok=0;
++        }
++        int ground=ok?sceneryTreeGround(solidRom,s->primary,cells):-1;
++        if(ground<0||n==cap)continue;
++        struct SolidTree *t=&trees[n];grounds[n++]=ground;
++        t->x=v->left+col*16;t->y=v->top+row*16-16;t->rise=voxelRise(v,col,row+1);
++        for(int y=0;y<48;y++)memcpy(t->art+y*32,texture+(row*16+y*32/48)*v->stride+col*16,32*sizeof(uint32_t));
++    }
++    // Capture all source art before erasing dense neighboring canopies.
++    int lastGround=-1;uint32_t groundArt[256];
++    for(int i=0;i<n;i++) {
++        if(grounds[i]!=lastGround) {
++            lastGround=grounds[i];
++            for(int y=0;y<16;y++)for(int x=0;x<16;x++) {
++                uint32_t ink=solidMaterialPixel(s,lastGround,x,y,alpha);
++                groundArt[y*16+x]=voxelClimate.seasonBlend?climateGround(ink,1):ink;
++            }
++        }
++        for(int y=0;y<32;y++)for(int x=0;x<32;x++)
++            texture[(trees[i].y+16-v->top+y)*v->stride+trees[i].x-v->left+x]=groundArt[(y&15)*16+(x&15)];
++    }
++    return n;
++}
+ static int solidTreesPrepare(const struct Snap* s, struct VoxelView* v, int cx, int cy,
+                              uint32_t* texture, struct SolidTree* trees, int cap, uint32_t alpha) {
+     int snow = solidRom == 0x4b3d4957 && s->primary == 0x08725ab4;
+     int kanto = sceneryKanto(solidRom,s->primary);
+-    if (!snow && !kanto) return 0;
++    if (!snow && !kanto) return solidQuadTreesPrepare(s,v,cx,cy,texture,trees,cap,alpha);
+     int n=0, cellX=(cx+v->left)/16, cellY=(cy+v->top)/16;
+     for(int row=0;row+2<v->rows;row++) for(int col=0;col+1<v->cols;col++) {
+         int ids[6],ok=1;
+--- a/app/src/main/cpp/pk_wide_games.h
++++ b/app/src/main/cpp/pk_wide_games.h
+@@ -7,6 +7,7 @@
+     int family;   // PK_WIDE_FAMILY_*
+     int32_t a[PK_WIDE_ADDRS];
+ } PK_WIDE_ROMS[] = {
++#include "pk_scenery_engine_rows.h"
+     { 0x4881f3f8, PK_WIDE_FAMILY_EM, { 0x03005b20, 0x02036fb8, 0x0845e998, 0x03005aec, 0x03000e20, 0x02036ff0, 0x020205ac, 0x02021b38, 0x02021b3a, 0x02021770, 0x03002360, 0x03000f2c, 0x084dda74, 0x084e401c, 0x084dda21, 0x03000cf0, 0x084e6a88, 0x00000000, 0x00003014, 0x00000010, 0x000003ff, 0x00000000, 0x00000008, 0x00000000, 0x00000000, 0x000000f0, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000 } },   // BPEJ rev 0: Pocket Monsters - Emerald (Japan).gba
+     { 0xbb640df7, PK_WIDE_FAMILY_FR, { 0x03004fe0, 0x02036d30, 0x08311f70, 0x03004fa8, 0x03000e90, 0x02036d6c, 0x020205b8, 0x02021b44, 0x02021b46, 0x0202177c, 0x03003090, 0x03000f9c, 0x0835f618, 0x083649c0, 0x0835f5c5, 0x03000de8, 0x083668e4, 0x00000000, 0x00003014, 0x00000010, 0x000003ff, 0x00000000, 0x00000008, 0x00000000, 0x00000000, 0x000000f0, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x020399a4, 0x0203ad72, 0x00000000 } },   // BPRJ rev 1: Pocket Monsters - FireRed (Japan) (Rev 1).gba
+     { 0x3b2056e9, PK_WIDE_FAMILY_FR, { 0x03005080, 0x02036d30, 0x08316758, 0x03005048, 0x03000e90, 0x02036d6c, 0x020205b8, 0x02021b44, 0x02021b46, 0x0202177c, 0x03003130, 0x03000f9c, 0x08363e38, 0x083691e0, 0x08363de5, 0x03000de8, 0x0836b104, 0x00000000, 0x00003014, 0x00000010, 0x000003ff, 0x00000000, 0x00000008, 0x00000000, 0x00000000, 0x000000f0, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x020399a4, 0x0203ad72, 0x00000000 } },   // BPRJ rev 0: Pocket Monsters - FireRed (Japan).gba
+--- a/app/src/main/cpp/pk_wide_props.h
++++ b/app/src/main/cpp/pk_wide_props.h
+@@ -85,6 +85,22 @@
+ static void solidPropDraw(const struct VoxelView* v,const struct SolidProp* p) {
+     const struct SolidTree* t=&p->surface;
+     float x=t->x+8,y=t->y+9,z=t->rise;
++    if(p->kind==12) {
++        // The Let's Go movable slot is a metal bin, with a closed lid and body.
++        const float dx[9]={1,.707107f,0,-.707107f,-1,-.707107f,0,.707107f,1};
++        const float dy[9]={0,.707107f,1,.707107f,0,-.707107f,-1,-.707107f,0};
++        for(int e=0;e<8;e++) {
++            struct SolidVertex a={x+dx[e]*5,y+dy[e]*5,z,6.5f,35.5f};
++            struct SolidVertex b={x+dx[e+1]*5,y+dy[e+1]*5,z,10.5f,35.5f};
++            struct SolidVertex c={x+dx[e+1]*6,y+dy[e+1]*6,z+16,10.5f,8.5f};
++            struct SolidVertex d={x+dx[e]*6,y+dy[e]*6,z+16,6.5f,8.5f};
++            propFace(v,t,a,b,c,d,180+(e<4?45:0));
++            struct SolidVertex lid={x,y,z+16,8.5f,5.5f},base={x,y,z,8.5f,35.5f};
++            solidTriangle(v,t,d,c,lid,245,0);
++            solidTriangle(v,t,b,a,base,160,0);
++        }
++        return;
++    }
+     if(p->kind==11) {
+         const struct SolidPlantProfile *profile=&solidPlantProfiles[p->plantProfile];
+         struct SolidPlantContext ctx={v,p};
+--- a/app/src/main/cpp/pk_scenery_candidates.h
++++ b/app/src/main/cpp/pk_scenery_candidates.h
+@@ -7,8 +7,10 @@
+     case 0xfba55dd8:
+     case 0x4b3d4957:
+     case 0x70823957:
++    case 0x263a1187:
+     case 0x5e704d77:
+     case 0x558ae42f:
++    case 0xcec21496:
+     case 0x63478921:
+     case 0xb9465c5a:
+     case 0xf2d16ebd:
+--- /dev/null
++++ b/app/src/main/cpp/pk_scenery_engine_rows.h
+@@ -0,0 +1,3 @@
++// Generated candidate engine rows. Device qualification is separate.
++    { 0x263a1187, PK_WIDE_FAMILY_EX, { [PK_WIDE_VMAP]=0x030024f4, [PK_WIDE_MAP_HEADER]=0x0200c22c, [PK_WIDE_MAP_GROUPS]=0x08cdec28, [PK_WIDE_SAVE_BLOCK1_PTR]=0x030036f0, [PK_WIDE_CAMERA_OFFSET]=0x03002484, [PK_WIDE_OBJECT_EVENTS]=0x0200682c, [PK_WIDE_SPRITES]=0x0203d86c, [PK_WIDE_COORD_OFFSET]=0x0203edf8, [PK_WIDE_COORD_OFFSET_Y]=0x0203edfa, [PK_WIDE_SPRITE_ORDER]=0x0203ea30, [PK_WIDE_GMAIN]=0x03001574, [PK_WIDE_CONTROLS_LOCKED]=0x03003b78, [PK_WIDE_OBJ_GFX_INFO]=0x08801b00, [PK_WIDE_OBJ_PALETTES]=0x088133e8, [PK_WIDE_OBJ_FACING]=0x08801aac, [PK_WIDE_SPRITE_PAL_TAGS]=0x03004b8c, [PK_WIDE_ELEVATION_PRIO]=0x0881647c, [PK_WIDE_MAP_GROUPS_XOR]=0x00000000, [PK_WIDE_NORMAL_BG3]=0x00003014, [PK_WIDE_METATILE_SIZE]=0x00000010, [PK_WIDE_METATILE_MASK]=0x000003ff, [PK_WIDE_PRIMARY_OVERRIDE]=0x00000000, [PK_WIDE_PAN_OFF]=0x00000008, [PK_WIDE_OBJ_GFX_TABLES]=0x00000000, [PK_WIDE_OBJ_GFX_TABLE_MAX]=0x00000000, [PK_WIDE_OBJ_GFX_VAR_FROM]=0x000000f0, [PK_WIDE_OBJ_GFX_FF_VAR]=0x00000000, [PK_WIDE_SB1_OFFSETS]=0x14900d64, [PK_WIDE_SB1_POS]=0x00000000, [PK_WIDE_LAYOUT_VERSIONED]=0x00000000, [PK_WIDE_OBJ_GFX_COUNT]=0x000000ef, [PK_WIDE_TEMPLATE_KIND_AT]=0x00000000, [PK_WIDE_SB1_FLAGS_AT]=0x00000000, [PK_WIDE_TRANSITION_PTR]=0x00000000, [PK_WIDE_QUEST_LOG]=0x00000000, [PK_WIDE_EXPANDED_FLAGS]=0x00000000 } }, // modern-emerald
++    { 0xcec21496, PK_WIDE_FAMILY_EX, { [PK_WIDE_VMAP]=0x03005280, [PK_WIDE_MAP_HEADER]=0x020382d8, [PK_WIDE_MAP_GROUPS]=0x08a335d8, [PK_WIDE_SAVE_BLOCK1_PTR]=0x0300524c, [PK_WIDE_CAMERA_OFFSET]=0x03000e20, [PK_WIDE_OBJECT_EVENTS]=0x02038314, [PK_WIDE_SPRITES]=0x02020630, [PK_WIDE_COORD_OFFSET]=0x02021bbc, [PK_WIDE_COORD_OFFSET_Y]=0x02021bbe, [PK_WIDE_SPRITE_ORDER]=0x020217f4, [PK_WIDE_GMAIN]=0x030032e0, [PK_WIDE_CONTROLS_LOCKED]=0x03000f2c, [PK_WIDE_OBJ_GFX_INFO]=0x08ba3760, [PK_WIDE_OBJ_PALETTES]=0x08ba3ff4, [PK_WIDE_OBJ_FACING]=0x08b955f1, [PK_WIDE_SPRITE_PAL_TAGS]=0x03000cf0, [PK_WIDE_ELEVATION_PRIO]=0x08ba7418, [PK_WIDE_MAP_GROUPS_XOR]=0x00000000, [PK_WIDE_NORMAL_BG3]=0x00003014, [PK_WIDE_METATILE_SIZE]=0x00000010, [PK_WIDE_METATILE_MASK]=0x000003ff, [PK_WIDE_PRIMARY_OVERRIDE]=0x00000000, [PK_WIDE_PAN_OFF]=0x00000008, [PK_WIDE_OBJ_GFX_TABLES]=0x00000000, [PK_WIDE_OBJ_GFX_TABLE_MAX]=0x00000000, [PK_WIDE_OBJ_GFX_VAR_FROM]=0x00000225, [PK_WIDE_OBJ_GFX_FF_VAR]=0x00000000, [PK_WIDE_SB1_OFFSETS]=0x1f6c16a8, [PK_WIDE_SB1_POS]=0x00000000, [PK_WIDE_LAYOUT_VERSIONED]=0x00000000, [PK_WIDE_OBJ_GFX_COUNT]=0x00000235, [PK_WIDE_TEMPLATE_KIND_AT]=0x00000000, [PK_WIDE_SB1_FLAGS_AT]=0x00000000, [PK_WIDE_TRANSITION_PTR]=0x00000000, [PK_WIDE_QUEST_LOG]=0x00000000, [PK_WIDE_EXPANDED_FLAGS]=0x00000000 } }, // dragonsden
+--- /dev/null
++++ b/app/src/main/cpp/pk_scenery_object_profiles.h
+@@ -0,0 +1,48 @@
++// Generated from semantically reviewed live-object image tables.
++#pragma once
++struct SceneryObjectProfile { uint32_t rom,images; uint8_t kind,leaf,bark; };
++static const struct SceneryObjectProfile sceneryObjects[] = {
++    {0x25c3d89f,0x088108cc,9,12,9}, // letsgo: cut tree
++    {0x25c3d89f,0x08812094,8,0,0}, // letsgo: breakable rock
++    {0x25c3d89f,0x088120b4,12,0,0}, // letsgo: movable metal bin
++    {0xfba55dd8,0x08eb5458,9,10,10}, // radical: cut tree
++    {0xfba55dd8,0x08eb5478,8,0,0}, // radical: breakable rock
++    {0xfba55dd8,0x08eb5498,7,0,0}, // radical: movable rock
++    {0x4b3d4957,0x083a1510,9,2,8}, // unbound: cut tree
++    {0x4b3d4957,0x083a1698,8,0,0}, // unbound: breakable rock
++    {0x4b3d4957,0x083a16b8,7,0,0}, // unbound: movable rock
++    {0x70823957,0x08506e64,9,10,10}, // better-emerald-2: cut tree
++    {0x70823957,0x08506f5c,8,0,0}, // better-emerald-2: breakable rock
++    {0x70823957,0x08506f7c,7,0,0}, // better-emerald-2: movable rock
++    {0x5e704d77,0x083a1510,9,10,10}, // fakemon: cut tree
++    {0x5e704d77,0x083a1698,8,0,0}, // fakemon: breakable rock
++    {0x5e704d77,0x083a16b8,7,0,0}, // fakemon: movable rock
++    {0x558ae42f,0x087ad528,9,10,10}, // lazarus: cut tree
++    {0x558ae42f,0x087ad548,8,0,0}, // lazarus: breakable rock
++    {0x558ae42f,0x087ad550,7,0,0}, // lazarus: movable rock
++    {0x63478921,0x083a1510,9,7,7}, // ash-gray: cut tree
++    {0x63478921,0x083a1698,8,0,0}, // ash-gray: breakable rock
++    {0x63478921,0x083a16b8,7,0,0}, // ash-gray: movable rock
++    {0xb9465c5a,0x083a1510,9,10,10}, // gaia: cut tree
++    {0xb9465c5a,0x083a1698,8,0,0}, // gaia: breakable rock
++    {0xb9465c5a,0x083a16b8,7,0,0}, // gaia: movable rock
++    {0xf2d16ebd,0x083a1510,9,10,10}, // rocket: cut tree
++    {0xf2d16ebd,0x083a1698,8,0,0}, // rocket: breakable rock
++    {0x14465a33,0x085cef08,9,10,10}, // seaglass: cut tree
++    {0x14465a33,0x085cef28,8,0,0}, // seaglass: breakable rock
++    {0x14465a33,0x085cef30,7,0,0}, // seaglass: movable rock
++    {0x6c5ee1b2,0x083a1510,9,10,10}, // odyssey: cut tree
++    {0x6c5ee1b2,0x083a1698,8,0,0}, // odyssey: breakable rock
++    {0x6c5ee1b2,0x083a16b8,7,0,0}, // odyssey: movable rock
++    {0x263a1187,0x08803348,9,10,10}, // modern-emerald: cut tree
++    {0x263a1187,0x08803440,8,0,0}, // modern-emerald: breakable rock
++    {0x263a1187,0x08803460,7,0,0}, // modern-emerald: movable rock
++    {0xcec21496,0x08b96c18,9,10,10}, // dragonsden: cut tree
++    {0xcec21496,0x08b96d10,8,0,0}, // dragonsden: breakable rock
++    {0xcec21496,0x08b96d30,7,0,0}, // dragonsden: movable rock
++};
++static const struct SceneryObjectProfile *sceneryObjectProfile(uint32_t rom,uint32_t images) {
++    for(unsigned i=0;i<sizeof(sceneryObjects)/sizeof(sceneryObjects[0]);i++)
++        if(sceneryObjects[i].rom==rom&&sceneryObjects[i].images==images)return &sceneryObjects[i];
++    return 0;
++}
+--- /dev/null
++++ b/app/src/main/cpp/pk_scenery_tree_profiles.h
+@@ -0,0 +1,96 @@
++// Generated exact complete 2x2 tree patterns.
++#pragma once
++struct SceneryTreeQuad { uint32_t rom,primary; uint16_t cells[4],ground; };
++static const struct SceneryTreeQuad sceneryTreeQuads[] = {
++    {0x70823957,0x83df704,{468,469,476,477},1},
++    {0x70823957,0x83df704,{470,471,478,479},1},
++    {0x70823957,0x83df704,{468,469,484,485},1},
++    {0x70823957,0x83df704,{470,471,476,477},1},
++    {0x70823957,0x83df704,{470,471,484,485},1},
++    {0x70823957,0x83df704,{468,471,476,477},1},
++    {0x70823957,0x83df704,{468,469,484,487},1},
++    {0x70823957,0x83df704,{468,469,486,485},1},
++    {0x70823957,0x83df704,{470,469,476,477},1},
++    {0x70823957,0x83df704,{470,471,486,487},1},
++    {0x70823957,0x83df704,{470,471,476,479},1},
++    {0x70823957,0x83df704,{468,469,486,487},1},
++    {0x70823957,0x83df704,{468,471,484,487},1},
++    {0x70823957,0x83df704,{468,471,478,479},1},
++    {0x70823957,0x83df704,{470,469,486,485},1},
++    {0x70823957,0x83df704,{468,471,486,485},1},
++    {0x70823957,0x83df704,{470,471,486,485},1},
++    {0x70823957,0x83df704,{468,471,478,477},1},
++    {0x70823957,0x83df704,{470,469,478,477},1},
++    {0x70823957,0x83df704,{468,471,476,479},1},
++    {0x70823957,0x83df704,{470,469,484,485},1},
++    {0x70823957,0x83df704,{470,469,484,487},1},
++    {0x70823957,0x83df704,{468,471,484,485},1},
++    {0x70823957,0x83df704,{470,471,476,485},1},
++    {0x14465a33,0x8a2e6ac,{468,469,476,477},1},
++    {0x14465a33,0x8a2e6ac,{468,469,484,485},1},
++    {0x14465a33,0x8a2e6ac,{470,469,476,477},1},
++    {0x14465a33,0x8a2e6ac,{468,471,476,477},1},
++    {0x14465a33,0x8a2e6ac,{468,469,486,485},1},
++    {0x14465a33,0x8a2e6ac,{468,469,484,487},1},
++    {0x14465a33,0x8a2e6ac,{470,471,478,479},1},
++    {0x14465a33,0x8a2e6ac,{470,471,476,477},1},
++    {0x14465a33,0x8a2e6ac,{468,469,486,487},1},
++    {0x14465a33,0x8a2e6ac,{468,471,484,487},1},
++    {0x14465a33,0x8a2e6ac,{470,469,486,485},1},
++    {0x14465a33,0x8a2e6ac,{468,471,478,479},1},
++    {0x14465a33,0x8a2e6ac,{470,471,486,487},1},
++    {0x14465a33,0x8a2e6ac,{470,469,484,485},1},
++    {0x14465a33,0x8a2e6ac,{470,471,486,485},1},
++    {0x14465a33,0x8a2e6ac,{468,471,486,487},1},
++    {0x558ae42f,0x8e3e21c,{468,469,476,477},1},
++    {0x558ae42f,0x8e3e21c,{470,471,478,479},1},
++    {0x558ae42f,0x8e3e21c,{468,471,476,477},1},
++    {0x558ae42f,0x8e3e21c,{470,469,476,477},1},
++    {0x558ae42f,0x8e3e21c,{468,469,484,485},1},
++    {0x558ae42f,0x8e3e21c,{468,469,478,479},1},
++    {0x558ae42f,0x8e3e21c,{470,471,476,477},1},
++    {0x558ae42f,0x8e3e21c,{470,469,478,477},1},
++    {0x558ae42f,0x8e3e21c,{468,469,476,479},1},
++    {0x558ae42f,0x8e3e21c,{468,471,476,479},1},
++    {0x558ae42f,0x8e3e21c,{468,469,478,477},1},
++    {0x558ae42f,0x8e3e21c,{470,471,478,477},1},
++    {0x558ae42f,0x8e3e21c,{470,469,478,479},1},
++    {0x558ae42f,0x8e3e21c,{468,471,478,479},1},
++    {0x558ae42f,0x8e3e21c,{470,471,476,479},1},
++    {0x558ae42f,0x8e3e21c,{470,469,484,485},1},
++    {0x558ae42f,0x8e3e21c,{468,469,476,485},1},
++    {0x558ae42f,0x8e3e21c,{468,469,484,477},1},
++    {0x558ae42f,0x8e3e21c,{470,469,484,477},1},
++    {0x558ae42f,0x8e3e21c,{470,469,476,479},1},
++    {0x558ae42f,0x8e3e21c,{468,471,478,477},1},
++    {0x558ae42f,0x8e3e21c,{470,471,476,485},1},
++    {0x558ae42f,0x8e3e21c,{468,471,476,485},1},
++    {0x263a1187,0x8bb3ac8,{468,469,476,477},1},
++    {0x263a1187,0x8bb3ac8,{468,469,484,485},1},
++    {0x263a1187,0x8bb3ac8,{468,471,476,477},1},
++    {0x263a1187,0x8bb3ac8,{470,469,476,477},1},
++    {0x263a1187,0x8bb3ac8,{468,469,486,485},1},
++    {0x263a1187,0x8bb3ac8,{468,469,484,487},1},
++    {0x263a1187,0x8bb3ac8,{470,471,476,477},1},
++    {0x263a1187,0x8bb3ac8,{468,469,486,487},1},
++    {0x263a1187,0x8bb3ac8,{468,471,484,487},1},
++    {0x263a1187,0x8bb3ac8,{470,469,486,485},1},
++    {0x263a1187,0x8bb3ac8,{468,471,478,479},1},
++    {0x263a1187,0x8bb3ac8,{470,471,486,487},1},
++    {0x263a1187,0x8bb3ac8,{470,471,486,485},1},
++    {0x263a1187,0x8bb3ac8,{470,469,484,485},1},
++    {0x263a1187,0x8bb3ac8,{468,471,486,487},1},
++    {0x263a1187,0x8bb3ac8,{470,471,484,487},1},
++};
++static int sceneryTreeTileset(uint32_t rom,uint32_t primary) {
++    for(unsigned i=0;i<sizeof(sceneryTreeQuads)/sizeof(sceneryTreeQuads[0]);i++)
++        if(sceneryTreeQuads[i].rom==rom&&sceneryTreeQuads[i].primary==primary)return 1;
++    return 0;
++}
++static int sceneryTreeGround(uint32_t rom,uint32_t primary,const int cells[4]) {
++    for(unsigned i=0;i<sizeof(sceneryTreeQuads)/sizeof(sceneryTreeQuads[0]);i++) {
++        const struct SceneryTreeQuad *p=&sceneryTreeQuads[i];
++        if(p->rom==rom&&p->primary==primary&&p->cells[0]==cells[0]&&p->cells[1]==cells[1]&&p->cells[2]==cells[2]&&p->cells[3]==cells[3])return p->ground;
++    }
++    return -1;
++}
+--- a/scripts/gen_area_maps.py
++++ b/scripts/gen_area_maps.py
+@@ -106,7 +106,7 @@
+     return r.ok(h) and h % 4 == 0 and layout_ok(r, r.u32(h)) and (r.u32(h + 4) == 0 or r.ok(r.u32(h + 4)))
+ 
+ 
+-def group_lists(r, groups, xor):
++def group_lists(r, groups, xor, alignment=4):
+     """Each group's list of header pointers: a group is a list in ROM (or none: 0, Rogue's unused groups) whose first entry
+     points into ROM; it ends at the next list or the first entry that doesn't (a deleted map's header still counts:
+     Amethyst's have a layout of 0xFFFFFFFF)."""
+@@ -119,7 +119,7 @@
+             ahead = [r.u32(groups + 4 * (g + k)) ^ xor for k in range(1, 5) if r.ok(groups + 4 * (g + k))]
+             if not any(r.ok(a) and a % 4 == 0 and header_ok(r, r.u32(a)) for a in ahead): break
+             lists.append(0)
+-        elif r.ok(lst) and lst % 4 == 0 and r.ok(r.u32(lst)) and r.u32(lst) % 4 == 0:
++        elif r.ok(lst) and lst % alignment == 0 and r.ok(r.u32(lst)) and r.u32(lst) % 4 == 0:
+             lists.append(lst)
+         else:
+             break
+@@ -292,8 +292,10 @@
+ 
+ def wide_rows():
+     text = open(WIDE).read()
++    candidates=os.path.join(os.path.dirname(WIDE),'pk_scenery_engine_rows.h')
++    if os.path.exists(candidates):text+='\n'+open(candidates).read()
+     for m in re.finditer(r'\{ 0x([0-9a-f]{8}), (PK_WIDE_FAMILY_\w+), \{([^}]*)\} \},\s*// ([^\n]*)', text):
+-        a = [int(x, 16) for x in m.group(3).split(',')]
++        a = [int(x,16) for x in re.findall(r'0x[0-9a-f]+',m.group(3))]
+         yield int(m.group(1), 16), m.group(2), a, m.group(4).strip()
+ 
+ 
+@@ -334,7 +336,8 @@
+         if not groups:
+             skipped.append((name, 'gMapGroups not found by its shape'))
+             continue
+-        lists, sizes = group_lists(r, groups, xor)
++        # This exact Dragonsden revision stores its bank pointer lists at +2 alignment.
++        lists, sizes = group_lists(r, groups, xor, alignment=2 if crc==0xcec21496 else 4)
+         if len(lists) < 3:
+             skipped.append((name, 'gMapGroups at %08X reads as %d groups' % (groups, len(lists))))
+             continue
+--- a/gamedata/gen3/area_maps.toml
++++ b/gamedata/gen3/area_maps.toml
+@@ -1330,5 +1330,16 @@
+ #   Pokemon Quetzal (Alpha 9.0) (Spanish).gba: where secondary tiles start is unclear (best: 512, 87.4% of 143325 tile entries fit): its tilesets are laid out its own way
+ #   Pokemon Quetzal (Alpha 9v1) (English).gba: where secondary tiles start is unclear (best: 512, 87.4% of 143358 tile entries fit): its tilesets are laid out its own way
+ #   Pokemon Quetzal (Alpha 9v1) (Spanish).gba: where secondary tiles start is unclear (best: 512, 87.4% of 143357 tile entries fit): its tilesets are laid out its own way
+-#   Pokemon Team Rocket Dragonsden Version.gba: gMapGroups not found by its shape
+ #   Pokemon Team Rocket Edition 2026 (v3.1) (Spanish).gba: its maps come out scrambled (expansion 1.14 with tilesets of its own), not worked out yet
++
++# Exact Dragonsden English revision: halfword-aligned bank pointer lists.
++[rom.cec21496]
++name = "Team Rocket Dragonsden (English)"
++mapGroups = 0x08A335D8
++mapGroupSizes = [61, 47, 36, 43, 11, 9, 9, 27, 23, 14, 7, 7, 12, 99, 11, 10, 8, 10, 10, 42, 20, 14, 18, 21, 2, 74, 88, 4, 4, 7, 7, 4, 5, 6, 80, 5, 5, 6, 7, 8, 10, 7, 7, 14, 10, 17, 10, 24, 14, 17, 15, 108, 61, 89, 68, 11, 31]
++primaryTiles = 640
++primaryMetatiles = 512
++primaryPalettes = 6
++floorNumOff = -1
++metatileSize = 16
++metatileMask = 0x3FF

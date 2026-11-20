@@ -35,10 +35,10 @@
   {
     "game": "modern-emerald",
     "rom_crc32": "263a1187",
-    "climate": false,
+    "climate": true,
     "kanto": false,
     "radical_props": false,
-    "engine": "unmapped; held",
+    "engine": "Mapped EX candidate; source/fixture layout evidence; Thor qualification pending",
     "thor_qualified": false
   },
   {
@@ -62,10 +62,10 @@
   {
     "game": "dragonsden",
     "rom_crc32": "cec21496",
-    "climate": false,
+    "climate": true,
     "kanto": false,
     "radical_props": false,
-    "engine": "unmapped; held",
+    "engine": "Mapped EX candidate; source/fixture layout evidence; Thor qualification pending",
     "thor_qualified": false
   },
   {

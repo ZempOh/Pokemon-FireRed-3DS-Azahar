@@ -2,6 +2,49 @@
 import argparse,json
 from pathlib import Path
 
+def generate_trees(profiles,output):
+    lines=['// Generated exact complete 2x2 tree patterns.','#pragma once',
+        'struct SceneryTreeQuad { uint32_t rom,primary; uint16_t cells[4],ground; };',
+        'static const struct SceneryTreeQuad sceneryTreeQuads[] = {']
+    for p in profiles:
+        assert p['reviewed'] and len(p['cells'])==4
+        lines.append('    {0x%s,%s,{%s},%d},'%(p['rom_crc32'],p['primary'],','.join(map(str,p['cells'])),p['ground']))
+    lines+=['};','static int sceneryTreeTileset(uint32_t rom,uint32_t primary) {',
+        '    for(unsigned i=0;i<sizeof(sceneryTreeQuads)/sizeof(sceneryTreeQuads[0]);i++)',
+        '        if(sceneryTreeQuads[i].rom==rom&&sceneryTreeQuads[i].primary==primary)return 1;',
+        '    return 0;','}',
+        'static int sceneryTreeGround(uint32_t rom,uint32_t primary,const int cells[4]) {',
+        '    for(unsigned i=0;i<sizeof(sceneryTreeQuads)/sizeof(sceneryTreeQuads[0]);i++) {',
+        '        const struct SceneryTreeQuad *p=&sceneryTreeQuads[i];',
+        '        if(p->rom==rom&&p->primary==primary&&p->cells[0]==cells[0]&&p->cells[1]==cells[1]&&p->cells[2]==cells[2]&&p->cells[3]==cells[3])return p->ground;',
+        '    }','    return -1;','}']
+    (output/'pk_scenery_tree_profiles.h').write_text('\n'.join(lines)+'\n')
+
+def generate_engines(profiles,output):
+    lines=['// Generated candidate engine rows. Device qualification is separate.']
+    for p in profiles:
+        assert p['family'] in {'EX','EM','FR'}
+        lines.append('    { 0x%s, PK_WIDE_FAMILY_%s, { %s } }, // %s'%(p['rom_crc32'],p['family'],', '.join('[PK_WIDE_%s]=0x%s'%(k,v) for k,v in p['slots'].items()),p['game']))
+    (output/'pk_scenery_engine_rows.h').write_text('\n'.join(lines)+'\n')
+
+def generate_objects(profiles,output):
+    lines=['// Generated from semantically reviewed live-object image tables.','#pragma once',
+           'struct SceneryObjectProfile { uint32_t rom,images; uint8_t kind,leaf,bark; };',
+           'static const struct SceneryObjectProfile sceneryObjects[] = {']
+    seen=set()
+    for p in profiles:
+        if not p['reviewed']:continue
+        key=(p['rom_crc32'],p['image_table'])
+        if key in seen:raise ValueError('Duplicate object image table')
+        seen.add(key)
+        assert p['kind'] in (7,8,9,12)
+        lines.append('    {0x%s,0x%s,%d,%d,%d}, // %s: %s'%(key[0],key[1],p['kind'],p['leaf'],p['bark'],p['game'],p['asset']))
+    lines+=['};','static const struct SceneryObjectProfile *sceneryObjectProfile(uint32_t rom,uint32_t images) {',
+            '    for(unsigned i=0;i<sizeof(sceneryObjects)/sizeof(sceneryObjects[0]);i++)',
+            '        if(sceneryObjects[i].rom==rom&&sceneryObjects[i].images==images)return &sceneryObjects[i];',
+            '    return 0;','}']
+    (output/'pk_scenery_object_profiles.h').write_text('\n'.join(lines)+'\n')
+
 def generate(profiles, plants, output):
     crc=lambda p:int(p['rom_crc32'],16)
     def cases(items):return '\n'.join('    case 0x%08x:'%crc(p) for p in items)
@@ -27,3 +70,6 @@ if __name__=='__main__':
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--output',type=Path,required=True);args=p.parse_args()
     root=Path(__file__).with_name('scenery-profiles')
     generate(json.loads((root/'android-capabilities.json').read_text()),json.loads((root/'android-potted-plants.json').read_text()),args.output)
+    generate_engines(json.loads((root/'android-engines.json').read_text()),args.output)
+    generate_objects(json.loads((root/'android-live-objects.json').read_text()),args.output)
+    generate_trees(json.loads((root/'android-tree-quads.json').read_text()),args.output)

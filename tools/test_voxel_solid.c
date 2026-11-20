@@ -5,8 +5,18 @@
 #include "pk_wide_solid.h"
 #include "pk_wide_props.h"
 #include "pk_scenery_candidates.h"
+#include "pk_scenery_object_profiles.h"
+#include "pk_scenery_tree_profiles.h"
 
 int main(void) {
+    for(unsigned i=0;i<sizeof(sceneryTreeQuads)/sizeof(sceneryTreeQuads[0]);i++) {
+        const struct SceneryTreeQuad *p=&sceneryTreeQuads[i];
+        int cells[4]={p->cells[0],p->cells[1],p->cells[2],p->cells[3]};
+        assert(sceneryTreeGround(p->rom,p->primary,cells)==p->ground);
+        assert(sceneryTreeGround(p->rom^1,p->primary,cells)<0);
+        assert(sceneryTreeGround(p->rom,p->primary^4,cells)<0);
+        cells[0]=0xffff;assert(sceneryTreeGround(p->rom,p->primary,cells)<0);
+    }
     const uint32_t expanded[]={0x63478921,0xb9465c5a,0xf2d16ebd,0x6c5ee1b2};
     for(unsigned i=0;i<sizeof(expanded)/sizeof(expanded[0]);i++) {
         assert(sceneryCandidate(expanded[i]));
@@ -20,8 +30,15 @@ int main(void) {
     assert(sceneryCandidate(0x70823957));
     assert(sceneryCandidate(0x558ae42f));
     assert(sceneryCandidate(0x14465a33));
-    assert(!sceneryCandidate(0x263a1187)); // No mapped Modern Emerald renderer.
-    assert(!sceneryCandidate(0xcec21496)); // No mapped Dragonsden renderer.
+    assert(sceneryCandidate(0x263a1187)); // Source-mapped candidate, not device qualification.
+    assert(sceneryCandidate(0xcec21496));
+    for(unsigned i=0;i<sizeof(sceneryObjects)/sizeof(sceneryObjects[0]);i++) {
+        const struct SceneryObjectProfile *p=&sceneryObjects[i];
+        assert(sceneryObjectProfile(p->rom,p->images)==p);
+        assert(!sceneryObjectProfile(p->rom^1,p->images));
+        assert(!sceneryObjectProfile(p->rom,p->images+1));
+        assert(p->kind!=9 || (p->leaf>0 && p->leaf<16));
+    }
     assert(!sceneryCandidate(0));
     assert(!solidCutLeaf(0));
     assert(!solidCutLeaf(1|(1<<5)|(1<<10)));
@@ -64,7 +81,8 @@ int main(void) {
     memset(depth,0,sizeof depth);memset(v.out,0,N*4);
     solidTriangle(&v,&t,a,c,b,256,0);
     assert(memcmp(first,v.out,sizeof first)==0);
-    for(int kind=1;kind<=10;kind++) {
+    for(int kind=1;kind<=12;kind++) {
+        if(kind==11)continue; // Plant profiles are checked separately below.
         struct SolidProp p={.surface=t,.kind=kind};
         p.surface.x=32;p.surface.y=40;
         memset(depth,0,sizeof depth);memset(v.out,0,N*4);

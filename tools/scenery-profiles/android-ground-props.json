@@ -530,5 +530,152 @@
     ],
     "source_sha256": "4e0b7115b8243ec0583da009d887e95ee53405a622bf177709a8cb54dfbc0b88",
     "reviewed": true
+  },
+  {
+    "game": "letsgo",
+    "rom_crc32": "25c3d89f",
+    "rom_sha256": "ffb57f40fa4be71707fec0d36b0356220edc9b30648c31641d2b97118d792282",
+    "primary": "0x082d4a94",
+    "id": 13,
+    "kind": 1,
+    "ground": 8,
+    "ink": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "source_sha256": "eb04fc69a639bc4eff7953b8805959e3fa8c12e895dd9ab48e871ccba16e0496",
+    "reviewed": true,
+    "behavior": 2,
+    "review_note": "Own-ROM tall-grass behavior2 and source art reviewed; not a tree fragment. Thor retest required."
+  },
+  {
+    "game": "radical",
+    "rom_crc32": "fba55dd8",
+    "rom_sha256": "679d112cdfe699c2793d82c7e7999ac9dfca9e222ad5a85d4f8f1e457cd0283f",
+    "primary": "0x082d4a94",
+    "id": 13,
+    "kind": 1,
+    "ground": 1,
+    "ink": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "source_sha256": "bb21761412f5255814dda5943bd4aa8c8975028d220d1dd717cfd2cbae82897e",
+    "reviewed": true,
+    "behavior": 2,
+    "review_note": "Own-ROM tall-grass behavior2 and source art reviewed; not a tree fragment. Thor retest required."
+  },
+  {
+    "game": "unbound",
+    "rom_crc32": "4b3d4957",
+    "rom_sha256": "7aa25bbf568f7cfcf6ee1cf2e9e6ff637350b3d0705c2375cabb6baa7d9739f7",
+    "primary": "0x082d4a94",
+    "id": 13,
+    "kind": 1,
+    "ground": 1,
+    "ink": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "source_sha256": "6bf74cd92c14ae0fb1fba0db4948edc766087bd9799ec519048177ba405ddef0",
+    "reviewed": true,
+    "behavior": 2,
+    "review_note": "Own-ROM tall-grass behavior2 and source art reviewed; not a tree fragment. Thor retest required."
+  },
+  {
+    "game": "fakemon",
+    "rom_crc32": "5e704d77",
+    "rom_sha256": "05572f4dfbb96a1161a284292971d50c37e521d340bcecf48b574cca3dd8b4c6",
+    "primary": "0x082d4a94",
+    "id": 13,
+    "kind": 1,
+    "ground": 1,
+    "ink": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "source_sha256": "bb21761412f5255814dda5943bd4aa8c8975028d220d1dd717cfd2cbae82897e",
+    "reviewed": true,
+    "behavior": 2,
+    "review_note": "Own-ROM tall-grass behavior2 and source art reviewed; not a tree fragment. Thor retest required."
+  },
+  {
+    "game": "rocket",
+    "rom_crc32": "f2d16ebd",
+    "rom_sha256": "e6f232d0df265323c995e6025fe0ebcc532dfaf7634548a13ee9fb5673152442",
+    "primary": "0x082d4a94",
+    "id": 13,
+    "kind": 1,
+    "ground": 1,
+    "ink": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "source_sha256": "bb21761412f5255814dda5943bd4aa8c8975028d220d1dd717cfd2cbae82897e",
+    "reviewed": true,
+    "behavior": 2,
+    "review_note": "Own-ROM tall-grass behavior2 and source art reviewed; not a tree fragment. Thor retest required."
+  },
+  {
+    "game": "dragonsden",
+    "rom_crc32": "cec21496",
+    "rom_sha256": "6ca88c3ecd54c78bf8a8cbb80f2b9ab049d66d4b070e97849cf4073ee8d2f15c",
+    "primary": "0x087c0e10",
+    "id": 13,
+    "kind": 1,
+    "ground": 1,
+    "ink": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "source_sha256": "bb21761412f5255814dda5943bd4aa8c8975028d220d1dd717cfd2cbae82897e",
+    "reviewed": true,
+    "behavior": 2,
+    "review_note": "Own-ROM tall-grass behavior2 and source art reviewed; not a tree fragment. Thor retest required."
+  },
+  {
+    "game": "unbound",
+    "rom_crc32": "4b3d4957",
+    "rom_sha256": "7aa25bbf568f7cfcf6ee1cf2e9e6ff637350b3d0705c2375cabb6baa7d9739f7",
+    "primary": "0x082d4a94",
+    "id": 18,
+    "kind": 1,
+    "ground": 1,
+    "ink": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "source_sha256": "79f7497ad71c6404b53d92e797c8a18c5fab40544e6c13d4101ab6f247cca5d2",
+    "reviewed": true,
+    "behavior": 2,
+    "review_note": "Own-ROM tall-grass behavior2 and source art reviewed; not a tree fragment. Thor retest required."
   }
 ]

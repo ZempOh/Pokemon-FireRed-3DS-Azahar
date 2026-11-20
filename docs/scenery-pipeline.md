@@ -338,3 +338,19 @@ track underruns. Do not relax the zero-over-budget gate. The next candidate uses
 column-major exact circle spans; 2400 old/new rounded and circle raster cases and
 2003 full/dirty menu transitions pass byte equivalence. Thor results must decide
 whether that optimization is enough; host correctness alone is not a pacing pass.
+
+## Encounter grass is separate from decorative foliage
+
+Do not infer encounter grass from an inherited renderer's foliage IDs. Own-ROM
+art and attributes show metatile 0x0D has tall-grass behavior 2 in Let's Go,
+Radical Red, Fakemon, Rocket, Unbound and Dragonsden's Kanto tileset. Unbound
+also uses 0x12 with behavior 2. The other reviewed Kanto 0x12/0x1A images are
+tree fragments, not encounter grass. Patch 0021 adds seven hash-locked source
+profiles using the shared solid grass mesh and each game's own material pixels.
+These are candidates until their exact APK passes Thor tests.
+
+QA grass-route proposals must use reviewed kind-1 profiles and walkable map
+cells. A patch of grass alone does not prove wild encounters are enabled there.
+Retain failed route attempts; phone calls, defeated trainers, story state and
+held encounter-reducing items can prevent a battle without a renderer defect.
+Keep manual input notes with any subsequently captured battle fixture.

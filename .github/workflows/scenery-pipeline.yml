@@ -1,0 +1,17 @@
+name: Scenery pipeline regression
+on:
+  push:
+    branches: [graphics/pokedaisy-upgrade]
+    paths: ['tools/scenery_pipeline.py', 'tools/scenery_profiles.json', 'tools/tests/test_scenery_pipeline.py', '.github/workflows/scenery-pipeline.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  qualification-integrity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python tools/tests/test_scenery_pipeline.py

@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "scope": "Environmental scenery in the six supported games",
+  "families": ["grass", "flowers", "shrubs", "trees", "indoor_plants", "static_rocks", "movable_rocks", "breakable_rocks", "cut_trees", "cliffs", "water_edges", "fences", "buildings", "indoor_props", "winter_ground"],
+  "games": {
+    "classic": {"repo": "classic", "runtime": "native", "sources": ["3ds_port/src/voxel", "3ds_port/scripts"], "entrypoints": ["3ds_port/scripts/gen_voxel_buildings.py", "3ds_port/scripts/gen_voxel_trees.py"], "active_models": "3ds_port/scripts/classic_building_specs.py", "notes": "The imported Emerald voxel_building_specs is not the active Classic model list. The tree renderer has no FireRed room-renderer path."},
+    "firered": {"repo": "firered", "runtime": "native", "sources": ["3ds_port/src/voxel", "3ds_port/scripts"], "entrypoints": ["3ds_port/scripts/fr_export_buildings.py", "3ds_port/scripts/fr_gen_trees.py"], "active_models": "3ds_port/scripts/fr_building_specs.py", "room_models": "3ds_port/scripts/fr_gen_rooms.py", "notes": "Room shapes and their packed texture must be generated together. Keep original row fields and UVs unless rebuilding the matching recipe."},
+    "frlg": {"repo": "frlg", "runtime": "native", "sources": ["3ds_port/src/voxel", "3ds_port/scripts"], "entrypoints": ["3ds_port/scripts/fr_export_buildings.py", "3ds_port/scripts/fr_gen_trees.py"], "active_models": "3ds_port/scripts/fr_building_specs.py", "room_models": "3ds_port/scripts/fr_gen_rooms.py", "notes": "Shares FireRed renderer structure, but rebuilding from the FRLG+ ROM produces different room rows and texture slots. Never copy generated tables by game-name similarity."},
+    "letsgo": {"repo": "pokedaisy", "runtime": "android", "sources": ["app/src/main/cpp", "app/src/main/kotlin"], "entrypoints": ["app/src/main/cpp/pk_wide.c"], "rom_crc32": "25c3d89f", "notes": "Export changes as patches to pokedaisy-build; do not push the modified upstream checkout."},
+    "radical": {"repo": "pokedaisy", "runtime": "android", "sources": ["app/src/main/cpp", "app/src/main/kotlin"], "entrypoints": ["app/src/main/cpp/pk_wide.c"], "rom_crc32": "fba55dd8", "notes": "Gate by exact ROM CRC and primary/secondary tileset. Numeric tile IDs alone are not asset identities."},
+    "unbound": {"repo": "pokedaisy", "runtime": "android", "sources": ["app/src/main/cpp", "app/src/main/kotlin"], "entrypoints": ["app/src/main/cpp/pk_wide.c"], "rom_crc32": "4b3d4957", "notes": "Green and snow tilesets are separate profiles. Preserve water and cliff backgrounds under replacement foliage."}
+  },
+  "required_checks": ["geometry", "source_projection", "ground_preservation", "thor_field", "thor_battle", "thor_interactions", "thor_seasons_weather", "thor_audio_pacing", "media_review", "device_restored"]
+}
+

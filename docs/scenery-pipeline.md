@@ -361,6 +361,21 @@ Retain failed route attempts; phone calls, defeated trainers, story state and
 held encounter-reducing items can prevent a battle without a renderer defect.
 Keep manual input notes with any subsequently captured battle fixture.
 
+The broader used-cell audit found 68 unregistered behavior-2 primary cells,
+many of which are tree fragments or mixed-ground edges. Behavior alone is not
+a safe geometry classifier. Lazarus's starting region uses full grass tuft 61;
+patch 0022 registers that reviewed image and removes Radical's old 0x12/0x1a
+tree-as-grass fallback. Mixed ground variants need separate floor-preservation
+review. The new registry has 36 ground profiles, with 16 verified grass entries.
+
+Before preparing disposable interaction seeds, inspect each party's actual
+format and sector checksums. Gaia and Odyssey use documented plaintext GAEM
+parties; the other ten-game seeds validated encrypted substruct checksums.
+Lazarus and Seaglass's current save files already contain their acquired starters.
+Synthetic HM moves and engine-family badge flags are only test setup: verify
+the game's own move names, PP, eligibility and actual scripts on the device.
+Never convert successful seed generation into an interaction pass.
+
 `tools/scenery_snapshot.py LOCAL_RESUME.companion` reads the versioned location
 and party-count header without touching the device. Check this before calling
 a fixture a field or battle scene: the retained Rocket seed is a partyless

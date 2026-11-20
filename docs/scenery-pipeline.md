@@ -57,6 +57,17 @@ an explicit adapter; it rejects games outside its supported list.
 - Keep geometry and recognition separate. New games normally add profiles and
   fixtures, not another renderer implementation.
 
+`tools/scenery-geometry/scenery_plant_geometry.h` is the shared renderer-neutral
+botanical family: rounded pot, closed stem and eight solid leaves, 144 triangles.
+Its adapter receives triangles in pixel units (Y is height), six material indices,
+and shading. Native and Android adapters can reuse it with their coordinate and UV
+conventions. The CI test checks closed edges, finite coordinates, material bounds
+and positive volume. These are geometry checks, not game or Thor certification.
+
+Do not classify by comments alone: Sea Cottage's `0x29c/0x2af` pair was described
+as a plant in an old list but its actual artwork is a blue cabinet. Palette/profile
+validation caught it. Keep such exclusions explicit and preserve the original asset.
+
 ## Findings that must not be rediscovered
 
 - Classic uses `classic_building_specs.py`; the imported Emerald definitions are

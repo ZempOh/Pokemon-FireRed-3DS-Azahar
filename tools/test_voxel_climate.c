@@ -61,6 +61,8 @@ int main(void) {
     voxelClimate.season=3;voxelClimate.seasonBlend=256;
     assert(climateGround(foliage,0)!=foliage);
     assert(climateGround(stone,1)==stone);
+    assert(climateGround(0xff554c34u,2)!=0xff554c34u); /* verified night grass */
+    assert(climateGround(0xff554c34u,0)==0xff554c34u); /* same hue outside land profile */
     assert(climateGround(0xffcc7733u,1)==0xffcc7733u); /* water */
     assert(climateGround(0xff4488bbu,1)!=0xff4488bbu); /* earth */
     assert(climateGround(0xff4488bbu,0)==0xff4488bbu); /* wall */

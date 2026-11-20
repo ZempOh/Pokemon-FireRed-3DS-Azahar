@@ -5,7 +5,15 @@
     "climate": true,
     "kanto": true,
     "radical_props": false,
-    "engine": "existing mapped engine"
+    "engine": "existing mapped engine",
+    "land": [
+      {
+        "primary": "0x082d4a94",
+        "ids": [
+          8
+        ]
+      }
+    ]
   },
   {
     "game": "radical",
@@ -13,7 +21,15 @@
     "climate": true,
     "kanto": true,
     "radical_props": true,
-    "engine": "existing mapped engine"
+    "engine": "existing mapped engine",
+    "land": [
+      {
+        "primary": "0x082d4a94",
+        "ids": [
+          1
+        ]
+      }
+    ]
   },
   {
     "game": "unbound",
@@ -21,7 +37,15 @@
     "climate": true,
     "kanto": true,
     "radical_props": false,
-    "engine": "existing mapped engine"
+    "engine": "existing mapped engine",
+    "land": [
+      {
+        "primary": "0x082d4a94",
+        "ids": [
+          1
+        ]
+      }
+    ]
   },
   {
     "game": "better-emerald-2",
@@ -30,7 +54,15 @@
     "kanto": false,
     "radical_props": false,
     "engine": "runtime retail fingerprint proof",
-    "thor_qualified": false
+    "thor_qualified": false,
+    "land": [
+      {
+        "primary": "0x083df704",
+        "ids": [
+          1
+        ]
+      }
+    ]
   },
   {
     "game": "modern-emerald",
@@ -39,7 +71,15 @@
     "kanto": false,
     "radical_props": false,
     "engine": "Mapped EX candidate; source/fixture layout evidence; Thor qualification pending",
-    "thor_qualified": false
+    "thor_qualified": false,
+    "land": [
+      {
+        "primary": "0x08bb3ac8",
+        "ids": [
+          1
+        ]
+      }
+    ]
   },
   {
     "game": "fakemon",
@@ -48,7 +88,15 @@
     "kanto": true,
     "radical_props": true,
     "engine": "runtime retail fingerprint proof",
-    "thor_qualified": false
+    "thor_qualified": false,
+    "land": [
+      {
+        "primary": "0x082d4a94",
+        "ids": [
+          1
+        ]
+      }
+    ]
   },
   {
     "game": "lazarus",
@@ -57,7 +105,15 @@
     "kanto": false,
     "radical_props": false,
     "engine": "existing mapped engine",
-    "thor_qualified": false
+    "thor_qualified": false,
+    "land": [
+      {
+        "primary": "0x08e3e21c",
+        "ids": [
+          1
+        ]
+      }
+    ]
   },
   {
     "game": "dragonsden",
@@ -75,7 +131,15 @@
     "kanto": false,
     "radical_props": false,
     "engine": "existing mapped engine",
-    "thor_qualified": false
+    "thor_qualified": false,
+    "land": [
+      {
+        "primary": "0x082d4a94",
+        "ids": [
+          1
+        ]
+      }
+    ]
   },
   {
     "game": "gaia",
@@ -84,7 +148,15 @@
     "kanto": false,
     "radical_props": false,
     "engine": "existing mapped engine",
-    "thor_qualified": false
+    "thor_qualified": false,
+    "land": [
+      {
+        "primary": "0x082d4a94",
+        "ids": [
+          1
+        ]
+      }
+    ]
   },
   {
     "game": "rocket",
@@ -93,7 +165,15 @@
     "kanto": true,
     "radical_props": true,
     "engine": "existing mapped engine",
-    "thor_qualified": false
+    "thor_qualified": false,
+    "land": [
+      {
+        "primary": "0x082d4a94",
+        "ids": [
+          1
+        ]
+      }
+    ]
   },
   {
     "game": "seaglass",
@@ -102,7 +182,15 @@
     "kanto": false,
     "radical_props": false,
     "engine": "existing mapped engine",
-    "thor_qualified": false
+    "thor_qualified": false,
+    "land": [
+      {
+        "primary": "0x08a2e6ac",
+        "ids": [
+          1
+        ]
+      }
+    ]
   },
   {
     "game": "odyssey",
@@ -111,6 +199,14 @@
     "kanto": false,
     "radical_props": false,
     "engine": "existing mapped engine",
-    "thor_qualified": false
+    "thor_qualified": false,
+    "land": [
+      {
+        "primary": "0x082d4a94",
+        "ids": [
+          1
+        ]
+      }
+    ]
   }
 ]

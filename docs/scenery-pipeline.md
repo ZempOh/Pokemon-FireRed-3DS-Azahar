@@ -171,3 +171,18 @@ not a version discriminator. Device qualification remains pending.
 Gaia and Odyssey. Recognition requires the exact ROM, primary tileset and all six
 cells; it reuses the solid tree renderer and verified ground cell. Odyssey's
 stacked double-canopy patterns are excluded. This remains partial coverage.
+
+### Night palettes and winter ground
+
+Reviewed full land cells now use semantic recognition for winter coverage, so
+blue night palettes do not make known grass lose its snow. Recognition requires
+ROM CRC, primary tileset and metatile ID. Unclassified cells retain the color
+filter; water, walls and indoor surfaces are not broadly classified as land.
+`land` entries in `android-capabilities.json` currently cover the reviewed base
+ground in twelve Android games; Dragonsden still needs separate source review.
+
+`tools/scenery_state_probe.py` compares a private mGBA state against local ROM
+metatiles. Supply `--rom`, `--state`, `--profiles`, `--game`, `--metatiles`, `--size`
+and `--output`. It verifies the ROM hash and exports metadata only. Both Modern
+Emerald (512/16) and Dragonsden (640/24) match 1,800/1,800 captured BG entries.
+This is an engine diagnostic, not a release qualification.

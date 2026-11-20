@@ -68,6 +68,12 @@ def generate(profiles, plants, output):
         lines += ['static int %s(uint32_t crc%s) {'%(name,',uint32_t primary' if primary else '')]
         if primary:lines+=['    if(primary!=0x082d4a94)return 0;']
         lines+=['    switch(crc) {',cases([p for p in profiles if p.get(cap)]),'        return 1;','    default:return 0;','    }','}']
+    lines+=['static int sceneryLand(uint32_t crc,uint32_t primary,int id) {']
+    for p in profiles:
+        for land in p.get('land',[]):
+            assert land['ids'] and all(0<=n<1024 for n in land['ids'])
+            lines.append('    if(crc==0x%s && primary==%s && (%s))return 1;'%(p['rom_crc32'],land['primary'],' || '.join('id==%d'%n for n in land['ids'])))
+    lines+=['    return 0;','}']
     output.mkdir(parents=True,exist_ok=True)
     (output/'pk_scenery_candidates.h').write_text('\n'.join(lines)+'\n')
     lines=['// Generated from verified local ROM profiles; no ROM textures.','#pragma once','struct SolidPlantProfile { uint32_t rom,primary; uint16_t top,bottom; uint8_t shape,height,width,centerX2,foot,ink[12]; };','static const struct SolidPlantProfile solidPlantProfiles[] = {']

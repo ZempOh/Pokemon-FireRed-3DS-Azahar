@@ -5,7 +5,7 @@ int main(void) {
     assert(VoxelWinter_IsPath(0xdc) && VoxelWinter_IsPath(0x105));
     assert(VoxelWinter_IsPath(0xd0) && VoxelWinter_IsPath(0xd9) && VoxelWinter_IsPath(0xe2));
     assert(!VoxelWinter_IsPath(0xc1) && VoxelWinter_IsPath(0xfe) && VoxelWinter_IsPath(0x107));
-    unsigned ledges[]={0x97,0xc1,0xc8,0xc9};
+    unsigned ledges[]={0x97,0xc0,0xc1,0xc8,0xc9};
     for(unsigned i=0;i<sizeof(ledges)/sizeof(ledges[0]);i++)
         for(unsigned y=0;y<16;y++)assert(VoxelWinter_PixelPath(ledges[i],y)==(y<8));
     assert(!VoxelWinter_PixelPath(0x95,0));

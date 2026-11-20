@@ -9,7 +9,7 @@ static inline int VoxelWinter_IsPath(unsigned id) {
 }
 /* Verified General tileset ledges: snow the land cap, preserve cliff faces. */
 static inline int VoxelWinter_PixelPath(unsigned id,unsigned y) {
-    return VoxelWinter_IsPath(id) || (y<8 && (id==0x97 || id==0xc1 || id==0xc8 || id==0xc9));
+    return VoxelWinter_IsPath(id) || (y<8 && (id==0x97 || id==0xc0 || id==0xc1 || id==0xc8 || id==0xc9));
 }
 static inline uint16_t VoxelWinter_Color(uint16_t c, unsigned mix, int path) {
     unsigned r=(c>>11)&31,g=(c>>6)&31,b=(c>>1)&31;

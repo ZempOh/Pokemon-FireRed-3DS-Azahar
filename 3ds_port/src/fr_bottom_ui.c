@@ -733,26 +733,41 @@ static void RoundGradient(int x, int y, int w, int h, int r, u16 top, u16 c, int
     }
 }
 
+/* Column-major exact circle spans: avoid scanning every pixel in the
+ * enclosing square when the battle action buttons are redrawn. */
 static void Disc(int cx, int cy, int r, u16 c)
 {
-    for (int dy = -r; dy <= r; dy++)
-        for (int dx = -r; dx <= r; dx++)
-            if (dx * dx + dy * dy <= r * r + r / 2)
-                Put(cx + dx, cy + dy, c);
+    int edge = r, limit = r * r + r / 2;
+    for (int dx = 0; dx <= r; ++dx)
+    {
+        while (edge >= 0 && dx * dx + edge * edge > limit) --edge;
+        if (edge < 0) break;
+        FillRect(cx + dx, cy - edge, 1, edge * 2 + 1, c);
+        if (dx) FillRect(cx - dx, cy - edge, 1, edge * 2 + 1, c);
+    }
 }
 
 static void Ring(int cx, int cy, int r, int thick, u16 c)
 {
     int outer = r * r + r / 2, inner = (r - thick) * (r - thick) + (r - thick) / 2;
-
-    for (int dy = -r; dy <= r; dy++)
-        for (int dx = -r; dx <= r; dx++)
+    int edge = r, hole = r;
+    for (int dx = 0; dx <= r; ++dx)
+    {
+        while (edge >= 0 && dx * dx + edge * edge > outer) --edge;
+        while (hole >= 0 && dx * dx + hole * hole > inner) --hole;
+        if (edge < 0) break;
+        if (hole >= edge) continue;
+        for (int side = 0; side < (dx ? 2 : 1); ++side)
         {
-            int d = dx * dx + dy * dy;
-
-            if (d <= outer && d > inner)
-                Put(cx + dx, cy + dy, c);
+            int x = cx + (side ? -dx : dx);
+            if (hole < 0) FillRect(x, cy - edge, 1, edge * 2 + 1, c);
+            else
+            {
+                FillRect(x, cy - edge, 1, edge - hole, c);
+                FillRect(x, cy + hole + 1, 1, edge - hole, c);
+            }
         }
+    }
 }
 
 /* ------------------------------------------------------------------------ */

@@ -457,9 +457,67 @@ for _ts, _plants in (("gTileset_DepartmentStore", [(0x31B, 0x323)]),
                      ("gTileset_SeaCottage", [(0x29C, 0x2AF), (0x29B, 0x2A3)]),
                      ("gTileset_SSAnne", [(0x30B, 0x313)]),
                      ("gTileset_GameCorner", [(0x2E9, 0x2F1), (0x2EA, 0x2F2)])):
-    ROOM_OBJECTS.setdefault(_ts, []).extend(([[_a], [_b]], 32) for _a, _b in _plants)
+    # Sea Cottage 29c/2af is a blue cabinet, despite the old plant comment.
+    # Preserve that object's own geometry; do not apply foliage recognition.
+    ROOM_OBJECTS.setdefault(_ts, []).extend(([[_a], [_b]], 32,
+        {} if _ts == "gTileset_SeaCottage" and (_a,_b) == (0x29C,0x2AF) else {"volume": True})
+        for _a, _b in _plants)
 # the plant knocked over in the burgled house: low
 ROOM_OBJECTS["gTileset_BurgledHouse"].append(([[0x2AC, 0x2AD], [0x2AE, 0x2AF]], 20))
+
+
+# Only identified plants receive closed foliage volumes. Other tall cards
+# (chairs, screens, light beams) retain their own geometry.
+PLANT_PATTERNS = {
+    "gTileset_Building": {(0x57,0x5f),(0x47,0x4f),(0x67,0x5f),
+        (0x9b,0x93),(0x9c,0x94),(0x156,0x15e),(0x102,0x103),
+        (0x102,0x136),(0x12e,0x136)},
+    "gTileset_PokemonCenter": {(0x2d3,0x28d,0x294)},
+}
+for _ts, _objects in ROOM_OBJECTS.items():
+    _patterns=PLANT_PATTERNS.get(_ts,set())
+    for _i,_spec in enumerate(_objects):
+        _cells=_spec[0]
+        if all(len(_row)==1 for _row in _cells) and tuple(_row[0] for _row in _cells) in _patterns:
+            _opt=dict(_spec[2]) if len(_spec)>2 else {}
+            _opt['volume']=True
+            _objects[_i]=(_spec[0],_spec[1],_opt)
+
+VOLUME_MASKS = [(0,)*16]
+PLANT_MATERIALS = [(0,)*17]
+def volume_mask(art, whole, cell):
+    mask=tuple(sum(1<<x for x in range(16) if art[y][x]) for y in range(16))
+    VOLUME_MASKS.append(mask);PLANT_MATERIALS.append((0,)*17)
+    return len(VOLUME_MASKS)-1
+
+def plant_materials(masks, rows, top, foot):
+    from collections import Counter
+    bycell={(row[1],row[0]):row for row in rows if row[-1]}
+    samples=[]
+    for (cx,cy),art in masks.items():
+        if (cx,cy) not in bycell:continue
+        row=bycell[cx,cy]
+        for y in range(16):
+            for x in range(16):
+                if art[y][x]:samples.append((art[y][x][:3],row[13]+x,row[14]+y,cx*16+x,cy*16+y))
+    if not samples:return
+    green=[p for p in samples if p[0][1]>p[0][0]+6 and p[0][1]>p[0][2]+6]
+    if not green:raise ValueError('Plant profile has no green foliage; needs a different material profile')
+    leaf=max(green,key=lambda p:p[0][1]-(p[0][0]+p[0][2])/2)
+    light=max(green,key=lambda p:sum(p[0]))
+    stem=min(green,key=lambda p:sum(p[0]))
+    low=[p for p in samples if p[4]>=foot-8 and max(p[0])>65 and not(p[0][1]>p[0][0]+6 and p[0][1]>p[0][2]+6)]
+    if not low:raise ValueError('Plant profile has no pot material')
+    counts=Counter(p[0] for p in low)
+    body_colors=[p for p in low if sum(p[0])>=420] or low
+    body=max(body_colors,key=lambda p:(counts[p[0]],sum(p[0])))
+    rim=min(low,key=lambda p:abs(sum(p[0])/3-130))
+    soil=min(low,key=lambda p:sum(p[0]))
+    inks=tuple(value for p in (leaf,light,stem,body,rim,soil) for value in p[1:3])
+    xmin=min(p[3] for p in samples);xmax=max(p[3] for p in samples)
+    last=max(row[0] for row in bycell.values())
+    for row in bycell.values():
+        PLANT_MATERIALS[row[-1]]=(int(row[0]==last),foot-top,xmax-xmin+1,xmin+xmax+1,foot)+inks
 
 # Chairs and stools one can walk past, lying flat: cards, chairs 14 high, stools 8.
 for _ts, _chairs, _stools in (
@@ -1893,7 +1951,7 @@ def facades(room, taken):
     return out
 
 ROW_FIELDS = ("y", "x", "h", "flags", "depth", "lift", "cap", "inw", "ine", "ybot", "top",
-              "tw", "te", "sx", "sy", "ground", "ssx", "ssy", "tsx", "tsy", "back")
+              "tw", "te", "sx", "sy", "ground", "ssx", "ssy", "tsx", "tsy", "back", "volume")
 
 
 def row(**kw):
@@ -2012,6 +2070,8 @@ def top_art(masks, cells, cx, top_px, ybot_px, roof=0):
 def build(root, place_art):
     """place_art(rgba16x16) -> (sx, sy). Returns [(layout index, [cell rows])]."""
     out = []
+    VOLUME_MASKS[:] = [(0,)*16]
+    PLANT_MATERIALS[:] = [(0,)*17]
     door_rows(place_art)
     LIVE_ROWS.clear()
     ROOM_SOLIDS.clear()
@@ -2263,6 +2323,7 @@ def build(root, place_art):
                     if (cx + 1, cy) not in group:
                         edge_e[cx] = min(edge_e.get(cx, 16), 15 - used[-1])
             unsure, known = [], {}
+            plant_start = len(rows)
             for (x, y) in sorted(cells, key=lambda c: (c[1], c[0])):
                 m = room.m(x, y)
                 e = room.entries(m)
@@ -2339,7 +2400,13 @@ def build(root, place_art):
                                 depth=mdepth if (model or y == first) else 0,
                                 lift=on[0] if on else 0, cap=cap, inw=inw, ine=ine,
                                 ybot=ybot_px, top=top_px, tw=tw, te=te, sx=sx, sy=sy,
-                                ground=ground, ssx=ss[0], ssy=ss[1], tsx=ts[0], tsy=ts[1], back=back))
+                                ground=ground, ssx=ss[0], ssy=ss[1], tsx=ts[0], tsy=ts[1], back=back,
+                                volume=volume_mask(masks[(x,y)],masks,(x,y)) if opt.get("volume") and (x,y) in masks else 0))
+            if opt.get("volume"):
+                try:
+                    plant_materials(masks,rows[plant_start:],top_px,ybot_px)
+                except ValueError as error:
+                    raise ValueError("%s %s: %s" % (lid, sorted(hex(room.m(x,y)) for x,y in cells), error)) from error
             # a cell drawn over whole: the floor its row's other cells found
             for k, y in unsure:
                 if known.get(y):
@@ -2412,10 +2479,15 @@ def write_table(rooms, path):
               "    unsigned short sx, sy, ground, ssx, ssy;   /* ss: its sides' art, 0 none */",
               "    unsigned short tsx, tsy;    /* a model's top art, 0 none */",
               "    unsigned char back;         /* stood this many pixels north of its drawing */",
+              "    unsigned short volume; /* closed plant silhouette, zero for other scenery */",
               "} sRoomCells[] = {"]
     for index, lid, rows in rooms:
         for r in rows:
-            lines.append("    { %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, 0x%03X, %d, %d, %d, %d, %d }," % r)
+            lines.append("    { %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, 0x%03X, %d, %d, %d, %d, %d, %d }," % r)
+    lines += ["};", "", "static const unsigned short sRoomVolumeMasks[][16] = {"]
+    lines += ["    { " + ", ".join("0x%04x" % v for v in mask) + " }," for mask in VOLUME_MASKS]
+    lines += ["};", "", "static const struct { unsigned short draw, height, width, centerX2, foot, ink[12]; } sRoomPlantMaterials[] = {"]
+    lines += ["    { " + ", ".join(str(v) for v in item[:5]) + ", { " + ", ".join(str(v) for v in item[5:]) + " } }," for item in PLANT_MATERIALS]
     lines += ["};", "",
               "/* The metatile a ROOM_LIVE row stands on, by row */",
               "static const struct { unsigned short row, id; } sRoomLive[] = {"]

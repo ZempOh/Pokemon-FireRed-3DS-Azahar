@@ -270,6 +270,8 @@ static void EmitModel(VoxelBuilder *b, const VoxelMapInstance *inst, unsigned i,
 }
 
 /* The cell's piece, its art the rectangle (u0, v0)-(u1, v1): v0 its top row. */
+#include "voxel_room_volume.h"
+
 static void EmitCell(VoxelBuilder *b, const VoxelMapInstance *inst, unsigned i,
                      float u0, float v0, float u1, float v1)
 {
@@ -282,6 +284,10 @@ static void EmitCell(VoxelBuilder *b, const VoxelMapInstance *inst, unsigned i,
 #define ROW_V(r) (v0 + (v1 - v0) * (float)(r) / 16.0f)
 #define COL_U(c) (u0 + (u1 - u0) * (float)(c) / 16.0f)
 
+    if (sRoomCells[i].volume) {
+        EmitPlantVolume(b,inst,i,u0,v0,u1,v1);
+        return;
+    }
     if (sRoomCells[i].flags & ROOM_MODEL)
     {
         EmitModel(b, inst, i, u0, v0, u1, v1);

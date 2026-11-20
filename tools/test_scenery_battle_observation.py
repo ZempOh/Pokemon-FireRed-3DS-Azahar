@@ -5,6 +5,8 @@ OFF='telemetry connected=true party=1 inBattle=false\n'
 FIELD='scenery crc=25c3d89f rendered=120/300 blocked=0 scene=0\n'
 TEXT='scenery crc=25c3d89f rendered=0/300 blocked=1 scene=1\n'
 class BattleReturn(unittest.TestCase):
+ def test_reset_then_continue_cannot_qualify(self):
+  self.assertEqual(progress(ON+'telemetry connected=true party=0 inBattle=false\n'+OFF+FIELD+FIELD),(True,False))
  def test_end_flag_and_dialogue_are_not_field(self):
   self.assertEqual(progress(ON+OFF+TEXT),(True,False))
  def test_earlier_field_cannot_qualify_return(self):

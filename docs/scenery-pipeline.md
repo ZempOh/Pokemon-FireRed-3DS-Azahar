@@ -596,3 +596,12 @@ Record each probe's duration in provenance
 and audio thresholds. Keep failed attempts and
 select any corrected replay explicitly with its reason; recheck every original
 timing/audio gate on that replay instead of accepting a screenshot alone.
+
+Reject any post-battle connected telemetry with a zero-sized party: resetting
+to the title and choosing Continue can otherwise mimic a successful return.
+The battle parser has a regression for that sequence. Better Emerald 2 exposed
+this during exact-candidate testing; its attack reset also reproduced on an
+earlier APK and in standalone mGBA. Retain the failed evidence and investigate
+the cartridge and disposable party/save compatibility before changing rendering
+or accepting another fixture. A clean timing measurement does not qualify a
+resetting battle.

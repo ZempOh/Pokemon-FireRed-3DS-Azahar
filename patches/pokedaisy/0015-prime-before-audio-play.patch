@@ -13,7 +13,24 @@ diff --git a/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt b/app/src/m
              .onFailure { Log.e("pokedaisy", "audio track failed", it) }
              .getOrNull()
  
-@@ -1539,7 +1542,7 @@
+@@ -1274,16 +1277,6 @@
+         // Vsync pacing (see the class comment): the device buffer's size, and what's been
+         // written to it since it started or was flushed (every write counts) - minus its play head, what's still queued.
+         val bufferFrames = track?.bufferSizeInFrames ?: 0
+-        init {
+-            // Native-clock launches can spend a frame compiling the companion and renderer.
+-            // Prime a full buffer before the first audible frame, then return to the normal
+-            // half-buffer threshold once playback advances. Do not insert silence or skip audio.
+-            track?.let { startupTrack ->
+-                if (nativeClockAudio && android.os.Build.VERSION.SDK_INT >= 31) {
+-                    runCatching { startupTrack.startThresholdInFrames = bufferFrames }
+-                }
+-            }
+-        }
+         var framesWritten = 0L
+         var underruns = track?.underrunCount ?: 0
+         var vsyncMode = false
+@@ -1539,7 +1532,7 @@
                  // lid closed and opened on the Thor left FF silent). The song held meanwhile: its start moves on.
                  ffClipNotice.forget()
                  songStartedAt += android.os.SystemClock.elapsedRealtime() - sleptAt
@@ -22,7 +39,7 @@ diff --git a/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt b/app/src/m
                  // As after the audio pausing below: flush() put the play head back at 0. And the frames due while
                  // it slept are not owed.
                  framesWritten = 0L
-@@ -1898,12 +1901,36 @@
+@@ -1898,12 +1891,38 @@
              if (wantPaused != paused) {
                  paused = wantPaused
                  if (paused) runCatching { track?.pause(); track?.flush() }
@@ -40,10 +57,12 @@ diff --git a/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt b/app/src/m
 +            if (track.playState == AudioTrack.PLAYSTATE_PLAYING) {
 +                return track.write(scratch, 0, n, if (trackStarted) AudioTrack.WRITE_NON_BLOCKING else AudioTrack.WRITE_BLOCKING)
 +            }
-+            // Reserve half the capacity for the mixer's burst-sized reads once playback
-+            // starts. Priming the entire capacity left no headroom for the next frame.
++            // Keep a quarter-buffer of headroom for incoming frames and mixer bursts.
++            // The Thor can stall for 80 ms during startup compilation: a half-buffer
++            // prime was only 84 ms and could run dry. Three quarters gives 120 ms
++            // without filling the capacity and dropping the next frame.
 +            val primeFrames = if (android.os.Build.VERSION.SDK_INT >= 31) {
-+                if (framesWritten == 0L) track.startThresholdInFrames = bufferFrames / 2
++                if (framesWritten == 0L) track.startThresholdInFrames = bufferFrames * 3 / 4
 +                track.startThresholdInFrames
 +            } else bufferFrames
 +            val first = track.write(scratch, 0, n, AudioTrack.WRITE_NON_BLOCKING)
@@ -60,7 +79,7 @@ diff --git a/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt b/app/src/m
          }
  
          /** The frame's audio into the track: the DS copy's, 1x's (vsync or blocking) or SPED-UP's. */
-@@ -1911,6 +1938,8 @@
+@@ -1911,6 +1930,8 @@
              val track = track   // a local: smart casts inside the lambdas below
              queuedAfter = null
              val n = MgbaCore.pkReadAudio(scratch)
@@ -69,7 +88,7 @@ diff --git a/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt b/app/src/m
              fpsAudioMade += n / 2
              if (BuildConfig.DEBUG && fpsFrames and 63 == 0) tap.arm(audioTapDir)
              if (BuildConfig.DEBUG && nds) for (i in 0 until n) gamePeak = maxOf(gamePeak, kotlin.math.abs(scratch[i].toInt()))
-@@ -1984,11 +2013,8 @@
+@@ -1984,11 +2005,8 @@
                      // otherwise spent a third of its range on, GitHub #215).
                      val rate = sampleRate * (if (nds) NDS_FPS else GBA_FPS) / frameHz * drc
                      MgbaCore.pkSetAudioRate(rate)

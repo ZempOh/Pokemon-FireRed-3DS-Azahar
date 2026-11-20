@@ -482,23 +482,23 @@ Let’s Go, Radical Red and Unbound passed the same APK on the Thor. [Download A
 
 
 <!-- FLORA CLIMATE START -->
-### 3D scenery, winter ground and changing weather
+### 3D scenery and changing weather
 
-Qualified builds: FRLG+, FireRed, Classic. [Thor results and captures](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/climate-3d.html).
+[Verified Thor builds, screenshots and GIFs](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/climate-3d.html). Automatic climate follows calendar seasons and selects season-weighted weather every 15 minutes, with eight-second fades. Repeated weather can last longer; Manual keeps fixed choices. Native weather takes priority. These cosmetic effects do not change battle weather or gameplay RNG.
 
-Set **Visual Climate → Automatic** for calendar seasons and season-weighted randomized weather. Weather is selected every 15 minutes of real time and fades over eight seconds; repeated selections can last longer. Reloading a map does not reroll it. Manual keeps fixed season/weather choices. Native scripted weather takes priority and cosmetic precipitation stays outdoors. This does not change battle weather or gameplay RNG. The v3 bundles add snow to grass and verified dirt-path materials, textured cuttable trees, and consistent seasons through outdoor battles. Older bundles retain their earlier coverage; exact versions and tests are listed below. Asset coverage remains incomplete.
+The v4 updates add closed botanical plant geometry and reviewed winter path/ledge coverage. Full asset coverage is not claimed; each bundle records its exact build, checksums and tested scenes. Only passing builds replace downloads.
 
-**FRLG+** — [verified bundle](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/FRLG-Plus-3D-Scenery-Winter-v3-2026-11-19.zip)
+**FRLG+** — [FRLG-Plus-3D-Scenery-v4-2026-11-20.zip](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/FRLG-Plus-3D-Scenery-v4-2026-11-20.zip)
 
-![frlg fresh Thor gameplay](docs/screenshots/graphics-gallery/frlg-motion.gif)
+![FRLG+ actual Thor graphics](docs/screenshots/graphics-gallery/frlg-motion.gif)
 
-**FireRed** — [verified bundle](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/FireRed-3D-Scenery-Winter-v3-2026-11-19.zip)
+**FireRed** — [FireRed-3D-Scenery-v4-2026-11-20.zip](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/FireRed-3D-Scenery-v4-2026-11-20.zip)
 
-![firered fresh Thor gameplay](docs/screenshots/graphics-gallery/firered-motion.gif)
+![FireRed actual Thor graphics](docs/screenshots/graphics-gallery/firered-motion.gif)
 
-**Classic** — [verified bundle](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/Classic-3D-Flora-Climate-v2-2026-11-19.zip)
+**Classic** — [Classic-3D-Flora-Climate-v2-2026-11-19.zip](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/Classic-3D-Flora-Climate-v2-2026-11-19.zip)
 
-![classic fresh Thor gameplay](docs/screenshots/graphics-gallery/classic-motion.gif)
+![Classic actual Thor graphics](docs/screenshots/graphics-gallery/classic-motion.gif)
 
 <!-- FLORA CLIMATE END -->
 

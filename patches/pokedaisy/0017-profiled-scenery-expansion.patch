@@ -1,0 +1,103 @@
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -31,6 +31,7 @@
+ #include "pk_wide_solid.h"
+ #include "pk_wide_props.h"
+ #include "pk_voxel_climate.h"
++#include "pk_scenery_candidates.h"
+ 
+ #include <stdbool.h>
+ #include <stdio.h>
+@@ -2733,8 +2734,8 @@
+ int pk_wide_frame_h(void) { return gbGame ? PK_WIDE_GB_H : PK_WIDE_H; }
+ 
+ int pk_wide_voxel_knows(uint32_t crc) {
+-    // The verified English FireRed-family profiles: Let's Go Pikachu, Radical Red 4.10, and Unbound 2.1.1.1.
+-    return crc == 0x25c3d89fu || crc == 0xfba55dd8u || crc == 0x4b3d4957u;
++    // Candidate capabilities are independent of release qualification.
++    return sceneryCandidate(crc);
+ }
+ 
+ void pk_wide_voxel(int on) { voxelEnabled = on != 0; }
+@@ -4999,7 +5000,7 @@
+ static int solidTreesPrepare(const struct Snap* s, struct VoxelView* v, int cx, int cy,
+                              uint32_t* texture, struct SolidTree* trees, int cap, uint32_t alpha) {
+     int snow = solidRom == 0x4b3d4957 && s->primary == 0x08725ab4;
+-    int kanto = (solidRom == 0x25c3d89f || solidRom == 0xfba55dd8 || solidRom == 0x4b3d4957) && s->primary == 0x082d4a94;
++    int kanto = sceneryKanto(solidRom,s->primary);
+     if (!snow && !kanto) return 0;
+     int n=0, cellX=(cx+v->left)/16, cellY=(cy+v->top)/16;
+     for(int row=0;row+2<v->rows;row++) for(int col=0;col+1<v->cols;col++) {
+@@ -5088,11 +5089,10 @@
+ static int solidPropsPrepare(const struct Snap* s,struct VoxelView* v,int cx,int cy,
+                              uint32_t* texture,struct SolidProp* props,int cap,uint32_t alpha) {
+     int letsgo=solidRom==0x25c3d89f && s->primary==0x082d4a94;
+-    int radical=solidRom==0xfba55dd8 && s->primary==0x082d4a94;
++    int radical=sceneryRadicalProps(solidRom,s->primary);
+     int unboundGreen=solidRom==0x4b3d4957 && s->primary==0x082d4a94;
+     int snow=solidRom==0x4b3d4957 && s->primary==0x08725ab4;
+-    int indoor=(solidRom==0x25c3d89f||solidRom==0xfba55dd8||solidRom==0x4b3d4957) &&
+-        s->primary==0x082d4bb4 && C[PK_WIDE_METATILE_SIZE]==16;
++    int indoor=solidPlantTileset(solidRom,s->primary) && C[PK_WIDE_METATILE_SIZE]==16;
+     if(!letsgo&&!radical&&!snow&&!unboundGreen&&!indoor)return 0;
+     int count=0,cellX=(cx+v->left)/16,cellY=(cy+v->top)/16;
+     for(int row=0;row<v->rows;row++)for(int col=0;col<v->cols;col++) {
+@@ -5238,8 +5238,8 @@
+             int conn,id=blockIn(s,cellX+col,cellY+row,&conn,false);
+             /* Primary basic ground cells only: secondary IDs can be furniture,
+              * walls or roofs in another tileset. Blue water stays unchanged. */
+-            int kanto=(solidRom==0x25c3d89f || solidRom==0xfba55dd8 || solidRom==0x4b3d4957) && s->primary==0x082d4a94;
+-            int path=id>=0 && (id<=0x0d || (kanto && climateKantoPath(id)));
++            int kanto=sceneryKanto(solidRom,s->primary);
++            int path=kanto && id>=0 && (id<=0x0d || climateKantoPath(id));
+             for(int y=0;y<16;y++)for(int x=0;x<16;x++) {
+                 size_t at=(size_t)(row*16+y)*w+col*16+x;
+                 texture[at]=climateGround(texture[at],path);
+--- a/app/src/main/cpp/pk_scenery_plant_profiles.h
++++ b/app/src/main/cpp/pk_scenery_plant_profiles.h
+@@ -11,6 +11,14 @@
+     {0x4b3d4957,0x082d4bb4,0x8c,0x94,1,30,14,16,32,{6,5,7,3,7,2,3,24,3,25,2,24}},
+     {0x4b3d4957,0x082d4bb4,0xf5,0xfd,1,30,14,16,32,{6,5,7,3,7,2,3,24,3,25,2,24}},
+     {0x4b3d4957,0x082d4bb4,0xf6,0xfe,1,30,14,16,32,{6,5,7,3,7,2,3,24,3,25,2,24}},
++    {0x63478921,0x082d4bb4,0x47,0x4f,0,28,16,16,32,{7,4,7,5,7,4,5,24,6,24,3,24}},
++    {0x63478921,0x082d4bb4,0x57,0x5f,0,28,16,16,32,{7,4,7,5,7,4,5,24,6,24,3,24}},
++    {0xb9465c5a,0x082d4bb4,0x47,0x4f,0,28,16,16,32,{7,4,7,5,7,4,5,24,6,24,3,24}},
++    {0xb9465c5a,0x082d4bb4,0x57,0x5f,0,28,16,16,32,{7,4,7,5,7,4,5,24,6,24,3,24}},
++    {0xf2d16ebd,0x082d4bb4,0x47,0x4f,0,28,16,16,32,{7,4,7,5,7,4,5,24,6,24,3,24}},
++    {0xf2d16ebd,0x082d4bb4,0x57,0x5f,0,28,16,16,32,{7,4,7,5,7,4,5,24,6,24,3,24}},
++    {0x6c5ee1b2,0x082d4bb4,0x47,0x4f,0,28,16,16,32,{7,4,7,5,7,4,5,24,6,24,3,24}},
++    {0x6c5ee1b2,0x082d4bb4,0x57,0x5f,0,28,16,16,32,{7,4,7,5,7,4,5,24,6,24,3,24}},
+ };
+ static int solidPlantProfile(uint32_t rom,uint32_t primary,int top,int bottom) {
+     for(unsigned i=0;i<sizeof(solidPlantProfiles)/sizeof(solidPlantProfiles[0]);i++) {
+@@ -19,3 +27,9 @@
+     }
+     return -1;
+ }
++
++static int solidPlantTileset(uint32_t rom,uint32_t primary) {
++    for(unsigned i=0;i<sizeof(solidPlantProfiles)/sizeof(solidPlantProfiles[0]);i++)
++        if(solidPlantProfiles[i].rom==rom&&solidPlantProfiles[i].primary==primary)return 1;
++    return 0;
++}
+--- /dev/null
++++ b/app/src/main/cpp/pk_scenery_candidates.h
+@@ -0,0 +1,18 @@
++// Exact revisions only. Candidate capabilities are not Thor qualification.
++#pragma once
++#include <stdint.h>
++static int sceneryCandidate(uint32_t crc) {
++    switch(crc) {
++    case 0x25c3d89f: case 0xfba55dd8: case 0x4b3d4957:
++    case 0x63478921: case 0xb9465c5a: case 0xf2d16ebd: case 0x6c5ee1b2:
++        return 1;
++    default:return 0;
++    }
++}
++static int sceneryKanto(uint32_t crc,uint32_t primary) {
++    return primary==0x082d4a94 && (crc==0x25c3d89f || crc==0xfba55dd8 ||
++        crc==0x4b3d4957 || crc==0xf2d16ebd);
++}
++static int sceneryRadicalProps(uint32_t crc,uint32_t primary) {
++    return primary==0x082d4a94 && (crc==0xfba55dd8 || crc==0xf2d16ebd);
++}

@@ -1,0 +1,293 @@
+{
+  "schema": 1,
+  "reference_crc32": "fba55dd8",
+  "families": {
+    "outdoor": {
+      "primary": "0x82d4a94",
+      "ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        159,
+        175,
+        183,
+        193,
+        208,
+        209,
+        210,
+        211,
+        212,
+        213,
+        214,
+        215,
+        216,
+        217,
+        218,
+        219,
+        220,
+        221,
+        222,
+        223,
+        224,
+        225,
+        226,
+        227,
+        228,
+        229,
+        250,
+        251,
+        254,
+        255,
+        256,
+        257,
+        258,
+        259,
+        260,
+        261,
+        262,
+        263,
+        277
+      ],
+      "signature": "5c5ce704a9613a04f04a46f859c9859fbcc535a7495416418c514f58d82cbfb7"
+    },
+    "indoor_plants": {
+      "primary": "0x82d4bb4",
+      "ids": [
+        71,
+        79,
+        87,
+        95
+      ],
+      "signature": "3a3d639e337015e78a07446ce7592972ed4ecb1234ad1ef35c2f04412b089f79"
+    }
+  },
+  "games": [
+    {
+      "key": "better-emerald-2",
+      "title": "Better Than Better Emerald 2",
+      "sha256": "2503ed1832224d280d73c2e7e6ffc4b3dc90b58b1df2cfce70d587bed3b5dca3",
+      "crc32": "70823957",
+      "runtime_family": null,
+      "families": {
+        "outdoor": {
+          "exact_match": false,
+          "reason": "ROM pointer outside file"
+        },
+        "indoor_plants": {
+          "exact_match": false,
+          "reason": "ROM pointer outside file"
+        }
+      },
+      "thor_passed": false,
+      "transfer_ready": false
+    },
+    {
+      "key": "modern-emerald",
+      "title": "Modern Emerald 3.6",
+      "sha256": "bc7286dca750cf735480fece3ff68c7d86ecbf8391031b5ca2964da78fc945a1",
+      "crc32": "263a1187",
+      "runtime_family": null,
+      "families": {
+        "outdoor": {
+          "exact_match": false,
+          "reason": "ROM pointer outside file"
+        },
+        "indoor_plants": {
+          "exact_match": false,
+          "reason": "ROM pointer outside file"
+        }
+      },
+      "thor_passed": false,
+      "transfer_ready": false
+    },
+    {
+      "key": "fakemon",
+      "title": "Fakemon FireRed 2.0",
+      "sha256": "05572f4dfbb96a1161a284292971d50c37e521d340bcecf48b574cca3dd8b4c6",
+      "crc32": "5e704d77",
+      "runtime_family": null,
+      "families": {
+        "outdoor": {
+          "exact_match": true,
+          "signature": "5c5ce704a9613a04f04a46f859c9859fbcc535a7495416418c514f58d82cbfb7"
+        },
+        "indoor_plants": {
+          "exact_match": true,
+          "signature": "3a3d639e337015e78a07446ce7592972ed4ecb1234ad1ef35c2f04412b089f79"
+        }
+      },
+      "thor_passed": false,
+      "transfer_ready": false
+    },
+    {
+      "key": "lazarus",
+      "title": "Lazarus 2.0",
+      "sha256": "d756b2783dede0bb2c534d1f07713bef733cf53500388e3912f14220a7e16e97",
+      "crc32": "558ae42f",
+      "runtime_family": "PK_WIDE_FAMILY_EX",
+      "families": {
+        "outdoor": {
+          "exact_match": false,
+          "reason": "ROM pointer outside file"
+        },
+        "indoor_plants": {
+          "exact_match": false,
+          "reason": "ROM pointer outside file"
+        }
+      },
+      "thor_passed": false,
+      "transfer_ready": false
+    },
+    {
+      "key": "dragonsden",
+      "title": "Team Rocket Edition: Dragonsden 1.5",
+      "sha256": "6ca88c3ecd54c78bf8a8cbb80f2b9ab049d66d4b070e97849cf4073ee8d2f15c",
+      "crc32": "cec21496",
+      "runtime_family": null,
+      "families": {
+        "outdoor": {
+          "exact_match": false,
+          "reason": "ROM pointer outside file"
+        },
+        "indoor_plants": {
+          "exact_match": false,
+          "reason": "ROM pointer outside file"
+        }
+      },
+      "thor_passed": false,
+      "transfer_ready": false
+    },
+    {
+      "key": "ash-gray",
+      "title": "Ash Gray Fork Bug Fix 1.0",
+      "sha256": "a08055484c8366768d3e98e2dbed0998641abd2899ffbfc8d7f132925875f7a1",
+      "crc32": "63478921",
+      "runtime_family": "PK_WIDE_FAMILY_FR",
+      "families": {
+        "outdoor": {
+          "exact_match": false,
+          "signature": "aa3d5a15a333e7a43fa72aa8987f04a1a6b2b9ad5f88185d0cd2719ad843b3ab"
+        },
+        "indoor_plants": {
+          "exact_match": true,
+          "signature": "3a3d639e337015e78a07446ce7592972ed4ecb1234ad1ef35c2f04412b089f79"
+        }
+      },
+      "thor_passed": false,
+      "transfer_ready": false
+    },
+    {
+      "key": "gaia",
+      "title": "Gaia 3.2",
+      "sha256": "186a36cd389aecf10fb9ba112e7340fd81127fcb23d9564294df80b1e1473ab5",
+      "crc32": "b9465c5a",
+      "runtime_family": "PK_WIDE_FAMILY_FR",
+      "families": {
+        "outdoor": {
+          "exact_match": false,
+          "signature": "5fe13985a05eb66ceb613a82c2497befab730d9f2d5af8b52cdc2fc7f36022c4"
+        },
+        "indoor_plants": {
+          "exact_match": true,
+          "signature": "3a3d639e337015e78a07446ce7592972ed4ecb1234ad1ef35c2f04412b089f79"
+        }
+      },
+      "thor_passed": false,
+      "transfer_ready": false
+    },
+    {
+      "key": "rocket",
+      "title": "FireRed Rocket Edition",
+      "sha256": "e6f232d0df265323c995e6025fe0ebcc532dfaf7634548a13ee9fb5673152442",
+      "crc32": "f2d16ebd",
+      "runtime_family": "PK_WIDE_FAMILY_FR",
+      "families": {
+        "outdoor": {
+          "exact_match": true,
+          "signature": "5c5ce704a9613a04f04a46f859c9859fbcc535a7495416418c514f58d82cbfb7"
+        },
+        "indoor_plants": {
+          "exact_match": true,
+          "signature": "3a3d639e337015e78a07446ce7592972ed4ecb1234ad1ef35c2f04412b089f79"
+        }
+      },
+      "thor_passed": false,
+      "transfer_ready": true
+    },
+    {
+      "key": "seaglass",
+      "title": "Emerald Seaglass 3.0",
+      "sha256": "6098296dca53655bb51493658d74ba206abe6bacbbe60db8d4f497367926809f",
+      "crc32": "14465a33",
+      "runtime_family": "PK_WIDE_FAMILY_EX",
+      "families": {
+        "outdoor": {
+          "exact_match": false,
+          "reason": "ROM pointer outside file"
+        },
+        "indoor_plants": {
+          "exact_match": false,
+          "reason": "ROM pointer outside file"
+        }
+      },
+      "thor_passed": false,
+      "transfer_ready": false
+    },
+    {
+      "key": "odyssey",
+      "title": "Odyssey 4.1.1",
+      "sha256": "44c7e3eafab19c39df7c39d54bafb78a1d9caf7c371244b6f5efb12cfd98d0d0",
+      "crc32": "6c5ee1b2",
+      "runtime_family": "PK_WIDE_FAMILY_FR",
+      "families": {
+        "outdoor": {
+          "exact_match": false,
+          "signature": "c7498965b31113228805e0e0469314d8d7e2cdb597477599989d1dc60cc146ac"
+        },
+        "indoor_plants": {
+          "exact_match": true,
+          "signature": "3a3d639e337015e78a07446ce7592972ed4ecb1234ad1ef35c2f04412b089f79"
+        }
+      },
+      "thor_passed": false,
+      "transfer_ready": false
+    }
+  ]
+}

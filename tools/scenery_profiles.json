@@ -1,15 +1,258 @@
 {
   "schema": 1,
-  "scope": "Environmental scenery in the six supported games",
-  "families": ["grass", "flowers", "shrubs", "trees", "indoor_plants", "static_rocks", "movable_rocks", "breakable_rocks", "cut_trees", "cliffs", "water_edges", "fences", "buildings", "indoor_props", "winter_ground"],
+  "scope": "Environmental scenery in the original six games and ten additional collected games",
+  "families": [
+    "grass",
+    "flowers",
+    "shrubs",
+    "trees",
+    "indoor_plants",
+    "static_rocks",
+    "movable_rocks",
+    "breakable_rocks",
+    "cut_trees",
+    "cliffs",
+    "water_edges",
+    "fences",
+    "buildings",
+    "indoor_props",
+    "winter_ground"
+  ],
   "games": {
-    "classic": {"repo": "classic", "runtime": "native", "sources": ["3ds_port/src/voxel", "3ds_port/scripts"], "entrypoints": ["3ds_port/scripts/gen_voxel_buildings.py", "3ds_port/scripts/gen_voxel_trees.py"], "active_models": "3ds_port/scripts/classic_building_specs.py", "notes": "The imported Emerald voxel_building_specs is not the active Classic model list. The tree renderer has no FireRed room-renderer path."},
-    "firered": {"repo": "firered", "runtime": "native", "sources": ["3ds_port/src/voxel", "3ds_port/scripts"], "entrypoints": ["3ds_port/scripts/fr_export_buildings.py", "3ds_port/scripts/fr_gen_trees.py"], "active_models": "3ds_port/scripts/fr_building_specs.py", "room_models": "3ds_port/scripts/fr_gen_rooms.py", "notes": "Room shapes and their packed texture must be generated together. Keep original row fields and UVs unless rebuilding the matching recipe."},
-    "frlg": {"repo": "frlg", "runtime": "native", "sources": ["3ds_port/src/voxel", "3ds_port/scripts"], "entrypoints": ["3ds_port/scripts/fr_export_buildings.py", "3ds_port/scripts/fr_gen_trees.py"], "active_models": "3ds_port/scripts/fr_building_specs.py", "room_models": "3ds_port/scripts/fr_gen_rooms.py", "notes": "Shares FireRed renderer structure, but rebuilding from the FRLG+ ROM produces different room rows and texture slots. Never copy generated tables by game-name similarity."},
-    "letsgo": {"repo": "pokedaisy", "runtime": "android", "sources": ["app/src/main/cpp", "app/src/main/kotlin"], "entrypoints": ["app/src/main/cpp/pk_wide.c"], "rom_crc32": "25c3d89f", "notes": "Export changes as patches to pokedaisy-build; do not push the modified upstream checkout."},
-    "radical": {"repo": "pokedaisy", "runtime": "android", "sources": ["app/src/main/cpp", "app/src/main/kotlin"], "entrypoints": ["app/src/main/cpp/pk_wide.c"], "rom_crc32": "fba55dd8", "notes": "Gate by exact ROM CRC and primary/secondary tileset. Numeric tile IDs alone are not asset identities."},
-    "unbound": {"repo": "pokedaisy", "runtime": "android", "sources": ["app/src/main/cpp", "app/src/main/kotlin"], "entrypoints": ["app/src/main/cpp/pk_wide.c"], "rom_crc32": "4b3d4957", "notes": "Green and snow tilesets are separate profiles. Preserve water and cliff backgrounds under replacement foliage."}
+    "classic": {
+      "repo": "classic",
+      "runtime": "native",
+      "sources": [
+        "3ds_port/src/voxel",
+        "3ds_port/scripts"
+      ],
+      "entrypoints": [
+        "3ds_port/scripts/gen_voxel_buildings.py",
+        "3ds_port/scripts/gen_voxel_trees.py"
+      ],
+      "active_models": "3ds_port/scripts/classic_building_specs.py",
+      "notes": "The imported Emerald voxel_building_specs is not the active Classic model list. The tree renderer has no FireRed room-renderer path."
+    },
+    "firered": {
+      "repo": "firered",
+      "runtime": "native",
+      "sources": [
+        "3ds_port/src/voxel",
+        "3ds_port/scripts"
+      ],
+      "entrypoints": [
+        "3ds_port/scripts/fr_export_buildings.py",
+        "3ds_port/scripts/fr_gen_trees.py"
+      ],
+      "active_models": "3ds_port/scripts/fr_building_specs.py",
+      "room_models": "3ds_port/scripts/fr_gen_rooms.py",
+      "notes": "Room shapes and their packed texture must be generated together. Keep original row fields and UVs unless rebuilding the matching recipe."
+    },
+    "frlg": {
+      "repo": "frlg",
+      "runtime": "native",
+      "sources": [
+        "3ds_port/src/voxel",
+        "3ds_port/scripts"
+      ],
+      "entrypoints": [
+        "3ds_port/scripts/fr_export_buildings.py",
+        "3ds_port/scripts/fr_gen_trees.py"
+      ],
+      "active_models": "3ds_port/scripts/fr_building_specs.py",
+      "room_models": "3ds_port/scripts/fr_gen_rooms.py",
+      "notes": "Shares FireRed renderer structure, but rebuilding from the FRLG+ ROM produces different room rows and texture slots. Never copy generated tables by game-name similarity."
+    },
+    "letsgo": {
+      "repo": "pokedaisy",
+      "runtime": "android",
+      "sources": [
+        "app/src/main/cpp",
+        "app/src/main/kotlin"
+      ],
+      "entrypoints": [
+        "app/src/main/cpp/pk_wide.c"
+      ],
+      "rom_crc32": "25c3d89f",
+      "notes": "Export changes as patches to pokedaisy-build; do not push the modified upstream checkout."
+    },
+    "radical": {
+      "repo": "pokedaisy",
+      "runtime": "android",
+      "sources": [
+        "app/src/main/cpp",
+        "app/src/main/kotlin"
+      ],
+      "entrypoints": [
+        "app/src/main/cpp/pk_wide.c"
+      ],
+      "rom_crc32": "fba55dd8",
+      "notes": "Gate by exact ROM CRC and primary/secondary tileset. Numeric tile IDs alone are not asset identities."
+    },
+    "unbound": {
+      "repo": "pokedaisy",
+      "runtime": "android",
+      "sources": [
+        "app/src/main/cpp",
+        "app/src/main/kotlin"
+      ],
+      "entrypoints": [
+        "app/src/main/cpp/pk_wide.c"
+      ],
+      "rom_crc32": "4b3d4957",
+      "notes": "Green and snow tilesets are separate profiles. Preserve water and cliff backgrounds under replacement foliage."
+    },
+    "better-emerald-2": {
+      "repo": "pokedaisy",
+      "runtime": "android",
+      "sources": [
+        "app/src/main/cpp",
+        "app/src/main/kotlin"
+      ],
+      "entrypoints": [
+        "app/src/main/cpp/pk_wide.c"
+      ],
+      "rom_crc32": "70823957",
+      "rom_sha256": "2503ed1832224d280d73c2e7e6ffc4b3dc90b58b1df2cfce70d587bed3b5dca3",
+      "notes": "Expansion candidate; no Thor qualification. Consult tools/scenery-profiles/expansion-transfer.json; no automatic asset inheritance."
+    },
+    "modern-emerald": {
+      "repo": "pokedaisy",
+      "runtime": "android",
+      "sources": [
+        "app/src/main/cpp",
+        "app/src/main/kotlin"
+      ],
+      "entrypoints": [
+        "app/src/main/cpp/pk_wide.c"
+      ],
+      "rom_crc32": "263a1187",
+      "rom_sha256": "bc7286dca750cf735480fece3ff68c7d86ecbf8391031b5ca2964da78fc945a1",
+      "notes": "Expansion candidate; no Thor qualification. Consult tools/scenery-profiles/expansion-transfer.json; no automatic asset inheritance."
+    },
+    "fakemon": {
+      "repo": "pokedaisy",
+      "runtime": "android",
+      "sources": [
+        "app/src/main/cpp",
+        "app/src/main/kotlin"
+      ],
+      "entrypoints": [
+        "app/src/main/cpp/pk_wide.c"
+      ],
+      "rom_crc32": "5e704d77",
+      "rom_sha256": "05572f4dfbb96a1161a284292971d50c37e521d340bcecf48b574cca3dd8b4c6",
+      "notes": "Expansion candidate; no Thor qualification. Consult tools/scenery-profiles/expansion-transfer.json; no automatic asset inheritance."
+    },
+    "lazarus": {
+      "repo": "pokedaisy",
+      "runtime": "android",
+      "sources": [
+        "app/src/main/cpp",
+        "app/src/main/kotlin"
+      ],
+      "entrypoints": [
+        "app/src/main/cpp/pk_wide.c"
+      ],
+      "rom_crc32": "558ae42f",
+      "rom_sha256": "d756b2783dede0bb2c534d1f07713bef733cf53500388e3912f14220a7e16e97",
+      "notes": "Expansion candidate; no Thor qualification. Consult tools/scenery-profiles/expansion-transfer.json; no automatic asset inheritance."
+    },
+    "dragonsden": {
+      "repo": "pokedaisy",
+      "runtime": "android",
+      "sources": [
+        "app/src/main/cpp",
+        "app/src/main/kotlin"
+      ],
+      "entrypoints": [
+        "app/src/main/cpp/pk_wide.c"
+      ],
+      "rom_crc32": "cec21496",
+      "rom_sha256": "6ca88c3ecd54c78bf8a8cbb80f2b9ab049d66d4b070e97849cf4073ee8d2f15c",
+      "notes": "Expansion candidate; no Thor qualification. Consult tools/scenery-profiles/expansion-transfer.json; no automatic asset inheritance."
+    },
+    "ash-gray": {
+      "repo": "pokedaisy",
+      "runtime": "android",
+      "sources": [
+        "app/src/main/cpp",
+        "app/src/main/kotlin"
+      ],
+      "entrypoints": [
+        "app/src/main/cpp/pk_wide.c"
+      ],
+      "rom_crc32": "63478921",
+      "rom_sha256": "a08055484c8366768d3e98e2dbed0998641abd2899ffbfc8d7f132925875f7a1",
+      "notes": "Expansion candidate; no Thor qualification. Consult tools/scenery-profiles/expansion-transfer.json; no automatic asset inheritance."
+    },
+    "gaia": {
+      "repo": "pokedaisy",
+      "runtime": "android",
+      "sources": [
+        "app/src/main/cpp",
+        "app/src/main/kotlin"
+      ],
+      "entrypoints": [
+        "app/src/main/cpp/pk_wide.c"
+      ],
+      "rom_crc32": "b9465c5a",
+      "rom_sha256": "186a36cd389aecf10fb9ba112e7340fd81127fcb23d9564294df80b1e1473ab5",
+      "notes": "Expansion candidate; no Thor qualification. Consult tools/scenery-profiles/expansion-transfer.json; no automatic asset inheritance."
+    },
+    "rocket": {
+      "repo": "pokedaisy",
+      "runtime": "android",
+      "sources": [
+        "app/src/main/cpp",
+        "app/src/main/kotlin"
+      ],
+      "entrypoints": [
+        "app/src/main/cpp/pk_wide.c"
+      ],
+      "rom_crc32": "f2d16ebd",
+      "rom_sha256": "e6f232d0df265323c995e6025fe0ebcc532dfaf7634548a13ee9fb5673152442",
+      "notes": "Expansion candidate; no Thor qualification. Consult tools/scenery-profiles/expansion-transfer.json; no automatic asset inheritance."
+    },
+    "seaglass": {
+      "repo": "pokedaisy",
+      "runtime": "android",
+      "sources": [
+        "app/src/main/cpp",
+        "app/src/main/kotlin"
+      ],
+      "entrypoints": [
+        "app/src/main/cpp/pk_wide.c"
+      ],
+      "rom_crc32": "14465a33",
+      "rom_sha256": "6098296dca53655bb51493658d74ba206abe6bacbbe60db8d4f497367926809f",
+      "notes": "Expansion candidate; no Thor qualification. Consult tools/scenery-profiles/expansion-transfer.json; no automatic asset inheritance."
+    },
+    "odyssey": {
+      "repo": "pokedaisy",
+      "runtime": "android",
+      "sources": [
+        "app/src/main/cpp",
+        "app/src/main/kotlin"
+      ],
+      "entrypoints": [
+        "app/src/main/cpp/pk_wide.c"
+      ],
+      "rom_crc32": "6c5ee1b2",
+      "rom_sha256": "44c7e3eafab19c39df7c39d54bafb78a1d9caf7c371244b6f5efb12cfd98d0d0",
+      "notes": "Expansion candidate; no Thor qualification. Consult tools/scenery-profiles/expansion-transfer.json; no automatic asset inheritance."
+    }
   },
-  "required_checks": ["geometry", "source_projection", "ground_preservation", "thor_field", "thor_battle", "thor_interactions", "thor_seasons_weather", "thor_audio_pacing", "media_review", "device_restored"]
+  "required_checks": [
+    "geometry",
+    "source_projection",
+    "ground_preservation",
+    "thor_field",
+    "thor_battle",
+    "thor_interactions",
+    "thor_seasons_weather",
+    "thor_audio_pacing",
+    "media_review",
+    "device_restored"
+  ]
 }
-

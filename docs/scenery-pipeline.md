@@ -1,8 +1,8 @@
 # Reusable scenery pipeline
 
 Start with `tools/scenery_profiles.json`, not a fresh line-by-line code survey.
-The current rollout covers environmental scenery in Classic, FireRed, FRLG+,
-Let’s Go, Radical Red and Unbound. Actors and battle Pokémon are a separate pass.
+The rollout covers the original six games and the ten additional games in the
+expansion manifest. Actors and battle Pokémon are a separate pass.
 
 ## Repeatable sequence
 
@@ -75,6 +75,24 @@ the original lower floor/wall layer. Unbound's rounded topiary uses the second
 shared shape. These profiles establish recognition, not complete scenery coverage.
 
 ## Findings that must not be rediscovered
+
+- Run `tools/scenery_transfer.py --manifest LOCAL/manifest.json --reference
+  LOCAL/radical.gba --runtime POKEDAISY/app/src/main/cpp/pk_wide_games.h --output
+  report.json` before investigating additional FireRed games. It verifies each
+  local ROM hash and compares decoded pixels, transparency, palette and attributes
+  for complete asset families. No ROM bytes are exported. Different art or engines
+  fail closed; matching numeric IDs or even matching art without an engine mapping
+  is insufficient. Regression fixtures cover palette changes, flip bits, attributes,
+  secondary ownership and invalid pointers.
+- The first expansion candidate adds identical indoor plants to Ash Gray, Gaia,
+  Rocket Edition and Odyssey; Rocket also matches the outdoor family. They reuse
+  the existing real-clock natural weather, manual weather and season controls.
+  This is partial, unqualified support. It does not establish complete winter
+  ground, environmental coverage or Thor performance for any new game.
+- Fakemon's checked artwork matches, but its runtime revision is not mapped.
+  Better Than Better Emerald 2, Modern Emerald and Dragonsden also lack entries
+  in the current wide renderer table. Lazarus and Seaglass have engine mappings
+  but different assets/layouts. None should inherit FireRed's scenery IDs.
 
 - Classic uses `classic_building_specs.py`; the imported Emerald definitions are
   not its active model list. Its outdoor renderer and indoor path differ from FireRed.

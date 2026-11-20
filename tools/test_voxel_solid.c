@@ -4,8 +4,20 @@
 #include "pk_wide_voxel.h"
 #include "pk_wide_solid.h"
 #include "pk_wide_props.h"
+#include "pk_scenery_candidates.h"
 
 int main(void) {
+    const uint32_t expanded[]={0x63478921,0xb9465c5a,0xf2d16ebd,0x6c5ee1b2};
+    for(unsigned i=0;i<sizeof(expanded)/sizeof(expanded[0]);i++) {
+        assert(sceneryCandidate(expanded[i]));
+        assert(solidPlantTileset(expanded[i],0x082d4bb4));
+        assert(!solidPlantTileset(expanded[i],0x082d4a94));
+    }
+    assert(sceneryRadicalProps(0xf2d16ebd,0x082d4a94));
+    assert(!sceneryRadicalProps(0xb9465c5a,0x082d4a94));
+    assert(!sceneryKanto(0x63478921,0x082d4a94));
+    assert(!sceneryCandidate(0x5e704d77)); // Matching art alone is not a mapped engine.
+    assert(!sceneryCandidate(0));
     assert(!solidCutLeaf(0));
     assert(!solidCutLeaf(1|(1<<5)|(1<<10)));
     assert(!solidCutLeaf(20|(12<<5)|(6<<10)));
@@ -108,5 +120,5 @@ int main(void) {
             assert(guarded[0]==0x12345678 && guarded[N+1]==0x12345678);
         }
     }
-    puts("Solid trees, props and nine plant profiles: clipping, volume, winding and occlusion passed");
+    puts("Solid trees, props and all registered plant profiles: clipping, volume, winding and occlusion passed");
 }

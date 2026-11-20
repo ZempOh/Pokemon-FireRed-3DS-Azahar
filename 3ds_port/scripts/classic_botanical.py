@@ -1,6 +1,6 @@
 """Classic's reviewed indoor plant family, using the shared closed botanical mesh.
 
-Recognition requires exact source tile entries and primary tileset. Ground is
+Recognition requires exact source subtile signatures and primary tileset. Ground is
 reconstructed from each cell's actual lower layers, not a guessed floor color.
 """
 from pathlib import Path
@@ -35,36 +35,45 @@ class BotanicalPlant:
 def specs():
     reference=vb.LayoutArt('LAYOUT_PALLET_TOWN_PLAYERS_HOUSE_1F')
     triangles=json.loads((Path(__file__).with_name('scenery_plant_mesh.json')).read_text(encoding='utf-8'))
-    variants=((0x47,0x4f),(0x57,0x5f));result=[]
-    for top,bottom in variants:
-        expected=[reference.entries(m) for m in (top,bottom)];placements=[]
-        for entry in vb._layouts_json():
-            if entry.get('primary_tileset')!=reference.primary or 'blockdata_filepath' not in entry:continue
-            layout=vb.LayoutArt(entry['id'])
-            for y in range(layout.h-1):
-                for x in range(layout.w):
-                    if layout.metatile(x,y)==top and layout.metatile(x,y+1)==bottom and all(layout.entries(m)==e for m,e in zip((top,bottom),expected)):
-                        placements.append((layout.id,x,y))
-        if not placements:continue
-        art=vb.Image.new('RGBA',(16,32));patches=[]
-        for j,m in enumerate((top,bottom)):
-            # Leaves use Classic's third layer; pot uses its second.
-            layer=2 if j==0 else 1
-            for q,e in enumerate(expected[j][layer*4:layer*4+4]):
-                data=reference.ts.subtile(e&1023,e>>12)
-                for k,(rgb,index) in enumerate(data):
-                    if index:art.putpixel(((q&1)*8+k%8,j*16+(q>>1)*8+k//8),rgb+(255,))
-            floor=vb.Image.new('RGBA',(16,16))
-            e=expected[j][4:8] if j==0 else expected[j][:4]
-            for q,t in enumerate(e):
-                for k,(rgb,index) in enumerate(reference.ts.subtile(t&1023,t>>12)):
-                    floor.putpixel(((q&1)*8+k%8,(q>>1)*8+k//8),rgb+(255,))
-            patches.append((0,j,floor))
-        plant=BotanicalPlant(art,triangles)
-        lid,x,y=placements[0]
-        result.append(dict(name=f'classic_botanical_{top:03x}',layout=lid,rect=(x,y,1,2),ground=[1],art=art,
-            parts=lambda p=plant:[p],at=placements,patches=patches,quads={(0,0):15,(0,1):15},botanical=True,exact=[]))
-    return result
+    signatures=(reference.entries(0x47)[8:12],reference.entries(0x4f)[4:8])
+    groups={}
+    for entry in vb._layouts_json():
+        if entry.get('primary_tileset')!=reference.primary or 'blockdata_filepath' not in entry:continue
+        layout=vb.LayoutArt(entry['id']);matches={}
+        for mid in set(v&1023 for v in layout.blocks):
+            words=layout.entries(mid)
+            for layer in (1,2):
+                for part,signature in enumerate(signatures):
+                    if words[layer*4:layer*4+4]==signature:
+                        # A distinct upper overlay is not part of this family.
+                        if any(e&1023 for e in words[(layer+1)*4:]):continue
+                        matches[mid]=(part,layer)
+        for y in range(layout.h-1):
+            for x in range(layout.w):
+                mids=(layout.metatile(x,y),layout.metatile(x,y+1))
+                if any(m not in matches or matches[m][0]!=j for j,m in enumerate(mids)):continue
+                art=vb.Image.new('RGBA',(16,32));patches=[]
+                for j,mid in enumerate(mids):
+                    words=layout.entries(mid);layer=matches[mid][1]
+                    floor=vb.Image.new('RGBA',(16,16))
+                    for source_layer in range(3):
+                        for q,e in enumerate(words[source_layer*4:source_layer*4+4]):
+                            data=layout.ts.subtile(e&1023,e>>12)
+                            for py in range(8):
+                                for px in range(8):
+                                    k=(7-py if e&0x800 else py)*8+(7-px if e&0x400 else px)
+                                    rgb,index=data[k];u=(q&1)*8+px;v=(q>>1)*8+py
+                                    if source_layer==layer:
+                                        if index:art.putpixel((u,j*16+v),rgb+(255,))
+                                    elif source_layer==0 or index:floor.putpixel((u,v),rgb+(255,))
+                    patches.append((0,j,floor))
+                key=(art.tobytes(),*(p[2].tobytes() for p in patches))
+                if key not in groups:
+                    plant=BotanicalPlant(art,triangles)
+                    groups[key]=dict(name=f'classic_botanical_{len(groups):03d}',layout=layout.id,rect=(x,y,1,2),ground=[1],art=art,
+                        parts=lambda p=plant:[p],at=[],patches=patches,quads={(0,0):15,(0,1):15},botanical=True,exact=[])
+                groups[key]['at'].append((layout.id,x,y))
+    return list(groups.values())
 
 def verify(model):
     """A redesigned volume is verified as geometry, not pixel-identical art."""

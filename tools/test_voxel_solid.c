@@ -200,6 +200,7 @@ int main(void) {
         struct SolidProp plant={.kind=11,.plantProfile=(int)profile};
         plant.surface.x=32;plant.surface.y=24;plant.surface.rise=8;
         for(int i=0;i<6;i++)plant.surface.art[i]=0xff40c080;
+        if(model->shape==2)for(int y=0;y<32;y++)for(int x=0;x<16;x++)plant.surface.art[y*32+x]=0xff40c080;
         memset(depth,0,sizeof depth);memset(v.out,0,N*4);solidPropDraw(&v,&plant);
         int pixels=0;for(int i=0;i<N;i++)if(v.out[i])pixels++;
         assert(pixels>40&&pixels<1000);

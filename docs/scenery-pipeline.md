@@ -468,3 +468,10 @@ and Markdown use the same hash-verified media manifest. Replace obsolete status
 and download sections when publishing, including the builder's supported-game
 list and its linked ROM-identity instructions. For seasonal comparisons, use
 naturally green terrain rather than a map whose original art is permanently snow.
+
+Seaglass reuses Emerald plant metatile numbers for framed bamboo room screens.
+The Thor 2D comparison exposed this semantic mismatch despite exact layer hashes.
+Patch 0027 assigns those ten profiles shape 2: closed shallow furniture retaining
+the full source motif on its faces and frame colors on its sides. Shapes 0/1
+remain botanical geometry. Match artwork identity, not just inherited slot IDs;
+require a 2D/3D room comparison before approving any new asset family.

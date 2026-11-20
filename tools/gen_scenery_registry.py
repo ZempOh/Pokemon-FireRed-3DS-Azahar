@@ -53,6 +53,9 @@ def generate_ground_props(profiles,output):
         if p['kind']==1:assert p.get('behavior')==2,'Encounter grass needs reviewed own-ROM tall-grass semantics'
         assert 0<=p['id']<512 and 0<=p['ground']<512 and len(p['ink'])==6 and all(0<=n<16 for n in p['ink'])
         seen.add(key)
+        assert p['shape'] in (0,1,2)
+        if p['shape']==2:
+            assert p.get('asset_kind')=='bamboo_room_screen' and p['height']==32 and p['width']==16
         lines.append('    {0x%s,%s,%d,%d,%d,{%s}},'%(p['rom_crc32'],p['primary'],p['id'],p['ground'],p['kind'],','.join(map(str,p['ink']))))
     lines+=['};','static const struct SceneryGroundProp *sceneryGroundProp(uint32_t rom,uint32_t primary,int id) {',
             '    for(unsigned i=0;i<sizeof(sceneryGroundProps)/sizeof(sceneryGroundProps[0]);i++) {',

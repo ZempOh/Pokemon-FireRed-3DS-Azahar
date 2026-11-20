@@ -199,3 +199,19 @@ tile transparency, caching visibility per tile for each check. It no longer
 mistakes that empty layer for dialogue. Regression checks cover nonzero blank
 IDs, real ink, 4/8-bit pixels and VRAM bounds. Actual menus still trigger 2D
 fallback. This fix awaits the next exact Thor candidate.
+
+### Interactive object variants
+
+`tools/scenery_object_variants.py` scans map-object scripts against already
+reviewed Cut/Strength/Rock Smash graphics. Supply the hash-matched ROM,
+inventory, object profiles, template kind and output path. Shared scripts only
+produce review candidates: generic scripts can also be used by actors, so this
+tool never approves a model automatically. Ambiguous categories are rejected.
+
+Dragonsden has two cut-tree graphics: 82 and 449 share script `082fcbb3` in 33
+and 105 map placements respectively. Graphic 449 is the reviewed short Kanto
+cut tree, now the 39th live-object profile. Its text interaction was verified on
+the Thor. Its template kind byte is +1 and graphics ID is u16 at +2; Modern uses
+kind +3 and graphics at +1. The explicit override also fixes offscreen objects.
+The batch scan found no additional variants in the other ten expansion games;
+Let's Go and Radical Red still have unapproved script-sharing candidates.

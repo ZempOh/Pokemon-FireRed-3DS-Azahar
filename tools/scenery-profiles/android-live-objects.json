@@ -544,5 +544,20 @@
     "height": 16,
     "source_sha256": "bcba5804d2b74b684745786e7b630d54c1f629d6965e248d7618f98f35236176",
     "reviewed": true
+  },
+  {
+    "game": "dragonsden",
+    "rom_crc32": "cec21496",
+    "asset": "Kanto cut tree",
+    "gfx": 449,
+    "kind": 9,
+    "leaf": 9,
+    "bark": 6,
+    "image_table": "08b9da10",
+    "width": 16,
+    "height": 16,
+    "source_sha256": "7211f628e6b590996a2d946ad70e7bb0592bbf61ad3e8cdfaade0f02aa41fb7a",
+    "reviewed": true,
+    "evidence": "105 map objects share exact cut-tree script 082fcbb3 with 33 gfx82 objects; source sprite reviewed"
   }
 ]

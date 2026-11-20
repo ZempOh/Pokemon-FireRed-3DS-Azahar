@@ -82,13 +82,13 @@
       "SB1_POS": "00000000",
       "LAYOUT_VERSIONED": "00000000",
       "OBJ_GFX_COUNT": "00000235",
-      "TEMPLATE_KIND_AT": "00000000",
+      "TEMPLATE_KIND_AT": "00000001",
       "SB1_FLAGS_AT": "00000000",
       "TRANSITION_PTR": "00000000",
       "QUEST_LOG": "00000000",
       "EXPANDED_FLAGS": "00000000"
     },
     "qualified": false,
-    "evidence": "Four fixture live objects match graphics table; template copy and GF header verify save offsets; instruction-context address mapping; Celadon Thor state matches all 1800 BG entries with 24-byte metatiles and 640 split; live palettes verify seven primary palettes"
+    "evidence": "Four fixture live objects match graphics table; template copy and GF header verify save offsets; instruction-context address mapping; Celadon Thor state matches all 1800 BG entries with 24-byte metatiles and 640 split; live palettes verify seven primary palettes; ROM templates verify kind byte +1 and u16 graphicsId +2 (different from Modern +3/+1)"
   }
 ]

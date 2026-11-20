@@ -685,5 +685,26 @@
     "reviewed": true,
     "behavior": 2,
     "review_note": "Own-ROM tall-grass behavior2 and source art reviewed; not a tree fragment. Thor retest required."
+  },
+  {
+    "game": "lazarus",
+    "rom_crc32": "558ae42f",
+    "rom_sha256": "d756b2783dede0bb2c534d1f07713bef733cf53500388e3912f14220a7e16e97",
+    "primary": "0x08e3e21c",
+    "id": 61,
+    "kind": 1,
+    "ground": 1,
+    "ink": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "source_sha256": "9ba1ca55339a348ed04e522485be08bf3d53ace2cb7ed4505ee12d93d9f142a9",
+    "reviewed": true,
+    "behavior": 2,
+    "review_note": "Own-ROM behavior2 and full grass tuft source art reviewed in starting region; explicit profile, Thor retest required."
   }
 ]

@@ -1,0 +1,21 @@
+--- a/app/src/main/cpp/pk_scenery_ground_props.h
++++ b/app/src/main/cpp/pk_scenery_ground_props.h
+@@ -37,6 +37,7 @@
+     {0xf2d16ebd,0x082d4a94,13,1,1,{0,0,0,0,0,0}},
+     {0xcec21496,0x087c0e10,13,1,1,{0,0,0,0,0,0}},
+     {0x4b3d4957,0x082d4a94,18,1,1,{0,0,0,0,0,0}},
++    {0x558ae42f,0x08e3e21c,61,1,1,{0,0,0,0,0,0}},
+ };
+ static const struct SceneryGroundProp *sceneryGroundProp(uint32_t rom,uint32_t primary,int id) {
+     for(unsigned i=0;i<sizeof(sceneryGroundProps)/sizeof(sceneryGroundProps[0]);i++) {
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -5204,7 +5204,7 @@
+             if(solidSnowRockId(id))kind=3;
+         } else if(letsgo||radical||unboundGreen) {
+             ground=letsgo?8:1;
+-            if((letsgo&&id==1)||(radical&&(id==0x12||id==0x1a)))kind=1;
++            if(letsgo&&id==1)kind=1; // Radical encounter grass uses verified profiles; 0x12/0x1a are tree fragments.
+             else if(id==4)kind=letsgo?2:5;
+             else if(id==5||(!unboundGreen&&(id==0xfa||id==0xfb)))kind=4;
+             else if(id==0x9f)kind=3;

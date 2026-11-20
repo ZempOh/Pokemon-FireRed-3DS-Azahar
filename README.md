@@ -24,7 +24,7 @@ cartridge dump.
 | --- | --- | --- |
 | FireRed, FRLG+ | v3 winter scenery | Passed |
 | Classic | v2 flora and climate | v3 held: 59.5 FPS samples below the 59.6 gate |
-| Let’s Go, Radical Red, Unbound | v2 flora and climate | New winter candidate remains unpublished |
+| Let’s Go, Radical Red, Unbound | v3 winter scenery | Passed the shared APK retest |
 
 [Native scenery and GIFs](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/climate-3d.html) · [Android scenery and GIFs](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/android-climate.html) · [Unreleased Classic preview](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/classic-candidate.html). Environmental coverage is still partial; trainers and battle Pokémon retain their original sprites.
 <!-- CURRENT SCENERY STATUS END -->
@@ -51,7 +51,7 @@ contains the APK, clean source snapshots, patches, and ROM-free build kits.
 
 ## Android pacing follow-up and graphics gallery
 
-Let’s Go Pikachu, Radical Red and Unbound passed the targeted AYN Thor field and battle retests. The shared APK uses native GBA timing (about 59.7275 FPS) instead of following the Thor’s fluctuating display ticks, and Let’s Go’s settings header now shows its own title. [Measured results and limits](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/android-pacing.html) · [Download the passing APK](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/PokeDaisy-Voxel-NativeClock-2026-11-18.apk).
+Let’s Go Pikachu, Radical Red and Unbound passed the targeted AYN Thor field and battle retests. The shared APK uses native GBA timing (about 59.7275 FPS) instead of following the Thor’s fluctuating display ticks, and Let’s Go’s settings header now shows its own title. [Measured results and limits](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/android-pacing.html) · [Download the passing APK](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/PokeDaisy-3D-Scenery-Winter-v3-2026-11-19.apk).
 
 All six games now have [2D/3D comparisons, four seasons and battle screenshots](docs/screenshots/graphics-gallery/README.md), also on the [website gallery](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/gallery.html). The GIFs below show real Thor gameplay, compressed to 480 px / 10 FPS; they are not performance measurements.
 
@@ -455,7 +455,7 @@ Passing builds: firered, frlg, classic. These builds passed Thor field, idle bat
 <!-- ANDROID SCENERY VERIFIED -->
 ### Android scenery update
 
-Let’s Go, Radical Red and Unbound passed the same November 19 APK on the Thor. [Download APK](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/PokeDaisy-3D-Scenery-2026-11-19.apk). [Test scope and fresh 2D/3D, seasonal and battle media](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/android-scenery.html). Selected scenery now uses solid geometry; coverage is incomplete, including Android moving and breakable rock objects.
+Let’s Go, Radical Red and Unbound passed the same November 19 APK on the Thor. [Download APK](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/PokeDaisy-3D-Scenery-Winter-v3-2026-11-19.apk). [Test scope and fresh 2D/3D, seasonal and battle media](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/android-scenery.html). Selected scenery now uses solid geometry; coverage is incomplete, including Android moving and breakable rock objects.
 
 ![letsgo actual Thor gameplay](docs/screenshots/graphics-gallery/letsgo-motion.gif)
 
@@ -470,7 +470,7 @@ Let’s Go, Radical Red and Unbound passed the same November 19 APK on the Thor.
 <!-- ANDROID CLIMATE START -->
 ### Android 3D rocks and natural weather
 
-Let’s Go, Radical Red and Unbound passed the same APK on the Thor. [Download APK](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/PokeDaisy-3D-Flora-Climate-v2-2026-11-19.apk). [Tests, seasons, weather and fresh media](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/android-climate.html). Select **Visual Climate → Automatic** for calendar seasons and season-weighted randomized weather every 15 minutes. Repeated selections can last longer; weather fades gradually. Native scripted weather takes priority, and cosmetic weather stays outdoors. Gameplay RNG and battle weather are unchanged. Manual presets remain available. Live movable and breakable rocks use solid geometry in tested scenes; full asset coverage remains incomplete.
+Let’s Go, Radical Red and Unbound passed the same APK on the Thor. [Download APK](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/PokeDaisy-3D-Scenery-Winter-v3-2026-11-19.apk). [Tests, seasons, weather and fresh media](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/android-climate.html). Select **Visual Climate → Automatic** for calendar seasons and season-weighted randomized weather every 15 minutes. Repeated selections can last longer; weather fades gradually. Native scripted weather takes priority, and cosmetic weather stays outdoors. Gameplay RNG and battle weather are unchanged. Manual presets remain available. Live movable and breakable rocks and cuttable trees use solid geometry in tested scenes. Winter covers grass and verified dirt paths; green Unbound areas include raised environmental scenery. Full asset coverage remains incomplete.
 
 ![letsgo actual Thor gameplay](docs/screenshots/graphics-gallery/letsgo-motion.gif)
 

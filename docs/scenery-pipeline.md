@@ -89,10 +89,18 @@ shared shape. These profiles establish recognition, not complete scenery coverag
   the existing real-clock natural weather, manual weather and season controls.
   This is partial, unqualified support. It does not establish complete winter
   ground, environmental coverage or Thor performance for any new game.
-- Fakemon's checked artwork matches, but its runtime revision is not mapped.
-  Better Than Better Emerald 2, Modern Emerald and Dragonsden also lack entries
-  in the current wide renderer table. Lazarus and Seaglass have engine mappings
-  but different assets/layouts. None should inherit FireRed's scenery IDs.
+- Fakemon and Better Than Better Emerald 2 pass PokeDaisy's existing retail-engine
+  fingerprint proof, which supplies a derived renderer row at runtime. Fakemon
+  also passes the exact artwork checks and reuses Rocket's scenery families.
+  Better Than Better Emerald 2, Lazarus and Seaglass are climate/terrain candidates;
+  their object families still need profiles. Modern Emerald and Dragonsden fail
+  the retail proof and have no mapped renderer: both remain disabled.
+- `tools/scenery-profiles/android-capabilities.json` and the plant profiles generate
+  the recognition headers with `tools/gen_scenery_registry.py --output DIR`.
+  CI checks these byte-for-byte against the applied patch stack. Adding a game
+  normally edits reviewed data, not renderer conditionals. Climate support includes
+  the shared 15-minute real-clock fronts, seasonal weights, fades and indoor/native
+  weather suppression; candidate support does not establish Thor qualification.
 
 - Classic uses `classic_building_specs.py`; the imported Emerald definitions are
   not its active model list. Its outdoor renderer and indoor path differ from FireRed.

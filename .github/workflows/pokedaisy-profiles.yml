@@ -60,6 +60,9 @@ jobs:
           python3 scripts/gen_area_maps.py --check
       - name: Test projected sprite depth
         run: |
+          python3 tools/gen_scenery_registry.py --output /tmp/scenery-registry
+          diff /tmp/scenery-registry/pk_scenery_candidates.h pokedaisy/app/src/main/cpp/pk_scenery_candidates.h
+          diff /tmp/scenery-registry/pk_scenery_plant_profiles.h pokedaisy/app/src/main/cpp/pk_scenery_plant_profiles.h
           cc -std=c11 -Wall -Wextra -Werror -Wno-unused-function -I pokedaisy/app/src/main/cpp tools/test_voxel_projection.c -o /tmp/test-voxel
           /tmp/test-voxel
           cc -std=c11 -Wall -Wextra -Werror -Wno-unused-function -I pokedaisy/app/src/main/cpp tools/test_voxel_climate.c -o /tmp/test-climate

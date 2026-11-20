@@ -1,0 +1,116 @@
+[
+  {
+    "game": "letsgo",
+    "rom_crc32": "25c3d89f",
+    "climate": true,
+    "kanto": true,
+    "radical_props": false,
+    "engine": "existing mapped engine"
+  },
+  {
+    "game": "radical",
+    "rom_crc32": "fba55dd8",
+    "climate": true,
+    "kanto": true,
+    "radical_props": true,
+    "engine": "existing mapped engine"
+  },
+  {
+    "game": "unbound",
+    "rom_crc32": "4b3d4957",
+    "climate": true,
+    "kanto": true,
+    "radical_props": false,
+    "engine": "existing mapped engine"
+  },
+  {
+    "game": "better-emerald-2",
+    "rom_crc32": "70823957",
+    "climate": true,
+    "kanto": false,
+    "radical_props": false,
+    "engine": "runtime retail fingerprint proof",
+    "thor_qualified": false
+  },
+  {
+    "game": "modern-emerald",
+    "rom_crc32": "263a1187",
+    "climate": false,
+    "kanto": false,
+    "radical_props": false,
+    "engine": "unmapped; held",
+    "thor_qualified": false
+  },
+  {
+    "game": "fakemon",
+    "rom_crc32": "5e704d77",
+    "climate": true,
+    "kanto": true,
+    "radical_props": true,
+    "engine": "runtime retail fingerprint proof",
+    "thor_qualified": false
+  },
+  {
+    "game": "lazarus",
+    "rom_crc32": "558ae42f",
+    "climate": true,
+    "kanto": false,
+    "radical_props": false,
+    "engine": "existing mapped engine",
+    "thor_qualified": false
+  },
+  {
+    "game": "dragonsden",
+    "rom_crc32": "cec21496",
+    "climate": false,
+    "kanto": false,
+    "radical_props": false,
+    "engine": "unmapped; held",
+    "thor_qualified": false
+  },
+  {
+    "game": "ash-gray",
+    "rom_crc32": "63478921",
+    "climate": true,
+    "kanto": false,
+    "radical_props": false,
+    "engine": "existing mapped engine",
+    "thor_qualified": false
+  },
+  {
+    "game": "gaia",
+    "rom_crc32": "b9465c5a",
+    "climate": true,
+    "kanto": false,
+    "radical_props": false,
+    "engine": "existing mapped engine",
+    "thor_qualified": false
+  },
+  {
+    "game": "rocket",
+    "rom_crc32": "f2d16ebd",
+    "climate": true,
+    "kanto": true,
+    "radical_props": true,
+    "engine": "existing mapped engine",
+    "thor_qualified": false
+  },
+  {
+    "game": "seaglass",
+    "rom_crc32": "14465a33",
+    "climate": true,
+    "kanto": false,
+    "radical_props": false,
+    "engine": "existing mapped engine",
+    "thor_qualified": false
+  },
+  {
+    "game": "odyssey",
+    "rom_crc32": "6c5ee1b2",
+    "climate": true,
+    "kanto": false,
+    "radical_props": false,
+    "engine": "existing mapped engine",
+    "thor_qualified": false
+  }
+]

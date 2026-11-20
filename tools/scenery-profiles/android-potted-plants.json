@@ -491,5 +491,63 @@
     ],
     "background": "original lower metatile layer",
     "proof": "Exact primary-owned two-layer pixels, palette and attributes match the verified reference"
+  },
+  {
+    "game": "fakemon",
+    "rom_crc32": "5e704d77",
+    "rom_sha256": "05572f4dfbb96a1161a284292971d50c37e521d340bcecf48b574cca3dd8b4c6",
+    "primary": "082d4bb4",
+    "top": 71,
+    "bottom": 79,
+    "shape": 0,
+    "height": 28,
+    "width": 16,
+    "center_x2": 16,
+    "foot": 32,
+    "ink": [
+      7,
+      4,
+      7,
+      5,
+      7,
+      4,
+      5,
+      24,
+      6,
+      24,
+      3,
+      24
+    ],
+    "background": "original lower metatile layer",
+    "proof": "Exact source artwork match plus runtime retail-engine fingerprint proof"
+  },
+  {
+    "game": "fakemon",
+    "rom_crc32": "5e704d77",
+    "rom_sha256": "05572f4dfbb96a1161a284292971d50c37e521d340bcecf48b574cca3dd8b4c6",
+    "primary": "082d4bb4",
+    "top": 87,
+    "bottom": 95,
+    "shape": 0,
+    "height": 28,
+    "width": 16,
+    "center_x2": 16,
+    "foot": 32,
+    "ink": [
+      7,
+      4,
+      7,
+      5,
+      7,
+      4,
+      5,
+      24,
+      6,
+      24,
+      3,
+      24
+    ],
+    "background": "original lower metatile layer",
+    "proof": "Exact source artwork match plus runtime retail-engine fingerprint proof"
   }
 ]

@@ -2,6 +2,15 @@
 import argparse,hashlib,json,struct
 from pathlib import Path
 
+def script_rejection(rom,address):
+    """Reject known non-interactions; a plausible pointer is not a validated script."""
+    if not address:return 'no_script'
+    if 0x08000000<=address<0x080000c0:return 'cartridge_header_not_script'
+    offset=address-0x08000000
+    if not 0<=offset<len(rom):return 'script_outside_rom'
+    if rom[offset]==2:return 'immediate_end_no_interaction'
+    return None
+
 def propose(rom,inventory,profiles,template_kind,banked=False):
     if hashlib.sha256(rom).hexdigest()!=inventory['rom_sha256']:raise ValueError('ROM revision mismatch')
     def read(address,size):
@@ -10,7 +19,7 @@ def propose(rom,inventory,profiles,template_kind,banked=False):
         return rom[off:off+size]
     def word(address):return struct.unpack('<I',read(address,4))[0]
     seeds={p['gfx']:p for p in profiles if p['reviewed'] and p['kind'] in (7,8,9)}
-    result=[];failures=[]
+    result=[];failures=[];excluded=[]
     for pair in inventory['tileset_pairs']:
         for m in pair['maps']:
             try:
@@ -27,13 +36,17 @@ def propose(rom,inventory,profiles,template_kind,banked=False):
                     objects.append(dict(gfx=gfx,x=x,y=y,script=script,local_id=t[0],flag=struct.unpack_from('<H',t,20)[0]))
                 width,height=m['width'],m['height'];cells=struct.unpack('<'+'H'*(width*height),read(word(int(m['layout'],16)+12),width*height*2));occupied={(o['x'],o['y']) for o in objects}
                 for o in objects:
-                    if o['gfx'] not in seeds or not o['script']:continue
+                    if o['gfx'] not in seeds:continue
+                    reason=script_rejection(rom,o['script'])
+                    if reason:
+                        excluded.append(dict(group=m['group'],map=m['map'],target=o,kind=seeds[o['gfx']]['kind'],reason=reason))
+                        continue
                     x,y=o['x'],o['y']+1
                     if not (0<=x<width and 0<=y<height) or (x,y) in occupied or cells[y*width+x]&0xc00:continue
                     profile=seeds[o['gfx']]
                     result.append(dict(group=m['group'],map=m['map'],x=x,y=y,facing='north',target=o,kind=profile['kind'],asset=profile['asset'],same_kind_count=sum(v['gfx'] in seeds and seeds[v['gfx']]['kind']==profile['kind'] for v in objects),qualified=False))
             except (ValueError,struct.error) as error:failures.append(dict(group=m['group'],map=m['map'],error=str(error)))
-    return dict(game=inventory['game'],rom_sha256=inventory['rom_sha256'],candidates=result,failures=failures,qualification=False,note='Source proposals only. Verify flags, eligible party/HM/badge prerequisites, actual script behavior, target movement/removal and neighbor preservation on device.')
+    return dict(game=inventory['game'],rom_sha256=inventory['rom_sha256'],candidates=result,excluded=excluded,failures=failures,qualification=False,note='Source proposals only. Excluded script pointers are not interaction passes or proof that a game lacks that mechanic. Verify flags, eligible party/HM/badge prerequisites, actual script behavior, target movement/removal and neighbor preservation on device.')
 
 if __name__=='__main__':
     p=argparse.ArgumentParser(description=__doc__)
@@ -41,4 +54,4 @@ if __name__=='__main__':
     p.add_argument('--template-kind',type=int,choices=(1,2,3),required=True);p.add_argument('--banked',action='store_true');a=p.parse_args()
     inv=json.loads(a.inventory.read_text());profiles=[x for x in json.loads(a.profiles.read_text()) if x['game']==inv['game']]
     result=propose(a.rom.read_bytes(),inv,profiles,a.template_kind,a.banked);a.output.write_text(json.dumps(result,indent=2)+'\n')
-    print(inv['game'],len(result['candidates']),'proposals;',len(result['failures']),'unreadable maps; no passes asserted')
+    print(inv['game'],len(result['candidates']),'proposals;',len(result['excluded']),'excluded scripts;',len(result['failures']),'unreadable maps; no passes asserted')

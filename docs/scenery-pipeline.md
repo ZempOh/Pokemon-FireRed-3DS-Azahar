@@ -529,3 +529,43 @@ including changed palette tags (Gaia), before adding it to
 `android-grass-effects.json`. The registry rejects unreviewed profiles; tests
 reject mismatched ROM, template or image pointers. Exact Thor grass movement
 and actor-color checks remain required.
+
+HM eligibility differs even between related engines. Lazarus and Seaglass
+object scripts check bag possession of HM01/HM04/HM06 (682/685/687), so adding
+moves and badges alone is insufficient. Before repairing a disposable test save,
+read its own script prerequisites and corroborate pocket offsets in two live
+snapshots. Their TM pockets differ (1776 versus 1936), as do SaveBlock2 quantity
+keys (+0xB0 versus +0xAC). Preserve both bank checksums, original probes and
+personal saves. Shared fixture preparation still requires actual use, movement
+or removal, and return-to-field review on the final APK.
+
+Ash Gray uses tools instead: its Cut script checks Hatchet (269), and its
+breakable-rock script checks Pickaxe (278). Two live snapshots corroborate the
+key-item pocket at 952 (30 slots), with quantity key at SaveBlock2 +0xF20.
+Preserve existing key items when adding prerequisites to disposable fixtures.
+Its two inventoried movable-rock entries point to the ROM header rather than a
+valid talk script. A live snapshot confirms the selected rock is active, visible,
+and uses the reviewed image table; it is partly occluded by the actor. Test the
+legitimate party-menu Strength activation instead of calling that placeholder.
+This remains unresolved coverage until the actual push is reviewed.
+The shared interaction-candidate tool now excludes null, cartridge-header,
+out-of-ROM and immediate-end pointers into an explicit metadata list, while
+retaining unreadable maps as unknowns. Synthetic regression tests cover these
+cases and ensure valid pointers remain proposals requiring gameplay review.
+
+Rock Smash can start a wild encounter after its animation. Wait for that delayed
+transition before asserting a cleared field. Let’s Go's directional command-menu
+inputs selected Pokémon instead of Run; the observed companion Run button
+successfully escaped. Use the shared companion control for the current Thor
+layout, validate display geometry, and retain both the encounter and subsequent
+field/walkthrough footage. A battle-start clip alone is not a Smash pass.
+
+Push probes need a free destination, not merely a nearby boulder. Unbound's
+initial position had a cliff north of one rock and an NPC beside another.
+`scenery_push_routes.find_push_routes` accepts normalized live object positions
+and collision cells, then proposes reachable approaches with unoccupied push
+destinations. It does not grant eligibility or a gameplay pass. Also verify the
+actual starting tile: short stick taps can turn without stepping. The reviewed
+Unbound setup uses down/left 0.18-second inputs and a captured snapshot confirming
+(60,8) before pushing the rock at (60,7) north. Preserve blocked attempts, and
+approve only observed rock displacement plus normal field movement.

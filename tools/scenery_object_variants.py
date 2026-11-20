@@ -4,6 +4,7 @@ Only metadata is exported. Matches are review candidates, never auto-approved.
 """
 import argparse,collections,hashlib,json,struct
 from pathlib import Path
+from scenery_interaction_candidates import script_rejection
 
 def discover(rom,inventory,profiles,kind,banked=False):
     if hashlib.sha256(rom).hexdigest()!=inventory['rom_sha256']:raise ValueError('ROM revision differs from inventory')
@@ -28,7 +29,7 @@ def discover(rom,inventory,profiles,kind,banked=False):
                     if t[kind]!=0:continue
                     gfx=struct.unpack_from('<H',t,2)[0] if kind==1 else t[1]|((t[2] if kind==3 else t[3] if banked else 0)<<8)
                     script=struct.unpack_from('<I',t,16)[0]
-                    if not script or read(script,1)==b'\x02':continue
+                    if script_rejection(rom,script):continue
                     scripts[script].append(dict(group=m['group'],map=m['map'],gfx=gfx,local_id=t[0]))
             except ValueError as e:failures.append(dict(group=m['group'],map=m['map'],error=str(e)))
     candidates=[]

@@ -1,3 +1,13 @@
+--- a/app/src/main/cpp/pk_wide.h
++++ b/app/src/main/cpp/pk_wide.h
+@@ -30,6 +30,7 @@
+     PK_WIDE_FAMILY_EX = 5,      // pokeemerald-expansion (Lazarus, SoulGold): Emerald's map, ObjectEvent.spriteId moved
+     PK_WIDE_FAMILY_FR_EX = 6,   // FireRed's map with expansion's objects (Recharged Yellow: a gcc pokefirered)
+     PK_WIDE_FAMILY_MM = 7,      // Monomyth's own pokeemerald: Emerald's map and objects, its own struct Main and camera
++    PK_WIDE_FAMILY_EX640 = 9,   // Expansion objects, u16 attributes, 640 metatiles, seven palettes and sized borders
+     PK_WIDE_FAMILY_EX32 = 8,    // EX with FireRed's u32 metatile attributes (layer in bits 29-30) and 6-byte subsprites (Epsilon Emerald)
+ };
+ 
 --- a/app/src/main/cpp/pk_wide.c
 +++ b/app/src/main/cpp/pk_wide.c
 @@ -32,6 +32,8 @@
@@ -9,7 +19,15 @@
  
  #include <stdbool.h>
  #include <stdio.h>
-@@ -1448,7 +1450,7 @@
+@@ -81,6 +83,7 @@
+     // Epsilon Emerald: EX (Emerald's map and tilesets, expansion's objects) whose tilesets keep FireRed's u32 attributes (the
+     // layer type in bits 29-30), still at the Emerald tileset's +0x10: the u16 reading scored 830 of 1000 on its field, this 1000.
+     // Its struct Subsprite is 6 bytes (s16 x, y; a tile offset byte; shape / size / priority in a byte: buildPieces).
++    [PK_WIDE_FAMILY_EX640] = { 640, 0x10, 2, 12, 0xF, 1, 0, 0x439, 4, 0x23, 0, 0, 0, 7, 3, 0, 64 },
+     [PK_WIDE_FAMILY_EX32] = { 512, 0x10, 4, 29, 3, 0, 0, 0x439, 6, 0x23, 0, 0, 0, 6, 3, 0, 64 },
+ };
+ 
+@@ -1448,7 +1451,7 @@
  
  static uint32_t solidRom;
  struct Piece {
@@ -18,7 +36,7 @@
      bool vegetation;
      int x, y, w, h, tile, prio, pal, mode;   // mode: OAM objMode (0 normal, 1 semi-transparent, 2 OBJ window)
      bool hflip, vflip;
-@@ -1491,24 +1493,17 @@
+@@ -1491,24 +1494,17 @@
  static int buildPieces(const struct Snap* s, struct Piece* out) {
      int nspr = C[PK_WIDE_MAX_SPRITES];
      bool offscreen[SPRITES_CAP] = { false };   // sprites the game hid only for being off screen
@@ -48,7 +66,7 @@
          }
      }
      int n = 0;
-@@ -1537,7 +1532,7 @@
+@@ -1537,7 +1533,7 @@
              if (y > 255 - bh) y -= 256;    // reaching past 255 shows at the top, as the hardware wraps it
          }
          struct Piece base = { .tile = (int) (a2 & 0x3FF), .prio = (int) ((a2 >> 10) & 3), .pal = (int) (a2 >> 12),
@@ -57,7 +75,7 @@
                                .vegetation=climateGrassEffect(solidRom,le32(sp+0x14),le32(sp+0x0c)),
                                .mode = (int) ((a0 >> 10) & 3), .hflip = !(rot & 1) && (a1 & 0x1000), .vflip = !(rot & 1) && (a1 & 0x2000),
                                .copy = false, .world = world, .rot = rot, .mat = (int) ((a1 >> 9) & 31) };
-@@ -2068,14 +2063,14 @@
+@@ -2068,14 +2064,14 @@
              vx = voxelX(voxel, p[i].x, foot);
              vy = voxelY(voxel, foot, z) - bh + 1;
          }
@@ -75,7 +93,7 @@
                  // Narrow cut-tree sprites have transparent centers beside their
                  // trunk. Never turn palette index zero into the black outline.
                  for(int y=0;y<sh;y++)for(int x=0;x<sw;x++) {
-@@ -2101,7 +2096,7 @@
+@@ -2101,7 +2097,7 @@
                  int ci=(vram[0x10000+(off&0x7fff)]>>((px&1)*4))&15;
                  if(p[i].solidKind==9) {
                      if(y>=36)ci=bark?bark:leaf;
@@ -84,7 +102,43 @@
                  } else if(!ci)ci=1;
                  uint32_t ink=color(P[256+p[i].pal*16+ci],alpha);
                  t->art[y*32+x]=p[i].solidKind==9&&y<36?climateLeafColor(ink):ink;
-@@ -4997,11 +4992,44 @@
+@@ -2840,7 +2836,7 @@
+     int k = playerObject();
+     const uint8_t* oe = k < 0 ? NULL : mem(F.objects + 0x24u * (uint32_t) k, 0x24);
+     if (!oe) return -1;
+-    bool wide = F.family == PK_WIDE_FAMILY_EX || F.family == PK_WIDE_FAMILY_FR_EX || F.family == PK_WIDE_FAMILY_EX32;
++    bool wide = F.family == PK_WIDE_FAMILY_EX || F.family == PK_WIDE_FAMILY_FR_EX || F.family == PK_WIDE_FAMILY_EX640 || F.family == PK_WIDE_FAMILY_EX32;
+     return wide ? (int) le16(oe + 4) : oe[5];
+ }
+ 
+@@ -2854,7 +2850,7 @@
+  */
+ int pk_look_refresh(struct mCore* core, const uint8_t* pal) {
+     if (!F.locked || !F.sprites || !F.gfxInfo || !core) return 0;
+-    if (F.family == PK_WIDE_FAMILY_EX || F.family == PK_WIDE_FAMILY_FR_EX || F.family == PK_WIDE_FAMILY_EX32) return 0;
++    if (F.family == PK_WIDE_FAMILY_EX || F.family == PK_WIDE_FAMILY_FR_EX || F.family == PK_WIDE_FAMILY_EX640 || F.family == PK_WIDE_FAMILY_EX32) return 0;
+     G = (struct GBA*) core->board;
+     int k = playerObject();
+     const uint8_t* oe = k < 0 ? NULL : mem(F.objects + 0x24u * (uint32_t) k, 0x24);
+@@ -3916,7 +3912,7 @@
+     if (partnerReq.frame < 0 || partnerReq.frame >= PK_PARTNER_FRAMES || partnerReq.blob >= PK_PARTNER_FRAMES || partnerReq.blob < -1 ||
+         partnerReq.bob < -64 || partnerReq.bob > 64) { partnerWhy = PK_PARTNER_BAD_FRAME; return; }
+     if (!hookGba || !F.objects || F.family == PK_WIDE_FAMILY_EX || F.family == PK_WIDE_FAMILY_FR_EX ||
+-        F.family == PK_WIDE_FAMILY_EX32 || !selfFine.valid) { partnerWhy = PK_PARTNER_NO_PLAYER; return; }
++        F.family == PK_WIDE_FAMILY_EX640 || F.family == PK_WIDE_FAMILY_EX32 || !selfFine.valid) { partnerWhy = PK_PARTNER_NO_PLAYER; return; }
+     G = hookGba;
+     int cx, cy, px, py;
+     uint32_t spriteId;
+@@ -4139,7 +4135,7 @@
+     uint8_t bit;
+     if (F.family == PK_WIDE_FAMILY_FR || F.family == PK_WIDE_FAMILY_FR_EX) { off = 0x19; bit = 2; }
+     else if (F.family == PK_WIDE_FAMILY_EM || F.family == PK_WIDE_FAMILY_EX || F.family == PK_WIDE_FAMILY_MM ||
+-             F.family == PK_WIDE_FAMILY_EX32) { off = 0x1A; bit = 4; }
++             F.family == PK_WIDE_FAMILY_EX640 || F.family == PK_WIDE_FAMILY_EX32) { off = 0x1A; bit = 4; }
+     else return;
+     uint8_t* p = (uint8_t*) mem(F.mapHeader + off, 1);
+     if (p && !(*p & bit)) *p |= bit;
+@@ -4997,11 +4993,44 @@
  
  // Profiles are tied to verified ROM CRC + primary tileset, never to green pixels.
  // Unknown trees/tilesets retain the original art. Live cut trees use the object pass.
@@ -183,7 +237,7 @@
 @@ -0,0 +1,3 @@
 +// Generated candidate engine rows. Device qualification is separate.
 +    { 0x263a1187, PK_WIDE_FAMILY_EX, { [PK_WIDE_VMAP]=0x030024f4, [PK_WIDE_MAP_HEADER]=0x0200c22c, [PK_WIDE_MAP_GROUPS]=0x08cdec28, [PK_WIDE_SAVE_BLOCK1_PTR]=0x030036f0, [PK_WIDE_CAMERA_OFFSET]=0x03002484, [PK_WIDE_OBJECT_EVENTS]=0x0200682c, [PK_WIDE_SPRITES]=0x0203d86c, [PK_WIDE_COORD_OFFSET]=0x0203edf8, [PK_WIDE_COORD_OFFSET_Y]=0x0203edfa, [PK_WIDE_SPRITE_ORDER]=0x0203ea30, [PK_WIDE_GMAIN]=0x03001574, [PK_WIDE_CONTROLS_LOCKED]=0x03003b78, [PK_WIDE_OBJ_GFX_INFO]=0x08801b00, [PK_WIDE_OBJ_PALETTES]=0x088133e8, [PK_WIDE_OBJ_FACING]=0x08801aac, [PK_WIDE_SPRITE_PAL_TAGS]=0x03004b8c, [PK_WIDE_ELEVATION_PRIO]=0x0881647c, [PK_WIDE_MAP_GROUPS_XOR]=0x00000000, [PK_WIDE_NORMAL_BG3]=0x00003014, [PK_WIDE_METATILE_SIZE]=0x00000010, [PK_WIDE_METATILE_MASK]=0x000003ff, [PK_WIDE_PRIMARY_OVERRIDE]=0x00000000, [PK_WIDE_PAN_OFF]=0x00000008, [PK_WIDE_OBJ_GFX_TABLES]=0x00000000, [PK_WIDE_OBJ_GFX_TABLE_MAX]=0x00000000, [PK_WIDE_OBJ_GFX_VAR_FROM]=0x000000f0, [PK_WIDE_OBJ_GFX_FF_VAR]=0x00000000, [PK_WIDE_SB1_OFFSETS]=0x14900d64, [PK_WIDE_SB1_POS]=0x00000000, [PK_WIDE_LAYOUT_VERSIONED]=0x00000000, [PK_WIDE_OBJ_GFX_COUNT]=0x000000ef, [PK_WIDE_TEMPLATE_KIND_AT]=0x00000000, [PK_WIDE_SB1_FLAGS_AT]=0x00000000, [PK_WIDE_TRANSITION_PTR]=0x00000000, [PK_WIDE_QUEST_LOG]=0x00000000, [PK_WIDE_EXPANDED_FLAGS]=0x00000000 } }, // modern-emerald
-+    { 0xcec21496, PK_WIDE_FAMILY_EX, { [PK_WIDE_VMAP]=0x03005280, [PK_WIDE_MAP_HEADER]=0x020382d8, [PK_WIDE_MAP_GROUPS]=0x08a335d8, [PK_WIDE_SAVE_BLOCK1_PTR]=0x0300524c, [PK_WIDE_CAMERA_OFFSET]=0x03000e20, [PK_WIDE_OBJECT_EVENTS]=0x02038314, [PK_WIDE_SPRITES]=0x02020630, [PK_WIDE_COORD_OFFSET]=0x02021bbc, [PK_WIDE_COORD_OFFSET_Y]=0x02021bbe, [PK_WIDE_SPRITE_ORDER]=0x020217f4, [PK_WIDE_GMAIN]=0x030032e0, [PK_WIDE_CONTROLS_LOCKED]=0x03000f2c, [PK_WIDE_OBJ_GFX_INFO]=0x08ba3760, [PK_WIDE_OBJ_PALETTES]=0x08ba3ff4, [PK_WIDE_OBJ_FACING]=0x08b955f1, [PK_WIDE_SPRITE_PAL_TAGS]=0x03000cf0, [PK_WIDE_ELEVATION_PRIO]=0x08ba7418, [PK_WIDE_MAP_GROUPS_XOR]=0x00000000, [PK_WIDE_NORMAL_BG3]=0x00003014, [PK_WIDE_METATILE_SIZE]=0x00000018, [PK_WIDE_METATILE_MASK]=0x000003ff, [PK_WIDE_PRIMARY_OVERRIDE]=0x00000000, [PK_WIDE_PAN_OFF]=0x00000008, [PK_WIDE_OBJ_GFX_TABLES]=0x00000000, [PK_WIDE_OBJ_GFX_TABLE_MAX]=0x00000000, [PK_WIDE_OBJ_GFX_VAR_FROM]=0x00000225, [PK_WIDE_OBJ_GFX_FF_VAR]=0x00000000, [PK_WIDE_SB1_OFFSETS]=0x1f6c16a8, [PK_WIDE_SB1_POS]=0x00000000, [PK_WIDE_LAYOUT_VERSIONED]=0x00000000, [PK_WIDE_OBJ_GFX_COUNT]=0x00000235, [PK_WIDE_TEMPLATE_KIND_AT]=0x00000000, [PK_WIDE_SB1_FLAGS_AT]=0x00000000, [PK_WIDE_TRANSITION_PTR]=0x00000000, [PK_WIDE_QUEST_LOG]=0x00000000, [PK_WIDE_EXPANDED_FLAGS]=0x00000000 } }, // dragonsden
++    { 0xcec21496, PK_WIDE_FAMILY_EX640, { [PK_WIDE_VMAP]=0x03005280, [PK_WIDE_MAP_HEADER]=0x020382d8, [PK_WIDE_MAP_GROUPS]=0x08a335d8, [PK_WIDE_SAVE_BLOCK1_PTR]=0x0300524c, [PK_WIDE_CAMERA_OFFSET]=0x03000e20, [PK_WIDE_OBJECT_EVENTS]=0x02038314, [PK_WIDE_SPRITES]=0x02020630, [PK_WIDE_COORD_OFFSET]=0x02021bbc, [PK_WIDE_COORD_OFFSET_Y]=0x02021bbe, [PK_WIDE_SPRITE_ORDER]=0x020217f4, [PK_WIDE_GMAIN]=0x030032e0, [PK_WIDE_CONTROLS_LOCKED]=0x03000f2c, [PK_WIDE_OBJ_GFX_INFO]=0x08ba3760, [PK_WIDE_OBJ_PALETTES]=0x08ba3ff4, [PK_WIDE_OBJ_FACING]=0x08b955f1, [PK_WIDE_SPRITE_PAL_TAGS]=0x03000cf0, [PK_WIDE_ELEVATION_PRIO]=0x08ba7418, [PK_WIDE_MAP_GROUPS_XOR]=0x00000000, [PK_WIDE_NORMAL_BG3]=0x00003014, [PK_WIDE_METATILE_SIZE]=0x00000018, [PK_WIDE_METATILE_MASK]=0x000003ff, [PK_WIDE_PRIMARY_OVERRIDE]=0x00000000, [PK_WIDE_PAN_OFF]=0x00000008, [PK_WIDE_OBJ_GFX_TABLES]=0x00000000, [PK_WIDE_OBJ_GFX_TABLE_MAX]=0x00000000, [PK_WIDE_OBJ_GFX_VAR_FROM]=0x00000225, [PK_WIDE_OBJ_GFX_FF_VAR]=0x00000000, [PK_WIDE_SB1_OFFSETS]=0x1f6c16a8, [PK_WIDE_SB1_POS]=0x00000000, [PK_WIDE_LAYOUT_VERSIONED]=0x00000000, [PK_WIDE_OBJ_GFX_COUNT]=0x00000235, [PK_WIDE_TEMPLATE_KIND_AT]=0x00000000, [PK_WIDE_SB1_FLAGS_AT]=0x00000000, [PK_WIDE_TRANSITION_PTR]=0x00000000, [PK_WIDE_QUEST_LOG]=0x00000000, [PK_WIDE_EXPANDED_FLAGS]=0x00000000 } }, // dragonsden
 --- /dev/null
 +++ b/app/src/main/cpp/pk_scenery_object_profiles.h
 @@ -0,0 +1,48 @@
@@ -342,7 +396,15 @@
 +}
 --- a/scripts/gen_area_maps.py
 +++ b/scripts/gen_area_maps.py
-@@ -106,7 +106,7 @@
+@@ -28,6 +28,7 @@
+     'PK_WIDE_FAMILY_RS_JA': (512, 6, -1),
+     'PK_WIDE_FAMILY_EX': (512, 6, -1),
+     'PK_WIDE_FAMILY_MM': (512, 6, -1),
++    'PK_WIDE_FAMILY_EX640': (640, 7, -1),
+     'PK_WIDE_FAMILY_EX32': (512, 6, -1),
+ }
+ # pk_wide.h's PK_WIDE_* indexes the generator reads.
+@@ -106,7 +107,7 @@
      return r.ok(h) and h % 4 == 0 and layout_ok(r, r.u32(h)) and (r.u32(h + 4) == 0 or r.ok(r.u32(h + 4)))
  
  
@@ -351,7 +413,7 @@
      """Each group's list of header pointers: a group is a list in ROM (or none: 0, Rogue's unused groups) whose first entry
      points into ROM; it ends at the next list or the first entry that doesn't (a deleted map's header still counts:
      Amethyst's have a layout of 0xFFFFFFFF)."""
-@@ -119,7 +119,7 @@
+@@ -119,7 +120,7 @@
              ahead = [r.u32(groups + 4 * (g + k)) ^ xor for k in range(1, 5) if r.ok(groups + 4 * (g + k))]
              if not any(r.ok(a) and a % 4 == 0 and header_ok(r, r.u32(a)) for a in ahead): break
              lists.append(0)
@@ -360,7 +422,7 @@
              lists.append(lst)
          else:
              break
-@@ -292,8 +292,10 @@
+@@ -292,8 +293,10 @@
  
  def wide_rows():
      text = open(WIDE).read()
@@ -372,7 +434,7 @@
          yield int(m.group(1), 16), m.group(2), a, m.group(4).strip()
  
  
-@@ -334,7 +336,8 @@
+@@ -334,7 +337,8 @@
          if not groups:
              skipped.append((name, 'gMapGroups not found by its shape'))
              continue
@@ -397,8 +459,8 @@
 +mapGroups = 0x08A335D8
 +mapGroupSizes = [61, 47, 36, 43, 11, 9, 9, 27, 23, 14, 7, 7, 12, 99, 11, 10, 8, 10, 10, 42, 20, 14, 18, 21, 2, 74, 88, 4, 4, 7, 7, 4, 5, 6, 80, 5, 5, 6, 7, 8, 10, 7, 7, 14, 10, 17, 10, 24, 14, 17, 15, 108, 61, 89, 68, 11, 31]
 +primaryTiles = 640
-+primaryMetatiles = 512
-+primaryPalettes = 6
++primaryMetatiles = 640
++primaryPalettes = 7
 +floorNumOff = -1
 +metatileSize = 24
 +metatileMask = 0x3FF

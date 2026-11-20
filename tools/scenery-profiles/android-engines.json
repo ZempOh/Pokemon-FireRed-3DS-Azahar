@@ -49,7 +49,7 @@
     "game": "dragonsden",
     "rom_crc32": "cec21496",
     "rom_sha256": "6ca88c3ecd54c78bf8a8cbb80f2b9ab049d66d4b070e97849cf4073ee8d2f15c",
-    "family": "EX",
+    "family": "EX640",
     "slots": {
       "VMAP": "03005280",
       "MAP_HEADER": "020382d8",
@@ -89,6 +89,6 @@
       "EXPANDED_FLAGS": "00000000"
     },
     "qualified": false,
-    "evidence": "Four fixture live objects match graphics table; template copy and GF header verify save offsets; instruction-context address mapping"
+    "evidence": "Four fixture live objects match graphics table; template copy and GF header verify save offsets; instruction-context address mapping; Celadon Thor state matches all 1800 BG entries with 24-byte metatiles and 640 split; live palettes verify seven primary palettes"
   }
 ]

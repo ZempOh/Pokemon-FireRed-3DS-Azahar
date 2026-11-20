@@ -156,3 +156,13 @@ profile file needs `passed: true` and nonempty `evidence`, each with a path rela
 to the report and SHA-256. Use `partial_environment_update` until all families have
 passed; `all_environment_assets` additionally requires every family in `coverage`
 to be `passed`. Never construct a passing record from unobserved results.
+
+### Dragonsden layout regression
+
+The captured Celadon field matches all 1,800 live BG entries with 24-byte
+metatiles and a 640 primary-metatile split; a 512 split scores only 785/1000.
+Seven primary palettes match live palette RAM. The EX640 family therefore uses
+Emerald u16 attributes and expansion objects with 640 metatiles, seven palettes
+and sized borders. A shorter primary array is not evidence of a different global
+split: unused primary IDs may remain reserved. Layout byte +24 is border width,
+not a version discriminator. Device qualification remains pending.

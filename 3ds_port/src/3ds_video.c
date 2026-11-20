@@ -10,6 +10,7 @@
 #include "3ds_daynight.h"
 #include "3ds_gpumem.h"
 #include "3ds_video.h"
+#include "ctr_frame_rate.h"
 #include "3ds_tile_banks.h"
 #include "3ds_dex_top.h"
 #include "3ds_corner_art.h"
@@ -1144,8 +1145,7 @@ static int BankedTileSlot(unsigned bank, unsigned entry, unsigned chars)
                        false);
 }
 static bool sC3d, sC2d;
-static uint64_t sFpsStart;
-static unsigned sFpsFrames;
+static CtrFrameRate sPresentationRate, sWorkEndRate;
 static uint32_t sReported;
 
 /*
@@ -7015,7 +7015,8 @@ bool CtrVideo_Init(void)
      * (SceneKept). */
     if (SceneKept() && SceneMake())
         SceneReady();
-    sFpsStart = CtrPlatform_Milliseconds();
+    memset(&sPresentationRate, 0, sizeof(sPresentationRate));
+    memset(&sWorkEndRate, 0, sizeof(sWorkEndRate));
     CtrLog_Write(CTR_LOG_VIDEO, "GPU: RGBA5551 atlas, 8 MiB linear heap, native 400x240 viewport");
     return true;
 fail:
@@ -11947,7 +11948,6 @@ static const char *const sFpsGlyphs[] =
  * game's speed, beside the pictures a second the counter always showed.
  * With real-time pacing (3ds_platform.c) the two differ on a slow frame. */
 static float sGameFps;
-static uint64_t sGameFpsMark;
 
 /*
  * The field's poison step (fldeff_misc.c, Task_FieldPoisonEffect) is a mosaic
@@ -12471,6 +12471,7 @@ void CtrVideo_Present(void)
     uint64_t waitStart = svcGetSystemTick();
     CtrVoxel_NoteFrameWait(waitStart);
     if (!C3D_FrameBegin(C3D_FRAME_SYNCDRAW)) return;
+    uint64_t presentationTick = svcGetSystemTick();
     /* A late clear wiped the scene surface's kept scenery, if it was that. */
     if (ClearsRun()) sSceneCached = sSceneEmpty = false;
     /* Before anything samples what the CPU wrote since the last frame. */
@@ -13039,7 +13040,6 @@ void CtrVideo_Present(void)
     PORT_PROF_END(frameEnd, PORT_PROF_FRAMEEND);
     sStats.flat = sFrameFlat;
     ++sStats.frames;
-    ++sFpsFrames;
     sStats.cpuMs = (svcGetSystemTick() - start) * 1000.0 / SYSCLOCK_ARM11;
     sStats.gpuStartMs = gpuStartMs >= 0.0f ? gpuStartMs : sStats.cpuMs;
     sStats.voxelFrame = voxel || battleUpdated;
@@ -13049,28 +13049,26 @@ void CtrVideo_Present(void)
         CtrVoxel_AfterSubmit(start);
     else
         CtrVoxel_Idle();
-    uint64_t now = CtrPlatform_Milliseconds();
-    if (now - sFpsStart >= 1000)
-    {
-        uint64_t gameFrames = CtrPlatform_FrameCount();
-
-        sStats.fps = sFpsFrames * 1000.0f / (now - sFpsStart);
-        sGameFps = (gameFrames - sGameFpsMark) * 1000.0f / (now - sFpsStart);
-        sGameFpsMark = gameFrames;
-        sFpsStart = now;
-        sFpsFrames = 0;
-    }
+    /* Count synchronized frame boundaries, not completion of background mesh
+     * work after submission. A varying mesh tail distorted the old >=1-second
+     * FPS estimate even when the screen did not repeat a frame. Retain that
+     * work-end clock in diagnostics; neither clock clamps or averages away dips. */
+    uint64_t gameFrames = CtrPlatform_FrameCount();
+    CtrFrameRate_Add(&sPresentationRate, presentationTick, gameFrames, SYSCLOCK_ARM11);
+    CtrFrameRate_Add(&sWorkEndRate, svcGetSystemTick(), gameFrames, SYSCLOCK_ARM11);
+    sStats.fps = sPresentationRate.shown;
+    sGameFps = sPresentationRate.game;
     if (sStats.frames % 600 == 0)
     {
         CtrLog_Write(CTR_LOG_VIDEO, "frames=%lu fps=%.1f cpu=%.2fms bg=%.2fms obj=%.2fms gpu=%.2fms "
-                     "3d=%lupx%s x%lu quads=%lu cells=%lu sprites=%lu errors=%lu cache=%u linear=%lu vram=%lu cmdbuf=%.0f%%",
+                     "3d=%lupx%s x%lu quads=%lu cells=%lu sprites=%lu errors=%lu cache=%u linear=%lu vram=%lu cmdbuf=%.0f%% work_end_fps=%.1f fps_clock=frame_begin",
                      (unsigned long)sStats.frames, sStats.fps, sStats.cpuMs,
                      sBgTicks * 1000.0 / SYSCLOCK_ARM11, sObjTicks * 1000.0 / SYSCLOCK_ARM11,
                      sStats.gpuMs, (unsigned long)sStats.stereo,
                      sStats.stereo ? (sPlanes ? "/planes" : "/eyes") : "", (unsigned long)sPlanes,
                      (unsigned long)sStats.tiles, (unsigned long)sStats.cells,
                      (unsigned long)sStats.sprites, (unsigned long)sStats.errors, sUsed,
-                     (unsigned long)linearSpaceFree(), (unsigned long)vramSpaceFree(), sCmdBufPeak * 100.0f);
+                     (unsigned long)linearSpaceFree(), (unsigned long)vramSpaceFree(), sCmdBufPeak * 100.0f, sWorkEndRate.shown);
         sCmdBufPeak = 0.0f;
         if (voxel || sBattleWorld)
         {

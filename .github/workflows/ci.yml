@@ -22,6 +22,10 @@ jobs:
         run: python -m unittest discover -s builder/tests -v
       - name: Three-layer scenery art composition
         run: python 3ds_port/tests/voxel_building_layers_test.py
+      - name: Presentation clock and real-stall regression
+        run: |
+          cc -std=c99 -Wall -Wextra -Werror -I3ds_port/src 3ds_port/tests/frame_rate_test.c -o /tmp/frame-rate-test
+          /tmp/frame-rate-test
       - name: Synthetic web payload passes the release contract audit
         run: |
           python tools/build_web_payload.py --synthetic synthetic-web

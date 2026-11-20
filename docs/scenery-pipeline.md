@@ -303,3 +303,38 @@ These profiles are candidates, not device-qualified compatibility claims. Confir
 the complete live-bus hash, party/HP/move/PP and battle state on the Thor, then use
 the same exact-APK scenery, audio, pacing, interaction and startup gates as every
 other game. A manually selected base profile is diagnostic only.
+
+
+## Classic shared indoor plant recognition
+
+Classic's active building generator imports `classic_building_specs`, not the
+copied generic Emerald furniture list. Its plants occupy two cells: foliage may
+be on layer 2 while the pot is on layer 1. Recognize the exact primary-tileset
+subtile signatures across layouts instead of enumerating just the first room's
+metatile IDs. Reject unrelated upper overlays; group placements by actual plant
+and floor pixels so different secondary palettes and wall corners stay intact.
+The verified local source contains 165 placements in 40 floor/palette variants.
+
+`classic_botanical.py` adapts the same renderer-neutral 144-triangle plant used
+by the other ports. `scenery_plant_mesh.json` is exported from the shared C header;
+CI compares the export byte values and checks closed edges, positive volume,
+bounds, and source-palette materials. The generator reconstructs each cell's
+underlying layers, including flip bits, rather than painting a generic floor.
+Botanical redesigns have an explicit geometry check; building pixel-equivalence
+checks stay in place. A host preview is not a Thor pass. Check the exact generated
+pack hash along with the engine; an unchanged engine does not qualify new art.
+
+Classic's special partner cannot satisfy scripted field-move checks. Disposable
+Strength/Smash fixtures must contain an eligible ordinary party member with the
+move and badge. Preserve invalid fixture attempts separately; do not misdiagnose
+an occluded or immovable target as a geometry defect before testing prerequisites.
+
+
+For native FireRed/FRLG pacing, inspect `3ds_port/full.mk`: the active menu is
+`src/fr_bottom_ui.c`. The copied `3ds_bottom_ui.c` warm-up code is not that port's
+battle UI. A retained FireRed f32 active-phase failure had one 17.42 ms work frame
+(bottom 5.41 ms, upload 1.70 ms), despite minimum sampled59.7 and zero advancing
+track underruns. Do not relax the zero-over-budget gate. The next candidate uses
+column-major exact circle spans; 2400 old/new rounded and circle raster cases and
+2003 full/dirty menu transitions pass byte equivalence. Thor results must decide
+whether that optimization is enough; host correctness alone is not a pacing pass.

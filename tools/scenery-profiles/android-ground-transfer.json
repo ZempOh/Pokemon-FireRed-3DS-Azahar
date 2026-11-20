@@ -1,0 +1,1361 @@
+{
+  "reference_sha256": "679d112cdfe699c2793d82c7e7999ac9dfca9e222ad5a85d4f8f1e457cd0283f",
+  "reference_primary": "0x082d4a94",
+  "targets": [
+    {
+      "game": "letsgo",
+      "rom_sha256": "ffb57f40fa4be71707fec0d36b0356220edc9b30648c31641d2b97118d792282",
+      "primary": "0x082d4a94",
+      "reviewed": false,
+      "cells": [
+        {
+          "id": 208,
+          "exact_match": false,
+          "reference_signature": "873526f17f1a7ba73c635922155f12b882bc9fa4f493090c917f8f9a0f503eef",
+          "target_signature": "9a67e2eb10129ca49fe44451cb22cd65b8063731a7232d00121a4acf95469c45"
+        },
+        {
+          "id": 209,
+          "exact_match": false,
+          "reference_signature": "9d52f5bebfa1ee3c49576fea78f96e1b5f77d60f389dfcb0f3cab772b404e4f0",
+          "target_signature": "7dfb86c7565ba8250b3c6b24d7a3d62360291048dcd1ed65ae973555d3b895f9"
+        },
+        {
+          "id": 210,
+          "exact_match": false,
+          "reference_signature": "f4b4a2487d7a3d7d5d0c4a1427fefbec69dfc79fe2c8a4e5a975411f027f31f2",
+          "target_signature": "887e0d83844a724bbf7e408ca65e6abb30a8abb8b9c3e4a320fdcd6661886b32"
+        },
+        {
+          "id": 211,
+          "exact_match": false,
+          "reference_signature": "f01c96487d092a2e4f5fb8d3e23a18e448361cc803ad6bb19e07558904f50843",
+          "target_signature": "98228ef9de9423cd10b09f8add4299895db05b561aa3d5c4a224104b6fe1dbe5"
+        },
+        {
+          "id": 212,
+          "exact_match": false,
+          "reference_signature": "b85219564cd4c218ff051a6d683926d0e8b5329b17ac47bc4df9736c25342b19",
+          "target_signature": "89ff22c534bb1dfda56df12cff196581ee4581caf87b9534a15f91ce13c6dee3"
+        },
+        {
+          "id": 213,
+          "exact_match": false,
+          "reference_signature": "24d91226b944ee9c3b24f9669bf571e67e14faa3859186d618ba4a8e612e326c",
+          "target_signature": "f2bfc25ec33829121dc45b711001b210d7c84073ec991a8d04f13038faef3334"
+        },
+        {
+          "id": 216,
+          "exact_match": false,
+          "reference_signature": "a178561627845c8be6c5028cec61ba45d38a0fb3b990b3ca87a39bb8f9d38a0d",
+          "target_signature": "1211fc5fb2931705a8a5bd381c1273c071b25a167ff16af1718a750145a5d881"
+        },
+        {
+          "id": 217,
+          "exact_match": false,
+          "reference_signature": "822ae7ac902927402c13c869ccaa2d8aad192b19f975f54f11b70227081be0b1",
+          "target_signature": "6b854f9677f828c09e82248aac8edda160bfa79a424256330cd99077d99484e4"
+        },
+        {
+          "id": 218,
+          "exact_match": false,
+          "reference_signature": "65b98f23a1e844e39b28c2070fe884d74a8faa584c318f1a2ec62ac2e161cbbf",
+          "target_signature": "0b0fb432036552df7625752cbaae3c02cc0ba1a436f4ade8d4fa04a21e76ec00"
+        },
+        {
+          "id": 219,
+          "exact_match": false,
+          "reference_signature": "7c33f37c1dedd67c28d8eabdebcb2e3d2f70d6a8b736c273ef46012402b528eb",
+          "target_signature": "f0f3c23ec01f58b5b0aa8bf6f0133c245cd3e50c6f77a894f895f40d52b3f216"
+        },
+        {
+          "id": 220,
+          "exact_match": false,
+          "reference_signature": "27e7c09d3350c69a2932238ed34c31737d63e18ab318ae6d6d2f8f335aac7661",
+          "target_signature": "5d5f99fbe523e109e03063d1b0ee9468ef43ba6182640c8d1ed1a8b2a6e564f2"
+        },
+        {
+          "id": 221,
+          "exact_match": false,
+          "reference_signature": "43e16ab55b671cbae53f65d643e3645d7a80f39385ad9291e9654c4ef4eefe94",
+          "target_signature": "33cd21f943c6157ad9ee898165e6cab6d69760e7e0cb9cae0551c071954ec0db"
+        },
+        {
+          "id": 224,
+          "exact_match": false,
+          "reference_signature": "6014a3fdf316c697e31a721c2265db07cf653ac416ef224fd391803b71baa8fb",
+          "target_signature": "a159d4402d276173e6fe7aea68a69d6b8d12229b06568a360e85788df3180a2b"
+        },
+        {
+          "id": 225,
+          "exact_match": false,
+          "reference_signature": "603c3f39d69fdc4bec005d58c8cb70c19a849bfc05bfe1a99918caddf2fc9bd4",
+          "target_signature": "1bf998e4afa56ef791b66eac6e52df767d07966a1fb79aec20718a5205255e37"
+        },
+        {
+          "id": 226,
+          "exact_match": false,
+          "reference_signature": "99b1af6aecc56a61aff92fc2115969fe5e481c4bed020c659af41c906cb6a3a0",
+          "target_signature": "c2bafcbece85eff68350eb21e1e29e6e2d0c9eebc56076b920bbb9f5c8aae966"
+        },
+        {
+          "id": 227,
+          "exact_match": false,
+          "reference_signature": "7c5a7a5c3094355c8b0ab13ab4cc46042de271bbccb2ac2bc248367c5101b50e",
+          "target_signature": "cfaac0da52ff8cbdfba5ff934a50fc508047c7d738ba324f4ae5d069fa643fad"
+        },
+        {
+          "id": 228,
+          "exact_match": false,
+          "reference_signature": "3b2bb1fe251fa9fd1de8ecfe755795343bc218e9d57e21c8d5db8c95c4ce6e95",
+          "target_signature": "657f14d6396220930e38928b903cc9dc6f01d8f4f14fbf313b6b6a0b66361bff"
+        },
+        {
+          "id": 229,
+          "exact_match": false,
+          "reference_signature": "6ab5320437bcf67cadecb6c759551e520838a737d9d1edac9e1f199d452f46c7",
+          "target_signature": "35ac7adbc1c4303b83036ac12c2346627ae0ce9e6ef1fb8719515cf4822f010d"
+        },
+        {
+          "id": 254,
+          "exact_match": false,
+          "reference_signature": "f25cbc485bbe347df808cf2f6e2028ba029e29c2a561e291a84ba7430c3321e1",
+          "target_signature": "4d392e9b7e989edb409cdac192802b009ff39cd22813d5fec6ca85450e5d81a6"
+        },
+        {
+          "id": 255,
+          "exact_match": false,
+          "reference_signature": "647cf70bd23365241ca6456fe5240168d24f72a0b5913e0a68479d3a96d90408",
+          "target_signature": "8623f3b846c8691af197778481e066af12dfe5f4f007c2f9c631738e6d7e6cc4"
+        },
+        {
+          "id": 258,
+          "exact_match": false,
+          "reference_signature": "54cd9a54107f3bf43ec728b0390bd8ff326c6ba7d411aeaafb65eb0f286c8240",
+          "target_signature": "cee80da4e4ed157de77417daf3004dc8c2c4a81efcfe7329029a1dba27be9e3b"
+        },
+        {
+          "id": 259,
+          "exact_match": false,
+          "reference_signature": "3ce6f54608eb4d0aed7d493f6ad7e5f5ec8085ff705d99e8c55f527560da32b2",
+          "target_signature": "ed777db7e24c7bc334d9b1a821c74891f1a6f57bd24c32af042ec564e9718eaa"
+        },
+        {
+          "id": 260,
+          "exact_match": false,
+          "reference_signature": "7075f9cbdc27fff2280b1cba188fd85f5266a13cfd0b71fc5c0108ff94ddffc0",
+          "target_signature": "cc4af1f3a1b8c965b13459aefd38710c4aa7c3c8d0d1fcd02b6880f721e44a54"
+        },
+        {
+          "id": 261,
+          "exact_match": false,
+          "reference_signature": "c5479ca998f0eb1cb94e059fc78b721d3c1b144b13b9282fa60e9328fb1dfccf",
+          "target_signature": "6a743b92f32c508e6e6e74facdbdaf32091d4e190d6609f792d84aa4a249646d"
+        },
+        {
+          "id": 262,
+          "exact_match": false,
+          "reference_signature": "4ee1408c35f661ad671256f5f60e6d4ad22aef6eef3dfdc96bd2ae56f89ebc6c",
+          "target_signature": "e5f9550d2d85c29e127642a1222d7858e4932e1cd2ad8a3b58d19bd0b51f3a5f"
+        },
+        {
+          "id": 263,
+          "exact_match": false,
+          "reference_signature": "6a0f487aae5c83eb315e6e417d93da4c447272786523e9ab81e3a96d5bb263e5",
+          "target_signature": "43d3ce95a1c97abac7bac5c67cc379d08f401ee8149773017d6eb789b9c8aff0"
+        }
+      ]
+    },
+    {
+      "game": "radical",
+      "rom_sha256": "679d112cdfe699c2793d82c7e7999ac9dfca9e222ad5a85d4f8f1e457cd0283f",
+      "primary": "0x082d4a94",
+      "reviewed": false,
+      "cells": [
+        {
+          "id": 208,
+          "exact_match": true,
+          "reference_signature": "873526f17f1a7ba73c635922155f12b882bc9fa4f493090c917f8f9a0f503eef",
+          "target_signature": "873526f17f1a7ba73c635922155f12b882bc9fa4f493090c917f8f9a0f503eef"
+        },
+        {
+          "id": 209,
+          "exact_match": true,
+          "reference_signature": "9d52f5bebfa1ee3c49576fea78f96e1b5f77d60f389dfcb0f3cab772b404e4f0",
+          "target_signature": "9d52f5bebfa1ee3c49576fea78f96e1b5f77d60f389dfcb0f3cab772b404e4f0"
+        },
+        {
+          "id": 210,
+          "exact_match": true,
+          "reference_signature": "f4b4a2487d7a3d7d5d0c4a1427fefbec69dfc79fe2c8a4e5a975411f027f31f2",
+          "target_signature": "f4b4a2487d7a3d7d5d0c4a1427fefbec69dfc79fe2c8a4e5a975411f027f31f2"
+        },
+        {
+          "id": 211,
+          "exact_match": true,
+          "reference_signature": "f01c96487d092a2e4f5fb8d3e23a18e448361cc803ad6bb19e07558904f50843",
+          "target_signature": "f01c96487d092a2e4f5fb8d3e23a18e448361cc803ad6bb19e07558904f50843"
+        },
+        {
+          "id": 212,
+          "exact_match": true,
+          "reference_signature": "b85219564cd4c218ff051a6d683926d0e8b5329b17ac47bc4df9736c25342b19",
+          "target_signature": "b85219564cd4c218ff051a6d683926d0e8b5329b17ac47bc4df9736c25342b19"
+        },
+        {
+          "id": 213,
+          "exact_match": true,
+          "reference_signature": "24d91226b944ee9c3b24f9669bf571e67e14faa3859186d618ba4a8e612e326c",
+          "target_signature": "24d91226b944ee9c3b24f9669bf571e67e14faa3859186d618ba4a8e612e326c"
+        },
+        {
+          "id": 216,
+          "exact_match": true,
+          "reference_signature": "a178561627845c8be6c5028cec61ba45d38a0fb3b990b3ca87a39bb8f9d38a0d",
+          "target_signature": "a178561627845c8be6c5028cec61ba45d38a0fb3b990b3ca87a39bb8f9d38a0d"
+        },
+        {
+          "id": 217,
+          "exact_match": true,
+          "reference_signature": "822ae7ac902927402c13c869ccaa2d8aad192b19f975f54f11b70227081be0b1",
+          "target_signature": "822ae7ac902927402c13c869ccaa2d8aad192b19f975f54f11b70227081be0b1"
+        },
+        {
+          "id": 218,
+          "exact_match": true,
+          "reference_signature": "65b98f23a1e844e39b28c2070fe884d74a8faa584c318f1a2ec62ac2e161cbbf",
+          "target_signature": "65b98f23a1e844e39b28c2070fe884d74a8faa584c318f1a2ec62ac2e161cbbf"
+        },
+        {
+          "id": 219,
+          "exact_match": true,
+          "reference_signature": "7c33f37c1dedd67c28d8eabdebcb2e3d2f70d6a8b736c273ef46012402b528eb",
+          "target_signature": "7c33f37c1dedd67c28d8eabdebcb2e3d2f70d6a8b736c273ef46012402b528eb"
+        },
+        {
+          "id": 220,
+          "exact_match": true,
+          "reference_signature": "27e7c09d3350c69a2932238ed34c31737d63e18ab318ae6d6d2f8f335aac7661",
+          "target_signature": "27e7c09d3350c69a2932238ed34c31737d63e18ab318ae6d6d2f8f335aac7661"
+        },
+        {
+          "id": 221,
+          "exact_match": true,
+          "reference_signature": "43e16ab55b671cbae53f65d643e3645d7a80f39385ad9291e9654c4ef4eefe94",
+          "target_signature": "43e16ab55b671cbae53f65d643e3645d7a80f39385ad9291e9654c4ef4eefe94"
+        },
+        {
+          "id": 224,
+          "exact_match": true,
+          "reference_signature": "6014a3fdf316c697e31a721c2265db07cf653ac416ef224fd391803b71baa8fb",
+          "target_signature": "6014a3fdf316c697e31a721c2265db07cf653ac416ef224fd391803b71baa8fb"
+        },
+        {
+          "id": 225,
+          "exact_match": true,
+          "reference_signature": "603c3f39d69fdc4bec005d58c8cb70c19a849bfc05bfe1a99918caddf2fc9bd4",
+          "target_signature": "603c3f39d69fdc4bec005d58c8cb70c19a849bfc05bfe1a99918caddf2fc9bd4"
+        },
+        {
+          "id": 226,
+          "exact_match": true,
+          "reference_signature": "99b1af6aecc56a61aff92fc2115969fe5e481c4bed020c659af41c906cb6a3a0",
+          "target_signature": "99b1af6aecc56a61aff92fc2115969fe5e481c4bed020c659af41c906cb6a3a0"
+        },
+        {
+          "id": 227,
+          "exact_match": true,
+          "reference_signature": "7c5a7a5c3094355c8b0ab13ab4cc46042de271bbccb2ac2bc248367c5101b50e",
+          "target_signature": "7c5a7a5c3094355c8b0ab13ab4cc46042de271bbccb2ac2bc248367c5101b50e"
+        },
+        {
+          "id": 228,
+          "exact_match": true,
+          "reference_signature": "3b2bb1fe251fa9fd1de8ecfe755795343bc218e9d57e21c8d5db8c95c4ce6e95",
+          "target_signature": "3b2bb1fe251fa9fd1de8ecfe755795343bc218e9d57e21c8d5db8c95c4ce6e95"
+        },
+        {
+          "id": 229,
+          "exact_match": true,
+          "reference_signature": "6ab5320437bcf67cadecb6c759551e520838a737d9d1edac9e1f199d452f46c7",
+          "target_signature": "6ab5320437bcf67cadecb6c759551e520838a737d9d1edac9e1f199d452f46c7"
+        },
+        {
+          "id": 254,
+          "exact_match": true,
+          "reference_signature": "f25cbc485bbe347df808cf2f6e2028ba029e29c2a561e291a84ba7430c3321e1",
+          "target_signature": "f25cbc485bbe347df808cf2f6e2028ba029e29c2a561e291a84ba7430c3321e1"
+        },
+        {
+          "id": 255,
+          "exact_match": true,
+          "reference_signature": "647cf70bd23365241ca6456fe5240168d24f72a0b5913e0a68479d3a96d90408",
+          "target_signature": "647cf70bd23365241ca6456fe5240168d24f72a0b5913e0a68479d3a96d90408"
+        },
+        {
+          "id": 258,
+          "exact_match": true,
+          "reference_signature": "54cd9a54107f3bf43ec728b0390bd8ff326c6ba7d411aeaafb65eb0f286c8240",
+          "target_signature": "54cd9a54107f3bf43ec728b0390bd8ff326c6ba7d411aeaafb65eb0f286c8240"
+        },
+        {
+          "id": 259,
+          "exact_match": true,
+          "reference_signature": "3ce6f54608eb4d0aed7d493f6ad7e5f5ec8085ff705d99e8c55f527560da32b2",
+          "target_signature": "3ce6f54608eb4d0aed7d493f6ad7e5f5ec8085ff705d99e8c55f527560da32b2"
+        },
+        {
+          "id": 260,
+          "exact_match": true,
+          "reference_signature": "7075f9cbdc27fff2280b1cba188fd85f5266a13cfd0b71fc5c0108ff94ddffc0",
+          "target_signature": "7075f9cbdc27fff2280b1cba188fd85f5266a13cfd0b71fc5c0108ff94ddffc0"
+        },
+        {
+          "id": 261,
+          "exact_match": true,
+          "reference_signature": "c5479ca998f0eb1cb94e059fc78b721d3c1b144b13b9282fa60e9328fb1dfccf",
+          "target_signature": "c5479ca998f0eb1cb94e059fc78b721d3c1b144b13b9282fa60e9328fb1dfccf"
+        },
+        {
+          "id": 262,
+          "exact_match": true,
+          "reference_signature": "4ee1408c35f661ad671256f5f60e6d4ad22aef6eef3dfdc96bd2ae56f89ebc6c",
+          "target_signature": "4ee1408c35f661ad671256f5f60e6d4ad22aef6eef3dfdc96bd2ae56f89ebc6c"
+        },
+        {
+          "id": 263,
+          "exact_match": true,
+          "reference_signature": "6a0f487aae5c83eb315e6e417d93da4c447272786523e9ab81e3a96d5bb263e5",
+          "target_signature": "6a0f487aae5c83eb315e6e417d93da4c447272786523e9ab81e3a96d5bb263e5"
+        }
+      ]
+    },
+    {
+      "game": "unbound",
+      "rom_sha256": "7aa25bbf568f7cfcf6ee1cf2e9e6ff637350b3d0705c2375cabb6baa7d9739f7",
+      "primary": "0x082d4a94",
+      "reviewed": false,
+      "cells": [
+        {
+          "id": 208,
+          "exact_match": false,
+          "reference_signature": "873526f17f1a7ba73c635922155f12b882bc9fa4f493090c917f8f9a0f503eef",
+          "target_signature": "f812ddd6b97aee71d709a3169fcd845add65ad4ab585f2952b41222fda74f34d"
+        },
+        {
+          "id": 209,
+          "exact_match": false,
+          "reference_signature": "9d52f5bebfa1ee3c49576fea78f96e1b5f77d60f389dfcb0f3cab772b404e4f0",
+          "target_signature": "9fd1864f6e27bbc879541b3ebb3bf18532f8001d28341eb6ce03c6798dd20b51"
+        },
+        {
+          "id": 210,
+          "exact_match": false,
+          "reference_signature": "f4b4a2487d7a3d7d5d0c4a1427fefbec69dfc79fe2c8a4e5a975411f027f31f2",
+          "target_signature": "b75f95a089c85bfb37c457c7b43d7053b21a686376f25b6b955634e4b29576a3"
+        },
+        {
+          "id": 211,
+          "exact_match": false,
+          "reference_signature": "f01c96487d092a2e4f5fb8d3e23a18e448361cc803ad6bb19e07558904f50843",
+          "target_signature": "e108d125eba080e2618c0327ba53fbcb4cc89d6e32a096d4e790e1fdcab96099"
+        },
+        {
+          "id": 212,
+          "exact_match": false,
+          "reference_signature": "b85219564cd4c218ff051a6d683926d0e8b5329b17ac47bc4df9736c25342b19",
+          "target_signature": "89dd010267071d86dcd2c0157c9589e764882c9bddc962819d144c2fa0ef649c"
+        },
+        {
+          "id": 213,
+          "exact_match": false,
+          "reference_signature": "24d91226b944ee9c3b24f9669bf571e67e14faa3859186d618ba4a8e612e326c",
+          "target_signature": "f976214a022d020b5cc65dace01608fbc7ab03b3ff679f7a0c5b906e31118922"
+        },
+        {
+          "id": 216,
+          "exact_match": false,
+          "reference_signature": "a178561627845c8be6c5028cec61ba45d38a0fb3b990b3ca87a39bb8f9d38a0d",
+          "target_signature": "d3e60944ea1768d8119d9e1f497a2b172bc336f292fc58a8b58f78ab77c1a894"
+        },
+        {
+          "id": 217,
+          "exact_match": false,
+          "reference_signature": "822ae7ac902927402c13c869ccaa2d8aad192b19f975f54f11b70227081be0b1",
+          "target_signature": "3109946de1f6c5fe933834a3a4e5f341c2d3f842407b35989ff16c6107a9e5d1"
+        },
+        {
+          "id": 218,
+          "exact_match": false,
+          "reference_signature": "65b98f23a1e844e39b28c2070fe884d74a8faa584c318f1a2ec62ac2e161cbbf",
+          "target_signature": "ffffed9dfd7a67680cc20c52f1175f26d9431ef063ba4e2c87763997d38b3222"
+        },
+        {
+          "id": 219,
+          "exact_match": false,
+          "reference_signature": "7c33f37c1dedd67c28d8eabdebcb2e3d2f70d6a8b736c273ef46012402b528eb",
+          "target_signature": "42dd50caff0495772a99bd1315b8d6c85bdfcbb96d5b70f6388af98a73c44fe7"
+        },
+        {
+          "id": 220,
+          "exact_match": false,
+          "reference_signature": "27e7c09d3350c69a2932238ed34c31737d63e18ab318ae6d6d2f8f335aac7661",
+          "target_signature": "cd89797a8515480fff951898afdfb9fcf80b4764993e956df1d51608856c86ac"
+        },
+        {
+          "id": 221,
+          "exact_match": false,
+          "reference_signature": "43e16ab55b671cbae53f65d643e3645d7a80f39385ad9291e9654c4ef4eefe94",
+          "target_signature": "052b5942f3ed8381147c284e793f86ca1ee0ae55c15ec2340441697af830bdaf"
+        },
+        {
+          "id": 224,
+          "exact_match": false,
+          "reference_signature": "6014a3fdf316c697e31a721c2265db07cf653ac416ef224fd391803b71baa8fb",
+          "target_signature": "c26a0f6b4a8122a7c65e7ff357f28aacb1fd813544cf1898075494bcb58fc04d"
+        },
+        {
+          "id": 225,
+          "exact_match": false,
+          "reference_signature": "603c3f39d69fdc4bec005d58c8cb70c19a849bfc05bfe1a99918caddf2fc9bd4",
+          "target_signature": "af06afe45280417de12d24545d6e23f9cfbee5c1e32821064aa97da9ca22ced3"
+        },
+        {
+          "id": 226,
+          "exact_match": false,
+          "reference_signature": "99b1af6aecc56a61aff92fc2115969fe5e481c4bed020c659af41c906cb6a3a0",
+          "target_signature": "b785d09e55ff08f98959181aab5545350ff6b1cd88dcb131f625bde68156e2bc"
+        },
+        {
+          "id": 227,
+          "exact_match": false,
+          "reference_signature": "7c5a7a5c3094355c8b0ab13ab4cc46042de271bbccb2ac2bc248367c5101b50e",
+          "target_signature": "79832d2599960e5b57f6458bb8009b92f54cf99a1aa851c8d13bc92d2b0f370c"
+        },
+        {
+          "id": 228,
+          "exact_match": false,
+          "reference_signature": "3b2bb1fe251fa9fd1de8ecfe755795343bc218e9d57e21c8d5db8c95c4ce6e95",
+          "target_signature": "ef5f86e809705969cae36de50f18b046094d6563cdcdc2a3af662ba4ed18f169"
+        },
+        {
+          "id": 229,
+          "exact_match": false,
+          "reference_signature": "6ab5320437bcf67cadecb6c759551e520838a737d9d1edac9e1f199d452f46c7",
+          "target_signature": "0f71210a000f2d22ae318b4f2475ff5d42a49a48fe879a5fd6e0932e15c1d501"
+        },
+        {
+          "id": 254,
+          "exact_match": false,
+          "reference_signature": "f25cbc485bbe347df808cf2f6e2028ba029e29c2a561e291a84ba7430c3321e1",
+          "target_signature": "9f9966663f2193410e5589ff0d1661b7fc16a3a4950a22cf63f9dba7d7a92055"
+        },
+        {
+          "id": 255,
+          "exact_match": false,
+          "reference_signature": "647cf70bd23365241ca6456fe5240168d24f72a0b5913e0a68479d3a96d90408",
+          "target_signature": "80a3c989a6a32b745f377532bf98fe72d676ef57b54c90e12bf56b69b7d9eaef"
+        },
+        {
+          "id": 258,
+          "exact_match": false,
+          "reference_signature": "54cd9a54107f3bf43ec728b0390bd8ff326c6ba7d411aeaafb65eb0f286c8240",
+          "target_signature": "20965369d3fd6a0bfa5752069630016fa5c9b7a2b5ef08ec9fe36d2c51b614aa"
+        },
+        {
+          "id": 259,
+          "exact_match": false,
+          "reference_signature": "3ce6f54608eb4d0aed7d493f6ad7e5f5ec8085ff705d99e8c55f527560da32b2",
+          "target_signature": "4a3fd4ef55f61942a1f62aa0f075532391b18d09fba52d3a53e7f5d332d29234"
+        },
+        {
+          "id": 260,
+          "exact_match": false,
+          "reference_signature": "7075f9cbdc27fff2280b1cba188fd85f5266a13cfd0b71fc5c0108ff94ddffc0",
+          "target_signature": "8e1927f49131259b554f5835d7a925e97c0784d79d193c0b0154485fa6bbfa2f"
+        },
+        {
+          "id": 261,
+          "exact_match": false,
+          "reference_signature": "c5479ca998f0eb1cb94e059fc78b721d3c1b144b13b9282fa60e9328fb1dfccf",
+          "target_signature": "c157537ba062dee75f1c8dc6f19e90f75a70daecd745f9e53749d9c1766380f5"
+        },
+        {
+          "id": 262,
+          "exact_match": false,
+          "reference_signature": "4ee1408c35f661ad671256f5f60e6d4ad22aef6eef3dfdc96bd2ae56f89ebc6c",
+          "target_signature": "9ae2c46d76ebf0eb7898716f73dc3b29d9c51f221901e4bb3c3240e6b1aaa919"
+        },
+        {
+          "id": 263,
+          "exact_match": false,
+          "reference_signature": "6a0f487aae5c83eb315e6e417d93da4c447272786523e9ab81e3a96d5bb263e5",
+          "target_signature": "a6cbdcb338627d8c2a9d66363b44e5aabf6bde57a765fa4657f86751be7cc20f"
+        }
+      ]
+    },
+    {
+      "game": "better-emerald-2",
+      "rom_sha256": "2503ed1832224d280d73c2e7e6ffc4b3dc90b58b1df2cfce70d587bed3b5dca3",
+      "primary": "0x083df704",
+      "reviewed": false,
+      "held": "Unsupported engine layout; no numeric-ID inheritance"
+    },
+    {
+      "game": "modern-emerald",
+      "rom_sha256": "bc7286dca750cf735480fece3ff68c7d86ecbf8391031b5ca2964da78fc945a1",
+      "primary": "0x08bb3ac8",
+      "reviewed": false,
+      "held": "Unsupported engine layout; no numeric-ID inheritance"
+    },
+    {
+      "game": "fakemon",
+      "rom_sha256": "05572f4dfbb96a1161a284292971d50c37e521d340bcecf48b574cca3dd8b4c6",
+      "primary": "0x082d4a94",
+      "reviewed": false,
+      "cells": [
+        {
+          "id": 208,
+          "exact_match": true,
+          "reference_signature": "873526f17f1a7ba73c635922155f12b882bc9fa4f493090c917f8f9a0f503eef",
+          "target_signature": "873526f17f1a7ba73c635922155f12b882bc9fa4f493090c917f8f9a0f503eef"
+        },
+        {
+          "id": 209,
+          "exact_match": true,
+          "reference_signature": "9d52f5bebfa1ee3c49576fea78f96e1b5f77d60f389dfcb0f3cab772b404e4f0",
+          "target_signature": "9d52f5bebfa1ee3c49576fea78f96e1b5f77d60f389dfcb0f3cab772b404e4f0"
+        },
+        {
+          "id": 210,
+          "exact_match": true,
+          "reference_signature": "f4b4a2487d7a3d7d5d0c4a1427fefbec69dfc79fe2c8a4e5a975411f027f31f2",
+          "target_signature": "f4b4a2487d7a3d7d5d0c4a1427fefbec69dfc79fe2c8a4e5a975411f027f31f2"
+        },
+        {
+          "id": 211,
+          "exact_match": true,
+          "reference_signature": "f01c96487d092a2e4f5fb8d3e23a18e448361cc803ad6bb19e07558904f50843",
+          "target_signature": "f01c96487d092a2e4f5fb8d3e23a18e448361cc803ad6bb19e07558904f50843"
+        },
+        {
+          "id": 212,
+          "exact_match": true,
+          "reference_signature": "b85219564cd4c218ff051a6d683926d0e8b5329b17ac47bc4df9736c25342b19",
+          "target_signature": "b85219564cd4c218ff051a6d683926d0e8b5329b17ac47bc4df9736c25342b19"
+        },
+        {
+          "id": 213,
+          "exact_match": true,
+          "reference_signature": "24d91226b944ee9c3b24f9669bf571e67e14faa3859186d618ba4a8e612e326c",
+          "target_signature": "24d91226b944ee9c3b24f9669bf571e67e14faa3859186d618ba4a8e612e326c"
+        },
+        {
+          "id": 216,
+          "exact_match": true,
+          "reference_signature": "a178561627845c8be6c5028cec61ba45d38a0fb3b990b3ca87a39bb8f9d38a0d",
+          "target_signature": "a178561627845c8be6c5028cec61ba45d38a0fb3b990b3ca87a39bb8f9d38a0d"
+        },
+        {
+          "id": 217,
+          "exact_match": true,
+          "reference_signature": "822ae7ac902927402c13c869ccaa2d8aad192b19f975f54f11b70227081be0b1",
+          "target_signature": "822ae7ac902927402c13c869ccaa2d8aad192b19f975f54f11b70227081be0b1"
+        },
+        {
+          "id": 218,
+          "exact_match": true,
+          "reference_signature": "65b98f23a1e844e39b28c2070fe884d74a8faa584c318f1a2ec62ac2e161cbbf",
+          "target_signature": "65b98f23a1e844e39b28c2070fe884d74a8faa584c318f1a2ec62ac2e161cbbf"
+        },
+        {
+          "id": 219,
+          "exact_match": true,
+          "reference_signature": "7c33f37c1dedd67c28d8eabdebcb2e3d2f70d6a8b736c273ef46012402b528eb",
+          "target_signature": "7c33f37c1dedd67c28d8eabdebcb2e3d2f70d6a8b736c273ef46012402b528eb"
+        },
+        {
+          "id": 220,
+          "exact_match": true,
+          "reference_signature": "27e7c09d3350c69a2932238ed34c31737d63e18ab318ae6d6d2f8f335aac7661",
+          "target_signature": "27e7c09d3350c69a2932238ed34c31737d63e18ab318ae6d6d2f8f335aac7661"
+        },
+        {
+          "id": 221,
+          "exact_match": true,
+          "reference_signature": "43e16ab55b671cbae53f65d643e3645d7a80f39385ad9291e9654c4ef4eefe94",
+          "target_signature": "43e16ab55b671cbae53f65d643e3645d7a80f39385ad9291e9654c4ef4eefe94"
+        },
+        {
+          "id": 224,
+          "exact_match": true,
+          "reference_signature": "6014a3fdf316c697e31a721c2265db07cf653ac416ef224fd391803b71baa8fb",
+          "target_signature": "6014a3fdf316c697e31a721c2265db07cf653ac416ef224fd391803b71baa8fb"
+        },
+        {
+          "id": 225,
+          "exact_match": true,
+          "reference_signature": "603c3f39d69fdc4bec005d58c8cb70c19a849bfc05bfe1a99918caddf2fc9bd4",
+          "target_signature": "603c3f39d69fdc4bec005d58c8cb70c19a849bfc05bfe1a99918caddf2fc9bd4"
+        },
+        {
+          "id": 226,
+          "exact_match": true,
+          "reference_signature": "99b1af6aecc56a61aff92fc2115969fe5e481c4bed020c659af41c906cb6a3a0",
+          "target_signature": "99b1af6aecc56a61aff92fc2115969fe5e481c4bed020c659af41c906cb6a3a0"
+        },
+        {
+          "id": 227,
+          "exact_match": true,
+          "reference_signature": "7c5a7a5c3094355c8b0ab13ab4cc46042de271bbccb2ac2bc248367c5101b50e",
+          "target_signature": "7c5a7a5c3094355c8b0ab13ab4cc46042de271bbccb2ac2bc248367c5101b50e"
+        },
+        {
+          "id": 228,
+          "exact_match": true,
+          "reference_signature": "3b2bb1fe251fa9fd1de8ecfe755795343bc218e9d57e21c8d5db8c95c4ce6e95",
+          "target_signature": "3b2bb1fe251fa9fd1de8ecfe755795343bc218e9d57e21c8d5db8c95c4ce6e95"
+        },
+        {
+          "id": 229,
+          "exact_match": true,
+          "reference_signature": "6ab5320437bcf67cadecb6c759551e520838a737d9d1edac9e1f199d452f46c7",
+          "target_signature": "6ab5320437bcf67cadecb6c759551e520838a737d9d1edac9e1f199d452f46c7"
+        },
+        {
+          "id": 254,
+          "exact_match": true,
+          "reference_signature": "f25cbc485bbe347df808cf2f6e2028ba029e29c2a561e291a84ba7430c3321e1",
+          "target_signature": "f25cbc485bbe347df808cf2f6e2028ba029e29c2a561e291a84ba7430c3321e1"
+        },
+        {
+          "id": 255,
+          "exact_match": true,
+          "reference_signature": "647cf70bd23365241ca6456fe5240168d24f72a0b5913e0a68479d3a96d90408",
+          "target_signature": "647cf70bd23365241ca6456fe5240168d24f72a0b5913e0a68479d3a96d90408"
+        },
+        {
+          "id": 258,
+          "exact_match": true,
+          "reference_signature": "54cd9a54107f3bf43ec728b0390bd8ff326c6ba7d411aeaafb65eb0f286c8240",
+          "target_signature": "54cd9a54107f3bf43ec728b0390bd8ff326c6ba7d411aeaafb65eb0f286c8240"
+        },
+        {
+          "id": 259,
+          "exact_match": true,
+          "reference_signature": "3ce6f54608eb4d0aed7d493f6ad7e5f5ec8085ff705d99e8c55f527560da32b2",
+          "target_signature": "3ce6f54608eb4d0aed7d493f6ad7e5f5ec8085ff705d99e8c55f527560da32b2"
+        },
+        {
+          "id": 260,
+          "exact_match": true,
+          "reference_signature": "7075f9cbdc27fff2280b1cba188fd85f5266a13cfd0b71fc5c0108ff94ddffc0",
+          "target_signature": "7075f9cbdc27fff2280b1cba188fd85f5266a13cfd0b71fc5c0108ff94ddffc0"
+        },
+        {
+          "id": 261,
+          "exact_match": true,
+          "reference_signature": "c5479ca998f0eb1cb94e059fc78b721d3c1b144b13b9282fa60e9328fb1dfccf",
+          "target_signature": "c5479ca998f0eb1cb94e059fc78b721d3c1b144b13b9282fa60e9328fb1dfccf"
+        },
+        {
+          "id": 262,
+          "exact_match": true,
+          "reference_signature": "4ee1408c35f661ad671256f5f60e6d4ad22aef6eef3dfdc96bd2ae56f89ebc6c",
+          "target_signature": "4ee1408c35f661ad671256f5f60e6d4ad22aef6eef3dfdc96bd2ae56f89ebc6c"
+        },
+        {
+          "id": 263,
+          "exact_match": true,
+          "reference_signature": "6a0f487aae5c83eb315e6e417d93da4c447272786523e9ab81e3a96d5bb263e5",
+          "target_signature": "6a0f487aae5c83eb315e6e417d93da4c447272786523e9ab81e3a96d5bb263e5"
+        }
+      ]
+    },
+    {
+      "game": "lazarus",
+      "rom_sha256": "d756b2783dede0bb2c534d1f07713bef733cf53500388e3912f14220a7e16e97",
+      "primary": "0x08e3e21c",
+      "reviewed": false,
+      "held": "Unsupported engine layout; no numeric-ID inheritance"
+    },
+    {
+      "game": "dragonsden",
+      "rom_sha256": "6ca88c3ecd54c78bf8a8cbb80f2b9ab049d66d4b070e97849cf4073ee8d2f15c",
+      "primary": "0x087c0700",
+      "reviewed": false,
+      "held": "Unsupported engine layout; no numeric-ID inheritance"
+    },
+    {
+      "game": "dragonsden",
+      "rom_sha256": "6ca88c3ecd54c78bf8a8cbb80f2b9ab049d66d4b070e97849cf4073ee8d2f15c",
+      "primary": "0x087c0e10",
+      "reviewed": false,
+      "held": "Unsupported engine layout; no numeric-ID inheritance"
+    },
+    {
+      "game": "ash-gray",
+      "rom_sha256": "a08055484c8366768d3e98e2dbed0998641abd2899ffbfc8d7f132925875f7a1",
+      "primary": "0x082d4a94",
+      "reviewed": false,
+      "cells": [
+        {
+          "id": 208,
+          "exact_match": false,
+          "reference_signature": "873526f17f1a7ba73c635922155f12b882bc9fa4f493090c917f8f9a0f503eef",
+          "target_signature": "3d5cccf1b7998bca8e7c509f4df7498a3c89c2a590f1443e61a5eeeeea398a92"
+        },
+        {
+          "id": 209,
+          "exact_match": false,
+          "reference_signature": "9d52f5bebfa1ee3c49576fea78f96e1b5f77d60f389dfcb0f3cab772b404e4f0",
+          "target_signature": "23148851e15408b4e0c32f6608f205d548a1144dd1c1433975a7d7d8f3ba3f54"
+        },
+        {
+          "id": 210,
+          "exact_match": false,
+          "reference_signature": "f4b4a2487d7a3d7d5d0c4a1427fefbec69dfc79fe2c8a4e5a975411f027f31f2",
+          "target_signature": "be28e24202b8dad408592673b6acedd5142b60c0889f140af0dcc1af72a9a85c"
+        },
+        {
+          "id": 211,
+          "exact_match": false,
+          "reference_signature": "f01c96487d092a2e4f5fb8d3e23a18e448361cc803ad6bb19e07558904f50843",
+          "target_signature": "34985dce202d9529fa07279cd31c66a21a9d719f8765aeed328e0b659c9528f8"
+        },
+        {
+          "id": 212,
+          "exact_match": false,
+          "reference_signature": "b85219564cd4c218ff051a6d683926d0e8b5329b17ac47bc4df9736c25342b19",
+          "target_signature": "20937ac8b65594bc7212daf7f43b3bf78e08a994dc4536d0c12de3ff70cb82d3"
+        },
+        {
+          "id": 213,
+          "exact_match": false,
+          "reference_signature": "24d91226b944ee9c3b24f9669bf571e67e14faa3859186d618ba4a8e612e326c",
+          "target_signature": "b270d0bf47681ea814e3027253f9462d08e531086fd51af7c88ddb7d1acd1ec1"
+        },
+        {
+          "id": 216,
+          "exact_match": false,
+          "reference_signature": "a178561627845c8be6c5028cec61ba45d38a0fb3b990b3ca87a39bb8f9d38a0d",
+          "target_signature": "0c95c5e21608564ce4a599cbe9e36aa63ab2d68b82b972094c11ecb374e9eb31"
+        },
+        {
+          "id": 217,
+          "exact_match": false,
+          "reference_signature": "822ae7ac902927402c13c869ccaa2d8aad192b19f975f54f11b70227081be0b1",
+          "target_signature": "9aafb53e690a3aae4cba06b1d58b0f8cbd8ff3f3831636381c3f1ae94c66b022"
+        },
+        {
+          "id": 218,
+          "exact_match": false,
+          "reference_signature": "65b98f23a1e844e39b28c2070fe884d74a8faa584c318f1a2ec62ac2e161cbbf",
+          "target_signature": "71c2ddc029902b52f771241f703932a3e8e61e17b6b30f67c68ca6202ee05654"
+        },
+        {
+          "id": 219,
+          "exact_match": false,
+          "reference_signature": "7c33f37c1dedd67c28d8eabdebcb2e3d2f70d6a8b736c273ef46012402b528eb",
+          "target_signature": "ad376aa4ba1d2432ce057abf6ef52a9f60f2998769048eaabb96783c5614229d"
+        },
+        {
+          "id": 220,
+          "exact_match": true,
+          "reference_signature": "27e7c09d3350c69a2932238ed34c31737d63e18ab318ae6d6d2f8f335aac7661",
+          "target_signature": "27e7c09d3350c69a2932238ed34c31737d63e18ab318ae6d6d2f8f335aac7661"
+        },
+        {
+          "id": 221,
+          "exact_match": false,
+          "reference_signature": "43e16ab55b671cbae53f65d643e3645d7a80f39385ad9291e9654c4ef4eefe94",
+          "target_signature": "36a76b680cc6ceb14b63b528ce034bd303de95be9fbf83ae79d21ae02e789e84"
+        },
+        {
+          "id": 224,
+          "exact_match": false,
+          "reference_signature": "6014a3fdf316c697e31a721c2265db07cf653ac416ef224fd391803b71baa8fb",
+          "target_signature": "458eab6baac9f45c9cdb16c5dc5efae494e2d10c7f3d457df0bb2cc5df94bfe6"
+        },
+        {
+          "id": 225,
+          "exact_match": false,
+          "reference_signature": "603c3f39d69fdc4bec005d58c8cb70c19a849bfc05bfe1a99918caddf2fc9bd4",
+          "target_signature": "30393aad8f6491b52b441fd9b59943787846e20bc3e071e264a2e58683ac81ac"
+        },
+        {
+          "id": 226,
+          "exact_match": false,
+          "reference_signature": "99b1af6aecc56a61aff92fc2115969fe5e481c4bed020c659af41c906cb6a3a0",
+          "target_signature": "eb65a95446264b7d9374ed9b66f3fe0480a01764d815cd10bd88f78e3a4553b9"
+        },
+        {
+          "id": 227,
+          "exact_match": false,
+          "reference_signature": "7c5a7a5c3094355c8b0ab13ab4cc46042de271bbccb2ac2bc248367c5101b50e",
+          "target_signature": "8046b3dfe140d8b89223ddbf2910d3e81b559efed1bed482c7d7ba9502500223"
+        },
+        {
+          "id": 228,
+          "exact_match": false,
+          "reference_signature": "3b2bb1fe251fa9fd1de8ecfe755795343bc218e9d57e21c8d5db8c95c4ce6e95",
+          "target_signature": "ccdf35c5b7595ddc3d303897f0724ea52c09a667bbe0426ef67cc920a68d1de4"
+        },
+        {
+          "id": 229,
+          "exact_match": false,
+          "reference_signature": "6ab5320437bcf67cadecb6c759551e520838a737d9d1edac9e1f199d452f46c7",
+          "target_signature": "eeb6c6f4e66b4ff24fb18e7ec66f53146cd749f2d90679ad8cd7da92f0dcc6ed"
+        },
+        {
+          "id": 254,
+          "exact_match": false,
+          "reference_signature": "f25cbc485bbe347df808cf2f6e2028ba029e29c2a561e291a84ba7430c3321e1",
+          "target_signature": "bf132a8d73545a668498fddb0d3ee819078a3ad7ca72416f748866152fd9bc77"
+        },
+        {
+          "id": 255,
+          "exact_match": false,
+          "reference_signature": "647cf70bd23365241ca6456fe5240168d24f72a0b5913e0a68479d3a96d90408",
+          "target_signature": "12a802be95562bc5c0f3a18504a5b786c026841b98fe82f1cdbb382342eb705d"
+        },
+        {
+          "id": 258,
+          "exact_match": false,
+          "reference_signature": "54cd9a54107f3bf43ec728b0390bd8ff326c6ba7d411aeaafb65eb0f286c8240",
+          "target_signature": "2bfdfec5af476d3d585fee1de47fadaaf9fc5b71679d7f015b298e423579e603"
+        },
+        {
+          "id": 259,
+          "exact_match": false,
+          "reference_signature": "3ce6f54608eb4d0aed7d493f6ad7e5f5ec8085ff705d99e8c55f527560da32b2",
+          "target_signature": "7559ef4a852f3deb7f2b3b36ecf296ce4bb1167f096d1ff80cef46dc3c1745ba"
+        },
+        {
+          "id": 260,
+          "exact_match": false,
+          "reference_signature": "7075f9cbdc27fff2280b1cba188fd85f5266a13cfd0b71fc5c0108ff94ddffc0",
+          "target_signature": "239d5daebae3f0f57ac3ae5a04bf6b557ecffdc3e321e01a18b9aa6377be69fe"
+        },
+        {
+          "id": 261,
+          "exact_match": false,
+          "reference_signature": "c5479ca998f0eb1cb94e059fc78b721d3c1b144b13b9282fa60e9328fb1dfccf",
+          "target_signature": "63a77f5d45cfc6b7b91c28cd754a686f0ac24d27af0c2f37bff85ba055e2af91"
+        },
+        {
+          "id": 262,
+          "exact_match": false,
+          "reference_signature": "4ee1408c35f661ad671256f5f60e6d4ad22aef6eef3dfdc96bd2ae56f89ebc6c",
+          "target_signature": "ca2640f1031b00be3a4362ec00d2b40e09ec234f5cec256d6960c1ed4d8226f5"
+        },
+        {
+          "id": 263,
+          "exact_match": false,
+          "reference_signature": "6a0f487aae5c83eb315e6e417d93da4c447272786523e9ab81e3a96d5bb263e5",
+          "target_signature": "cf95ca913b16520421ffcf15eb4d5a867fbaa331b62fd224f2758244483ad348"
+        }
+      ]
+    },
+    {
+      "game": "gaia",
+      "rom_sha256": "186a36cd389aecf10fb9ba112e7340fd81127fcb23d9564294df80b1e1473ab5",
+      "primary": "0x082d4a94",
+      "reviewed": false,
+      "cells": [
+        {
+          "id": 208,
+          "exact_match": false,
+          "reference_signature": "873526f17f1a7ba73c635922155f12b882bc9fa4f493090c917f8f9a0f503eef",
+          "target_signature": "84f827af0240b5e1d9b293ad83db7b4cd0f85dab4a0dc5e540ad770360e4cc23"
+        },
+        {
+          "id": 209,
+          "exact_match": false,
+          "reference_signature": "9d52f5bebfa1ee3c49576fea78f96e1b5f77d60f389dfcb0f3cab772b404e4f0",
+          "target_signature": "ba236f03ab112484bbb144e7dc7b98fb87538ee0016e3c9b37ffa3da853b59e4"
+        },
+        {
+          "id": 210,
+          "exact_match": false,
+          "reference_signature": "f4b4a2487d7a3d7d5d0c4a1427fefbec69dfc79fe2c8a4e5a975411f027f31f2",
+          "target_signature": "311ed67261af52685240dfe0be695a87c0dfc841dfd7ba1df55a701480cf7d76"
+        },
+        {
+          "id": 211,
+          "exact_match": true,
+          "reference_signature": "f01c96487d092a2e4f5fb8d3e23a18e448361cc803ad6bb19e07558904f50843",
+          "target_signature": "f01c96487d092a2e4f5fb8d3e23a18e448361cc803ad6bb19e07558904f50843"
+        },
+        {
+          "id": 212,
+          "exact_match": true,
+          "reference_signature": "b85219564cd4c218ff051a6d683926d0e8b5329b17ac47bc4df9736c25342b19",
+          "target_signature": "b85219564cd4c218ff051a6d683926d0e8b5329b17ac47bc4df9736c25342b19"
+        },
+        {
+          "id": 213,
+          "exact_match": true,
+          "reference_signature": "24d91226b944ee9c3b24f9669bf571e67e14faa3859186d618ba4a8e612e326c",
+          "target_signature": "24d91226b944ee9c3b24f9669bf571e67e14faa3859186d618ba4a8e612e326c"
+        },
+        {
+          "id": 216,
+          "exact_match": false,
+          "reference_signature": "a178561627845c8be6c5028cec61ba45d38a0fb3b990b3ca87a39bb8f9d38a0d",
+          "target_signature": "156660d333268024b84f00834941d43d8b289802794066d32bcdd195eeb8b992"
+        },
+        {
+          "id": 217,
+          "exact_match": false,
+          "reference_signature": "822ae7ac902927402c13c869ccaa2d8aad192b19f975f54f11b70227081be0b1",
+          "target_signature": "69afa25c43622eca1a2ebf26c4b613114cdd1ab0cc25cfa3c30ae064526b4e11"
+        },
+        {
+          "id": 218,
+          "exact_match": false,
+          "reference_signature": "65b98f23a1e844e39b28c2070fe884d74a8faa584c318f1a2ec62ac2e161cbbf",
+          "target_signature": "77cf5af9b241c6805b7aa148598f1b9c0e5e1e2274aaf7ea2dd9f6bc0f8e85eb"
+        },
+        {
+          "id": 219,
+          "exact_match": true,
+          "reference_signature": "7c33f37c1dedd67c28d8eabdebcb2e3d2f70d6a8b736c273ef46012402b528eb",
+          "target_signature": "7c33f37c1dedd67c28d8eabdebcb2e3d2f70d6a8b736c273ef46012402b528eb"
+        },
+        {
+          "id": 220,
+          "exact_match": true,
+          "reference_signature": "27e7c09d3350c69a2932238ed34c31737d63e18ab318ae6d6d2f8f335aac7661",
+          "target_signature": "27e7c09d3350c69a2932238ed34c31737d63e18ab318ae6d6d2f8f335aac7661"
+        },
+        {
+          "id": 221,
+          "exact_match": true,
+          "reference_signature": "43e16ab55b671cbae53f65d643e3645d7a80f39385ad9291e9654c4ef4eefe94",
+          "target_signature": "43e16ab55b671cbae53f65d643e3645d7a80f39385ad9291e9654c4ef4eefe94"
+        },
+        {
+          "id": 224,
+          "exact_match": false,
+          "reference_signature": "6014a3fdf316c697e31a721c2265db07cf653ac416ef224fd391803b71baa8fb",
+          "target_signature": "4ac1fb7b9ef81d962ed5bdef5341b0812e97d3c7efce11a37f09e68df1023722"
+        },
+        {
+          "id": 225,
+          "exact_match": false,
+          "reference_signature": "603c3f39d69fdc4bec005d58c8cb70c19a849bfc05bfe1a99918caddf2fc9bd4",
+          "target_signature": "ff1caa482f48332f847949905912fbe3d67f91775d9faf31b6a49b7dc0259789"
+        },
+        {
+          "id": 226,
+          "exact_match": false,
+          "reference_signature": "99b1af6aecc56a61aff92fc2115969fe5e481c4bed020c659af41c906cb6a3a0",
+          "target_signature": "f2da4cde7505ebe99a2ac344db74761c1601743511780bf6759a1f225d8a8aff"
+        },
+        {
+          "id": 227,
+          "exact_match": true,
+          "reference_signature": "7c5a7a5c3094355c8b0ab13ab4cc46042de271bbccb2ac2bc248367c5101b50e",
+          "target_signature": "7c5a7a5c3094355c8b0ab13ab4cc46042de271bbccb2ac2bc248367c5101b50e"
+        },
+        {
+          "id": 228,
+          "exact_match": true,
+          "reference_signature": "3b2bb1fe251fa9fd1de8ecfe755795343bc218e9d57e21c8d5db8c95c4ce6e95",
+          "target_signature": "3b2bb1fe251fa9fd1de8ecfe755795343bc218e9d57e21c8d5db8c95c4ce6e95"
+        },
+        {
+          "id": 229,
+          "exact_match": true,
+          "reference_signature": "6ab5320437bcf67cadecb6c759551e520838a737d9d1edac9e1f199d452f46c7",
+          "target_signature": "6ab5320437bcf67cadecb6c759551e520838a737d9d1edac9e1f199d452f46c7"
+        },
+        {
+          "id": 254,
+          "exact_match": false,
+          "reference_signature": "f25cbc485bbe347df808cf2f6e2028ba029e29c2a561e291a84ba7430c3321e1",
+          "target_signature": "6ecd9496b8453171d565e5105670ab95fdfe24d33a4b13743fb4986e5e0140b9"
+        },
+        {
+          "id": 255,
+          "exact_match": false,
+          "reference_signature": "647cf70bd23365241ca6456fe5240168d24f72a0b5913e0a68479d3a96d90408",
+          "target_signature": "705e6997b9b604ac71540c4056b2a48c2f007a28bb8943133c8b6d0c3d9a0267"
+        },
+        {
+          "id": 258,
+          "exact_match": true,
+          "reference_signature": "54cd9a54107f3bf43ec728b0390bd8ff326c6ba7d411aeaafb65eb0f286c8240",
+          "target_signature": "54cd9a54107f3bf43ec728b0390bd8ff326c6ba7d411aeaafb65eb0f286c8240"
+        },
+        {
+          "id": 259,
+          "exact_match": true,
+          "reference_signature": "3ce6f54608eb4d0aed7d493f6ad7e5f5ec8085ff705d99e8c55f527560da32b2",
+          "target_signature": "3ce6f54608eb4d0aed7d493f6ad7e5f5ec8085ff705d99e8c55f527560da32b2"
+        },
+        {
+          "id": 260,
+          "exact_match": true,
+          "reference_signature": "7075f9cbdc27fff2280b1cba188fd85f5266a13cfd0b71fc5c0108ff94ddffc0",
+          "target_signature": "7075f9cbdc27fff2280b1cba188fd85f5266a13cfd0b71fc5c0108ff94ddffc0"
+        },
+        {
+          "id": 261,
+          "exact_match": true,
+          "reference_signature": "c5479ca998f0eb1cb94e059fc78b721d3c1b144b13b9282fa60e9328fb1dfccf",
+          "target_signature": "c5479ca998f0eb1cb94e059fc78b721d3c1b144b13b9282fa60e9328fb1dfccf"
+        },
+        {
+          "id": 262,
+          "exact_match": false,
+          "reference_signature": "4ee1408c35f661ad671256f5f60e6d4ad22aef6eef3dfdc96bd2ae56f89ebc6c",
+          "target_signature": "2a7a5d1f5eb57b48f96253ab1d3331e3f4c23518df0a8f8e315b5ffc6c866a46"
+        },
+        {
+          "id": 263,
+          "exact_match": false,
+          "reference_signature": "6a0f487aae5c83eb315e6e417d93da4c447272786523e9ab81e3a96d5bb263e5",
+          "target_signature": "1049e8c98e761bcdab953e76dc33c09eecde4ad6122b84657e40fdea29a1bf19"
+        }
+      ]
+    },
+    {
+      "game": "rocket",
+      "rom_sha256": "e6f232d0df265323c995e6025fe0ebcc532dfaf7634548a13ee9fb5673152442",
+      "primary": "0x082d4a94",
+      "reviewed": false,
+      "cells": [
+        {
+          "id": 208,
+          "exact_match": true,
+          "reference_signature": "873526f17f1a7ba73c635922155f12b882bc9fa4f493090c917f8f9a0f503eef",
+          "target_signature": "873526f17f1a7ba73c635922155f12b882bc9fa4f493090c917f8f9a0f503eef"
+        },
+        {
+          "id": 209,
+          "exact_match": true,
+          "reference_signature": "9d52f5bebfa1ee3c49576fea78f96e1b5f77d60f389dfcb0f3cab772b404e4f0",
+          "target_signature": "9d52f5bebfa1ee3c49576fea78f96e1b5f77d60f389dfcb0f3cab772b404e4f0"
+        },
+        {
+          "id": 210,
+          "exact_match": true,
+          "reference_signature": "f4b4a2487d7a3d7d5d0c4a1427fefbec69dfc79fe2c8a4e5a975411f027f31f2",
+          "target_signature": "f4b4a2487d7a3d7d5d0c4a1427fefbec69dfc79fe2c8a4e5a975411f027f31f2"
+        },
+        {
+          "id": 211,
+          "exact_match": true,
+          "reference_signature": "f01c96487d092a2e4f5fb8d3e23a18e448361cc803ad6bb19e07558904f50843",
+          "target_signature": "f01c96487d092a2e4f5fb8d3e23a18e448361cc803ad6bb19e07558904f50843"
+        },
+        {
+          "id": 212,
+          "exact_match": true,
+          "reference_signature": "b85219564cd4c218ff051a6d683926d0e8b5329b17ac47bc4df9736c25342b19",
+          "target_signature": "b85219564cd4c218ff051a6d683926d0e8b5329b17ac47bc4df9736c25342b19"
+        },
+        {
+          "id": 213,
+          "exact_match": true,
+          "reference_signature": "24d91226b944ee9c3b24f9669bf571e67e14faa3859186d618ba4a8e612e326c",
+          "target_signature": "24d91226b944ee9c3b24f9669bf571e67e14faa3859186d618ba4a8e612e326c"
+        },
+        {
+          "id": 216,
+          "exact_match": true,
+          "reference_signature": "a178561627845c8be6c5028cec61ba45d38a0fb3b990b3ca87a39bb8f9d38a0d",
+          "target_signature": "a178561627845c8be6c5028cec61ba45d38a0fb3b990b3ca87a39bb8f9d38a0d"
+        },
+        {
+          "id": 217,
+          "exact_match": true,
+          "reference_signature": "822ae7ac902927402c13c869ccaa2d8aad192b19f975f54f11b70227081be0b1",
+          "target_signature": "822ae7ac902927402c13c869ccaa2d8aad192b19f975f54f11b70227081be0b1"
+        },
+        {
+          "id": 218,
+          "exact_match": true,
+          "reference_signature": "65b98f23a1e844e39b28c2070fe884d74a8faa584c318f1a2ec62ac2e161cbbf",
+          "target_signature": "65b98f23a1e844e39b28c2070fe884d74a8faa584c318f1a2ec62ac2e161cbbf"
+        },
+        {
+          "id": 219,
+          "exact_match": true,
+          "reference_signature": "7c33f37c1dedd67c28d8eabdebcb2e3d2f70d6a8b736c273ef46012402b528eb",
+          "target_signature": "7c33f37c1dedd67c28d8eabdebcb2e3d2f70d6a8b736c273ef46012402b528eb"
+        },
+        {
+          "id": 220,
+          "exact_match": true,
+          "reference_signature": "27e7c09d3350c69a2932238ed34c31737d63e18ab318ae6d6d2f8f335aac7661",
+          "target_signature": "27e7c09d3350c69a2932238ed34c31737d63e18ab318ae6d6d2f8f335aac7661"
+        },
+        {
+          "id": 221,
+          "exact_match": true,
+          "reference_signature": "43e16ab55b671cbae53f65d643e3645d7a80f39385ad9291e9654c4ef4eefe94",
+          "target_signature": "43e16ab55b671cbae53f65d643e3645d7a80f39385ad9291e9654c4ef4eefe94"
+        },
+        {
+          "id": 224,
+          "exact_match": true,
+          "reference_signature": "6014a3fdf316c697e31a721c2265db07cf653ac416ef224fd391803b71baa8fb",
+          "target_signature": "6014a3fdf316c697e31a721c2265db07cf653ac416ef224fd391803b71baa8fb"
+        },
+        {
+          "id": 225,
+          "exact_match": true,
+          "reference_signature": "603c3f39d69fdc4bec005d58c8cb70c19a849bfc05bfe1a99918caddf2fc9bd4",
+          "target_signature": "603c3f39d69fdc4bec005d58c8cb70c19a849bfc05bfe1a99918caddf2fc9bd4"
+        },
+        {
+          "id": 226,
+          "exact_match": true,
+          "reference_signature": "99b1af6aecc56a61aff92fc2115969fe5e481c4bed020c659af41c906cb6a3a0",
+          "target_signature": "99b1af6aecc56a61aff92fc2115969fe5e481c4bed020c659af41c906cb6a3a0"
+        },
+        {
+          "id": 227,
+          "exact_match": true,
+          "reference_signature": "7c5a7a5c3094355c8b0ab13ab4cc46042de271bbccb2ac2bc248367c5101b50e",
+          "target_signature": "7c5a7a5c3094355c8b0ab13ab4cc46042de271bbccb2ac2bc248367c5101b50e"
+        },
+        {
+          "id": 228,
+          "exact_match": true,
+          "reference_signature": "3b2bb1fe251fa9fd1de8ecfe755795343bc218e9d57e21c8d5db8c95c4ce6e95",
+          "target_signature": "3b2bb1fe251fa9fd1de8ecfe755795343bc218e9d57e21c8d5db8c95c4ce6e95"
+        },
+        {
+          "id": 229,
+          "exact_match": true,
+          "reference_signature": "6ab5320437bcf67cadecb6c759551e520838a737d9d1edac9e1f199d452f46c7",
+          "target_signature": "6ab5320437bcf67cadecb6c759551e520838a737d9d1edac9e1f199d452f46c7"
+        },
+        {
+          "id": 254,
+          "exact_match": true,
+          "reference_signature": "f25cbc485bbe347df808cf2f6e2028ba029e29c2a561e291a84ba7430c3321e1",
+          "target_signature": "f25cbc485bbe347df808cf2f6e2028ba029e29c2a561e291a84ba7430c3321e1"
+        },
+        {
+          "id": 255,
+          "exact_match": true,
+          "reference_signature": "647cf70bd23365241ca6456fe5240168d24f72a0b5913e0a68479d3a96d90408",
+          "target_signature": "647cf70bd23365241ca6456fe5240168d24f72a0b5913e0a68479d3a96d90408"
+        },
+        {
+          "id": 258,
+          "exact_match": true,
+          "reference_signature": "54cd9a54107f3bf43ec728b0390bd8ff326c6ba7d411aeaafb65eb0f286c8240",
+          "target_signature": "54cd9a54107f3bf43ec728b0390bd8ff326c6ba7d411aeaafb65eb0f286c8240"
+        },
+        {
+          "id": 259,
+          "exact_match": true,
+          "reference_signature": "3ce6f54608eb4d0aed7d493f6ad7e5f5ec8085ff705d99e8c55f527560da32b2",
+          "target_signature": "3ce6f54608eb4d0aed7d493f6ad7e5f5ec8085ff705d99e8c55f527560da32b2"
+        },
+        {
+          "id": 260,
+          "exact_match": true,
+          "reference_signature": "7075f9cbdc27fff2280b1cba188fd85f5266a13cfd0b71fc5c0108ff94ddffc0",
+          "target_signature": "7075f9cbdc27fff2280b1cba188fd85f5266a13cfd0b71fc5c0108ff94ddffc0"
+        },
+        {
+          "id": 261,
+          "exact_match": true,
+          "reference_signature": "c5479ca998f0eb1cb94e059fc78b721d3c1b144b13b9282fa60e9328fb1dfccf",
+          "target_signature": "c5479ca998f0eb1cb94e059fc78b721d3c1b144b13b9282fa60e9328fb1dfccf"
+        },
+        {
+          "id": 262,
+          "exact_match": true,
+          "reference_signature": "4ee1408c35f661ad671256f5f60e6d4ad22aef6eef3dfdc96bd2ae56f89ebc6c",
+          "target_signature": "4ee1408c35f661ad671256f5f60e6d4ad22aef6eef3dfdc96bd2ae56f89ebc6c"
+        },
+        {
+          "id": 263,
+          "exact_match": true,
+          "reference_signature": "6a0f487aae5c83eb315e6e417d93da4c447272786523e9ab81e3a96d5bb263e5",
+          "target_signature": "6a0f487aae5c83eb315e6e417d93da4c447272786523e9ab81e3a96d5bb263e5"
+        }
+      ]
+    },
+    {
+      "game": "seaglass",
+      "rom_sha256": "6098296dca53655bb51493658d74ba206abe6bacbbe60db8d4f497367926809f",
+      "primary": "0x08a2e6ac",
+      "reviewed": false,
+      "held": "Unsupported engine layout; no numeric-ID inheritance"
+    },
+    {
+      "game": "odyssey",
+      "rom_sha256": "44c7e3eafab19c39df7c39d54bafb78a1d9caf7c371244b6f5efb12cfd98d0d0",
+      "primary": "0x082d4a94",
+      "reviewed": false,
+      "cells": [
+        {
+          "id": 208,
+          "exact_match": false,
+          "reference_signature": "873526f17f1a7ba73c635922155f12b882bc9fa4f493090c917f8f9a0f503eef",
+          "target_signature": "b3b48648c410846c858a76ef3587afe12239f9df063eda661830056177026239"
+        },
+        {
+          "id": 209,
+          "exact_match": false,
+          "reference_signature": "9d52f5bebfa1ee3c49576fea78f96e1b5f77d60f389dfcb0f3cab772b404e4f0",
+          "target_signature": "b888099e5ec79e37a67e1119394634790a4e0efb5768e55c4266dae228742604"
+        },
+        {
+          "id": 210,
+          "exact_match": false,
+          "reference_signature": "f4b4a2487d7a3d7d5d0c4a1427fefbec69dfc79fe2c8a4e5a975411f027f31f2",
+          "target_signature": "fdfded1bb33beff3b18970fd7a8efaf282a65b81d390084e724d8f808f6859d0"
+        },
+        {
+          "id": 211,
+          "exact_match": false,
+          "reference_signature": "f01c96487d092a2e4f5fb8d3e23a18e448361cc803ad6bb19e07558904f50843",
+          "target_signature": "b3e185ec6d4990eaeb2232655d497dd4dbc0c077350ed0de57f2f470af115bb7"
+        },
+        {
+          "id": 212,
+          "exact_match": false,
+          "reference_signature": "b85219564cd4c218ff051a6d683926d0e8b5329b17ac47bc4df9736c25342b19",
+          "target_signature": "9d96c102b13faf3019235623bdc42fd02420cc0c3292bf73bca5eecbb8d0609a"
+        },
+        {
+          "id": 213,
+          "exact_match": false,
+          "reference_signature": "24d91226b944ee9c3b24f9669bf571e67e14faa3859186d618ba4a8e612e326c",
+          "target_signature": "e84f73924473ca698b41132de182c88bf01947240681d8fb326c12b514c4c9f8"
+        },
+        {
+          "id": 216,
+          "exact_match": false,
+          "reference_signature": "a178561627845c8be6c5028cec61ba45d38a0fb3b990b3ca87a39bb8f9d38a0d",
+          "target_signature": "17388181252c60d7e8c219b976ad92125cb79ec46b382cbeda74fe8d11b47439"
+        },
+        {
+          "id": 217,
+          "exact_match": true,
+          "reference_signature": "822ae7ac902927402c13c869ccaa2d8aad192b19f975f54f11b70227081be0b1",
+          "target_signature": "822ae7ac902927402c13c869ccaa2d8aad192b19f975f54f11b70227081be0b1"
+        },
+        {
+          "id": 218,
+          "exact_match": false,
+          "reference_signature": "65b98f23a1e844e39b28c2070fe884d74a8faa584c318f1a2ec62ac2e161cbbf",
+          "target_signature": "dd1b8b3fd6ea982efa6d2af55678c55c83db9d3dcb31d3d23d70c741f66b56ac"
+        },
+        {
+          "id": 219,
+          "exact_match": false,
+          "reference_signature": "7c33f37c1dedd67c28d8eabdebcb2e3d2f70d6a8b736c273ef46012402b528eb",
+          "target_signature": "ded63c02eeaf08e991745f899445ffa79de388a9180ec18867ba12a7e3f5363b"
+        },
+        {
+          "id": 220,
+          "exact_match": true,
+          "reference_signature": "27e7c09d3350c69a2932238ed34c31737d63e18ab318ae6d6d2f8f335aac7661",
+          "target_signature": "27e7c09d3350c69a2932238ed34c31737d63e18ab318ae6d6d2f8f335aac7661"
+        },
+        {
+          "id": 221,
+          "exact_match": false,
+          "reference_signature": "43e16ab55b671cbae53f65d643e3645d7a80f39385ad9291e9654c4ef4eefe94",
+          "target_signature": "afb5c68b1f941bf8d9bc4f3083b1df87025bdf11ab156280131f4f03066e0787"
+        },
+        {
+          "id": 224,
+          "exact_match": false,
+          "reference_signature": "6014a3fdf316c697e31a721c2265db07cf653ac416ef224fd391803b71baa8fb",
+          "target_signature": "791068e5702e15359636e6b08f699e1206207040b1270493911eee2245b0267e"
+        },
+        {
+          "id": 225,
+          "exact_match": false,
+          "reference_signature": "603c3f39d69fdc4bec005d58c8cb70c19a849bfc05bfe1a99918caddf2fc9bd4",
+          "target_signature": "5ff76730656d4a612f301b1b80e1818afa5bfaeeb9923db3fcc96bf2de1e9bf4"
+        },
+        {
+          "id": 226,
+          "exact_match": false,
+          "reference_signature": "99b1af6aecc56a61aff92fc2115969fe5e481c4bed020c659af41c906cb6a3a0",
+          "target_signature": "785f1f89fee4d366db19540f80ed74b71915d93d2118660fb37136a706bc043f"
+        },
+        {
+          "id": 227,
+          "exact_match": false,
+          "reference_signature": "7c5a7a5c3094355c8b0ab13ab4cc46042de271bbccb2ac2bc248367c5101b50e",
+          "target_signature": "a23f7a62a9ca3afd9d6be2bc4d83ac26fcab5ca9cddab2dab6766493c80da921"
+        },
+        {
+          "id": 228,
+          "exact_match": false,
+          "reference_signature": "3b2bb1fe251fa9fd1de8ecfe755795343bc218e9d57e21c8d5db8c95c4ce6e95",
+          "target_signature": "91173c961518cfbe8af467bd93bffc9b9af1c6233654629fac98971960e17e72"
+        },
+        {
+          "id": 229,
+          "exact_match": false,
+          "reference_signature": "6ab5320437bcf67cadecb6c759551e520838a737d9d1edac9e1f199d452f46c7",
+          "target_signature": "bc6f3feec33177688e09f763ee96e5c35c8f3ee3dd6fb2fa96f4bee022447a9e"
+        },
+        {
+          "id": 254,
+          "exact_match": false,
+          "reference_signature": "f25cbc485bbe347df808cf2f6e2028ba029e29c2a561e291a84ba7430c3321e1",
+          "target_signature": "ceb96cb5fa3cbccf77cb6075570d7ccfbae1427d8b7fd73fec29d0e9bf325903"
+        },
+        {
+          "id": 255,
+          "exact_match": false,
+          "reference_signature": "647cf70bd23365241ca6456fe5240168d24f72a0b5913e0a68479d3a96d90408",
+          "target_signature": "c7da9ac3b3e259ba66ff6efad82345c9a8939a70e39c63c39641910394e65ace"
+        },
+        {
+          "id": 258,
+          "exact_match": false,
+          "reference_signature": "54cd9a54107f3bf43ec728b0390bd8ff326c6ba7d411aeaafb65eb0f286c8240",
+          "target_signature": "917ffe744259d9c1d1a2d3d28f91e4a93e36f79704e4a9386d61bd3f5d812325"
+        },
+        {
+          "id": 259,
+          "exact_match": false,
+          "reference_signature": "3ce6f54608eb4d0aed7d493f6ad7e5f5ec8085ff705d99e8c55f527560da32b2",
+          "target_signature": "f6738da0d5ad3f21f57bd60efeda943b011bf9c01d5b80004f6e80d551148d8f"
+        },
+        {
+          "id": 260,
+          "exact_match": false,
+          "reference_signature": "7075f9cbdc27fff2280b1cba188fd85f5266a13cfd0b71fc5c0108ff94ddffc0",
+          "target_signature": "d1be56a9b537a6b98b40d802989e5d04fa6d0cab340fb2c324eb2932d91545bf"
+        },
+        {
+          "id": 261,
+          "exact_match": false,
+          "reference_signature": "c5479ca998f0eb1cb94e059fc78b721d3c1b144b13b9282fa60e9328fb1dfccf",
+          "target_signature": "0948f0409526f2fe5c70c660bdc465ba4ea1860e42050a714c2db96b9646a907"
+        },
+        {
+          "id": 262,
+          "exact_match": false,
+          "reference_signature": "4ee1408c35f661ad671256f5f60e6d4ad22aef6eef3dfdc96bd2ae56f89ebc6c",
+          "target_signature": "4836d181d642d912ec7d3c71f08f564c42d3b46d1a7cb9ff6be889617790efe8"
+        },
+        {
+          "id": 263,
+          "exact_match": false,
+          "reference_signature": "6a0f487aae5c83eb315e6e417d93da4c447272786523e9ab81e3a96d5bb263e5",
+          "target_signature": "88486bbff9d97a9f4e0d7cb9ed85e138d94dcd25ef6b6757bbca6d78e3f059d2"
+        }
+      ]
+    }
+  ],
+  "note": "Identity evidence only. Reference semantics, engine mapping and Thor qualification remain mandatory."
+}

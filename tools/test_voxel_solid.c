@@ -27,6 +27,17 @@ int main(void) {
     assert(!sceneryKanto(0xcec21496,0x087c0700));
     assert(sceneryLand(0xcec21496,0x087c0700,1));
     assert(!sceneryLand(0xcec21496,0x087c0700,0x9f));
+    assert(sceneryLand(0xb9465c5a,0x082d4a94,0xdc));
+    assert(!sceneryLand(0xb9465c5a,0x082d4a94,0xd9)); /* Gaia water */
+    assert(!sceneryLand(0xb9465c5a,0x082d4a94,0xd0)); /* Gaia railing */
+    assert(!sceneryLand(0xb9465c5a,0x082d4a94,0x106)); /* Gaia posts */
+    assert(sceneryLand(0x558ae42f,0x08e3e21c,0x118));
+    assert(!sceneryLand(0x558ae42f,0x08e3e21c,0x123)); /* water edge */
+    assert(!sceneryLand(0xfba55dd8,0x082d4a94,0xc1)); /* cliff is partial */
+    assert(sceneryLandCapRows(0xfba55dd8,0x082d4a94,0xc1)==8);
+    assert(!sceneryLandCapRows(0xfba55dd8,0x082d4bb4,0xc1)); /* other tileset */
+    assert(!sceneryLandCapRows(0x4b3d4957,0x082d4a94,0x97)); /* inverted ledge */
+    assert(!sceneryLandCapRows(0x63478921,0x082d4a94,0x97)); /* different edge */
     for(unsigned i=0;i<sizeof(sceneryTallTrees)/sizeof(sceneryTallTrees[0]);i++) {
         const struct SceneryTallTree *p=&sceneryTallTrees[i];int cells[6];
         for(int j=0;j<6;j++)cells[j]=p->cells[j];

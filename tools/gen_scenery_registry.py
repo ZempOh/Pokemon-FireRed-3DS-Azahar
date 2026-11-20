@@ -78,6 +78,13 @@ def generate(profiles, plants, output):
             assert land['ids'] and all(0<=n<1024 for n in land['ids'])
             lines.append('    if(crc==0x%s && primary==%s && (%s))return 1;'%(p['rom_crc32'],land['primary'],' || '.join('id==%d'%n for n in land['ids'])))
     lines+=['    return 0;','}']
+    lines+=['static int sceneryLandCapRows(uint32_t crc,uint32_t primary,int id) {']
+    for p in profiles:
+        for cap in p.get('land_caps',[]):
+            assert 0<cap['rows']<16 and cap['ids'] and all(0<=n<1024 for n in cap['ids'])
+            assert not any(set(cap['ids'])&set(land['ids']) for land in p.get('land',[]) if land['primary']==cap['primary'])
+            lines.append('    if(crc==0x%s && primary==%s && (%s))return %d;'%(p['rom_crc32'],cap['primary'],' || '.join('id==%d'%n for n in cap['ids']),cap['rows']))
+    lines+=['    return 0;','}']
     lines+=['static int sceneryOutdoor(uint32_t crc,int group,int num,int mapType) {',
             '    if(mapType>=1 && mapType<=3)return 1;']
     for p in profiles:

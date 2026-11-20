@@ -179,7 +179,8 @@ blue night palettes do not make known grass lose its snow. Recognition requires
 ROM CRC, primary tileset and metatile ID. Unclassified cells retain the color
 filter; water, walls and indoor surfaces are not broadly classified as land.
 `land` entries in `android-capabilities.json` currently cover the reviewed base
-ground in twelve Android games; Dragonsden still needs separate source review.
+ground in all thirteen Android games, including Dragonsden's separately reviewed
+Hoenn and Kanto base ground cells. This does not cover every ground variant.
 
 `tools/scenery_state_probe.py` compares a private mGBA state against local ROM
 metatiles. Supply `--rom`, `--state`, `--profiles`, `--game`, `--metatiles`, `--size`
@@ -213,5 +214,22 @@ and 105 map placements respectively. Graphic 449 is the reviewed short Kanto
 cut tree, now the 39th live-object profile. Its text interaction was verified on
 the Thor. Its template kind byte is +1 and graphics ID is u16 at +2; Modern uses
 kind +3 and graphics at +1. The explicit override also fixes offscreen objects.
-The batch scan found no additional variants in the other ten expansion games;
+The batch scan found no additional variants in the other expansion games;
 Let's Go and Radical Red still have unapproved script-sharing candidates.
+
+### Ground cells and ledge caps
+
+`tools/scenery_cell_transfer.py` compares individual cells using the existing
+layer, transparency, palette, flip and attribute signature. It consumes a
+hash-checked local recipe and emits metadata, never automatic profile approval.
+This avoids repeating a whole-family investigation when only tree artwork differs.
+
+The reviewed ground registry now contains 289 full land cells across all thirteen
+Android games and 34 upper-eight-row ledge caps. `android-ground-review.json`
+records the ROM hashes, IDs and review image hashes. The full-cell C1 exclusion
+is deliberate: its lower half is a cliff. Gaia reuses D0/D1/D2/D8/D9/DA/E0/E1/E2
+for railings or water, and FE/FF/106/107 for props; those are not inherited as
+ground. Unbound and Ash Gray use a different 97 ledge, also excluded from the
+upper-cap family. Emerald-family water edges 123/125/12B/12C remain excluded.
+Map connections use their own primary tileset when selecting ground treatment.
+This improves reviewed path coverage; it does not certify every map or asset.

@@ -431,3 +431,11 @@ to the field in the measured log. An immune first move or a status-only first
 slot can make a valid encounter unsuitable for an A-only replay. Preserve the
 idle encounter, then prepare a separate active fixture through normal in-game
 party or move selection. Never count a stable but unfinished battle as a return.
+
+The first Emerald-family room pass exposed an important scope trap: Lazarus
+retains old Emerald rooms, but Acrisia's actual doors lead to custom rooms.
+Resolve the reviewed town's warp events before selecting an indoor fixture.
+Patch 0025 adds nine exact-layer palm, topiary and laboratory-plant profiles
+from those rooms (113 total); the independent floor check now covers 188 cells,
+48,128 pixels. Distinct source foliage midtones keep the brightest leaf sample
+from washing out the model. These host checks still require device review.

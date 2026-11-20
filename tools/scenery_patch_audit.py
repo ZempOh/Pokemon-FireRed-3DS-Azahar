@@ -23,3 +23,15 @@ def require_match(source,patch,target):
     if result['passed'] is not True:
         raise ValueError('Patch requires matching input/output checksums or separate IPS provenance')
     return result
+
+if __name__=='__main__':
+    import argparse,json
+    from pathlib import Path
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('source',type=Path)
+    parser.add_argument('patch',type=Path)
+    parser.add_argument('target',type=Path)
+    args=parser.parse_args()
+    result=audit(args.source.read_bytes(),args.patch.read_bytes(),args.target.read_bytes())
+    print(json.dumps(result,indent=2))
+    raise SystemExit(0 if result['passed'] is True else 2)

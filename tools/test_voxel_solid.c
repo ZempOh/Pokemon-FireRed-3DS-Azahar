@@ -11,6 +11,14 @@
 #include "pk_scenery_ui.h"
 
 int main(void) {
+    for(unsigned i=0;i<sizeof(sceneryGroundProps)/sizeof(sceneryGroundProps[0]);i++) {
+        const struct SceneryGroundProp *p=&sceneryGroundProps[i];
+        assert(sceneryGroundProp(p->rom,p->primary,p->id)==p);
+        assert(!sceneryGroundProp(p->rom^1,p->primary,p->id));
+        assert(!sceneryGroundProp(p->rom,p->primary^4,p->id));
+    }
+    assert(!sceneryGroundProp(0xb9465c5a,0x082d4a94,0x12)); /* Gaia tree/cliff, not grass */
+    assert(!sceneryGroundProp(0x558ae42f,0x08e3e21c,5)); /* Lazarus window, not shrub */
     assert(sceneryOutdoor(0xcec21496,1,6,0));
     assert(!sceneryOutdoor(0xcec21496,1,7,0));
     assert(!sceneryOutdoor(0xcec21496,1,6,8));
@@ -118,7 +126,7 @@ int main(void) {
     memset(depth,0,sizeof depth);memset(v.out,0,N*4);
     solidTriangle(&v,&t,a,c,b,256,0);
     assert(memcmp(first,v.out,sizeof first)==0);
-    for(int kind=1;kind<=12;kind++) {
+    for(int kind=1;kind<=13;kind++) {
         if(kind==11)continue; // Plant profiles are checked separately below.
         struct SolidProp p={.surface=t,.kind=kind};
         p.surface.x=32;p.surface.y=40;

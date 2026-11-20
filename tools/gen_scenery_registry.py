@@ -42,6 +42,28 @@ def generate_engines(profiles,output):
         lines.append('    { 0x%s, PK_WIDE_FAMILY_%s, { %s } }, // %s'%(p['rom_crc32'],p['family'],', '.join('[PK_WIDE_%s]=0x%s'%(k,v) for k,v in p['slots'].items()),p['game']))
     (output/'pk_scenery_engine_rows.h').write_text('\n'.join(lines)+'\n')
 
+def generate_ground_props(profiles,output):
+    lines=['// Generated reviewed field props; no ROM artwork.','#pragma once',
+           'struct SceneryGroundProp { uint32_t rom,primary; uint16_t id,ground; uint8_t kind,ink[6]; };',
+           'static const struct SceneryGroundProp sceneryGroundProps[] = {']
+    seen=set()
+    for p in profiles:
+        key=(p['rom_crc32'],p['primary'],p['id'])
+        assert p['reviewed'] and key not in seen and p['kind'] in (1,3,4,13)
+        assert 0<=p['id']<512 and 0<=p['ground']<512 and len(p['ink'])==6 and all(0<=n<16 for n in p['ink'])
+        seen.add(key)
+        lines.append('    {0x%s,%s,%d,%d,%d,{%s}},'%(p['rom_crc32'],p['primary'],p['id'],p['ground'],p['kind'],','.join(map(str,p['ink']))))
+    lines+=['};','static const struct SceneryGroundProp *sceneryGroundProp(uint32_t rom,uint32_t primary,int id) {',
+            '    for(unsigned i=0;i<sizeof(sceneryGroundProps)/sizeof(sceneryGroundProps[0]);i++) {',
+            '        const struct SceneryGroundProp *p=&sceneryGroundProps[i];',
+            '        if(p->rom==rom && p->primary==primary && p->id==id)return p;',
+            '    }','    return 0;','}',
+            'static int sceneryGroundPropsTileset(uint32_t rom,uint32_t primary) {',
+            '    for(unsigned i=0;i<sizeof(sceneryGroundProps)/sizeof(sceneryGroundProps[0]);i++)',
+            '        if(sceneryGroundProps[i].rom==rom && sceneryGroundProps[i].primary==primary)return 1;',
+            '    return 0;','}']
+    (output/'pk_scenery_ground_props.h').write_text('\n'.join(lines)+'\n')
+
 def generate_objects(profiles,output):
     lines=['// Generated from semantically reviewed live-object image tables.','#pragma once',
            'struct SceneryObjectProfile { uint32_t rom,images; uint8_t kind,leaf,bark; };',
@@ -113,3 +135,4 @@ if __name__=='__main__':
     generate_trees(json.loads((root/'android-tree-quads.json').read_text()),args.output)
 
     generate_tall_trees(json.loads((root/'android-tall-trees.json').read_text()),args.output)
+    generate_ground_props(json.loads((root/'android-ground-props.json').read_text()),args.output)

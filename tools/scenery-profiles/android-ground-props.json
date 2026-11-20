@@ -1,0 +1,534 @@
+[
+  {
+    "game": "better-emerald-2",
+    "rom_crc32": "70823957",
+    "rom_sha256": "2503ed1832224d280d73c2e7e6ffc4b3dc90b58b1df2cfce70d587bed3b5dca3",
+    "primary": "0x083df704",
+    "id": 4,
+    "kind": 13,
+    "ground": 1,
+    "ink": [
+      5,
+      2,
+      7,
+      2,
+      7,
+      2
+    ],
+    "source_sha256": "61021cf5042efdb0186e5346d37cd21349321d1c9f2412c4b71f8ccdff809b99",
+    "reviewed": true
+  },
+  {
+    "game": "better-emerald-2",
+    "rom_crc32": "70823957",
+    "rom_sha256": "2503ed1832224d280d73c2e7e6ffc4b3dc90b58b1df2cfce70d587bed3b5dca3",
+    "primary": "0x083df704",
+    "id": 13,
+    "kind": 1,
+    "ground": 1,
+    "ink": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "source_sha256": "91e7f6ede0afed30ce1aab57bc12b37afb272c230190299fe66876c7753fb50e",
+    "reviewed": true
+  },
+  {
+    "game": "better-emerald-2",
+    "rom_crc32": "70823957",
+    "rom_sha256": "2503ed1832224d280d73c2e7e6ffc4b3dc90b58b1df2cfce70d587bed3b5dca3",
+    "primary": "0x083df704",
+    "id": 224,
+    "kind": 3,
+    "ground": 1,
+    "ink": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "source_sha256": "ae1afc5a75b9e7b209ed383c61b81ac67f663dba9f0d7bc0fbe691304ecec7b5",
+    "reviewed": true
+  },
+  {
+    "game": "better-emerald-2",
+    "rom_crc32": "70823957",
+    "rom_sha256": "2503ed1832224d280d73c2e7e6ffc4b3dc90b58b1df2cfce70d587bed3b5dca3",
+    "primary": "0x083df704",
+    "id": 226,
+    "kind": 3,
+    "ground": 289,
+    "ink": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "source_sha256": "d3a96729123d0d449ee93b2f520ae69ab6d5b97933263e370457ce93793bc7a2",
+    "reviewed": true
+  },
+  {
+    "game": "modern-emerald",
+    "rom_crc32": "263a1187",
+    "rom_sha256": "bc7286dca750cf735480fece3ff68c7d86ecbf8391031b5ca2964da78fc945a1",
+    "primary": "0x08bb3ac8",
+    "id": 4,
+    "kind": 13,
+    "ground": 1,
+    "ink": [
+      5,
+      2,
+      7,
+      2,
+      7,
+      2
+    ],
+    "source_sha256": "61021cf5042efdb0186e5346d37cd21349321d1c9f2412c4b71f8ccdff809b99",
+    "reviewed": true
+  },
+  {
+    "game": "modern-emerald",
+    "rom_crc32": "263a1187",
+    "rom_sha256": "bc7286dca750cf735480fece3ff68c7d86ecbf8391031b5ca2964da78fc945a1",
+    "primary": "0x08bb3ac8",
+    "id": 13,
+    "kind": 1,
+    "ground": 1,
+    "ink": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "source_sha256": "91e7f6ede0afed30ce1aab57bc12b37afb272c230190299fe66876c7753fb50e",
+    "reviewed": true
+  },
+  {
+    "game": "modern-emerald",
+    "rom_crc32": "263a1187",
+    "rom_sha256": "bc7286dca750cf735480fece3ff68c7d86ecbf8391031b5ca2964da78fc945a1",
+    "primary": "0x08bb3ac8",
+    "id": 224,
+    "kind": 3,
+    "ground": 1,
+    "ink": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "source_sha256": "ae1afc5a75b9e7b209ed383c61b81ac67f663dba9f0d7bc0fbe691304ecec7b5",
+    "reviewed": true
+  },
+  {
+    "game": "modern-emerald",
+    "rom_crc32": "263a1187",
+    "rom_sha256": "bc7286dca750cf735480fece3ff68c7d86ecbf8391031b5ca2964da78fc945a1",
+    "primary": "0x08bb3ac8",
+    "id": 226,
+    "kind": 3,
+    "ground": 289,
+    "ink": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "source_sha256": "d3a96729123d0d449ee93b2f520ae69ab6d5b97933263e370457ce93793bc7a2",
+    "reviewed": true
+  },
+  {
+    "game": "lazarus",
+    "rom_crc32": "558ae42f",
+    "rom_sha256": "d756b2783dede0bb2c534d1f07713bef733cf53500388e3912f14220a7e16e97",
+    "primary": "0x08e3e21c",
+    "id": 4,
+    "kind": 13,
+    "ground": 1,
+    "ink": [
+      10,
+      1,
+      4,
+      0,
+      4,
+      1
+    ],
+    "source_sha256": "1ecf08ebbeebff9722e8bcdd894c7a3515c1ab73c42c5cebf3daa6cf5b3f4e7b",
+    "reviewed": true
+  },
+  {
+    "game": "lazarus",
+    "rom_crc32": "558ae42f",
+    "rom_sha256": "d756b2783dede0bb2c534d1f07713bef733cf53500388e3912f14220a7e16e97",
+    "primary": "0x08e3e21c",
+    "id": 13,
+    "kind": 1,
+    "ground": 1,
+    "ink": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "source_sha256": "9ba1ca55339a348ed04e522485be08bf3d53ace2cb7ed4505ee12d93d9f142a9",
+    "reviewed": true
+  },
+  {
+    "game": "seaglass",
+    "rom_crc32": "14465a33",
+    "rom_sha256": "6098296dca53655bb51493658d74ba206abe6bacbbe60db8d4f497367926809f",
+    "primary": "0x08a2e6ac",
+    "id": 4,
+    "kind": 13,
+    "ground": 1,
+    "ink": [
+      2,
+      3,
+      3,
+      2,
+      3,
+      2
+    ],
+    "source_sha256": "a3f5b66906329dc755130c1c2ae93903d7f2973fde43391fef51c054aff566bc",
+    "reviewed": true
+  },
+  {
+    "game": "seaglass",
+    "rom_crc32": "14465a33",
+    "rom_sha256": "6098296dca53655bb51493658d74ba206abe6bacbbe60db8d4f497367926809f",
+    "primary": "0x08a2e6ac",
+    "id": 13,
+    "kind": 1,
+    "ground": 1,
+    "ink": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "source_sha256": "3b5d7b552d61a4c09c929038a6ee7268ad1684467ee6dd58c674cc4aeb925617",
+    "reviewed": true
+  },
+  {
+    "game": "dragonsden",
+    "rom_crc32": "cec21496",
+    "rom_sha256": "6ca88c3ecd54c78bf8a8cbb80f2b9ab049d66d4b070e97849cf4073ee8d2f15c",
+    "primary": "0x087c0700",
+    "id": 4,
+    "kind": 13,
+    "ground": 1,
+    "ink": [
+      5,
+      2,
+      7,
+      2,
+      7,
+      2
+    ],
+    "source_sha256": "61021cf5042efdb0186e5346d37cd21349321d1c9f2412c4b71f8ccdff809b99",
+    "reviewed": true
+  },
+  {
+    "game": "dragonsden",
+    "rom_crc32": "cec21496",
+    "rom_sha256": "6ca88c3ecd54c78bf8a8cbb80f2b9ab049d66d4b070e97849cf4073ee8d2f15c",
+    "primary": "0x087c0700",
+    "id": 13,
+    "kind": 1,
+    "ground": 1,
+    "ink": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "source_sha256": "91e7f6ede0afed30ce1aab57bc12b37afb272c230190299fe66876c7753fb50e",
+    "reviewed": true
+  },
+  {
+    "game": "dragonsden",
+    "rom_crc32": "cec21496",
+    "rom_sha256": "6ca88c3ecd54c78bf8a8cbb80f2b9ab049d66d4b070e97849cf4073ee8d2f15c",
+    "primary": "0x087c0700",
+    "id": 224,
+    "kind": 3,
+    "ground": 1,
+    "ink": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "source_sha256": "ae1afc5a75b9e7b209ed383c61b81ac67f663dba9f0d7bc0fbe691304ecec7b5",
+    "reviewed": true
+  },
+  {
+    "game": "dragonsden",
+    "rom_crc32": "cec21496",
+    "rom_sha256": "6ca88c3ecd54c78bf8a8cbb80f2b9ab049d66d4b070e97849cf4073ee8d2f15c",
+    "primary": "0x087c0700",
+    "id": 226,
+    "kind": 3,
+    "ground": 289,
+    "ink": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "source_sha256": "d3a96729123d0d449ee93b2f520ae69ab6d5b97933263e370457ce93793bc7a2",
+    "reviewed": true
+  },
+  {
+    "game": "ash-gray",
+    "rom_crc32": "63478921",
+    "rom_sha256": "a08055484c8366768d3e98e2dbed0998641abd2899ffbfc8d7f132925875f7a1",
+    "primary": "0x082d4a94",
+    "id": 4,
+    "kind": 13,
+    "ground": 1,
+    "ink": [
+      4,
+      8,
+      5,
+      1,
+      4,
+      4
+    ],
+    "source_sha256": "c68c2d849ca14c8a615793369545dbd0259bd0ac11db651699728bdac5ee75a5",
+    "reviewed": true
+  },
+  {
+    "game": "ash-gray",
+    "rom_crc32": "63478921",
+    "rom_sha256": "a08055484c8366768d3e98e2dbed0998641abd2899ffbfc8d7f132925875f7a1",
+    "primary": "0x082d4a94",
+    "id": 13,
+    "kind": 1,
+    "ground": 1,
+    "ink": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "source_sha256": "a1508afabc16923138fdbeebaedde807a30310df3c43e2d5aea3c79bf7eb7d6c",
+    "reviewed": true
+  },
+  {
+    "game": "ash-gray",
+    "rom_crc32": "63478921",
+    "rom_sha256": "a08055484c8366768d3e98e2dbed0998641abd2899ffbfc8d7f132925875f7a1",
+    "primary": "0x082d4a94",
+    "id": 5,
+    "kind": 4,
+    "ground": 1,
+    "ink": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "source_sha256": "fcab6aee3800d366692b839115d46077668ae03da28be9c86c9a9176a137d3b3",
+    "reviewed": true
+  },
+  {
+    "game": "ash-gray",
+    "rom_crc32": "63478921",
+    "rom_sha256": "a08055484c8366768d3e98e2dbed0998641abd2899ffbfc8d7f132925875f7a1",
+    "primary": "0x082d4a94",
+    "id": 159,
+    "kind": 3,
+    "ground": 1,
+    "ink": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "source_sha256": "c4698ae9bc47cc667709d0608bb50c163c5b8786832f6fc713157a14f4f217fa",
+    "reviewed": true
+  },
+  {
+    "game": "gaia",
+    "rom_crc32": "b9465c5a",
+    "rom_sha256": "186a36cd389aecf10fb9ba112e7340fd81127fcb23d9564294df80b1e1473ab5",
+    "primary": "0x082d4a94",
+    "id": 4,
+    "kind": 13,
+    "ground": 1,
+    "ink": [
+      5,
+      2,
+      7,
+      2,
+      7,
+      2
+    ],
+    "source_sha256": "a190bd2cd4c0ac343d07e0b4b2b462336eeb04a6fbdaadc7503a05ca46569941",
+    "reviewed": true
+  },
+  {
+    "game": "gaia",
+    "rom_crc32": "b9465c5a",
+    "rom_sha256": "186a36cd389aecf10fb9ba112e7340fd81127fcb23d9564294df80b1e1473ab5",
+    "primary": "0x082d4a94",
+    "id": 13,
+    "kind": 1,
+    "ground": 1,
+    "ink": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "source_sha256": "e88367b867575e49b31427351b20f4e03f7c15e61b6b925cbcbcefd7f64ce4ca",
+    "reviewed": true
+  },
+  {
+    "game": "gaia",
+    "rom_crc32": "b9465c5a",
+    "rom_sha256": "186a36cd389aecf10fb9ba112e7340fd81127fcb23d9564294df80b1e1473ab5",
+    "primary": "0x082d4a94",
+    "id": 5,
+    "kind": 4,
+    "ground": 1,
+    "ink": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "source_sha256": "492d866994c19f99aead05f69c71a03b6a5206f4cc09a1ffa00102865a86501e",
+    "reviewed": true
+  },
+  {
+    "game": "gaia",
+    "rom_crc32": "b9465c5a",
+    "rom_sha256": "186a36cd389aecf10fb9ba112e7340fd81127fcb23d9564294df80b1e1473ab5",
+    "primary": "0x082d4a94",
+    "id": 159,
+    "kind": 3,
+    "ground": 1,
+    "ink": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "source_sha256": "00444d17377c9ce4cbf3ccb619a016f05d48aebc22a080ebb23244526ae431da",
+    "reviewed": true
+  },
+  {
+    "game": "odyssey",
+    "rom_crc32": "6c5ee1b2",
+    "rom_sha256": "44c7e3eafab19c39df7c39d54bafb78a1d9caf7c371244b6f5efb12cfd98d0d0",
+    "primary": "0x082d4a94",
+    "id": 4,
+    "kind": 13,
+    "ground": 1,
+    "ink": [
+      4,
+      8,
+      5,
+      1,
+      4,
+      4
+    ],
+    "source_sha256": "5f28fd1853527760c41ffeeb12e1e2375040280e092305869e6f968c05daed40",
+    "reviewed": true
+  },
+  {
+    "game": "odyssey",
+    "rom_crc32": "6c5ee1b2",
+    "rom_sha256": "44c7e3eafab19c39df7c39d54bafb78a1d9caf7c371244b6f5efb12cfd98d0d0",
+    "primary": "0x082d4a94",
+    "id": 13,
+    "kind": 1,
+    "ground": 1,
+    "ink": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "source_sha256": "977af525d8d664599e6c9b0eff0d73ac00ebde86cca8cf1f43ebf5c1d733c486",
+    "reviewed": true
+  },
+  {
+    "game": "odyssey",
+    "rom_crc32": "6c5ee1b2",
+    "rom_sha256": "44c7e3eafab19c39df7c39d54bafb78a1d9caf7c371244b6f5efb12cfd98d0d0",
+    "primary": "0x082d4a94",
+    "id": 5,
+    "kind": 4,
+    "ground": 1,
+    "ink": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "source_sha256": "be19c3c20a163fd1d178d90fbff1542bb737b23a152b88dedc5956a6bcdb060b",
+    "reviewed": true
+  },
+  {
+    "game": "odyssey",
+    "rom_crc32": "6c5ee1b2",
+    "rom_sha256": "44c7e3eafab19c39df7c39d54bafb78a1d9caf7c371244b6f5efb12cfd98d0d0",
+    "primary": "0x082d4a94",
+    "id": 159,
+    "kind": 3,
+    "ground": 1,
+    "ink": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "source_sha256": "4e0b7115b8243ec0583da009d887e95ee53405a622bf177709a8cb54dfbc0b88",
+    "reviewed": true
+  }
+]

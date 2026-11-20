@@ -233,3 +233,11 @@ ground. Unbound and Ash Gray use a different 97 ledge, also excluded from the
 upper-cap family. Emerald-family water edges 123/125/12B/12C remain excluded.
 Map connections use their own primary tileset when selecting ground treatment.
 This improves reviewed path coverage; it does not certify every map or asset.
+
+`android-ground-props.json` adds 28 individually reviewed flowers, tall-grass
+cells, shrubs and static rocks across eight additional primary tilesets. Grass
+D was checked against behavior 2 in each ROM as well as its art. Emerald-family
+5 is a planter/window, and Gaia 12 is a tree/cliff fragment: neither inherits a
+Kanto shrub or grass model. Flowers use explicit live-palette stem, petal and
+center swatches and closed petals. Known prop floors use the same semantic snow
+classification as terrain, avoiding bare night-colored patches underneath.

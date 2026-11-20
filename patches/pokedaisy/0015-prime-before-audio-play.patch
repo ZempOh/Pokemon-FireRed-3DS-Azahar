@@ -13,7 +13,7 @@ diff --git a/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt b/app/src/m
              .onFailure { Log.e("pokedaisy", "audio track failed", it) }
              .getOrNull()
  
-@@ -1274,16 +1277,6 @@
+@@ -1274,16 +1277,7 @@
          // Vsync pacing (see the class comment): the device buffer's size, and what's been
          // written to it since it started or was flushed (every write counts) - minus its play head, what's still queued.
          val bufferFrames = track?.bufferSizeInFrames ?: 0
@@ -27,10 +27,11 @@ diff --git a/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt b/app/src/m
 -                }
 -            }
 -        }
++        val nativeAudioQueue = NativeAudioQueue(sampleRate * 2) // bounded to one second of stereo PCM
          var framesWritten = 0L
          var underruns = track?.underrunCount ?: 0
          var vsyncMode = false
-@@ -1539,7 +1532,7 @@
+@@ -1539,10 +1533,11 @@
                  // lid closed and opened on the Thor left FF silent). The song held meanwhile: its start moves on.
                  ffClipNotice.forget()
                  songStartedAt += android.os.SystemClock.elapsedRealtime() - sleptAt
@@ -39,7 +40,11 @@ diff --git a/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt b/app/src/m
                  // As after the audio pausing below: flush() put the play head back at 0. And the frames due while
                  // it slept are not owed.
                  framesWritten = 0L
-@@ -1898,12 +1891,38 @@
++                nativeAudioQueue.clear()
+                 trackStarted = false
+                 vsyncSettledAt = System.nanoTime() + VSYNC_SETTLE_NANOS
+                 vsyncTicks.drainPermits()
+@@ -1898,12 +1893,37 @@
              if (wantPaused != paused) {
                  paused = wantPaused
                  if (paused) runCatching { track?.pause(); track?.flush() }
@@ -47,48 +52,57 @@ diff --git a/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt b/app/src/m
 +                else if (!nativeClockAudio) runCatching { track?.play() }
                  // flush() empties the buffer and puts the play head back at 0.
                  framesWritten = 0L
++                nativeAudioQueue.clear()
                  trackStarted = false
                  vsyncSettledAt = System.nanoTime() + VSYNC_SETTLE_NANOS
              }
 +        }
 +
-+        /** Prime real samples before play(), preserving a frame that straddles the buffer end. */
-+        private fun writeNativeAudio(track: AudioTrack, n: Int): Int {
-+            if (track.playState == AudioTrack.PLAYSTATE_PLAYING) {
-+                return track.write(scratch, 0, n, if (trackStarted) AudioTrack.WRITE_NON_BLOCKING else AudioTrack.WRITE_BLOCKING)
++        /** Buffer short nonblocking writes; neither discard PCM nor stall the frame clock. */
++        private fun writeNativeAudio(track: AudioTrack, n: Int, rate: Double, queued: Int): Int {
++            if (!nativeAudioQueue.append(scratch, n)) {
++                // An actual overflow remains visible to the release gate; never hide it.
++                fpsDropped += n / 2
++                Log.e("pokedaisy", "native audio queue overflow: ${nativeAudioQueue.size / 2} frames")
 +            }
-+            // Keep a quarter-buffer of headroom for incoming frames and mixer bursts.
-+            // The Thor can stall for 80 ms during startup compilation: a half-buffer
-+            // prime was only 84 ms and could run dry. Three quarters gives 120 ms
-+            // without filling the capacity and dropping the next frame.
++            val starting = track.playState != AudioTrack.PLAYSTATE_PLAYING
 +            val primeFrames = if (android.os.Build.VERSION.SDK_INT >= 31) {
-+                if (framesWritten == 0L) track.startThresholdInFrames = bufferFrames * 3 / 4
++                if (starting && framesWritten == 0L) track.startThresholdInFrames = bufferFrames * 3 / 4
 +                track.startThresholdInFrames
 +            } else bufferFrames
-+            val first = track.write(scratch, 0, n, AudioTrack.WRITE_NON_BLOCKING)
-+            if (first < 0) return first
-+            if (framesWritten + first / 2 >= primeFrames || first < n) {
-+                track.play()
-+                Log.i("pokedaisy", "audio: native playback starts with ${framesWritten + first / 2}/$primeFrames real frames queued (capacity $bufferFrames)")
-+                if (first < n) {
-+                    val tail = track.write(scratch, first, n - first, AudioTrack.WRITE_BLOCKING)
-+                    return first + tail.coerceAtLeast(0)
-+                }
++            val written = nativeAudioQueue.drain { data, count ->
++                val accepted = track.write(data, 0, count, AudioTrack.WRITE_NON_BLOCKING)
++                tap.frame(data, n, accepted, rate, queued, 'v')
++                accepted
 +            }
-+            return first
++            if (starting && written >= 0 && framesWritten + written / 2 >= primeFrames) {
++                track.play()
++                Log.i("pokedaisy", "audio: native playback starts with ${framesWritten + written / 2}/$primeFrames real frames queued (capacity $bufferFrames)")
++            }
++            return written
          }
  
          /** The frame's audio into the track: the DS copy's, 1x's (vsync or blocking) or SPED-UP's. */
-@@ -1911,6 +1930,8 @@
+@@ -1911,6 +1931,9 @@
              val track = track   // a local: smart casts inside the lambdas below
              queuedAfter = null
              val n = MgbaCore.pkReadAudio(scratch)
++            if (!nativeClockAudio) nativeAudioQueue.clear()
 +            // A speed-mode change during priming may hand the track to the existing FF path.
 +            if (!nativeClockAudio && !paused && track != null && track.playState != AudioTrack.PLAYSTATE_PLAYING) track.play()
              fpsAudioMade += n / 2
              if (BuildConfig.DEBUG && fpsFrames and 63 == 0) tap.arm(audioTapDir)
              if (BuildConfig.DEBUG && nds) for (i in 0 until n) gamePeak = maxOf(gamePeak, kotlin.math.abs(scratch[i].toInt()))
-@@ -1984,11 +2005,8 @@
+@@ -1973,7 +1996,7 @@
+                     framesWritten = played.toLong() + queued
+                     // Samples per emulated second so that a frame's worth lasts one frame of the
+                     // display's, nudged towards a half-full buffer (dynamic rate control).
+-                    val fill = queued.toDouble() / bufferFrames
++                    val fill = (queued.toDouble() + if (nativeClockAudio) nativeAudioQueue.size / 2 else 0) / bufferFrames
+                     // Native-clock profiles must not block on the audio mixer's 20 ms bursts:
+                     // timer pacing owns cadence, while the existing bounded rate control keeps
+                     // the audio buffer near half full without depending on display refresh.
+@@ -1984,15 +2007,12 @@
                      // otherwise spent a third of its range on, GitHub #215).
                      val rate = sampleRate * (if (nds) NDS_FPS else GBA_FPS) / frameHz * drc
                      MgbaCore.pkSetAudioRate(rate)
@@ -97,8 +111,95 @@ diff --git a/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt b/app/src/m
 -                    val writeMode = if (nativeClockAudio && !trackStarted) AudioTrack.WRITE_BLOCKING
 -                        else AudioTrack.WRITE_NON_BLOCKING
 -                    val w = track.write(scratch, 0, n, writeMode)
-+                    val w = if (nativeClockAudio) writeNativeAudio(track, n)
+-                    tap.frame(scratch, n, w, rate, queued, 'v')
++                    val w = if (nativeClockAudio) writeNativeAudio(track, n, rate, queued)
 +                        else track.write(scratch, 0, n, AudioTrack.WRITE_NON_BLOCKING)
-                     tap.frame(scratch, n, w, rate, queued, 'v')
++                    if (!nativeClockAudio) tap.frame(scratch, n, w, rate, queued, 'v')
                      if (w > 0) fpsAudioTaken += w / 2
                      if (w > 0) framesWritten += w / 2
+-                    if (w in 0 until n) {
++                    if (!nativeClockAudio && w in 0 until n) {
+                         fpsDropped += (n - w) / 2   // a full buffer cut it short
+                         // ... so it's full, whatever the estimate says: one that had gone low stays low
+                         // otherwise (the play head and the writes keep step), every frame a catch-up.
+@@ -2045,6 +2065,7 @@
+             if (work > fpsMaxWork) fpsMaxWork = work
+             if (++fpsFrames >= 120) {
+                 val now = System.nanoTime()
++                if (nativeClockAudio) Log.i("pokedaisy", "audio backlog frames=${nativeAudioQueue.size / 2}")
+                 val fps = fpsFrames * 1e9 / (now - fpsSince)
+                 // Pacing, for a logcat read: the screen's refresh and refreshes per frame (0 = the timer), the GL
+                 // thread's late draws since the last line, the frames' work (avg / worst ms) and audio underruns.
+diff --git a/app/src/main/kotlin/com/pokedaisy/app/NativeAudioQueue.kt b/app/src/main/kotlin/com/pokedaisy/app/NativeAudioQueue.kt
+new file mode 100644
+--- /dev/null
++++ b/app/src/main/kotlin/com/pokedaisy/app/NativeAudioQueue.kt
+@@ -0,0 +1,28 @@
++package com.pokedaisy.app
++
++/** Retains real PCM when a nonblocking device write accepts only part of a frame. */
++internal class NativeAudioQueue(capacity: Int) {
++    private val samples = ShortArray(capacity)
++    var size = 0
++        private set
++
++    fun append(source: ShortArray, count: Int): Boolean {
++        require(count in 0..source.size)
++        if (count > samples.size - size) return false
++        source.copyInto(samples, size, 0, count)
++        size += count
++        return true
++    }
++
++    fun drain(write: (ShortArray, Int) -> Int): Int {
++        if (size == 0) return 0
++        val accepted = write(samples, size)
++        if (accepted <= 0) return accepted
++        check(accepted <= size)
++        samples.copyInto(samples, 0, accepted, size)
++        size -= accepted
++        return accepted
++    }
++
++    fun clear() { size = 0 }
++}
+diff --git a/app/src/test/kotlin/com/pokedaisy/app/NativeAudioQueueTest.kt b/app/src/test/kotlin/com/pokedaisy/app/NativeAudioQueueTest.kt
+new file mode 100644
+--- /dev/null
++++ b/app/src/test/kotlin/com/pokedaisy/app/NativeAudioQueueTest.kt
+@@ -0,0 +1,35 @@
++package com.pokedaisy.app
++
++import org.junit.Assert.*
++import org.junit.Test
++
++class NativeAudioQueueTest {
++    @Test fun partialAndZeroWritesPreserveOrderAcrossFrames() {
++        val queue = NativeAudioQueue(12)
++        val received = mutableListOf<Short>()
++        assertTrue(queue.append(shortArrayOf(1, 2, 3, 4), 4))
++        assertEquals(2, queue.drain { data, _ -> received.addAll(data.take(2)); 2 })
++        assertEquals(0, queue.drain { _, _ -> 0 })
++        assertTrue(queue.append(shortArrayOf(5, 6, 7, 8), 4))
++        assertEquals(6, queue.drain { data, count -> received.addAll(data.take(count)); count })
++        assertEquals((1..8).map { it.toShort() }, received)
++        assertEquals(0, queue.size)
++    }
++
++    @Test fun failedWriteAndCapacityRejectionDoNotEraseQueuedSamples() {
++        val queue = NativeAudioQueue(4)
++        assertTrue(queue.append(shortArrayOf(10, 20, 30, 40), 4))
++        assertEquals(-6, queue.drain { _, _ -> -6 })
++        assertFalse(queue.append(shortArrayOf(50, 60), 2))
++        queue.drain { data, count -> assertArrayEquals(shortArrayOf(10, 20, 30, 40), data.copyOf(count)); count }
++        assertEquals(0, queue.size)
++    }
++
++    @Test fun flushDoesNotReplayPrePauseAudio() {
++        val queue = NativeAudioQueue(4)
++        queue.append(shortArrayOf(1, 2), 2)
++        queue.clear()
++        queue.append(shortArrayOf(3, 4), 2)
++        queue.drain { data, count -> assertArrayEquals(shortArrayOf(3, 4), data.copyOf(count)); count }
++    }
++}

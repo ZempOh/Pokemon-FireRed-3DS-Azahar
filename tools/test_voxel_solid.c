@@ -39,7 +39,8 @@ int main(void) {
     assert(!sceneryGroundProp(0xb9465c5a,0x082d4a94,0x12)); /* Gaia tree/cliff, not grass */
     assert(!sceneryGroundProp(0x558ae42f,0x08e3e21c,5)); /* Lazarus window, not shrub */
     assert(sceneryOutdoor(0xcec21496,1,6,0));
-    assert(!sceneryOutdoor(0xcec21496,1,7,0));
+    assert(sceneryOutdoor(0xcec21496,1,7,0)); /* Reviewed outdoor city. */
+    assert(!sceneryOutdoor(0xcec21496,13,83,0)); /* Actual furnished room. */
     assert(!sceneryOutdoor(0xcec21496,1,6,8));
     static uint8_t uiVram[65536];
     assert(!sceneryUiTileHasInk(uiVram,0x1f08,530));

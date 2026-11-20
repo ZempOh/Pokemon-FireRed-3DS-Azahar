@@ -225,7 +225,7 @@ hash-checked local recipe and emits metadata, never automatic profile approval.
 This avoids repeating a whole-family investigation when only tree artwork differs.
 
 The reviewed ground registry now contains 289 full land cells across all thirteen
-Android games and 34 upper-eight-row ledge caps. `android-ground-review.json`
+Android games and 43 upper-eight-row ledge caps. `android-ground-review.json`
 records the ROM hashes, IDs and review image hashes. The full-cell C1 exclusion
 is deliberate: its lower half is a cliff. Gaia reuses D0/D1/D2/D8/D9/DA/E0/E1/E2
 for railings or water, and FE/FF/106/107 for props; those are not inherited as
@@ -269,7 +269,7 @@ Post-submit background geometry work can vary between frames and distort a rate
 sample taken at its completion. Keep the old work-end rate as a diagnostic; do
 not clamp, smooth or substitute the target rate. The host test includes a real
 stall, and exact-device thresholds remain unchanged. Source pixel review is also
-mandatory for snow caps: Classic 0x97, 0xC1, 0xC8 and 0xC9 have land only in the
+mandatory for snow caps: Classic 0x97, 0xC0, 0xC1, 0xC8 and 0xC9 have land only in the
 upper eight rows; lower cliff faces preserve their materials.
 
 Use `python tools/scenery_fixture_candidates.py --game GAME --rom LOCAL_ROM
@@ -279,3 +279,27 @@ rejects blocked/non-land starting cells, and ranks nearby reviewed prop families
 Reports contain identifiers and coordinates, never ROM art or save data. These
 proposals do not prove walkability, progression state or rebuilt live objects;
 review the live target before recording a fixture as usable.
+
+
+## Binary-hack companion overlays
+
+Patch 0020 adds a reusable hash-locked local-ROM overlay generator and separate
+Fakemon FireRed / Better Than Better Emerald 2 configs. A retail engine fingerprint
+does not imply retail species, moves or type matchups. Check literal-pool consensus
+against the GF header, inspect array ends, then record explicit counts and layouts.
+Fakemon has 510 moves and types 23/24/25 (Fairy/Cosmic/Digitl); Better Emerald has
+370 moves and a 16-bit effect field in its 12-byte move record. Both retain 411
+species slots, with different names and types. Do not copy a base game's labels.
+
+`scripts/gen_binary_hack_overlay.py PROFILE LOCAL_ROM OUTPUT.kt` verifies SHA-256,
+table bounds, terminated names, type ranges, growth curves, item IDs (including
+explicit reviewed aliases), and terminated type charts. It emits names, types,
+move power/PP/accuracy/priority, gender and growth data. Custom move effects remain
+UNKNOWN until their routines are mapped; a numerical effect ID is not proof that
+retail advice applies. Four synthetic tests cover both move layouts, foreign ROMs,
+invalid types and unterminated charts. ROMs stay local.
+
+These profiles are candidates, not device-qualified compatibility claims. Confirm
+the complete live-bus hash, party/HP/move/PP and battle state on the Thor, then use
+the same exact-APK scenery, audio, pacing, interaction and startup gates as every
+other game. A manually selected base profile is diagnostic only.

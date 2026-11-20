@@ -118,6 +118,28 @@ static void Check(ViewState state,unsigned n) {
     }
     sShown=state;sDrawn=TRUE;
 }
+static void RefDisc(int cx, int cy, int r, u16 c)
+{
+    for (int dy = -r; dy <= r; dy++)
+        for (int dx = -r; dx <= r; dx++)
+            if (dx * dx + dy * dy <= r * r + r / 2)
+                Put(cx + dx, cy + dy, c);
+}
+
+static void RefRing(int cx, int cy, int r, int thick, u16 c)
+{
+    int outer = r * r + r / 2, inner = (r - thick) * (r - thick) + (r - thick) / 2;
+
+    for (int dy = -r; dy <= r; dy++)
+        for (int dx = -r; dx <= r; dx++)
+        {
+            int d = dx * dx + dy * dy;
+
+            if (d <= outer && d > inner)
+                Put(cx + dx, cy + dy, c);
+        }
+}
+
 int main(void) {
     for(unsigned i=0;i<16;++i) {sprintf((char *)gMoveNames[i],"MOVE%u",i);gBattleMoves[i].type=i%NUMBER_OF_MON_TYPES;}
     for(unsigned i=0;i<NUMBER_OF_MON_TYPES;++i)sprintf((char *)gTypeNames[i],"TYPE%u",i);
@@ -128,6 +150,14 @@ int main(void) {
         memcpy(expected,sCanvas,sizeof(expected));memset(sCanvas,0x19,sizeof(sCanvas));
         if(n&1)RoundRect(x,y,w,h,r,0xafe1);else RoundGradient(x,y,w,h,r,0x7812,0xab35,n%120);
         if(memcmp(expected,sCanvas,sizeof(expected))) {fprintf(stderr,"rounded primitive mismatch %u\n",n);return 1;}
+    }
+    for(unsigned n=0;n<1200;++n) {
+        int x=(int)(Random()%500)-100,y=(int)(Random()%400)-80,r=Random()%80,thick=Random()%100;
+        memset(sCanvas,0x19,sizeof(sCanvas));
+        if(n&1)RefDisc(x,y,r,0xafe1);else RefRing(x,y,r,thick,0xafe1);
+        memcpy(expected,sCanvas,sizeof(expected));memset(sCanvas,0x19,sizeof(sCanvas));
+        if(n&1)Disc(x,y,r,0xafe1);else Ring(x,y,r,thick,0xafe1);
+        if(memcmp(expected,sCanvas,sizeof(expected))) {fprintf(stderr,"circle primitive mismatch %u\n",n);return 1;}
     }
     ViewState s={0};s.battle=TRUE;s.b.player.present=s.b.opponent.present=TRUE;
     s.b.player.hp=21;s.b.player.maxHp=21;s.b.opponent.hp=16;s.b.opponent.maxHp=16;
@@ -162,7 +192,7 @@ int main(void) {
     }
     clock_t start=clock();for(unsigned n=0;n<1000;++n)RefRenderBattle(&s);double full=(double)(clock()-start)/CLOCKS_PER_SEC;
     start=clock();for(unsigned n=0;n<1000;++n) {s.b.player.hp=n%22;RenderBattle(&s);sShown=s;}double dirty=(double)(clock()-start)/CLOCKS_PER_SEC;
-    printf("PASS:1200 old/new rounded raster cases and2003 full/dirty battle transitions pixel-identical; HP-only footer and invisible-state checks.\n");
+    printf("PASS:2400 old/new rounded and circle raster cases and2003 full/dirty battle transitions pixel-identical; HP-only footer and invisible-state checks.\n");
     printf("Host-only HP update benchmark:full%.3fs dirty%.3fs ratio%.3f\n",full,dirty,dirty/full);
     return 0;
 }

@@ -439,3 +439,13 @@ Patch 0025 adds nine exact-layer palm, topiary and laboratory-plant profiles
 from those rooms (113 total); the independent floor check now covers 188 cells,
 48,128 pixels. Distinct source foliage midtones keep the brightest leaf sample
 from washing out the model. These host checks still require device review.
+
+For an intermittently black scene with a live HUD, retain native output-pixel,
+camera and palette diagnostics; renderer activity and FPS alone do not prove
+visibility. Exclude the HUD from screenshot visibility checks. Camera reset
+(UI thread) and frame calculation (emulator thread) must share a transaction:
+an interleaved tween reset can produce a zero denominator and persistent NaN
+coordinates. Patch 0026 serializes reset, mode changes and frame calculation;
+the concurrent-reset test requires finite, nonempty windows throughout.
+This fixes the identified race; exact-build Thor startup/scene testing remains
+necessary before attributing or closing the observed black-screen failure.

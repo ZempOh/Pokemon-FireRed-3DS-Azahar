@@ -88,7 +88,7 @@ jobs:
         run: ./gradlew :app:assembleDev --stacktrace
       - name: Verify cartridge pacing
         working-directory: pokedaisy
-        run: ./gradlew :app:testDevUnitTest --tests com.pokedaisy.app.VoxelFrameClockTest --tests com.pokedaisy.app.VsyncAudioPacingTest --tests com.pokedaisy.app.NativeAudioQueueTest --stacktrace
+        run: ./gradlew :app:testDevUnitTest --tests com.pokedaisy.app.VoxelFrameClockTest --tests com.pokedaisy.app.VsyncAudioPacingTest --tests com.pokedaisy.app.NativeAudioQueueTest --tests com.pokedaisy.app.WideCameraTest --stacktrace
       - uses: actions/upload-artifact@v4
         with:
           name: pokedaisy-voxel-preview

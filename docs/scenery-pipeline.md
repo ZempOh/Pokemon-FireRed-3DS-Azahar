@@ -376,6 +376,26 @@ Synthetic HM moves and engine-family badge flags are only test setup: verify
 the game's own move names, PP, eligibility and actual scripts on the device.
 Never convert successful seed generation into an interaction pass.
 
+## Emerald-derived indoor plants
+
+Do not scan an assumed full primary metatile range for indoor furniture.
+Emerald's Building primary can contain only a few shared floor entries; furniture
+belongs to the secondary tileset. Review actually used map IDs and match the
+reviewed plant layers across real vertical pairs. Key secondary-owned profiles
+by both tilesets, so an unrelated room cannot reuse the same metatile numbers.
+
+Patch 0023 adds 85 exact-layer profiles: Better Emerald 12, Modern Emerald 15,
+Lazarus 15, Dragonsden 33, and Seaglass 10. Together with the original 19,
+all thirteen Android games now have recognized indoor plant profiles. Their
+own colors feed the shared closed botanical/topiary meshes. This is recognized
+family coverage, not a claim that every decorative plant or room was remodeled.
+
+Lazarus and Dragonsden can put foliage on raw layer 2 and the pot on layer 1.
+The runtime composites all other layers, preserving each cell's floor and wall
+pixels, transparency and flips. The actual C sampler matches independent
+own-ROM composites for 170 cells / 43,520 pixels; all 104 models pass the solid
+geometry checks. These host checks do not qualify the new APK on the Thor.
+
 `tools/scenery_snapshot.py LOCAL_RESUME.companion` reads the versioned location
 and party-count header without touching the device. Check this before calling
 a fixture a field or battle scene: the retained Rocket seed is a partyless

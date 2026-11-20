@@ -192,10 +192,11 @@ int main(void) {
     assert(!solidSnowRockId(0xfc) && !solidSnowRockId(0x158));
     for(unsigned profile=0;profile<sizeof(solidPlantProfiles)/sizeof(solidPlantProfiles[0]);profile++) {
         const struct SolidPlantProfile *model=&solidPlantProfiles[profile];
-        assert(solidPlantProfile(model->rom,model->primary,model->top,model->bottom)==(int)profile);
-        assert(solidPlantProfile(model->rom^1,model->primary,model->top,model->bottom)<0);
-        assert(solidPlantProfile(model->rom,model->primary^4,model->top,model->bottom)<0);
-        assert(solidPlantProfile(model->rom,model->primary,model->top,0xffff)<0);
+        assert(solidPlantProfile(model->rom,model->primary,model->secondary,model->top,model->bottom)==(int)profile);
+        assert(solidPlantProfile(model->rom^1,model->primary,model->secondary,model->top,model->bottom)<0);
+        assert(solidPlantProfile(model->rom,model->primary^4,model->secondary,model->top,model->bottom)<0);
+        assert(solidPlantProfile(model->rom,model->primary,model->secondary,model->top,0xffff)<0);
+        if(model->secondary)assert(solidPlantProfile(model->rom,model->primary,0,model->top,model->bottom)<0);
         struct SolidProp plant={.kind=11,.plantProfile=(int)profile};
         plant.surface.x=32;plant.surface.y=24;plant.surface.rise=8;
         for(int i=0;i<6;i++)plant.surface.art[i]=0xff40c080;

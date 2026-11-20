@@ -116,15 +116,17 @@ def generate(profiles, plants, output):
     lines+=['    return 0;','}']
     output.mkdir(parents=True,exist_ok=True)
     (output/'pk_scenery_candidates.h').write_text('\n'.join(lines)+'\n')
-    lines=['// Generated from verified local ROM profiles; no ROM textures.','#pragma once','struct SolidPlantProfile { uint32_t rom,primary; uint16_t top,bottom; uint8_t shape,height,width,centerX2,foot,ink[12]; };','static const struct SolidPlantProfile solidPlantProfiles[] = {']
+    lines=['// Generated from verified local ROM profiles; no ROM textures.','#pragma once','struct SolidPlantProfile { uint32_t rom,primary,secondary; uint16_t top,bottom; uint8_t shape,height,width,centerX2,foot,ink[12],topLayer,bottomLayer; };','static const struct SolidPlantProfile solidPlantProfiles[] = {']
     seen=set()
     for p in plants:
-        key=(crc(p),int(p['primary'],16),p['top'],p['bottom'])
+        key=(crc(p),int(p['primary'],16),int(p.get('secondary','0'),16),p['top'],p['bottom'])
         if key in seen:raise ValueError('Duplicate plant profile')
         seen.add(key)
         assert len(p['ink'])==12 and all(0<=v<16 for v in p['ink'][::2]) and all(0<=v<32 for v in p['ink'][1::2])
-        lines.append('    {0x%08x,0x%08x,0x%x,0x%x,%d,%d,%d,%d,%d,{%s}},'%(*key,p['shape'],p['height'],p['width'],p['center_x2'],p['foot'],','.join(map(str,p['ink']))))
-    lines+=['};','static int solidPlantProfile(uint32_t rom,uint32_t primary,int top,int bottom) {','    for(unsigned i=0;i<sizeof(solidPlantProfiles)/sizeof(solidPlantProfiles[0]);i++) {','        const struct SolidPlantProfile *p=&solidPlantProfiles[i];','        if(p->rom==rom&&p->primary==primary&&p->top==top&&p->bottom==bottom)return (int)i;','    }','    return -1;','}','static int solidPlantTileset(uint32_t rom,uint32_t primary) {','    for(unsigned i=0;i<sizeof(solidPlantProfiles)/sizeof(solidPlantProfiles[0]);i++)','        if(solidPlantProfiles[i].rom==rom&&solidPlantProfiles[i].primary==primary)return 1;','    return 0;','}']
+        top_layer,bottom_layer=p.get('top_layer',1),p.get('bottom_layer',1)
+        assert top_layer in (1,2) and bottom_layer in (1,2)
+        lines.append('    {0x%08x,0x%08x,0x%08x,0x%x,0x%x,%d,%d,%d,%d,%d,{%s},%d,%d},'%(*key,p['shape'],p['height'],p['width'],p['center_x2'],p['foot'],','.join(map(str,p['ink'])),top_layer,bottom_layer))
+    lines+=['};','static int solidPlantProfile(uint32_t rom,uint32_t primary,uint32_t secondary,int top,int bottom) {','    for(unsigned i=0;i<sizeof(solidPlantProfiles)/sizeof(solidPlantProfiles[0]);i++) {','        const struct SolidPlantProfile *p=&solidPlantProfiles[i];','        if(p->rom==rom&&p->primary==primary&&(!p->secondary||p->secondary==secondary)&&p->top==top&&p->bottom==bottom)return (int)i;','    }','    return -1;','}','static int solidPlantTileset(uint32_t rom,uint32_t primary) {','    for(unsigned i=0;i<sizeof(solidPlantProfiles)/sizeof(solidPlantProfiles[0]);i++)','        if(solidPlantProfiles[i].rom==rom&&solidPlantProfiles[i].primary==primary)return 1;','    return 0;','}']
     (output/'pk_scenery_plant_profiles.h').write_text('\n'.join(lines)+'\n')
 
 if __name__=='__main__':

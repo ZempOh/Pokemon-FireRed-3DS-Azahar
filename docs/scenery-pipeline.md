@@ -515,3 +515,17 @@ requires exact agreement between approved entries and capability overrides.
 The climate regression crosses Celadon to Route 16, then enters an excluded
 room; winter persists outdoors and clears inside. These source reviews are not
 140 Thor passes. Keep the exact-build boundary and indoor checks mandatory.
+
+Live grass effects are separate sprites from the terrain underneath. Rocket's
+short-grass effect remained green in a winter boundary replay because the old
+sprite whitelist covered only the original three Android games. Patch 0030 adds
+48 exact ROM/template/image matches across the ten additional hacks, using the
+existing seasonal leaf shader and preserving live position and alpha. Two Ash
+Gray white ground-like replacements remain excluded from foliage treatment.
+`tools/scenery_effect_inventory.py --manifest MANIFEST --rom-directory ROMS
+--output REPORT` locates candidate field-effect tables after validating ROM hashes.
+It emits metadata, never approvals or ROM art. Review each effect's frame artwork,
+including changed palette tags (Gaia), before adding it to
+`android-grass-effects.json`. The registry rejects unreviewed profiles; tests
+reject mismatched ROM, template or image pointers. Exact Thor grass movement
+and actor-color checks remain required.

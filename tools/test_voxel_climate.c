@@ -31,6 +31,16 @@ int main(void) {
     assert(!sceneryOutdoor(0xcec21497,1,26,0)); /* Unreviewed ROM. */
     assert(!sceneryOutdoor(0xcec21496,1,26,8)); /* Explicit indoor metadata wins. */
     memset(&voxelClimate,0,sizeof(voxelClimate));fakeMs=0;
+    for(unsigned i=0;i<sizeof(sceneryGrassEffects)/sizeof(sceneryGrassEffects[0]);i++) {
+        const struct SceneryGrassEffect *p=&sceneryGrassEffects[i];
+        assert(climateGrassEffect(p->rom,p->template,p->images));
+        assert(!climateGrassEffect(p->rom^1,p->template,p->images));
+        assert(!climateGrassEffect(p->rom,p->template+4,p->images));
+        assert(!climateGrassEffect(p->rom,p->template,p->images+4));
+    }
+    assert(climateGrassEffect(0xf2d16ebd,0x083a5e38,0x083a5e18)); /* Rocket short grass. */
+    assert(!climateGrassEffect(0x63478921,0x083a593c,0x083a58f8)); /* Ash replacement art held. */
+    assert(!climateGrassEffect(0x63478921,0x083a5e38,0x083a5e18));
     const uint32_t profiles[]={0x25c3d89f,0xfba55dd8,0x4b3d4957};
     for(int i=0;i<3;i++) {
         assert(climateGrassEffect(profiles[i],0x083a5420,0x083a53dc));

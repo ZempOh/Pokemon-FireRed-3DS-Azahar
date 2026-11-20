@@ -1,0 +1,1854 @@
+[
+  {
+    "game": "better-emerald-2",
+    "rom_crc32": "70823957",
+    "rom_sha256": "2503ed1832224d280d73c2e7e6ffc4b3dc90b58b1df2cfce70d587bed3b5dca3",
+    "field_table": "0x85059f8",
+    "index": 4,
+    "template": "0x850caa0",
+    "images": "0x850ca5c",
+    "palette_tag": "0x1005",
+    "template_sha256": "1ab8170e65b66a59108b70f08e8cd3b2044c4cc28a19951b996c829862ecc801",
+    "frames": [
+      {
+        "pointer": "0x84f8738",
+        "bytes": 128,
+        "sha256": "7f11635e095fe524064d873e1159d7cf0bf13705fa0529e5eeef06a71aa6d633"
+      },
+      {
+        "pointer": "0x84f87b8",
+        "bytes": 128,
+        "sha256": "ac690d34e2ee6d6650c932c21bda556956308edff9794ade258747fad3195e49"
+      },
+      {
+        "pointer": "0x84f8838",
+        "bytes": 128,
+        "sha256": "8cbd438db90ebd212f53a4059dcfb100758ea35656cf6d07f3cf736f834786c3"
+      },
+      {
+        "pointer": "0x84f88b8",
+        "bytes": 128,
+        "sha256": "68c73bcc7dc9db507b4cbb761eed3c38746a5a82335f72189b6405187dbe909b"
+      },
+      {
+        "pointer": "0x84f8938",
+        "bytes": 128,
+        "sha256": "32f6e0f3a9064e6a63f6e834ffaf3ad885eaa5b8734ef69719b181cb59a553f8"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Indexed source-frame contact sheets reviewed; own field-effect table and five semantic grass slots validated structurally"
+  },
+  {
+    "game": "better-emerald-2",
+    "rom_crc32": "70823957",
+    "rom_sha256": "2503ed1832224d280d73c2e7e6ffc4b3dc90b58b1df2cfce70d587bed3b5dca3",
+    "field_table": "0x85059f8",
+    "index": 10,
+    "template": "0x850ccf0",
+    "images": "0x850ccb8",
+    "palette_tag": "0x1005",
+    "template_sha256": "0bfb6d280431aed3cc05eaa974ba2fc748e06af6b058fd071794d236c57742e7",
+    "frames": [
+      {
+        "pointer": "0x84f78b8",
+        "bytes": 64,
+        "sha256": "701d2ff11d7dcfef2d22877421ba0a6bbe08f027a2b1953db1356c78a9713c68"
+      },
+      {
+        "pointer": "0x84f78f8",
+        "bytes": 64,
+        "sha256": "55f6003ad4fbbe405e724ba31a18a199c9a6bfc2db59bc48b2a150520f7b057b"
+      },
+      {
+        "pointer": "0x84f7938",
+        "bytes": 64,
+        "sha256": "3195a6f074889c8b1368e26d7e6a3b4e636a81103b3c9deded62c353f7d74279"
+      },
+      {
+        "pointer": "0x84f7978",
+        "bytes": 64,
+        "sha256": "b8d661ad45a1a3f5d58dae8b25a1b8ca46ab85633b15870297075dd02e5b2243"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Indexed source-frame contact sheets reviewed; own field-effect table and five semantic grass slots validated structurally"
+  },
+  {
+    "game": "better-emerald-2",
+    "rom_crc32": "70823957",
+    "rom_sha256": "2503ed1832224d280d73c2e7e6ffc4b3dc90b58b1df2cfce70d587bed3b5dca3",
+    "field_table": "0x85059f8",
+    "index": 15,
+    "template": "0x850cf94",
+    "images": "0x850cf50",
+    "palette_tag": "0x1005",
+    "template_sha256": "70a88bf6d4a9d22dc49da39336e5043b8c16273a7dbe501d9980214317178b7d",
+    "frames": [
+      {
+        "pointer": "0x84f8538",
+        "bytes": 128,
+        "sha256": "75146b7dbca803e85f139bb9fa9b7e17a92369d5785c6ba301d947d10273481f"
+      },
+      {
+        "pointer": "0x84f85b8",
+        "bytes": 128,
+        "sha256": "95b41af9904957a4ac9b19212fc6855796f8e6ba90aabf86a6b0cc9d7b1e2247"
+      },
+      {
+        "pointer": "0x84f8638",
+        "bytes": 128,
+        "sha256": "791665dd614bd6a76435fafcc5ca37cd8abf661abb078b90bcaeacb0f100f865"
+      },
+      {
+        "pointer": "0x84f86b8",
+        "bytes": 128,
+        "sha256": "2caf8906c1be35348e023c0230d420ccf322f52aedb83c2110cefd09bc9083e1"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Indexed source-frame contact sheets reviewed; own field-effect table and five semantic grass slots validated structurally"
+  },
+  {
+    "game": "better-emerald-2",
+    "rom_crc32": "70823957",
+    "rom_sha256": "2503ed1832224d280d73c2e7e6ffc4b3dc90b58b1df2cfce70d587bed3b5dca3",
+    "field_table": "0x85059f8",
+    "index": 16,
+    "template": "0x850cffc",
+    "images": "0x850cfac",
+    "palette_tag": "0x1005",
+    "template_sha256": "6239b7de417d43f7308acac03d83c899c55e7cab848fde4ef522e1c078617b5e",
+    "frames": [
+      {
+        "pointer": "0x84f7bb8",
+        "bytes": 128,
+        "sha256": "151aa542662b5eca787d3e1be21d988c3c62b3d47dee427aeeb97916e9f253e3"
+      },
+      {
+        "pointer": "0x84f7c38",
+        "bytes": 128,
+        "sha256": "f8754f163791c1c143f0c35ac625d430676cb53211ec844b110ac23209160c9c"
+      },
+      {
+        "pointer": "0x84f7cb8",
+        "bytes": 128,
+        "sha256": "2b3daf1f70e89ef1ae5a1949ca4ef62b7d096c3c06cd569d4188b6cf163d99d7"
+      },
+      {
+        "pointer": "0x84f7d38",
+        "bytes": 128,
+        "sha256": "13a36a8bf36540af57ddf16e8e07de7c18e26910a7f9d3246d9a5b767e79d1aa"
+      },
+      {
+        "pointer": "0x84f7db8",
+        "bytes": 128,
+        "sha256": "0738781e9b9a0e3b480473eb9e0f981ae211692f1ded24d70a3c09dc6279cddf"
+      },
+      {
+        "pointer": "0x84f7eb8",
+        "bytes": 128,
+        "sha256": "5f973565acb4a9e4e596a8f587d596eff84054bc967bfe0a34340e886eec5b7a"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Indexed source-frame contact sheets reviewed; own field-effect table and five semantic grass slots validated structurally"
+  },
+  {
+    "game": "better-emerald-2",
+    "rom_crc32": "70823957",
+    "rom_sha256": "2503ed1832224d280d73c2e7e6ffc4b3dc90b58b1df2cfce70d587bed3b5dca3",
+    "field_table": "0x85059f8",
+    "index": 30,
+    "template": "0x850d4e0",
+    "images": "0x850d4c0",
+    "palette_tag": "0x1005",
+    "template_sha256": "2c4773f5e518aed4d0bf9e4443a178467bc1c30ef84ef65ce2d1928c86969738",
+    "frames": [
+      {
+        "pointer": "0x84f89b8",
+        "bytes": 128,
+        "sha256": "b5f91160dba34f6c8d9e6fb611cbaf27a32ffb9e94a1b856a0d4f59c07e5237b"
+      },
+      {
+        "pointer": "0x84f8a38",
+        "bytes": 128,
+        "sha256": "a01897513bfaed76563b2b5dcfe0407112b13c654f8d9f26d15f18065d0684ed"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Indexed source-frame contact sheets reviewed; own field-effect table and five semantic grass slots validated structurally"
+  },
+  {
+    "game": "modern-emerald",
+    "rom_crc32": "263a1187",
+    "rom_sha256": "bc7286dca750cf735480fece3ff68c7d86ecbf8391031b5ca2964da78fc945a1",
+    "field_table": "0x8801ed8",
+    "index": 4,
+    "template": "0x881438c",
+    "images": "0x8814348",
+    "palette_tag": "0x1005",
+    "template_sha256": "712d2982a99065c145127bcd7012ff261e24f23ad9b00d4c4b2d542f212c2479",
+    "frames": [
+      {
+        "pointer": "0x87699e0",
+        "bytes": 128,
+        "sha256": "7f11635e095fe524064d873e1159d7cf0bf13705fa0529e5eeef06a71aa6d633"
+      },
+      {
+        "pointer": "0x8769a60",
+        "bytes": 128,
+        "sha256": "ac690d34e2ee6d6650c932c21bda556956308edff9794ade258747fad3195e49"
+      },
+      {
+        "pointer": "0x8769ae0",
+        "bytes": 128,
+        "sha256": "8cbd438db90ebd212f53a4059dcfb100758ea35656cf6d07f3cf736f834786c3"
+      },
+      {
+        "pointer": "0x8769b60",
+        "bytes": 128,
+        "sha256": "68c73bcc7dc9db507b4cbb761eed3c38746a5a82335f72189b6405187dbe909b"
+      },
+      {
+        "pointer": "0x8769be0",
+        "bytes": 128,
+        "sha256": "32f6e0f3a9064e6a63f6e834ffaf3ad885eaa5b8734ef69719b181cb59a553f8"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Indexed source-frame contact sheets reviewed; own field-effect table and five semantic grass slots validated structurally"
+  },
+  {
+    "game": "modern-emerald",
+    "rom_crc32": "263a1187",
+    "rom_sha256": "bc7286dca750cf735480fece3ff68c7d86ecbf8391031b5ca2964da78fc945a1",
+    "field_table": "0x8801ed8",
+    "index": 10,
+    "template": "0x88145dc",
+    "images": "0x88145a4",
+    "palette_tag": "0x1005",
+    "template_sha256": "2a3bd6769e62b2d038def18bd8ea60e11306534f617aadce3834764e8595211d",
+    "frames": [
+      {
+        "pointer": "0x8768b60",
+        "bytes": 64,
+        "sha256": "701d2ff11d7dcfef2d22877421ba0a6bbe08f027a2b1953db1356c78a9713c68"
+      },
+      {
+        "pointer": "0x8768ba0",
+        "bytes": 64,
+        "sha256": "55f6003ad4fbbe405e724ba31a18a199c9a6bfc2db59bc48b2a150520f7b057b"
+      },
+      {
+        "pointer": "0x8768be0",
+        "bytes": 64,
+        "sha256": "3195a6f074889c8b1368e26d7e6a3b4e636a81103b3c9deded62c353f7d74279"
+      },
+      {
+        "pointer": "0x8768c20",
+        "bytes": 64,
+        "sha256": "b8d661ad45a1a3f5d58dae8b25a1b8ca46ab85633b15870297075dd02e5b2243"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Indexed source-frame contact sheets reviewed; own field-effect table and five semantic grass slots validated structurally"
+  },
+  {
+    "game": "modern-emerald",
+    "rom_crc32": "263a1187",
+    "rom_sha256": "bc7286dca750cf735480fece3ff68c7d86ecbf8391031b5ca2964da78fc945a1",
+    "field_table": "0x8801ed8",
+    "index": 15,
+    "template": "0x8814908",
+    "images": "0x88148c4",
+    "palette_tag": "0x1005",
+    "template_sha256": "d22e84b7c5a522e42cd15e33529ecaa376f2ab7dd206c6c1dbacd3effc417986",
+    "frames": [
+      {
+        "pointer": "0x87697e0",
+        "bytes": 128,
+        "sha256": "75146b7dbca803e85f139bb9fa9b7e17a92369d5785c6ba301d947d10273481f"
+      },
+      {
+        "pointer": "0x8769860",
+        "bytes": 128,
+        "sha256": "95b41af9904957a4ac9b19212fc6855796f8e6ba90aabf86a6b0cc9d7b1e2247"
+      },
+      {
+        "pointer": "0x87698e0",
+        "bytes": 128,
+        "sha256": "791665dd614bd6a76435fafcc5ca37cd8abf661abb078b90bcaeacb0f100f865"
+      },
+      {
+        "pointer": "0x8769960",
+        "bytes": 128,
+        "sha256": "2caf8906c1be35348e023c0230d420ccf322f52aedb83c2110cefd09bc9083e1"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Indexed source-frame contact sheets reviewed; own field-effect table and five semantic grass slots validated structurally"
+  },
+  {
+    "game": "modern-emerald",
+    "rom_crc32": "263a1187",
+    "rom_sha256": "bc7286dca750cf735480fece3ff68c7d86ecbf8391031b5ca2964da78fc945a1",
+    "field_table": "0x8801ed8",
+    "index": 16,
+    "template": "0x8814970",
+    "images": "0x8814920",
+    "palette_tag": "0x1005",
+    "template_sha256": "9b230cbe68c5fc5550fcdd4eb54246b5ae04a1fc8f7c0d200ceec2b92c23eee7",
+    "frames": [
+      {
+        "pointer": "0x8768e60",
+        "bytes": 128,
+        "sha256": "151aa542662b5eca787d3e1be21d988c3c62b3d47dee427aeeb97916e9f253e3"
+      },
+      {
+        "pointer": "0x8768ee0",
+        "bytes": 128,
+        "sha256": "f8754f163791c1c143f0c35ac625d430676cb53211ec844b110ac23209160c9c"
+      },
+      {
+        "pointer": "0x8768f60",
+        "bytes": 128,
+        "sha256": "2b3daf1f70e89ef1ae5a1949ca4ef62b7d096c3c06cd569d4188b6cf163d99d7"
+      },
+      {
+        "pointer": "0x8768fe0",
+        "bytes": 128,
+        "sha256": "13a36a8bf36540af57ddf16e8e07de7c18e26910a7f9d3246d9a5b767e79d1aa"
+      },
+      {
+        "pointer": "0x8769060",
+        "bytes": 128,
+        "sha256": "0738781e9b9a0e3b480473eb9e0f981ae211692f1ded24d70a3c09dc6279cddf"
+      },
+      {
+        "pointer": "0x8769160",
+        "bytes": 128,
+        "sha256": "5f973565acb4a9e4e596a8f587d596eff84054bc967bfe0a34340e886eec5b7a"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Indexed source-frame contact sheets reviewed; own field-effect table and five semantic grass slots validated structurally"
+  },
+  {
+    "game": "modern-emerald",
+    "rom_crc32": "263a1187",
+    "rom_sha256": "bc7286dca750cf735480fece3ff68c7d86ecbf8391031b5ca2964da78fc945a1",
+    "field_table": "0x8801ed8",
+    "index": 30,
+    "template": "0x8814e54",
+    "images": "0x8814e34",
+    "palette_tag": "0x1005",
+    "template_sha256": "5da7c8c96c8f58db389b5823471e35357a594bce51b1054bdb32e8b27ef1e2f4",
+    "frames": [
+      {
+        "pointer": "0x8769c60",
+        "bytes": 128,
+        "sha256": "b5f91160dba34f6c8d9e6fb611cbaf27a32ffb9e94a1b856a0d4f59c07e5237b"
+      },
+      {
+        "pointer": "0x8769ce0",
+        "bytes": 128,
+        "sha256": "a01897513bfaed76563b2b5dcfe0407112b13c654f8d9f26d15f18065d0684ed"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Indexed source-frame contact sheets reviewed; own field-effect table and five semantic grass slots validated structurally"
+  },
+  {
+    "game": "fakemon",
+    "rom_crc32": "5e704d77",
+    "rom_sha256": "05572f4dfbb96a1161a284292971d50c37e521d340bcecf48b574cca3dd8b4c6",
+    "field_table": "0x83a0010",
+    "index": 4,
+    "template": "0x83a5420",
+    "images": "0x83a53dc",
+    "palette_tag": "0x1005",
+    "template_sha256": "9cffc379cc85378fed5d3322158711413def5102df123344f65cfeaaedcee806",
+    "frames": [
+      {
+        "pointer": "0x839a008",
+        "bytes": 128,
+        "sha256": "a04fb0db353777d1af1a2dd586d497b37cec0019a55714507758b1f674ebc35b"
+      },
+      {
+        "pointer": "0x839a088",
+        "bytes": 128,
+        "sha256": "1f3519247d88961e304a9cb2a8db4e9740de6368bcb7fcda628631f93d5972ff"
+      },
+      {
+        "pointer": "0x839a108",
+        "bytes": 128,
+        "sha256": "af8ba5ddf1c92b8cdc2730532e839984681ebac2ce9428df8361bff8204045b0"
+      },
+      {
+        "pointer": "0x839a188",
+        "bytes": 128,
+        "sha256": "13e312fd8fc8f424d796db4d688b0b3232e9660001114ca9066053f537e706e9"
+      },
+      {
+        "pointer": "0x839a208",
+        "bytes": 128,
+        "sha256": "a820ceda1cf2ef42b2f9387f092a56d6f7cfbf2324a342e64cdd901647b5c372"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Indexed source-frame contact sheets reviewed; own field-effect table and five semantic grass slots validated structurally"
+  },
+  {
+    "game": "fakemon",
+    "rom_crc32": "5e704d77",
+    "rom_sha256": "05572f4dfbb96a1161a284292971d50c37e521d340bcecf48b574cca3dd8b4c6",
+    "field_table": "0x83a0010",
+    "index": 10,
+    "template": "0x83a5698",
+    "images": "0x83a5660",
+    "palette_tag": "0x1005",
+    "template_sha256": "3cd687037c658639687bc5007fb3654881fba6bf35673b9bd1840dee0fa5fb10",
+    "frames": [
+      {
+        "pointer": "0x8399188",
+        "bytes": 64,
+        "sha256": "701d2ff11d7dcfef2d22877421ba0a6bbe08f027a2b1953db1356c78a9713c68"
+      },
+      {
+        "pointer": "0x83991c8",
+        "bytes": 64,
+        "sha256": "55f6003ad4fbbe405e724ba31a18a199c9a6bfc2db59bc48b2a150520f7b057b"
+      },
+      {
+        "pointer": "0x8399208",
+        "bytes": 64,
+        "sha256": "3195a6f074889c8b1368e26d7e6a3b4e636a81103b3c9deded62c353f7d74279"
+      },
+      {
+        "pointer": "0x8399248",
+        "bytes": 64,
+        "sha256": "b8d661ad45a1a3f5d58dae8b25a1b8ca46ab85633b15870297075dd02e5b2243"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Indexed source-frame contact sheets reviewed; own field-effect table and five semantic grass slots validated structurally"
+  },
+  {
+    "game": "fakemon",
+    "rom_crc32": "5e704d77",
+    "rom_sha256": "05572f4dfbb96a1161a284292971d50c37e521d340bcecf48b574cca3dd8b4c6",
+    "field_table": "0x83a0010",
+    "index": 15,
+    "template": "0x83a593c",
+    "images": "0x83a58f8",
+    "palette_tag": "0x1005",
+    "template_sha256": "f2c32604e141935c7c5efe112f13009bcf9772064d791dd95fe93c1a5106d658",
+    "frames": [
+      {
+        "pointer": "0x8399e08",
+        "bytes": 128,
+        "sha256": "75146b7dbca803e85f139bb9fa9b7e17a92369d5785c6ba301d947d10273481f"
+      },
+      {
+        "pointer": "0x8399e88",
+        "bytes": 128,
+        "sha256": "95b41af9904957a4ac9b19212fc6855796f8e6ba90aabf86a6b0cc9d7b1e2247"
+      },
+      {
+        "pointer": "0x8399f08",
+        "bytes": 128,
+        "sha256": "791665dd614bd6a76435fafcc5ca37cd8abf661abb078b90bcaeacb0f100f865"
+      },
+      {
+        "pointer": "0x8399f88",
+        "bytes": 128,
+        "sha256": "2caf8906c1be35348e023c0230d420ccf322f52aedb83c2110cefd09bc9083e1"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Indexed source-frame contact sheets reviewed; own field-effect table and five semantic grass slots validated structurally"
+  },
+  {
+    "game": "fakemon",
+    "rom_crc32": "5e704d77",
+    "rom_sha256": "05572f4dfbb96a1161a284292971d50c37e521d340bcecf48b574cca3dd8b4c6",
+    "field_table": "0x83a0010",
+    "index": 16,
+    "template": "0x83a59a4",
+    "images": "0x83a5954",
+    "palette_tag": "0x1005",
+    "template_sha256": "25284128c380e678f4cfece894177142d439f9bbcce19408460cc00ed14a2f04",
+    "frames": [
+      {
+        "pointer": "0x8399488",
+        "bytes": 128,
+        "sha256": "151aa542662b5eca787d3e1be21d988c3c62b3d47dee427aeeb97916e9f253e3"
+      },
+      {
+        "pointer": "0x8399508",
+        "bytes": 128,
+        "sha256": "f8754f163791c1c143f0c35ac625d430676cb53211ec844b110ac23209160c9c"
+      },
+      {
+        "pointer": "0x8399588",
+        "bytes": 128,
+        "sha256": "2b3daf1f70e89ef1ae5a1949ca4ef62b7d096c3c06cd569d4188b6cf163d99d7"
+      },
+      {
+        "pointer": "0x8399608",
+        "bytes": 128,
+        "sha256": "13a36a8bf36540af57ddf16e8e07de7c18e26910a7f9d3246d9a5b767e79d1aa"
+      },
+      {
+        "pointer": "0x8399688",
+        "bytes": 128,
+        "sha256": "0738781e9b9a0e3b480473eb9e0f981ae211692f1ded24d70a3c09dc6279cddf"
+      },
+      {
+        "pointer": "0x8399788",
+        "bytes": 128,
+        "sha256": "5f973565acb4a9e4e596a8f587d596eff84054bc967bfe0a34340e886eec5b7a"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Indexed source-frame contact sheets reviewed; own field-effect table and five semantic grass slots validated structurally"
+  },
+  {
+    "game": "fakemon",
+    "rom_crc32": "5e704d77",
+    "rom_sha256": "05572f4dfbb96a1161a284292971d50c37e521d340bcecf48b574cca3dd8b4c6",
+    "field_table": "0x83a0010",
+    "index": 30,
+    "template": "0x83a5e38",
+    "images": "0x83a5e18",
+    "palette_tag": "0x1005",
+    "template_sha256": "0e956e02a7d9ed5714be7ffea398b5f32f29eb60e8e0c6e03dff99d8d23560b1",
+    "frames": [
+      {
+        "pointer": "0x839a288",
+        "bytes": 128,
+        "sha256": "b5f91160dba34f6c8d9e6fb611cbaf27a32ffb9e94a1b856a0d4f59c07e5237b"
+      },
+      {
+        "pointer": "0x839a308",
+        "bytes": 128,
+        "sha256": "a01897513bfaed76563b2b5dcfe0407112b13c654f8d9f26d15f18065d0684ed"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Indexed source-frame contact sheets reviewed; own field-effect table and five semantic grass slots validated structurally"
+  },
+  {
+    "game": "lazarus",
+    "rom_crc32": "558ae42f",
+    "rom_sha256": "d756b2783dede0bb2c534d1f07713bef733cf53500388e3912f14220a7e16e97",
+    "field_table": "0x87ad0dc",
+    "index": 4,
+    "template": "0x87b7cf0",
+    "images": "0x87b7cac",
+    "palette_tag": "0x1005",
+    "template_sha256": "fb7f62a9216548ebb5f84989e9f3ea33e40915e46c63a172a1042c58a4c26dfa",
+    "frames": [
+      {
+        "pointer": "0x86699b0",
+        "bytes": 128,
+        "sha256": "ad2e47ba4349ccc3b655e4e0d86192cd05d03c3336f5d57b4a834026126ea7b7"
+      },
+      {
+        "pointer": "0x8669a30",
+        "bytes": 128,
+        "sha256": "82dc32b32547332088304b981837ef29d3453892e41a0e982cfd6923c41ca047"
+      },
+      {
+        "pointer": "0x8669ab0",
+        "bytes": 128,
+        "sha256": "232579da8a28f38c89720d52c98d9c3a3dea826779c7cf7fb62ade28dc81a0a2"
+      },
+      {
+        "pointer": "0x8669b30",
+        "bytes": 128,
+        "sha256": "8ac8dab0c48b95e1882ace9d398bee952a7d86d0c3a2a28374b31b9524477979"
+      },
+      {
+        "pointer": "0x8669bb0",
+        "bytes": 128,
+        "sha256": "4d4c5546df8fd2ad5d9ea4d73c1e3f9acaac435dd1a29b3ae1c964ff234d7314"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Indexed source-frame contact sheets reviewed; own field-effect table and five semantic grass slots validated structurally"
+  },
+  {
+    "game": "lazarus",
+    "rom_crc32": "558ae42f",
+    "rom_sha256": "d756b2783dede0bb2c534d1f07713bef733cf53500388e3912f14220a7e16e97",
+    "field_table": "0x87ad0dc",
+    "index": 10,
+    "template": "0x87b7f40",
+    "images": "0x87b7f08",
+    "palette_tag": "0x1005",
+    "template_sha256": "bd4e063e6fd7332f643fb390f23cad781c63f4091c446d06c443e4b5e35a12b3",
+    "frames": [
+      {
+        "pointer": "0x8668b30",
+        "bytes": 64,
+        "sha256": "701d2ff11d7dcfef2d22877421ba0a6bbe08f027a2b1953db1356c78a9713c68"
+      },
+      {
+        "pointer": "0x8668b70",
+        "bytes": 64,
+        "sha256": "55f6003ad4fbbe405e724ba31a18a199c9a6bfc2db59bc48b2a150520f7b057b"
+      },
+      {
+        "pointer": "0x8668bb0",
+        "bytes": 64,
+        "sha256": "3195a6f074889c8b1368e26d7e6a3b4e636a81103b3c9deded62c353f7d74279"
+      },
+      {
+        "pointer": "0x8668bf0",
+        "bytes": 64,
+        "sha256": "b8d661ad45a1a3f5d58dae8b25a1b8ca46ab85633b15870297075dd02e5b2243"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Indexed source-frame contact sheets reviewed; own field-effect table and five semantic grass slots validated structurally"
+  },
+  {
+    "game": "lazarus",
+    "rom_crc32": "558ae42f",
+    "rom_sha256": "d756b2783dede0bb2c534d1f07713bef733cf53500388e3912f14220a7e16e97",
+    "field_table": "0x87ad0dc",
+    "index": 15,
+    "template": "0x87b826c",
+    "images": "0x87b8228",
+    "palette_tag": "0x1005",
+    "template_sha256": "573f1103e6b7df4b251d2a8ceb63c5c869e83498a1b86676db48c85c20e25a69",
+    "frames": [
+      {
+        "pointer": "0x86697b0",
+        "bytes": 128,
+        "sha256": "75146b7dbca803e85f139bb9fa9b7e17a92369d5785c6ba301d947d10273481f"
+      },
+      {
+        "pointer": "0x8669830",
+        "bytes": 128,
+        "sha256": "95b41af9904957a4ac9b19212fc6855796f8e6ba90aabf86a6b0cc9d7b1e2247"
+      },
+      {
+        "pointer": "0x86698b0",
+        "bytes": 128,
+        "sha256": "791665dd614bd6a76435fafcc5ca37cd8abf661abb078b90bcaeacb0f100f865"
+      },
+      {
+        "pointer": "0x8669930",
+        "bytes": 128,
+        "sha256": "2caf8906c1be35348e023c0230d420ccf322f52aedb83c2110cefd09bc9083e1"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Indexed source-frame contact sheets reviewed; own field-effect table and five semantic grass slots validated structurally"
+  },
+  {
+    "game": "lazarus",
+    "rom_crc32": "558ae42f",
+    "rom_sha256": "d756b2783dede0bb2c534d1f07713bef733cf53500388e3912f14220a7e16e97",
+    "field_table": "0x87ad0dc",
+    "index": 16,
+    "template": "0x87b82d4",
+    "images": "0x87b8284",
+    "palette_tag": "0x1005",
+    "template_sha256": "1b3187c68dabc5c18fdb5d7da8dcd613746db00f69590fe84a54996b0166ee73",
+    "frames": [
+      {
+        "pointer": "0x8668e30",
+        "bytes": 128,
+        "sha256": "1f843f499b6ef997e38876c5be97bca48111725fa7804df606ddb91a630b2f94"
+      },
+      {
+        "pointer": "0x8668eb0",
+        "bytes": 128,
+        "sha256": "5b2984d943ba582d595b8deaaf22acd5edc5d51d1c495ec68a5f82810a933310"
+      },
+      {
+        "pointer": "0x8668f30",
+        "bytes": 128,
+        "sha256": "1f843f499b6ef997e38876c5be97bca48111725fa7804df606ddb91a630b2f94"
+      },
+      {
+        "pointer": "0x8668fb0",
+        "bytes": 128,
+        "sha256": "5b2984d943ba582d595b8deaaf22acd5edc5d51d1c495ec68a5f82810a933310"
+      },
+      {
+        "pointer": "0x8669030",
+        "bytes": 128,
+        "sha256": "1f843f499b6ef997e38876c5be97bca48111725fa7804df606ddb91a630b2f94"
+      },
+      {
+        "pointer": "0x8669130",
+        "bytes": 128,
+        "sha256": "c00ca2227e2abf98ca7b2ad031c7a7b993dca33757dfb1e31c2ae2810d0449ed"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Indexed source-frame contact sheets reviewed; own field-effect table and five semantic grass slots validated structurally"
+  },
+  {
+    "game": "lazarus",
+    "rom_crc32": "558ae42f",
+    "rom_sha256": "d756b2783dede0bb2c534d1f07713bef733cf53500388e3912f14220a7e16e97",
+    "field_table": "0x87ad0dc",
+    "index": 30,
+    "template": "0x87b87b8",
+    "images": "0x87b8798",
+    "palette_tag": "0x1005",
+    "template_sha256": "f6de4d71d2b3cc2170d30203e4637c6310c3233481b1aff69947ecff1bed6107",
+    "frames": [
+      {
+        "pointer": "0x8669c30",
+        "bytes": 128,
+        "sha256": "b5f91160dba34f6c8d9e6fb611cbaf27a32ffb9e94a1b856a0d4f59c07e5237b"
+      },
+      {
+        "pointer": "0x8669cb0",
+        "bytes": 128,
+        "sha256": "a01897513bfaed76563b2b5dcfe0407112b13c654f8d9f26d15f18065d0684ed"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Indexed source-frame contact sheets reviewed; own field-effect table and five semantic grass slots validated structurally"
+  },
+  {
+    "game": "dragonsden",
+    "rom_crc32": "cec21496",
+    "rom_sha256": "6ca88c3ecd54c78bf8a8cbb80f2b9ab049d66d4b070e97849cf4073ee8d2f15c",
+    "field_table": "0x8b95644",
+    "index": 4,
+    "template": "0x8ba5884",
+    "images": "0x8ba5840",
+    "palette_tag": "0x1005",
+    "template_sha256": "32f693601bc98a079f7818be7ca417c8913217c20fb2d2eeb46eb294257872aa",
+    "frames": [
+      {
+        "pointer": "0x8ab31e4",
+        "bytes": 128,
+        "sha256": "7f11635e095fe524064d873e1159d7cf0bf13705fa0529e5eeef06a71aa6d633"
+      },
+      {
+        "pointer": "0x8ab3264",
+        "bytes": 128,
+        "sha256": "ac690d34e2ee6d6650c932c21bda556956308edff9794ade258747fad3195e49"
+      },
+      {
+        "pointer": "0x8ab32e4",
+        "bytes": 128,
+        "sha256": "8cbd438db90ebd212f53a4059dcfb100758ea35656cf6d07f3cf736f834786c3"
+      },
+      {
+        "pointer": "0x8ab3364",
+        "bytes": 128,
+        "sha256": "68c73bcc7dc9db507b4cbb761eed3c38746a5a82335f72189b6405187dbe909b"
+      },
+      {
+        "pointer": "0x8ab33e4",
+        "bytes": 128,
+        "sha256": "32f6e0f3a9064e6a63f6e834ffaf3ad885eaa5b8734ef69719b181cb59a553f8"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Indexed source-frame contact sheets reviewed; own field-effect table and five semantic grass slots validated structurally"
+  },
+  {
+    "game": "dragonsden",
+    "rom_crc32": "cec21496",
+    "rom_sha256": "6ca88c3ecd54c78bf8a8cbb80f2b9ab049d66d4b070e97849cf4073ee8d2f15c",
+    "field_table": "0x8b95644",
+    "index": 10,
+    "template": "0x8ba5ad4",
+    "images": "0x8ba5a9c",
+    "palette_tag": "0x1005",
+    "template_sha256": "df6c9ae206f7d20a73ec568deaa496a6ab199ce12ae3ed5c9aa9699db42f53c4",
+    "frames": [
+      {
+        "pointer": "0x8ab2364",
+        "bytes": 64,
+        "sha256": "701d2ff11d7dcfef2d22877421ba0a6bbe08f027a2b1953db1356c78a9713c68"
+      },
+      {
+        "pointer": "0x8ab23a4",
+        "bytes": 64,
+        "sha256": "55f6003ad4fbbe405e724ba31a18a199c9a6bfc2db59bc48b2a150520f7b057b"
+      },
+      {
+        "pointer": "0x8ab23e4",
+        "bytes": 64,
+        "sha256": "3195a6f074889c8b1368e26d7e6a3b4e636a81103b3c9deded62c353f7d74279"
+      },
+      {
+        "pointer": "0x8ab2424",
+        "bytes": 64,
+        "sha256": "b8d661ad45a1a3f5d58dae8b25a1b8ca46ab85633b15870297075dd02e5b2243"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Indexed source-frame contact sheets reviewed; own field-effect table and five semantic grass slots validated structurally"
+  },
+  {
+    "game": "dragonsden",
+    "rom_crc32": "cec21496",
+    "rom_sha256": "6ca88c3ecd54c78bf8a8cbb80f2b9ab049d66d4b070e97849cf4073ee8d2f15c",
+    "field_table": "0x8b95644",
+    "index": 15,
+    "template": "0x8ba5d78",
+    "images": "0x8ba5d34",
+    "palette_tag": "0x1005",
+    "template_sha256": "cf6958b4038174b97e68eefeafde5fc0194a6f6e5b010d8581460eb570b3cbb3",
+    "frames": [
+      {
+        "pointer": "0x8ab2fe4",
+        "bytes": 128,
+        "sha256": "75146b7dbca803e85f139bb9fa9b7e17a92369d5785c6ba301d947d10273481f"
+      },
+      {
+        "pointer": "0x8ab3064",
+        "bytes": 128,
+        "sha256": "95b41af9904957a4ac9b19212fc6855796f8e6ba90aabf86a6b0cc9d7b1e2247"
+      },
+      {
+        "pointer": "0x8ab30e4",
+        "bytes": 128,
+        "sha256": "791665dd614bd6a76435fafcc5ca37cd8abf661abb078b90bcaeacb0f100f865"
+      },
+      {
+        "pointer": "0x8ab3164",
+        "bytes": 128,
+        "sha256": "2caf8906c1be35348e023c0230d420ccf322f52aedb83c2110cefd09bc9083e1"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Indexed source-frame contact sheets reviewed; own field-effect table and five semantic grass slots validated structurally"
+  },
+  {
+    "game": "dragonsden",
+    "rom_crc32": "cec21496",
+    "rom_sha256": "6ca88c3ecd54c78bf8a8cbb80f2b9ab049d66d4b070e97849cf4073ee8d2f15c",
+    "field_table": "0x8b95644",
+    "index": 16,
+    "template": "0x8ba5de0",
+    "images": "0x8ba5d90",
+    "palette_tag": "0x1005",
+    "template_sha256": "16de68114a22ded83662e44026fe76c06fe5db1e47014bfec65d4f2040ba8651",
+    "frames": [
+      {
+        "pointer": "0x8ab2664",
+        "bytes": 128,
+        "sha256": "151aa542662b5eca787d3e1be21d988c3c62b3d47dee427aeeb97916e9f253e3"
+      },
+      {
+        "pointer": "0x8ab26e4",
+        "bytes": 128,
+        "sha256": "f8754f163791c1c143f0c35ac625d430676cb53211ec844b110ac23209160c9c"
+      },
+      {
+        "pointer": "0x8ab2764",
+        "bytes": 128,
+        "sha256": "2b3daf1f70e89ef1ae5a1949ca4ef62b7d096c3c06cd569d4188b6cf163d99d7"
+      },
+      {
+        "pointer": "0x8ab27e4",
+        "bytes": 128,
+        "sha256": "13a36a8bf36540af57ddf16e8e07de7c18e26910a7f9d3246d9a5b767e79d1aa"
+      },
+      {
+        "pointer": "0x8ab2864",
+        "bytes": 128,
+        "sha256": "0738781e9b9a0e3b480473eb9e0f981ae211692f1ded24d70a3c09dc6279cddf"
+      },
+      {
+        "pointer": "0x8ab2964",
+        "bytes": 128,
+        "sha256": "5f973565acb4a9e4e596a8f587d596eff84054bc967bfe0a34340e886eec5b7a"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Indexed source-frame contact sheets reviewed; own field-effect table and five semantic grass slots validated structurally"
+  },
+  {
+    "game": "dragonsden",
+    "rom_crc32": "cec21496",
+    "rom_sha256": "6ca88c3ecd54c78bf8a8cbb80f2b9ab049d66d4b070e97849cf4073ee8d2f15c",
+    "field_table": "0x8b95644",
+    "index": 30,
+    "template": "0x8ba62c4",
+    "images": "0x8ba62a4",
+    "palette_tag": "0x1005",
+    "template_sha256": "4b6672a7fd1ba10dc2d159e5b555e3558afd72b069ca0e5dace93ad68d1c1da6",
+    "frames": [
+      {
+        "pointer": "0x8ab3464",
+        "bytes": 128,
+        "sha256": "b5f91160dba34f6c8d9e6fb611cbaf27a32ffb9e94a1b856a0d4f59c07e5237b"
+      },
+      {
+        "pointer": "0x8ab34e4",
+        "bytes": 128,
+        "sha256": "a01897513bfaed76563b2b5dcfe0407112b13c654f8d9f26d15f18065d0684ed"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Indexed source-frame contact sheets reviewed; own field-effect table and five semantic grass slots validated structurally"
+  },
+  {
+    "game": "ash-gray",
+    "rom_crc32": "63478921",
+    "rom_sha256": "a08055484c8366768d3e98e2dbed0998641abd2899ffbfc8d7f132925875f7a1",
+    "field_table": "0x83a0010",
+    "index": 4,
+    "template": "0x83a5420",
+    "images": "0x83a53dc",
+    "palette_tag": "0x1005",
+    "template_sha256": "9cffc379cc85378fed5d3322158711413def5102df123344f65cfeaaedcee806",
+    "frames": [
+      {
+        "pointer": "0x839a008",
+        "bytes": 128,
+        "sha256": "d6632207387b8a0c865ef2d638b3d08dcf1eb0535059679eb28efbdd0317e66d"
+      },
+      {
+        "pointer": "0x839a088",
+        "bytes": 128,
+        "sha256": "a9a562f1d347e553d995471234369f9f46218c368a2bdab0ba950f1d8eab1259"
+      },
+      {
+        "pointer": "0x839a108",
+        "bytes": 128,
+        "sha256": "a94147875b50b52153e33828f312a2e9ef29e6e80fe822d3ee2de91389119dce"
+      },
+      {
+        "pointer": "0x839a188",
+        "bytes": 128,
+        "sha256": "406378197d4c06306a4baba8c83507927e6d3ed5406bfb1c6f778558c37a3b05"
+      },
+      {
+        "pointer": "0x839a208",
+        "bytes": 128,
+        "sha256": "212b3a4c5011b61f477767a4124ecf09933d15f23acb6156e06d23f22d8bffa2"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Indexed source-frame contact sheets reviewed; own field-effect table and five semantic grass slots validated structurally; palette0x08398fc8 colored review confirms grass in4/10/16"
+  },
+  {
+    "game": "ash-gray",
+    "rom_crc32": "63478921",
+    "rom_sha256": "a08055484c8366768d3e98e2dbed0998641abd2899ffbfc8d7f132925875f7a1",
+    "field_table": "0x83a0010",
+    "index": 10,
+    "template": "0x83a5698",
+    "images": "0x83a5660",
+    "palette_tag": "0x1005",
+    "template_sha256": "3cd687037c658639687bc5007fb3654881fba6bf35673b9bd1840dee0fa5fb10",
+    "frames": [
+      {
+        "pointer": "0x8399188",
+        "bytes": 64,
+        "sha256": "f3d6fe9bebf20882d4e271c248182013063268693470d77cde6a89c017bfc848"
+      },
+      {
+        "pointer": "0x83991c8",
+        "bytes": 64,
+        "sha256": "5926fce11b8557e45fdbcba72d1eb56651537d8b954921a043ff8b8139d69d97"
+      },
+      {
+        "pointer": "0x8399208",
+        "bytes": 64,
+        "sha256": "cac865e5ff365c436e0b851586c3e11934d2a599a389bf5acc826e7569486a87"
+      },
+      {
+        "pointer": "0x8399248",
+        "bytes": 64,
+        "sha256": "f5a5fd42d16a20302798ef6ed309979b43003d2320d9f0e8ea9831a92759fb4b"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Indexed source-frame contact sheets reviewed; own field-effect table and five semantic grass slots validated structurally; palette0x08398fc8 colored review confirms grass in4/10/16"
+  },
+  {
+    "game": "ash-gray",
+    "rom_crc32": "63478921",
+    "rom_sha256": "a08055484c8366768d3e98e2dbed0998641abd2899ffbfc8d7f132925875f7a1",
+    "field_table": "0x83a0010",
+    "index": 15,
+    "template": "0x83a593c",
+    "images": "0x83a58f8",
+    "palette_tag": "0x1005",
+    "template_sha256": "f2c32604e141935c7c5efe112f13009bcf9772064d791dd95fe93c1a5106d658",
+    "frames": [
+      {
+        "pointer": "0x8399e08",
+        "bytes": 128,
+        "sha256": "66301302810f331e4025a2bd8d42e385a8c97d21835e002e7c9cf9d59f3e565d"
+      },
+      {
+        "pointer": "0x8399e88",
+        "bytes": 128,
+        "sha256": "66301302810f331e4025a2bd8d42e385a8c97d21835e002e7c9cf9d59f3e565d"
+      },
+      {
+        "pointer": "0x8399f08",
+        "bytes": 128,
+        "sha256": "66301302810f331e4025a2bd8d42e385a8c97d21835e002e7c9cf9d59f3e565d"
+      },
+      {
+        "pointer": "0x8399f88",
+        "bytes": 128,
+        "sha256": "367d0890cb9f66645bd8b546432c724d500216f8991c14b58689867fa68c3cbf"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": false,
+    "review": "Indexed source-frame contact sheets reviewed; own field-effect table and five semantic grass slots validated structurally; palette0x08398fc8 colored review confirms grass in4/10/16",
+    "exclusion": "White ground-like replacement artwork in15/30; no verified green foliage identity"
+  },
+  {
+    "game": "ash-gray",
+    "rom_crc32": "63478921",
+    "rom_sha256": "a08055484c8366768d3e98e2dbed0998641abd2899ffbfc8d7f132925875f7a1",
+    "field_table": "0x83a0010",
+    "index": 16,
+    "template": "0x83a59a4",
+    "images": "0x83a5954",
+    "palette_tag": "0x1005",
+    "template_sha256": "25284128c380e678f4cfece894177142d439f9bbcce19408460cc00ed14a2f04",
+    "frames": [
+      {
+        "pointer": "0x8399488",
+        "bytes": 128,
+        "sha256": "ba8845aa21ded4e2a0d2dfc78c20edaf1ca5a52bcf3f9e7f7b264069f82f5c4c"
+      },
+      {
+        "pointer": "0x8399508",
+        "bytes": 128,
+        "sha256": "ba8845aa21ded4e2a0d2dfc78c20edaf1ca5a52bcf3f9e7f7b264069f82f5c4c"
+      },
+      {
+        "pointer": "0x8399588",
+        "bytes": 128,
+        "sha256": "ba8845aa21ded4e2a0d2dfc78c20edaf1ca5a52bcf3f9e7f7b264069f82f5c4c"
+      },
+      {
+        "pointer": "0x8399608",
+        "bytes": 128,
+        "sha256": "13a36a8bf36540af57ddf16e8e07de7c18e26910a7f9d3246d9a5b767e79d1aa"
+      },
+      {
+        "pointer": "0x8399688",
+        "bytes": 128,
+        "sha256": "0738781e9b9a0e3b480473eb9e0f981ae211692f1ded24d70a3c09dc6279cddf"
+      },
+      {
+        "pointer": "0x8399788",
+        "bytes": 128,
+        "sha256": "5f973565acb4a9e4e596a8f587d596eff84054bc967bfe0a34340e886eec5b7a"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Indexed source-frame contact sheets reviewed; own field-effect table and five semantic grass slots validated structurally; palette0x08398fc8 colored review confirms grass in4/10/16"
+  },
+  {
+    "game": "ash-gray",
+    "rom_crc32": "63478921",
+    "rom_sha256": "a08055484c8366768d3e98e2dbed0998641abd2899ffbfc8d7f132925875f7a1",
+    "field_table": "0x83a0010",
+    "index": 30,
+    "template": "0x83a5e38",
+    "images": "0x83a5e18",
+    "palette_tag": "0x1005",
+    "template_sha256": "0e956e02a7d9ed5714be7ffea398b5f32f29eb60e8e0c6e03dff99d8d23560b1",
+    "frames": [
+      {
+        "pointer": "0x839a288",
+        "bytes": 128,
+        "sha256": "dc0460e2a01c826728d99cd182e55762afea737c52c907fdbc3561dd4f94eabc"
+      },
+      {
+        "pointer": "0x839a308",
+        "bytes": 128,
+        "sha256": "3e2e298e7c44a32acc3f994a5827c217f37a023643f3eb5fe5f477f9224f7536"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": false,
+    "review": "Indexed source-frame contact sheets reviewed; own field-effect table and five semantic grass slots validated structurally; palette0x08398fc8 colored review confirms grass in4/10/16",
+    "exclusion": "White ground-like replacement artwork in15/30; no verified green foliage identity"
+  },
+  {
+    "game": "gaia",
+    "rom_crc32": "b9465c5a",
+    "rom_sha256": "186a36cd389aecf10fb9ba112e7340fd81127fcb23d9564294df80b1e1473ab5",
+    "field_table": "0x83a0010",
+    "index": 4,
+    "template": "0x83a5420",
+    "images": "0x83a53dc",
+    "palette_tag": "0x1009",
+    "template_sha256": "112e9f73b55e56c0a96057ebd4f133789b5e1bb51f481b14e6b5d9681f77f896",
+    "frames": [
+      {
+        "pointer": "0x839a008",
+        "bytes": 128,
+        "sha256": "a04fb0db353777d1af1a2dd586d497b37cec0019a55714507758b1f674ebc35b"
+      },
+      {
+        "pointer": "0x839a088",
+        "bytes": 128,
+        "sha256": "1f3519247d88961e304a9cb2a8db4e9740de6368bcb7fcda628631f93d5972ff"
+      },
+      {
+        "pointer": "0x839a108",
+        "bytes": 128,
+        "sha256": "af8ba5ddf1c92b8cdc2730532e839984681ebac2ce9428df8361bff8204045b0"
+      },
+      {
+        "pointer": "0x839a188",
+        "bytes": 128,
+        "sha256": "13e312fd8fc8f424d796db4d688b0b3232e9660001114ca9066053f537e706e9"
+      },
+      {
+        "pointer": "0x839a208",
+        "bytes": 128,
+        "sha256": "a820ceda1cf2ef42b2f9387f092a56d6f7cfbf2324a342e64cdd901647b5c372"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Indexed source-frame contact sheets reviewed; own field-effect table and five semantic grass slots validated structurally"
+  },
+  {
+    "game": "gaia",
+    "rom_crc32": "b9465c5a",
+    "rom_sha256": "186a36cd389aecf10fb9ba112e7340fd81127fcb23d9564294df80b1e1473ab5",
+    "field_table": "0x83a0010",
+    "index": 10,
+    "template": "0x83a5698",
+    "images": "0x83a5660",
+    "palette_tag": "0x1005",
+    "template_sha256": "3cd687037c658639687bc5007fb3654881fba6bf35673b9bd1840dee0fa5fb10",
+    "frames": [
+      {
+        "pointer": "0x8399188",
+        "bytes": 64,
+        "sha256": "701d2ff11d7dcfef2d22877421ba0a6bbe08f027a2b1953db1356c78a9713c68"
+      },
+      {
+        "pointer": "0x83991c8",
+        "bytes": 64,
+        "sha256": "55f6003ad4fbbe405e724ba31a18a199c9a6bfc2db59bc48b2a150520f7b057b"
+      },
+      {
+        "pointer": "0x8399208",
+        "bytes": 64,
+        "sha256": "3195a6f074889c8b1368e26d7e6a3b4e636a81103b3c9deded62c353f7d74279"
+      },
+      {
+        "pointer": "0x8399248",
+        "bytes": 64,
+        "sha256": "b8d661ad45a1a3f5d58dae8b25a1b8ca46ab85633b15870297075dd02e5b2243"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Indexed source-frame contact sheets reviewed; own field-effect table and five semantic grass slots validated structurally"
+  },
+  {
+    "game": "gaia",
+    "rom_crc32": "b9465c5a",
+    "rom_sha256": "186a36cd389aecf10fb9ba112e7340fd81127fcb23d9564294df80b1e1473ab5",
+    "field_table": "0x83a0010",
+    "index": 15,
+    "template": "0x83a593c",
+    "images": "0x83a58f8",
+    "palette_tag": "0x1009",
+    "template_sha256": "8c0efaadff470ea26ceddad8e03d3fbfb66ef9cc113a56febd35c9ccb5372633",
+    "frames": [
+      {
+        "pointer": "0x8399e08",
+        "bytes": 128,
+        "sha256": "75146b7dbca803e85f139bb9fa9b7e17a92369d5785c6ba301d947d10273481f"
+      },
+      {
+        "pointer": "0x8399e88",
+        "bytes": 128,
+        "sha256": "95b41af9904957a4ac9b19212fc6855796f8e6ba90aabf86a6b0cc9d7b1e2247"
+      },
+      {
+        "pointer": "0x8399f08",
+        "bytes": 128,
+        "sha256": "791665dd614bd6a76435fafcc5ca37cd8abf661abb078b90bcaeacb0f100f865"
+      },
+      {
+        "pointer": "0x8399f88",
+        "bytes": 128,
+        "sha256": "2caf8906c1be35348e023c0230d420ccf322f52aedb83c2110cefd09bc9083e1"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Indexed source-frame contact sheets reviewed; own field-effect table and five semantic grass slots validated structurally"
+  },
+  {
+    "game": "gaia",
+    "rom_crc32": "b9465c5a",
+    "rom_sha256": "186a36cd389aecf10fb9ba112e7340fd81127fcb23d9564294df80b1e1473ab5",
+    "field_table": "0x83a0010",
+    "index": 16,
+    "template": "0x83a59a4",
+    "images": "0x83a5954",
+    "palette_tag": "0x1005",
+    "template_sha256": "25284128c380e678f4cfece894177142d439f9bbcce19408460cc00ed14a2f04",
+    "frames": [
+      {
+        "pointer": "0x8399488",
+        "bytes": 128,
+        "sha256": "151aa542662b5eca787d3e1be21d988c3c62b3d47dee427aeeb97916e9f253e3"
+      },
+      {
+        "pointer": "0x8399508",
+        "bytes": 128,
+        "sha256": "f8754f163791c1c143f0c35ac625d430676cb53211ec844b110ac23209160c9c"
+      },
+      {
+        "pointer": "0x8399588",
+        "bytes": 128,
+        "sha256": "2b3daf1f70e89ef1ae5a1949ca4ef62b7d096c3c06cd569d4188b6cf163d99d7"
+      },
+      {
+        "pointer": "0x8399608",
+        "bytes": 128,
+        "sha256": "13a36a8bf36540af57ddf16e8e07de7c18e26910a7f9d3246d9a5b767e79d1aa"
+      },
+      {
+        "pointer": "0x8399688",
+        "bytes": 128,
+        "sha256": "0738781e9b9a0e3b480473eb9e0f981ae211692f1ded24d70a3c09dc6279cddf"
+      },
+      {
+        "pointer": "0x8399788",
+        "bytes": 128,
+        "sha256": "5f973565acb4a9e4e596a8f587d596eff84054bc967bfe0a34340e886eec5b7a"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Indexed source-frame contact sheets reviewed; own field-effect table and five semantic grass slots validated structurally"
+  },
+  {
+    "game": "gaia",
+    "rom_crc32": "b9465c5a",
+    "rom_sha256": "186a36cd389aecf10fb9ba112e7340fd81127fcb23d9564294df80b1e1473ab5",
+    "field_table": "0x83a0010",
+    "index": 30,
+    "template": "0x83a5e38",
+    "images": "0x83a5e18",
+    "palette_tag": "0x1005",
+    "template_sha256": "0e956e02a7d9ed5714be7ffea398b5f32f29eb60e8e0c6e03dff99d8d23560b1",
+    "frames": [
+      {
+        "pointer": "0x839a288",
+        "bytes": 128,
+        "sha256": "b5f91160dba34f6c8d9e6fb611cbaf27a32ffb9e94a1b856a0d4f59c07e5237b"
+      },
+      {
+        "pointer": "0x839a308",
+        "bytes": 128,
+        "sha256": "a01897513bfaed76563b2b5dcfe0407112b13c654f8d9f26d15f18065d0684ed"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Indexed source-frame contact sheets reviewed; own field-effect table and five semantic grass slots validated structurally"
+  },
+  {
+    "game": "rocket",
+    "rom_crc32": "f2d16ebd",
+    "rom_sha256": "e6f232d0df265323c995e6025fe0ebcc532dfaf7634548a13ee9fb5673152442",
+    "field_table": "0x83a0010",
+    "index": 4,
+    "template": "0x83a5420",
+    "images": "0x83a53dc",
+    "palette_tag": "0x1005",
+    "template_sha256": "9cffc379cc85378fed5d3322158711413def5102df123344f65cfeaaedcee806",
+    "frames": [
+      {
+        "pointer": "0x839a008",
+        "bytes": 128,
+        "sha256": "a04fb0db353777d1af1a2dd586d497b37cec0019a55714507758b1f674ebc35b"
+      },
+      {
+        "pointer": "0x839a088",
+        "bytes": 128,
+        "sha256": "1f3519247d88961e304a9cb2a8db4e9740de6368bcb7fcda628631f93d5972ff"
+      },
+      {
+        "pointer": "0x839a108",
+        "bytes": 128,
+        "sha256": "af8ba5ddf1c92b8cdc2730532e839984681ebac2ce9428df8361bff8204045b0"
+      },
+      {
+        "pointer": "0x839a188",
+        "bytes": 128,
+        "sha256": "13e312fd8fc8f424d796db4d688b0b3232e9660001114ca9066053f537e706e9"
+      },
+      {
+        "pointer": "0x839a208",
+        "bytes": 128,
+        "sha256": "a820ceda1cf2ef42b2f9387f092a56d6f7cfbf2324a342e64cdd901647b5c372"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Indexed source-frame contact sheets reviewed; own field-effect table and five semantic grass slots validated structurally"
+  },
+  {
+    "game": "rocket",
+    "rom_crc32": "f2d16ebd",
+    "rom_sha256": "e6f232d0df265323c995e6025fe0ebcc532dfaf7634548a13ee9fb5673152442",
+    "field_table": "0x83a0010",
+    "index": 10,
+    "template": "0x83a5698",
+    "images": "0x83a5660",
+    "palette_tag": "0x1005",
+    "template_sha256": "3cd687037c658639687bc5007fb3654881fba6bf35673b9bd1840dee0fa5fb10",
+    "frames": [
+      {
+        "pointer": "0x8399188",
+        "bytes": 64,
+        "sha256": "701d2ff11d7dcfef2d22877421ba0a6bbe08f027a2b1953db1356c78a9713c68"
+      },
+      {
+        "pointer": "0x83991c8",
+        "bytes": 64,
+        "sha256": "55f6003ad4fbbe405e724ba31a18a199c9a6bfc2db59bc48b2a150520f7b057b"
+      },
+      {
+        "pointer": "0x8399208",
+        "bytes": 64,
+        "sha256": "3195a6f074889c8b1368e26d7e6a3b4e636a81103b3c9deded62c353f7d74279"
+      },
+      {
+        "pointer": "0x8399248",
+        "bytes": 64,
+        "sha256": "b8d661ad45a1a3f5d58dae8b25a1b8ca46ab85633b15870297075dd02e5b2243"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Indexed source-frame contact sheets reviewed; own field-effect table and five semantic grass slots validated structurally"
+  },
+  {
+    "game": "rocket",
+    "rom_crc32": "f2d16ebd",
+    "rom_sha256": "e6f232d0df265323c995e6025fe0ebcc532dfaf7634548a13ee9fb5673152442",
+    "field_table": "0x83a0010",
+    "index": 15,
+    "template": "0x83a593c",
+    "images": "0x83a58f8",
+    "palette_tag": "0x1005",
+    "template_sha256": "f2c32604e141935c7c5efe112f13009bcf9772064d791dd95fe93c1a5106d658",
+    "frames": [
+      {
+        "pointer": "0x8399e08",
+        "bytes": 128,
+        "sha256": "75146b7dbca803e85f139bb9fa9b7e17a92369d5785c6ba301d947d10273481f"
+      },
+      {
+        "pointer": "0x8399e88",
+        "bytes": 128,
+        "sha256": "95b41af9904957a4ac9b19212fc6855796f8e6ba90aabf86a6b0cc9d7b1e2247"
+      },
+      {
+        "pointer": "0x8399f08",
+        "bytes": 128,
+        "sha256": "791665dd614bd6a76435fafcc5ca37cd8abf661abb078b90bcaeacb0f100f865"
+      },
+      {
+        "pointer": "0x8399f88",
+        "bytes": 128,
+        "sha256": "2caf8906c1be35348e023c0230d420ccf322f52aedb83c2110cefd09bc9083e1"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Indexed source-frame contact sheets reviewed; own field-effect table and five semantic grass slots validated structurally"
+  },
+  {
+    "game": "rocket",
+    "rom_crc32": "f2d16ebd",
+    "rom_sha256": "e6f232d0df265323c995e6025fe0ebcc532dfaf7634548a13ee9fb5673152442",
+    "field_table": "0x83a0010",
+    "index": 16,
+    "template": "0x83a59a4",
+    "images": "0x83a5954",
+    "palette_tag": "0x1005",
+    "template_sha256": "25284128c380e678f4cfece894177142d439f9bbcce19408460cc00ed14a2f04",
+    "frames": [
+      {
+        "pointer": "0x8399488",
+        "bytes": 128,
+        "sha256": "151aa542662b5eca787d3e1be21d988c3c62b3d47dee427aeeb97916e9f253e3"
+      },
+      {
+        "pointer": "0x8399508",
+        "bytes": 128,
+        "sha256": "f8754f163791c1c143f0c35ac625d430676cb53211ec844b110ac23209160c9c"
+      },
+      {
+        "pointer": "0x8399588",
+        "bytes": 128,
+        "sha256": "2b3daf1f70e89ef1ae5a1949ca4ef62b7d096c3c06cd569d4188b6cf163d99d7"
+      },
+      {
+        "pointer": "0x8399608",
+        "bytes": 128,
+        "sha256": "13a36a8bf36540af57ddf16e8e07de7c18e26910a7f9d3246d9a5b767e79d1aa"
+      },
+      {
+        "pointer": "0x8399688",
+        "bytes": 128,
+        "sha256": "0738781e9b9a0e3b480473eb9e0f981ae211692f1ded24d70a3c09dc6279cddf"
+      },
+      {
+        "pointer": "0x8399788",
+        "bytes": 128,
+        "sha256": "5f973565acb4a9e4e596a8f587d596eff84054bc967bfe0a34340e886eec5b7a"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Indexed source-frame contact sheets reviewed; own field-effect table and five semantic grass slots validated structurally"
+  },
+  {
+    "game": "rocket",
+    "rom_crc32": "f2d16ebd",
+    "rom_sha256": "e6f232d0df265323c995e6025fe0ebcc532dfaf7634548a13ee9fb5673152442",
+    "field_table": "0x83a0010",
+    "index": 30,
+    "template": "0x83a5e38",
+    "images": "0x83a5e18",
+    "palette_tag": "0x1005",
+    "template_sha256": "0e956e02a7d9ed5714be7ffea398b5f32f29eb60e8e0c6e03dff99d8d23560b1",
+    "frames": [
+      {
+        "pointer": "0x839a288",
+        "bytes": 128,
+        "sha256": "b5f91160dba34f6c8d9e6fb611cbaf27a32ffb9e94a1b856a0d4f59c07e5237b"
+      },
+      {
+        "pointer": "0x839a308",
+        "bytes": 128,
+        "sha256": "a01897513bfaed76563b2b5dcfe0407112b13c654f8d9f26d15f18065d0684ed"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Indexed source-frame contact sheets reviewed; own field-effect table and five semantic grass slots validated structurally"
+  },
+  {
+    "game": "seaglass",
+    "rom_crc32": "14465a33",
+    "rom_sha256": "6098296dca53655bb51493658d74ba206abe6bacbbe60db8d4f497367926809f",
+    "field_table": "0x85ceabc",
+    "index": 4,
+    "template": "0x85d566c",
+    "images": "0x85d5628",
+    "palette_tag": "0x1005",
+    "template_sha256": "98ba8ffa14bbf54998f62cb598df9438b5c7046430cc817a815d26403c6dfcba",
+    "frames": [
+      {
+        "pointer": "0x85a755c",
+        "bytes": 128,
+        "sha256": "4af1f2ef956da0d9633be357f211faa48dd92a92cf0a104c2075f3f9af150639"
+      },
+      {
+        "pointer": "0x85a75dc",
+        "bytes": 128,
+        "sha256": "8444066a0f44872f48fdf13242800e38187f918faa8c1c46f09652de6761f48c"
+      },
+      {
+        "pointer": "0x85a765c",
+        "bytes": 128,
+        "sha256": "258718dbbd85563088e13d932f792c9696bf86ee09168cb6c74c24226e014e65"
+      },
+      {
+        "pointer": "0x85a76dc",
+        "bytes": 128,
+        "sha256": "92f2fd045f8be655689f4d630cd55599fd97a807356559dd25a10d47c47d6233"
+      },
+      {
+        "pointer": "0x85a775c",
+        "bytes": 128,
+        "sha256": "3f8f18ea5c3022009c1d23a1937b094c9c430d4656d16a8e0729bbebf6d5ff58"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Indexed source-frame contact sheets reviewed; own field-effect table and five semantic grass slots validated structurally"
+  },
+  {
+    "game": "seaglass",
+    "rom_crc32": "14465a33",
+    "rom_sha256": "6098296dca53655bb51493658d74ba206abe6bacbbe60db8d4f497367926809f",
+    "field_table": "0x85ceabc",
+    "index": 10,
+    "template": "0x85d58bc",
+    "images": "0x85d5884",
+    "palette_tag": "0x1005",
+    "template_sha256": "45d412b7ba6acbf87d8f404ca10dfb670036546ad22066e4193646b80f2fc5b6",
+    "frames": [
+      {
+        "pointer": "0x85a66dc",
+        "bytes": 64,
+        "sha256": "701d2ff11d7dcfef2d22877421ba0a6bbe08f027a2b1953db1356c78a9713c68"
+      },
+      {
+        "pointer": "0x85a671c",
+        "bytes": 64,
+        "sha256": "55f6003ad4fbbe405e724ba31a18a199c9a6bfc2db59bc48b2a150520f7b057b"
+      },
+      {
+        "pointer": "0x85a675c",
+        "bytes": 64,
+        "sha256": "3195a6f074889c8b1368e26d7e6a3b4e636a81103b3c9deded62c353f7d74279"
+      },
+      {
+        "pointer": "0x85a679c",
+        "bytes": 64,
+        "sha256": "b8d661ad45a1a3f5d58dae8b25a1b8ca46ab85633b15870297075dd02e5b2243"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Indexed source-frame contact sheets reviewed; own field-effect table and five semantic grass slots validated structurally"
+  },
+  {
+    "game": "seaglass",
+    "rom_crc32": "14465a33",
+    "rom_sha256": "6098296dca53655bb51493658d74ba206abe6bacbbe60db8d4f497367926809f",
+    "field_table": "0x85ceabc",
+    "index": 15,
+    "template": "0x85d5be8",
+    "images": "0x85d5ba4",
+    "palette_tag": "0x1005",
+    "template_sha256": "58063115cf61a72ecc184afccf4a9fc0d31b458598d1f9288eef64dcc330ffe3",
+    "frames": [
+      {
+        "pointer": "0x85a735c",
+        "bytes": 128,
+        "sha256": "4ed0048f8150d094d384cdf0c0eba4ca0f58f996efeee2a3bc256ee79dd486b7"
+      },
+      {
+        "pointer": "0x85a73dc",
+        "bytes": 128,
+        "sha256": "e1542d3a4c7b546300b246600a34d2629a3baef126a26a0af503f5b698f66efb"
+      },
+      {
+        "pointer": "0x85a745c",
+        "bytes": 128,
+        "sha256": "8b0cfa254abf90f0455ea8899a1510e363a05cfe77d498cc499c4fd9785a8af2"
+      },
+      {
+        "pointer": "0x85a74dc",
+        "bytes": 128,
+        "sha256": "bbf9236ed8c33c8f4b3332ed78e58d3f37e0d617abfd2335715d22fc5c62dc09"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Indexed source-frame contact sheets reviewed; own field-effect table and five semantic grass slots validated structurally"
+  },
+  {
+    "game": "seaglass",
+    "rom_crc32": "14465a33",
+    "rom_sha256": "6098296dca53655bb51493658d74ba206abe6bacbbe60db8d4f497367926809f",
+    "field_table": "0x85ceabc",
+    "index": 16,
+    "template": "0x85d5c50",
+    "images": "0x85d5c00",
+    "palette_tag": "0x1005",
+    "template_sha256": "825f4328ace303a1ce8bd5e2c3c6b5dfa3464771cbbeee18c7b3e07354be7767",
+    "frames": [
+      {
+        "pointer": "0x85a69dc",
+        "bytes": 128,
+        "sha256": "dc71c240eea4ecbc3121ebfb332a2d479a283abcc139e02910363b29b7b8bb72"
+      },
+      {
+        "pointer": "0x85a6a5c",
+        "bytes": 128,
+        "sha256": "6c3c27b70c505374e89b9b6fb5941e67e908cf585f458c2d13ba646ad471d340"
+      },
+      {
+        "pointer": "0x85a6adc",
+        "bytes": 128,
+        "sha256": "fdcdebd5460a1d705f53896585bf3c849eb3702086eb7c102d66a54f242fcb49"
+      },
+      {
+        "pointer": "0x85a6b5c",
+        "bytes": 128,
+        "sha256": "39b5e7c53f3707a787438aaed132e05a72fede312c795bc912a4d8b191e183e1"
+      },
+      {
+        "pointer": "0x85a6bdc",
+        "bytes": 128,
+        "sha256": "3171cf93dfbffb4719053996943c6ff2f2d03f6fdfb3bf067b72c365a51804b8"
+      },
+      {
+        "pointer": "0x85a6cdc",
+        "bytes": 128,
+        "sha256": "3e342765c21571afded5d64d6b49ab0d3d03870da7ae019f49dce2eb5b5db99f"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Indexed source-frame contact sheets reviewed; own field-effect table and five semantic grass slots validated structurally"
+  },
+  {
+    "game": "seaglass",
+    "rom_crc32": "14465a33",
+    "rom_sha256": "6098296dca53655bb51493658d74ba206abe6bacbbe60db8d4f497367926809f",
+    "field_table": "0x85ceabc",
+    "index": 30,
+    "template": "0x85d6134",
+    "images": "0x85d6114",
+    "palette_tag": "0x1005",
+    "template_sha256": "344c971509bae070a2891fb6d70068d646300fa9a1969cf80d7d6a57c5bae797",
+    "frames": [
+      {
+        "pointer": "0x85a77dc",
+        "bytes": 128,
+        "sha256": "b5f91160dba34f6c8d9e6fb611cbaf27a32ffb9e94a1b856a0d4f59c07e5237b"
+      },
+      {
+        "pointer": "0x85a785c",
+        "bytes": 128,
+        "sha256": "a01897513bfaed76563b2b5dcfe0407112b13c654f8d9f26d15f18065d0684ed"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Indexed source-frame contact sheets reviewed; own field-effect table and five semantic grass slots validated structurally"
+  },
+  {
+    "game": "odyssey",
+    "rom_crc32": "6c5ee1b2",
+    "rom_sha256": "44c7e3eafab19c39df7c39d54bafb78a1d9caf7c371244b6f5efb12cfd98d0d0",
+    "field_table": "0x83a0010",
+    "index": 4,
+    "template": "0x83a5420",
+    "images": "0x83a53dc",
+    "palette_tag": "0x1005",
+    "template_sha256": "9cffc379cc85378fed5d3322158711413def5102df123344f65cfeaaedcee806",
+    "frames": [
+      {
+        "pointer": "0x839a008",
+        "bytes": 128,
+        "sha256": "a04fb0db353777d1af1a2dd586d497b37cec0019a55714507758b1f674ebc35b"
+      },
+      {
+        "pointer": "0x839a088",
+        "bytes": 128,
+        "sha256": "1f3519247d88961e304a9cb2a8db4e9740de6368bcb7fcda628631f93d5972ff"
+      },
+      {
+        "pointer": "0x839a108",
+        "bytes": 128,
+        "sha256": "af8ba5ddf1c92b8cdc2730532e839984681ebac2ce9428df8361bff8204045b0"
+      },
+      {
+        "pointer": "0x839a188",
+        "bytes": 128,
+        "sha256": "13e312fd8fc8f424d796db4d688b0b3232e9660001114ca9066053f537e706e9"
+      },
+      {
+        "pointer": "0x839a208",
+        "bytes": 128,
+        "sha256": "a820ceda1cf2ef42b2f9387f092a56d6f7cfbf2324a342e64cdd901647b5c372"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Indexed source-frame contact sheets reviewed; own field-effect table and five semantic grass slots validated structurally"
+  },
+  {
+    "game": "odyssey",
+    "rom_crc32": "6c5ee1b2",
+    "rom_sha256": "44c7e3eafab19c39df7c39d54bafb78a1d9caf7c371244b6f5efb12cfd98d0d0",
+    "field_table": "0x83a0010",
+    "index": 10,
+    "template": "0x83a5698",
+    "images": "0x83a5660",
+    "palette_tag": "0x1005",
+    "template_sha256": "3cd687037c658639687bc5007fb3654881fba6bf35673b9bd1840dee0fa5fb10",
+    "frames": [
+      {
+        "pointer": "0x8399188",
+        "bytes": 64,
+        "sha256": "701d2ff11d7dcfef2d22877421ba0a6bbe08f027a2b1953db1356c78a9713c68"
+      },
+      {
+        "pointer": "0x83991c8",
+        "bytes": 64,
+        "sha256": "55f6003ad4fbbe405e724ba31a18a199c9a6bfc2db59bc48b2a150520f7b057b"
+      },
+      {
+        "pointer": "0x8399208",
+        "bytes": 64,
+        "sha256": "3195a6f074889c8b1368e26d7e6a3b4e636a81103b3c9deded62c353f7d74279"
+      },
+      {
+        "pointer": "0x8399248",
+        "bytes": 64,
+        "sha256": "b8d661ad45a1a3f5d58dae8b25a1b8ca46ab85633b15870297075dd02e5b2243"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Indexed source-frame contact sheets reviewed; own field-effect table and five semantic grass slots validated structurally"
+  },
+  {
+    "game": "odyssey",
+    "rom_crc32": "6c5ee1b2",
+    "rom_sha256": "44c7e3eafab19c39df7c39d54bafb78a1d9caf7c371244b6f5efb12cfd98d0d0",
+    "field_table": "0x83a0010",
+    "index": 15,
+    "template": "0x83a593c",
+    "images": "0x83a58f8",
+    "palette_tag": "0x1005",
+    "template_sha256": "f2c32604e141935c7c5efe112f13009bcf9772064d791dd95fe93c1a5106d658",
+    "frames": [
+      {
+        "pointer": "0x8399e08",
+        "bytes": 128,
+        "sha256": "26d0f82dd970d8e238bcf71ddb65a1e22042bd58cec5255b048deee45a70f14f"
+      },
+      {
+        "pointer": "0x8399e88",
+        "bytes": 128,
+        "sha256": "52d84060d3995e3f3a8094ae1e44206f74f89db4d69883ddf7e2dbcb856f8a0a"
+      },
+      {
+        "pointer": "0x8399f08",
+        "bytes": 128,
+        "sha256": "798426444d4ac3f356317a22d2dcee5d7fefd347448a42a7d17c7d0aab6ab97a"
+      },
+      {
+        "pointer": "0x8399f88",
+        "bytes": 128,
+        "sha256": "d7f9704b6ec3b5490db914e4f6ce563c6a8c461d96a8168f20e5b3ca2b089e2d"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Indexed source-frame contact sheets reviewed; own field-effect table and five semantic grass slots validated structurally"
+  },
+  {
+    "game": "odyssey",
+    "rom_crc32": "6c5ee1b2",
+    "rom_sha256": "44c7e3eafab19c39df7c39d54bafb78a1d9caf7c371244b6f5efb12cfd98d0d0",
+    "field_table": "0x83a0010",
+    "index": 16,
+    "template": "0x83a59a4",
+    "images": "0x83a5954",
+    "palette_tag": "0x1005",
+    "template_sha256": "25284128c380e678f4cfece894177142d439f9bbcce19408460cc00ed14a2f04",
+    "frames": [
+      {
+        "pointer": "0x8399488",
+        "bytes": 128,
+        "sha256": "151aa542662b5eca787d3e1be21d988c3c62b3d47dee427aeeb97916e9f253e3"
+      },
+      {
+        "pointer": "0x8399508",
+        "bytes": 128,
+        "sha256": "f8754f163791c1c143f0c35ac625d430676cb53211ec844b110ac23209160c9c"
+      },
+      {
+        "pointer": "0x8399588",
+        "bytes": 128,
+        "sha256": "2b3daf1f70e89ef1ae5a1949ca4ef62b7d096c3c06cd569d4188b6cf163d99d7"
+      },
+      {
+        "pointer": "0x8399608",
+        "bytes": 128,
+        "sha256": "13a36a8bf36540af57ddf16e8e07de7c18e26910a7f9d3246d9a5b767e79d1aa"
+      },
+      {
+        "pointer": "0x8399688",
+        "bytes": 128,
+        "sha256": "0738781e9b9a0e3b480473eb9e0f981ae211692f1ded24d70a3c09dc6279cddf"
+      },
+      {
+        "pointer": "0x8399788",
+        "bytes": 128,
+        "sha256": "5f973565acb4a9e4e596a8f587d596eff84054bc967bfe0a34340e886eec5b7a"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Indexed source-frame contact sheets reviewed; own field-effect table and five semantic grass slots validated structurally"
+  },
+  {
+    "game": "odyssey",
+    "rom_crc32": "6c5ee1b2",
+    "rom_sha256": "44c7e3eafab19c39df7c39d54bafb78a1d9caf7c371244b6f5efb12cfd98d0d0",
+    "field_table": "0x83a0010",
+    "index": 30,
+    "template": "0x83a5e38",
+    "images": "0x83a5e18",
+    "palette_tag": "0x1005",
+    "template_sha256": "0e956e02a7d9ed5714be7ffea398b5f32f29eb60e8e0c6e03dff99d8d23560b1",
+    "frames": [
+      {
+        "pointer": "0x839a288",
+        "bytes": 128,
+        "sha256": "b5f91160dba34f6c8d9e6fb611cbaf27a32ffb9e94a1b856a0d4f59c07e5237b"
+      },
+      {
+        "pointer": "0x839a308",
+        "bytes": 128,
+        "sha256": "a01897513bfaed76563b2b5dcfe0407112b13c654f8d9f26d15f18065d0684ed"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Indexed source-frame contact sheets reviewed; own field-effect table and five semantic grass slots validated structurally"
+  }
+]

@@ -132,6 +132,27 @@ def generate(profiles, plants, output):
     lines+=['};','static int solidPlantProfile(uint32_t rom,uint32_t primary,uint32_t secondary,int top,int bottom) {','    for(unsigned i=0;i<sizeof(solidPlantProfiles)/sizeof(solidPlantProfiles[0]);i++) {','        const struct SolidPlantProfile *p=&solidPlantProfiles[i];','        if(p->rom==rom&&p->primary==primary&&(!p->secondary||p->secondary==secondary)&&p->top==top&&p->bottom==bottom)return (int)i;','    }','    return -1;','}','static int solidPlantTileset(uint32_t rom,uint32_t primary) {','    for(unsigned i=0;i<sizeof(solidPlantProfiles)/sizeof(solidPlantProfiles[0]);i++)','        if(solidPlantProfiles[i].rom==rom&&solidPlantProfiles[i].primary==primary)return 1;','    return 0;','}']
     (output/'pk_scenery_plant_profiles.h').write_text('\n'.join(lines)+'\n')
 
+def generate_grass_effects(profiles,output):
+    lines=['// Generated reviewed live foliage effects; exact ROM/template/image identity.', '#pragma once',
+           'struct SceneryGrassEffect { uint32_t rom,template,images; };',
+           'static const struct SceneryGrassEffect sceneryGrassEffects[] = {']
+    seen=set()
+    for p in profiles:
+        key=(p['rom_crc32'],p['template'],p['images'])
+        assert p['reviewed'] and key not in seen and p['index'] in (4,10,15,16,30)
+        assert len(p['rom_sha256'])==len(p['template_sha256'])==64
+        assert p['frames'] and all(len(f['sha256'])==64 and f['bytes'] in (64,128) for f in p['frames'])
+        seen.add(key)
+        if not p['climate_foliage']:
+            assert p['exclusion'];continue
+        lines.append('    {0x%s,%s,%s},'%key)
+    lines+=['};','static int sceneryGrassEffect(uint32_t rom,uint32_t template,uint32_t images) {',
+            '    for(unsigned i=0;i<sizeof(sceneryGrassEffects)/sizeof(sceneryGrassEffects[0]);i++) {',
+            '        const struct SceneryGrassEffect *p=&sceneryGrassEffects[i];',
+            '        if(p->rom==rom && p->template==template && p->images==images)return 1;',
+            '    }','    return 0;','}']
+    (output/'pk_scenery_grass_effects.h').write_text('\n'.join(lines)+'\n')
+
 if __name__=='__main__':
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--output',type=Path,required=True);args=p.parse_args()
     root=Path(__file__).with_name('scenery-profiles')
@@ -154,3 +175,4 @@ if __name__=='__main__':
 
     generate_tall_trees(json.loads((root/'android-tall-trees.json').read_text()),args.output)
     generate_ground_props(json.loads((root/'android-ground-props.json').read_text()),args.output)
+    generate_grass_effects(json.loads((root/'android-grass-effects.json').read_text()),args.output)

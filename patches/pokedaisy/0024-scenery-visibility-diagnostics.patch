@@ -1,0 +1,31 @@
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -2728,6 +2728,8 @@
+ static int overlayDim;              // 0..256: how far the map around a BG0 picture is dimmed (ramps in and out)
+ static bool voxelEnabled, voxelKnown;
+ static unsigned voxelProbeFrames, voxelProbeRendered;
++static uint32_t voxelProbePixel;
++static int voxelProbeCx,voxelProbeCy;
+ static void voxelProbe(int rendered, unsigned blocked, struct PkWideView view, int score) {
+     voxelProbeRendered += rendered != 0;
+     if (++voxelProbeFrames < 300) return;
+@@ -2735,6 +2737,11 @@
+     __android_log_print(ANDROID_LOG_INFO,"pokedaisy",
+         "scenery crc=%08x rendered=%u/%u blocked=%x scene=%d score=%d view=%dx%d enabled=%d known=%d",
+         solidRom,voxelProbeRendered,voxelProbeFrames,blocked,lastScene,score,view.w,view.h,voxelEnabled,voxelKnown);
++    if(rendered && G) __android_log_print(ANDROID_LOG_INFO,"pokedaisy",
++        "scenery visibility view=%d,%d world=%d,%d pixel=%08x tint=%d,%d,%d/%d io=%04x/%04x pal=%04x/%04x line=%04x/%04x climate=%d:%u:%u",
++        view.x,view.y,voxelProbeCx,voxelProbeCy,voxelProbePixel,tintR,tintG,tintB,tintShown,
++        G->memory.io[0x50/2],G->memory.io[0x54/2],G->video.palette[1],G->video.palette[17],
++        linePalBuf[0][1],linePalBuf[0][17],voxelClimate.config,voxelClimate.seasonBlend,voxelClimate.blend);
+ #else
+     (void)blocked;(void)view;(void)score;
+ #endif
+@@ -5336,6 +5343,7 @@
+     drawObjects(s, cx, cy, left, top, right, bottom, texture, w, alpha, &voxel);
+ 
+     climateAtmosphere(out, depth, v.w, v.h);
++    voxelProbePixel=out[(v.h/2)*v.w+v.w/2];voxelProbeCx=cx;voxelProbeCy=cy;
+ 
+     // Keep the location-name sign at its original screen anchor. Menus, dialogue, and
+     // scenes with other field UI already use the normal compositor.

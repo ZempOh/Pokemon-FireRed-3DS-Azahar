@@ -417,3 +417,17 @@ same-kind count. It does not edit saves or grant an interaction pass. Check the
 game's own HM/item/badge requirements before testing removal or movement, and
 keep unreadable-map failures visible. This avoids repeating object-layout and
 coordinate discovery for every new game.
+
+For winter boundary probes, inspect each own-ROM map's connection list and
+require walkable source, approach and destination cells. Prefer the already
+reviewed field map; unused vanilla maps can survive inside a hack and are poor
+default test scenes. Retain unreadable connection pointers in the local report.
+Verify the actual post-walk map from the versioned companion snapshot before
+reviewing snow continuity. Fixture generation alone proves neither traversal
+nor visible coverage. Capture summer again to check that winter coverage clears.
+
+Active battle qualification must retain both a connected battle and a return
+to the field in the measured log. An immune first move or a status-only first
+slot can make a valid encounter unsuitable for an A-only replay. Preserve the
+idle encounter, then prepare a separate active fixture through normal in-game
+party or move selection. Never count a stable but unfinished battle as a return.

@@ -33,5 +33,22 @@ def render(media,output):
   body.append('<p>Source build'+('s' if len(commits)>1 else '')+': '+', '.join('<code>'+esc(c)+'</code>' for c in commits)+'.</p></section>')
  body.append('<p><a href="assets/gallery/manifest.json">Capture hashes and build references</a>. GIF frame rate is reduced for download size and is not a gameplay performance measurement.</p></main></html>')
  output.write_text(''.join(body),encoding='utf-8');print('Rendered',len(by),'games from',len(rows),'hash-verified release images')
+def render_builder_motion(media,page):
+ rows=json.loads((media/'manifest.json').read_text(encoding='utf-8'));cards=[];esc=html.escape
+ for game,name in NAMES.items():
+  selected={}
+  for view,ext in (('3d','png'),('motion','gif')):
+   matches=[row for row in rows if row['game']==game and row['view']==view and row['file'].endswith('.'+ext)]
+   assert len(matches)<=1
+   if matches:
+    row=matches[0];assert hashlib.sha256((media/row['file']).read_bytes()).hexdigest()==row['sha256'];selected[view]=row['file']
+  if not selected:continue
+  assert len(selected)==2
+  cards.append(f'<article class="panel"><h3>{esc(name)}</h3><figure class="motion"><img src="assets/gallery/{selected["3d"]}" data-still="assets/gallery/{selected["3d"]}" data-gif="assets/gallery/{selected["motion"]}" alt="{esc(name)} actual Thor capture" loading="lazy" width="480" height="270"><figcaption><button type="button" class="btn btn-ghost" data-motion aria-pressed="false">Play GIF</button> <a href="assets/gallery/{selected["motion"]}">Open GIF</a></figcaption></figure><a href="gallery.html#{game}">2D / 3D, seasons and battles</a></article>')
+ begin='<!-- THOR GALLERY START -->';end='<!-- THOR GALLERY END -->';text=page.read_text(encoding='utf-8');a=text.index(begin);b=text.index(end,a)+len(end)
+ body=begin+'<section aria-labelledby="gallery-title"><h2 id="gallery-title">See every game in motion</h2><p>Actual passing-build captures on the AYN Thor. <a href="gallery.html">Complete comparison gallery and test scope</a>. GIFs play on request.</p><div class="motion-grid">'+''.join(cards)+'</div></section>'+end
+ page.write_text(text[:a]+body+text[b:],encoding='utf-8')
+ print('Rendered builder motion cards:',len(cards))
+
 if __name__=='__main__':
  p=argparse.ArgumentParser();p.add_argument('--media',type=Path,required=True);p.add_argument('--output',type=Path,required=True);a=p.parse_args();render(a.media,a.output)

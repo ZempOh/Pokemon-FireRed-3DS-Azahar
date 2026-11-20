@@ -35,7 +35,8 @@
       0
     ],
     "source_sha256": "91e7f6ede0afed30ce1aab57bc12b37afb272c230190299fe66876c7753fb50e",
-    "reviewed": true
+    "reviewed": true,
+    "behavior": 2
   },
   {
     "game": "better-emerald-2",
@@ -111,7 +112,8 @@
       0
     ],
     "source_sha256": "91e7f6ede0afed30ce1aab57bc12b37afb272c230190299fe66876c7753fb50e",
-    "reviewed": true
+    "reviewed": true,
+    "behavior": 2
   },
   {
     "game": "modern-emerald",
@@ -187,7 +189,8 @@
       0
     ],
     "source_sha256": "9ba1ca55339a348ed04e522485be08bf3d53ace2cb7ed4505ee12d93d9f142a9",
-    "reviewed": true
+    "reviewed": true,
+    "behavior": 2
   },
   {
     "game": "seaglass",
@@ -225,7 +228,8 @@
       0
     ],
     "source_sha256": "3b5d7b552d61a4c09c929038a6ee7268ad1684467ee6dd58c674cc4aeb925617",
-    "reviewed": true
+    "reviewed": true,
+    "behavior": 2
   },
   {
     "game": "dragonsden",
@@ -263,7 +267,8 @@
       0
     ],
     "source_sha256": "91e7f6ede0afed30ce1aab57bc12b37afb272c230190299fe66876c7753fb50e",
-    "reviewed": true
+    "reviewed": true,
+    "behavior": 2
   },
   {
     "game": "dragonsden",
@@ -339,7 +344,8 @@
       0
     ],
     "source_sha256": "a1508afabc16923138fdbeebaedde807a30310df3c43e2d5aea3c79bf7eb7d6c",
-    "reviewed": true
+    "reviewed": true,
+    "behavior": 2
   },
   {
     "game": "ash-gray",
@@ -415,7 +421,8 @@
       0
     ],
     "source_sha256": "e88367b867575e49b31427351b20f4e03f7c15e61b6b925cbcbcefd7f64ce4ca",
-    "reviewed": true
+    "reviewed": true,
+    "behavior": 2
   },
   {
     "game": "gaia",
@@ -491,7 +498,8 @@
       0
     ],
     "source_sha256": "977af525d8d664599e6c9b0eff0d73ac00ebde86cca8cf1f43ebf5c1d733c486",
-    "reviewed": true
+    "reviewed": true,
+    "behavior": 2
   },
   {
     "game": "odyssey",

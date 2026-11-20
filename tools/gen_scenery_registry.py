@@ -50,6 +50,7 @@ def generate_ground_props(profiles,output):
     for p in profiles:
         key=(p['rom_crc32'],p['primary'],p['id'])
         assert p['reviewed'] and key not in seen and p['kind'] in (1,3,4,13)
+        if p['kind']==1:assert p.get('behavior')==2,'Encounter grass needs reviewed own-ROM tall-grass semantics'
         assert 0<=p['id']<512 and 0<=p['ground']<512 and len(p['ink'])==6 and all(0<=n<16 for n in p['ink'])
         seen.add(key)
         lines.append('    {0x%s,%s,%d,%d,%d,{%s}},'%(p['rom_crc32'],p['primary'],p['id'],p['ground'],p['kind'],','.join(map(str,p['ink']))))

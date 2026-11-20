@@ -349,6 +349,12 @@ tree fragments, not encounter grass. Patch 0021 adds seven hash-locked source
 profiles using the shared solid grass mesh and each game's own material pixels.
 These are candidates until their exact APK passes Thor tests.
 
+All fifteen registered encounter-grass entries have now been checked against
+their own ROM's behavior 2 attributes. The registry generator requires this
+reviewed semantic field for kind 1, so decorative tree fragments cannot silently
+be added as encounter grass by copying an earlier profile. This validation-only
+addition leaves every generated runtime header byte-identical to patch 0021.
+
 QA grass-route proposals must use reviewed kind-1 profiles and walkable map
 cells. A patch of grass alone does not prove wild encounters are enabled there.
 Retain failed route attempts; phone calls, defeated trainers, story state and

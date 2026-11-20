@@ -241,3 +241,41 @@ D was checked against behavior 2 in each ROM as well as its art. Emerald-family
 Kanto shrub or grass model. Flowers use explicit live-palette stem, petal and
 center swatches and closed petals. Known prop floors use the same semantic snow
 classification as terrain, avoiding bare night-colored patches underneath.
+
+## Exact device evidence across expanded profiles
+
+The Android compositor emits `scenery crc=... rendered=N/300 blocked=...` in
+300-call windows. Field, winter and automatic-climate qualification must retain
+at least six windows for the expected ROM CRC, with 3D enabled, a known engine,
+and actual rendered frames. A static image alone cannot distinguish the shared
+renderer from fallback composition. `tools/thor_renderer_evidence.py` parses this
+proof; battle/menu fallback is intentional and is not a field-render failure.
+The mask records disabled/unknown/centre/battle/overlay/fly/partner/nonfield/
+missing-snapshot/missing-previous/text/effect/draw rejection in successive bits.
+Counters are diagnostics, not frame cadence or visual-quality approval.
+
+Keep measurement and gallery names keyed to the full candidate identity (a
+12-character commit prefix in filenames plus full commit and APK SHA-256 in the
+manifest). Never transfer a visual pass from a prior APK. Fixture provenance is
+separate: a save loaded successfully may still place its player on water or leave
+stale objects. Review source terrain and live movement before using that fixture.
+Preserve raw startup logs before process-ID filtering. Verify the same advancing
+active audio track at both steady measurement endpoints. Device restoration uses
+a dirty marker created on every install/settings mutation; an old restoration
+report does not authorize a later release.
+
+Classic frame cadence is measured immediately after synchronized frame begin.
+Post-submit background geometry work can vary between frames and distort a rate
+sample taken at its completion. Keep the old work-end rate as a diagnostic; do
+not clamp, smooth or substitute the target rate. The host test includes a real
+stall, and exact-device thresholds remain unchanged. Source pixel review is also
+mandatory for snow caps: Classic 0x97, 0xC1, 0xC8 and 0xC9 have land only in the
+upper eight rows; lower cliff faces preserve their materials.
+
+Use `python tools/scenery_fixture_candidates.py --game GAME --rom LOCAL_ROM
+--inventory LOCAL_INVENTORY --output LOCAL_REPORT` to propose outdoor fixtures.
+It verifies ROM CRC (and SHA-256 for prop profiles), reads each map's own tileset,
+rejects blocked/non-land starting cells, and ranks nearby reviewed prop families.
+Reports contain identifiers and coordinates, never ROM art or save data. These
+proposals do not prove walkability, progression state or rebuilt live objects;
+review the live target before recording a fixture as usable.

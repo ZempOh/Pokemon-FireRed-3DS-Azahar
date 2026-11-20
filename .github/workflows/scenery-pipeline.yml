@@ -2,7 +2,7 @@ name: Scenery pipeline regression
 on:
   push:
     branches: [graphics/pokedaisy-upgrade]
-    paths: ['tools/scenery*.py', 'tools/scenery_profiles.json', 'tools/tests/test_scenery*.py', 'tools/scenery-geometry/**', 'tools/scenery-profiles/**', 'tools/scenery-recipes/**', '.github/workflows/scenery-pipeline.yml']
+    paths: ['tools/scenery*.py', 'tools/thor_renderer_evidence.py', 'tools/scenery_profiles.json', 'tools/tests/test_scenery*.py', 'tools/scenery-geometry/**', 'tools/scenery-profiles/**', 'tools/scenery-recipes/**', '.github/workflows/scenery-pipeline.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -17,6 +17,7 @@ jobs:
       - run: python tools/tests/test_scenery_pipeline.py
       - run: python tools/tests/test_scenery_transfer.py
       - run: python tools/tests/test_scenery_object_variants.py
+      - run: python tools/thor_renderer_evidence.py
       - name: Closed botanical geometry
         run: |
           gcc -std=c99 -O2 -Wall -Wextra -Werror tools/scenery-geometry/test_botanical.c -lm -o /tmp/botanical-test

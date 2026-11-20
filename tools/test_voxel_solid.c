@@ -7,8 +7,17 @@
 #include "pk_scenery_candidates.h"
 #include "pk_scenery_object_profiles.h"
 #include "pk_scenery_tree_profiles.h"
+#include "pk_scenery_tall_tree_profiles.h"
 
 int main(void) {
+    for(unsigned i=0;i<sizeof(sceneryTallTrees)/sizeof(sceneryTallTrees[0]);i++) {
+        const struct SceneryTallTree *p=&sceneryTallTrees[i];int cells[6];
+        for(int j=0;j<6;j++)cells[j]=p->cells[j];
+        assert(sceneryTallTreeGround(p->rom,p->primary,cells)==p->ground);
+        assert(sceneryTallTreeGround(p->rom^1,p->primary,cells)<0);
+        assert(sceneryTallTreeGround(p->rom,p->primary^4,cells)<0);
+        cells[2]=0xffff;assert(sceneryTallTreeGround(p->rom,p->primary,cells)<0);
+    }
     for(unsigned i=0;i<sizeof(sceneryTreeQuads)/sizeof(sceneryTreeQuads[0]);i++) {
         const struct SceneryTreeQuad *p=&sceneryTreeQuads[i];
         int cells[4]={p->cells[0],p->cells[1],p->cells[2],p->cells[3]};

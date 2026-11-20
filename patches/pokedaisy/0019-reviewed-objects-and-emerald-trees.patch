@@ -10,16 +10,17 @@
  
 --- a/app/src/main/cpp/pk_wide.c
 +++ b/app/src/main/cpp/pk_wide.c
-@@ -32,6 +32,8 @@
+@@ -32,6 +32,9 @@
  #include "pk_wide_props.h"
  #include "pk_voxel_climate.h"
  #include "pk_scenery_candidates.h"
 +#include "pk_scenery_object_profiles.h"
 +#include "pk_scenery_tree_profiles.h"
++#include "pk_scenery_tall_tree_profiles.h"
  
  #include <stdbool.h>
  #include <stdio.h>
-@@ -81,6 +83,7 @@
+@@ -81,6 +84,7 @@
      // Epsilon Emerald: EX (Emerald's map and tilesets, expansion's objects) whose tilesets keep FireRed's u32 attributes (the
      // layer type in bits 29-30), still at the Emerald tileset's +0x10: the u16 reading scored 830 of 1000 on its field, this 1000.
      // Its struct Subsprite is 6 bytes (s16 x, y; a tile offset byte; shape / size / priority in a byte: buildPieces).
@@ -27,7 +28,7 @@
      [PK_WIDE_FAMILY_EX32] = { 512, 0x10, 4, 29, 3, 0, 0, 0x439, 6, 0x23, 0, 0, 0, 6, 3, 0, 64 },
  };
  
-@@ -1448,7 +1451,7 @@
+@@ -1448,7 +1452,7 @@
  
  static uint32_t solidRom;
  struct Piece {
@@ -36,7 +37,7 @@
      bool vegetation;
      int x, y, w, h, tile, prio, pal, mode;   // mode: OAM objMode (0 normal, 1 semi-transparent, 2 OBJ window)
      bool hflip, vflip;
-@@ -1491,24 +1494,17 @@
+@@ -1491,24 +1495,17 @@
  static int buildPieces(const struct Snap* s, struct Piece* out) {
      int nspr = C[PK_WIDE_MAX_SPRITES];
      bool offscreen[SPRITES_CAP] = { false };   // sprites the game hid only for being off screen
@@ -66,7 +67,7 @@
          }
      }
      int n = 0;
-@@ -1537,7 +1533,7 @@
+@@ -1537,7 +1534,7 @@
              if (y > 255 - bh) y -= 256;    // reaching past 255 shows at the top, as the hardware wraps it
          }
          struct Piece base = { .tile = (int) (a2 & 0x3FF), .prio = (int) ((a2 >> 10) & 3), .pal = (int) (a2 >> 12),
@@ -75,7 +76,7 @@
                                .vegetation=climateGrassEffect(solidRom,le32(sp+0x14),le32(sp+0x0c)),
                                .mode = (int) ((a0 >> 10) & 3), .hflip = !(rot & 1) && (a1 & 0x1000), .vflip = !(rot & 1) && (a1 & 0x2000),
                                .copy = false, .world = world, .rot = rot, .mat = (int) ((a1 >> 9) & 31) };
-@@ -2068,14 +2064,14 @@
+@@ -2068,14 +2065,14 @@
              vx = voxelX(voxel, p[i].x, foot);
              vy = voxelY(voxel, foot, z) - bh + 1;
          }
@@ -93,7 +94,7 @@
                  // Narrow cut-tree sprites have transparent centers beside their
                  // trunk. Never turn palette index zero into the black outline.
                  for(int y=0;y<sh;y++)for(int x=0;x<sw;x++) {
-@@ -2101,7 +2097,7 @@
+@@ -2101,7 +2098,7 @@
                  int ci=(vram[0x10000+(off&0x7fff)]>>((px&1)*4))&15;
                  if(p[i].solidKind==9) {
                      if(y>=36)ci=bark?bark:leaf;
@@ -102,7 +103,7 @@
                  } else if(!ci)ci=1;
                  uint32_t ink=color(P[256+p[i].pal*16+ci],alpha);
                  t->art[y*32+x]=p[i].solidKind==9&&y<36?climateLeafColor(ink):ink;
-@@ -2840,7 +2836,7 @@
+@@ -2840,7 +2837,7 @@
      int k = playerObject();
      const uint8_t* oe = k < 0 ? NULL : mem(F.objects + 0x24u * (uint32_t) k, 0x24);
      if (!oe) return -1;
@@ -111,7 +112,7 @@
      return wide ? (int) le16(oe + 4) : oe[5];
  }
  
-@@ -2854,7 +2850,7 @@
+@@ -2854,7 +2851,7 @@
   */
  int pk_look_refresh(struct mCore* core, const uint8_t* pal) {
      if (!F.locked || !F.sprites || !F.gfxInfo || !core) return 0;
@@ -120,7 +121,7 @@
      G = (struct GBA*) core->board;
      int k = playerObject();
      const uint8_t* oe = k < 0 ? NULL : mem(F.objects + 0x24u * (uint32_t) k, 0x24);
-@@ -3916,7 +3912,7 @@
+@@ -3916,7 +3913,7 @@
      if (partnerReq.frame < 0 || partnerReq.frame >= PK_PARTNER_FRAMES || partnerReq.blob >= PK_PARTNER_FRAMES || partnerReq.blob < -1 ||
          partnerReq.bob < -64 || partnerReq.bob > 64) { partnerWhy = PK_PARTNER_BAD_FRAME; return; }
      if (!hookGba || !F.objects || F.family == PK_WIDE_FAMILY_EX || F.family == PK_WIDE_FAMILY_FR_EX ||
@@ -129,7 +130,7 @@
      G = hookGba;
      int cx, cy, px, py;
      uint32_t spriteId;
-@@ -4139,7 +4135,7 @@
+@@ -4139,7 +4136,7 @@
      uint8_t bit;
      if (F.family == PK_WIDE_FAMILY_FR || F.family == PK_WIDE_FAMILY_FR_EX) { off = 0x19; bit = 2; }
      else if (F.family == PK_WIDE_FAMILY_EM || F.family == PK_WIDE_FAMILY_EX || F.family == PK_WIDE_FAMILY_MM ||
@@ -138,7 +139,7 @@
      else return;
      uint8_t* p = (uint8_t*) mem(F.mapHeader + off, 1);
      if (p && !(*p & bit)) *p |= bit;
-@@ -4997,11 +4993,44 @@
+@@ -4997,11 +4994,45 @@
  
  // Profiles are tied to verified ROM CRC + primary tileset, never to green pixels.
  // Unknown trees/tilesets retain the original art. Live cut trees use the object pass.
@@ -180,10 +181,28 @@
      int snow = solidRom == 0x4b3d4957 && s->primary == 0x08725ab4;
      int kanto = sceneryKanto(solidRom,s->primary);
 -    if (!snow && !kanto) return 0;
-+    if (!snow && !kanto) return solidQuadTreesPrepare(s,v,cx,cy,texture,trees,cap,alpha);
++    int reviewedGround=sceneryTallTreeGround(solidRom,s->primary,0);
++    if (!snow && !kanto && reviewedGround<0) return solidQuadTreesPrepare(s,v,cx,cy,texture,trees,cap,alpha);
      int n=0, cellX=(cx+v->left)/16, cellY=(cy+v->top)/16;
      for(int row=0;row+2<v->rows;row++) for(int col=0;col+1<v->cols;col++) {
          int ids[6],ok=1;
+@@ -5011,6 +5042,7 @@
+             if(conn>=0 && s->conn[conn].primary!=s->primary)ok=0;
+         }
+         if(snow) ok=ok && (ids[2]==10||ids[2]==0x184) && ids[3]==11 && ids[4]==18 && ids[5]==19;
++        else if(!kanto) ok=ok && sceneryTallTreeGround(solidRom,s->primary,ids)>=0;
+         else ok=ok && (ids[0]==14||ids[0]==20||ids[0]==22) && (ids[1]==15||ids[1]==21||ids[1]==23) &&
+             (ids[2]==28||ids[2]==30) && (ids[3]==29||ids[3]==31) &&
+             (ids[4]==20||ids[4]==22||ids[4]==36||ids[4]==38) &&
+@@ -5029,7 +5061,7 @@
+     for(int y=0;y<16;y++)for(int x=0;x<16;x++) {
+         uint16_t rgb=P[0];
+         for(int i=0;i<3;i++) {
+-            int b=order3[i]; uint16_t e=metatile(s,snow?0:(solidRom==0x25c3d89f?8:1),b)[(y/8)*2+x/8];
++            int b=order3[i]; uint16_t e=metatile(s,snow?0:(reviewedGround>=0?reviewedGround:(solidRom==0x25c3d89f?8:1)),b)[(y/8)*2+x/8];
+             int px=x&7,py=y&7;if(e&0x400)px=7-px;if(e&0x800)py=7-py;
+             unsigned off=bgChar[b]+(e&1023)*32+py*4+px/2;
+             if(off>=0x10000)continue;
 --- a/app/src/main/cpp/pk_wide_games.h
 +++ b/app/src/main/cpp/pk_wide_games.h
 @@ -7,6 +7,7 @@
@@ -391,6 +410,44 @@
 +    for(unsigned i=0;i<sizeof(sceneryTreeQuads)/sizeof(sceneryTreeQuads[0]);i++) {
 +        const struct SceneryTreeQuad *p=&sceneryTreeQuads[i];
 +        if(p->rom==rom&&p->primary==primary&&p->cells[0]==cells[0]&&p->cells[1]==cells[1]&&p->cells[2]==cells[2]&&p->cells[3]==cells[3])return p->ground;
++    }
++    return -1;
++}
+--- /dev/null
++++ b/app/src/main/cpp/pk_scenery_tall_tree_profiles.h
+@@ -0,0 +1,35 @@
++// Generated reviewed complete 2x3 tree patterns.
++#pragma once
++struct SceneryTallTree { uint32_t rom,primary; uint16_t cells[6],ground; };
++static const struct SceneryTallTree sceneryTallTrees[] = {
++    {0x63478921,0x82d4a94,{22,23,30,31,38,39},1},
++    {0x63478921,0x82d4a94,{14,15,30,31,38,39},1},
++    {0x63478921,0x82d4a94,{20,21,30,31,38,39},1},
++    {0x63478921,0x82d4a94,{20,21,28,29,36,37},1},
++    {0x63478921,0x82d4a94,{22,23,30,31,36,37},1},
++    {0x63478921,0x82d4a94,{14,15,30,31,36,37},1},
++    {0x63478921,0x82d4a94,{20,21,28,29,38,39},1},
++    {0x63478921,0x82d4a94,{22,23,28,29,36,37},1},
++    {0x63478921,0x82d4a94,{22,23,28,29,38,39},1},
++    {0x63478921,0x82d4a94,{14,15,28,29,36,37},1},
++    {0xb9465c5a,0x82d4a94,{20,21,28,29,36,37},1},
++    {0xb9465c5a,0x82d4a94,{22,23,30,31,38,39},1},
++    {0xb9465c5a,0x82d4a94,{14,15,30,31,36,37},1},
++    {0xb9465c5a,0x82d4a94,{14,15,30,31,38,39},1},
++    {0xb9465c5a,0x82d4a94,{20,21,30,31,38,39},1},
++    {0x6c5ee1b2,0x82d4a94,{20,21,30,31,38,39},1},
++    {0x6c5ee1b2,0x82d4a94,{20,21,30,31,36,37},1},
++    {0x6c5ee1b2,0x82d4a94,{22,23,30,31,38,39},1},
++    {0x6c5ee1b2,0x82d4a94,{14,15,30,31,36,37},1},
++    {0x6c5ee1b2,0x82d4a94,{22,23,30,31,36,37},1},
++    {0x6c5ee1b2,0x82d4a94,{14,15,30,31,38,39},1},
++};
++static int sceneryTallTreeGround(uint32_t rom,uint32_t primary,const int *cells) {
++    for(unsigned i=0;i<sizeof(sceneryTallTrees)/sizeof(sceneryTallTrees[0]);i++) {
++        const struct SceneryTallTree *p=&sceneryTallTrees[i];
++        if(p->rom!=rom||p->primary!=primary)continue;
++        int match=1;if(cells)for(int k=0;k<6;k++)if(cells[k]!=p->cells[k])match=0;
++        if(match)return p->ground;
 +    }
 +    return -1;
 +}

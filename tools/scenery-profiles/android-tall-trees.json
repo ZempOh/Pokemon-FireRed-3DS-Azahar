@@ -1,0 +1,338 @@
+[
+  {
+    "game": "ash-gray",
+    "rom_crc32": "63478921",
+    "primary": "0x82d4a94",
+    "cells": [
+      22,
+      23,
+      30,
+      31,
+      38,
+      39
+    ],
+    "ground": 1,
+    "instances": 520,
+    "reviewed": true
+  },
+  {
+    "game": "ash-gray",
+    "rom_crc32": "63478921",
+    "primary": "0x82d4a94",
+    "cells": [
+      14,
+      15,
+      30,
+      31,
+      38,
+      39
+    ],
+    "ground": 1,
+    "instances": 204,
+    "reviewed": true
+  },
+  {
+    "game": "ash-gray",
+    "rom_crc32": "63478921",
+    "primary": "0x82d4a94",
+    "cells": [
+      20,
+      21,
+      30,
+      31,
+      38,
+      39
+    ],
+    "ground": 1,
+    "instances": 2,
+    "reviewed": true
+  },
+  {
+    "game": "ash-gray",
+    "rom_crc32": "63478921",
+    "primary": "0x82d4a94",
+    "cells": [
+      20,
+      21,
+      28,
+      29,
+      36,
+      37
+    ],
+    "ground": 1,
+    "instances": 70,
+    "reviewed": true
+  },
+  {
+    "game": "ash-gray",
+    "rom_crc32": "63478921",
+    "primary": "0x82d4a94",
+    "cells": [
+      22,
+      23,
+      30,
+      31,
+      36,
+      37
+    ],
+    "ground": 1,
+    "instances": 9,
+    "reviewed": true
+  },
+  {
+    "game": "ash-gray",
+    "rom_crc32": "63478921",
+    "primary": "0x82d4a94",
+    "cells": [
+      14,
+      15,
+      30,
+      31,
+      36,
+      37
+    ],
+    "ground": 1,
+    "instances": 10,
+    "reviewed": true
+  },
+  {
+    "game": "ash-gray",
+    "rom_crc32": "63478921",
+    "primary": "0x82d4a94",
+    "cells": [
+      20,
+      21,
+      28,
+      29,
+      38,
+      39
+    ],
+    "ground": 1,
+    "instances": 36,
+    "reviewed": true
+  },
+  {
+    "game": "ash-gray",
+    "rom_crc32": "63478921",
+    "primary": "0x82d4a94",
+    "cells": [
+      22,
+      23,
+      28,
+      29,
+      36,
+      37
+    ],
+    "ground": 1,
+    "instances": 7,
+    "reviewed": true
+  },
+  {
+    "game": "ash-gray",
+    "rom_crc32": "63478921",
+    "primary": "0x82d4a94",
+    "cells": [
+      22,
+      23,
+      28,
+      29,
+      38,
+      39
+    ],
+    "ground": 1,
+    "instances": 2,
+    "reviewed": true
+  },
+  {
+    "game": "ash-gray",
+    "rom_crc32": "63478921",
+    "primary": "0x82d4a94",
+    "cells": [
+      14,
+      15,
+      28,
+      29,
+      36,
+      37
+    ],
+    "ground": 1,
+    "instances": 1,
+    "reviewed": true
+  },
+  {
+    "game": "gaia",
+    "rom_crc32": "b9465c5a",
+    "primary": "0x82d4a94",
+    "cells": [
+      20,
+      21,
+      28,
+      29,
+      36,
+      37
+    ],
+    "ground": 1,
+    "instances": 349,
+    "reviewed": true
+  },
+  {
+    "game": "gaia",
+    "rom_crc32": "b9465c5a",
+    "primary": "0x82d4a94",
+    "cells": [
+      22,
+      23,
+      30,
+      31,
+      38,
+      39
+    ],
+    "ground": 1,
+    "instances": 17,
+    "reviewed": true
+  },
+  {
+    "game": "gaia",
+    "rom_crc32": "b9465c5a",
+    "primary": "0x82d4a94",
+    "cells": [
+      14,
+      15,
+      30,
+      31,
+      36,
+      37
+    ],
+    "ground": 1,
+    "instances": 6,
+    "reviewed": true
+  },
+  {
+    "game": "gaia",
+    "rom_crc32": "b9465c5a",
+    "primary": "0x82d4a94",
+    "cells": [
+      14,
+      15,
+      30,
+      31,
+      38,
+      39
+    ],
+    "ground": 1,
+    "instances": 2,
+    "reviewed": true
+  },
+  {
+    "game": "gaia",
+    "rom_crc32": "b9465c5a",
+    "primary": "0x82d4a94",
+    "cells": [
+      20,
+      21,
+      30,
+      31,
+      38,
+      39
+    ],
+    "ground": 1,
+    "instances": 1,
+    "reviewed": true
+  },
+  {
+    "game": "odyssey",
+    "rom_crc32": "6c5ee1b2",
+    "primary": "0x82d4a94",
+    "cells": [
+      20,
+      21,
+      30,
+      31,
+      38,
+      39
+    ],
+    "ground": 1,
+    "instances": 39,
+    "reviewed": true
+  },
+  {
+    "game": "odyssey",
+    "rom_crc32": "6c5ee1b2",
+    "primary": "0x82d4a94",
+    "cells": [
+      20,
+      21,
+      30,
+      31,
+      36,
+      37
+    ],
+    "ground": 1,
+    "instances": 7,
+    "reviewed": true
+  },
+  {
+    "game": "odyssey",
+    "rom_crc32": "6c5ee1b2",
+    "primary": "0x82d4a94",
+    "cells": [
+      22,
+      23,
+      30,
+      31,
+      38,
+      39
+    ],
+    "ground": 1,
+    "instances": 7,
+    "reviewed": true
+  },
+  {
+    "game": "odyssey",
+    "rom_crc32": "6c5ee1b2",
+    "primary": "0x82d4a94",
+    "cells": [
+      14,
+      15,
+      30,
+      31,
+      36,
+      37
+    ],
+    "ground": 1,
+    "instances": 6,
+    "reviewed": true
+  },
+  {
+    "game": "odyssey",
+    "rom_crc32": "6c5ee1b2",
+    "primary": "0x82d4a94",
+    "cells": [
+      22,
+      23,
+      30,
+      31,
+      36,
+      37
+    ],
+    "ground": 1,
+    "instances": 1,
+    "reviewed": true
+  },
+  {
+    "game": "odyssey",
+    "rom_crc32": "6c5ee1b2",
+    "primary": "0x82d4a94",
+    "cells": [
+      14,
+      15,
+      30,
+      31,
+      38,
+      39
+    ],
+    "ground": 1,
+    "instances": 7,
+    "reviewed": true
+  }
+]

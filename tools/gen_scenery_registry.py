@@ -20,6 +20,21 @@ def generate_trees(profiles,output):
         '    }','    return -1;','}']
     (output/'pk_scenery_tree_profiles.h').write_text('\n'.join(lines)+'\n')
 
+def generate_tall_trees(profiles,output):
+    lines=['// Generated reviewed complete 2x3 tree patterns.','#pragma once',
+        'struct SceneryTallTree { uint32_t rom,primary; uint16_t cells[6],ground; };',
+        'static const struct SceneryTallTree sceneryTallTrees[] = {']
+    for p in profiles:
+        assert p['reviewed'] and len(p['cells'])==6
+        lines.append('    {0x%s,%s,{%s},%d},'%(p['rom_crc32'],p['primary'],','.join(map(str,p['cells'])),p['ground']))
+    lines+=['};','static int sceneryTallTreeGround(uint32_t rom,uint32_t primary,const int *cells) {',
+        '    for(unsigned i=0;i<sizeof(sceneryTallTrees)/sizeof(sceneryTallTrees[0]);i++) {',
+        '        const struct SceneryTallTree *p=&sceneryTallTrees[i];',
+        '        if(p->rom!=rom||p->primary!=primary)continue;',
+        '        int match=1;if(cells)for(int k=0;k<6;k++)if(cells[k]!=p->cells[k])match=0;',
+        '        if(match)return p->ground;','    }','    return -1;','}']
+    (output/'pk_scenery_tall_tree_profiles.h').write_text('\n'.join(lines)+'\n')
+
 def generate_engines(profiles,output):
     lines=['// Generated candidate engine rows. Device qualification is separate.']
     for p in profiles:
@@ -73,3 +88,5 @@ if __name__=='__main__':
     generate_engines(json.loads((root/'android-engines.json').read_text()),args.output)
     generate_objects(json.loads((root/'android-live-objects.json').read_text()),args.output)
     generate_trees(json.loads((root/'android-tree-quads.json').read_text()),args.output)
+
+    generate_tall_trees(json.loads((root/'android-tall-trees.json').read_text()),args.output)

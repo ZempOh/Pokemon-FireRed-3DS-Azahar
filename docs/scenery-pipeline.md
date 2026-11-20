@@ -166,3 +166,8 @@ Emerald u16 attributes and expansion objects with 640 metatiles, seven palettes
 and sized borders. A shorter primary array is not evidence of a different global
 split: unused primary IDs may remain reserved. Layout byte +24 is border width,
 not a version discriminator. Device qualification remains pending.
+
+`android-tall-trees.json` adds 21 reviewed complete 2x3 patterns for Ash Gray,
+Gaia and Odyssey. Recognition requires the exact ROM, primary tileset and all six
+cells; it reuses the solid tree renderer and verified ground cell. Odyssey's
+stacked double-canopy patterns are excluded. This remains partial coverage.

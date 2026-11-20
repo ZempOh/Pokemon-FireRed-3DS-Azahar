@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "kind": "voxel-cartridge-payload",
   "releaseTag": "v1.5.1",
-  "dataAbi": "bb349899",
+  "dataAbi": "0b6880ef",
   "entrypoint": {
     "pythonPath": "python"
   },
@@ -13,7 +13,7 @@
       "name": "FireRed & LeafGreen+ v1.5.1"
     }
   ],
-  "cartridgeSha256": "68d4b9548a5809a6f398264d5e56f1ba00aab6ceed046cc3ac56b29e49d64b69",
+  "cartridgeSha256": "423a08b46b7b750eab25813b771b5c25037ed9f87fa1b00c5cfb2040c4d9ca4d",
   "files": [
     {
       "path": "licenses/NOTICE.md",
@@ -27,8 +27,8 @@
     },
     {
       "path": "payload/firered3ds.recipe",
-      "sha256": "5b28a132b33a23d0ab01d964203d90f8cbd28b4aae067137cac06345aee9e59a",
-      "size": 405004
+      "sha256": "80565ee2587578b127d91bc7b711bff4a70dfa2797e901037c1fd182b4288586",
+      "size": 406120
     },
     {
       "path": "payload/voxelgen/scripts/fr_art.py",
@@ -57,8 +57,8 @@
     },
     {
       "path": "payload/voxelgen/scripts/fr_gen_rooms.py",
-      "sha256": "d45322940b2eff784980b9eb4866ad67a0154969fcc06841c5bf9049808e7752",
-      "size": 129239
+      "sha256": "290ef51b804d3ee07f78c8620ff3d53e1587000812007214b7a79b215c8f6e5b",
+      "size": 133150
     },
     {
       "path": "payload/voxelgen/scripts/fr_gen_trees.py",

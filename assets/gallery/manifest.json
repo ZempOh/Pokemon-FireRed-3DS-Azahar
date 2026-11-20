@@ -159,372 +159,6 @@
     "format": "480px,10FPS; not a pacing measurement"
   },
   {
-    "game": "firered",
-    "view": "2d",
-    "file": "firered-2d.png",
-    "source": "winter-completion/native/screenshots/firered-2d-top.png",
-    "source_sha256": "5596f72a58d80334e17dac9f473b6f2a48c39519b88608dac3d8744219ebd747",
-    "sha256": "7d5f7f95732f6dc804ae31e8e04acb00ad12297d1c3bccc7db4d84ecf0746903",
-    "build_reference": "climate-3d.html",
-    "commit": "fd5f727f26b86814b4f1943e4bcf8c52e02c1061"
-  },
-  {
-    "game": "firered",
-    "view": "3d",
-    "file": "firered-3d.png",
-    "source": "winter-completion/native/screenshots/firered-3d-top.png",
-    "source_sha256": "26b576c95686cab6e3206872fa993a3ed7f1c7ddb23f8dda70f7b3c1b11ba823",
-    "sha256": "54ee8f819cf3755547c9fb9750be5dd73101cadb86806a2b2b7f02902ebea937",
-    "build_reference": "climate-3d.html",
-    "commit": "fd5f727f26b86814b4f1943e4bcf8c52e02c1061"
-  },
-  {
-    "game": "firered",
-    "view": "spring",
-    "file": "firered-spring.png",
-    "source": "winter-completion/native/screenshots/firered-spring-top.png",
-    "source_sha256": "3c181739c7219e1227473bd604b6a15c629f3260387e244ea6c04076a5138ec7",
-    "sha256": "9249ba82f0dfca1287c103c8af7b2deca59529df4efdc697cf208ab66271970a",
-    "build_reference": "climate-3d.html",
-    "commit": "fd5f727f26b86814b4f1943e4bcf8c52e02c1061"
-  },
-  {
-    "game": "firered",
-    "view": "summer",
-    "file": "firered-summer.png",
-    "source": "winter-completion/native/screenshots/firered-summer-top.png",
-    "source_sha256": "d27cf7b5478cda98d6fff186cb7f7c1f18ba54279aa5dc7413a7acb4354df326",
-    "sha256": "fc658caf9a27931eff7e289b31079ca4d1015609c42335dcb39c4bc58b7090dd",
-    "build_reference": "climate-3d.html",
-    "commit": "fd5f727f26b86814b4f1943e4bcf8c52e02c1061"
-  },
-  {
-    "game": "firered",
-    "view": "autumn",
-    "file": "firered-autumn.png",
-    "source": "winter-completion/native/screenshots/firered-autumn-top.png",
-    "source_sha256": "4f1e78760bddd766387b042892ced992df629595785d3cdd4874e161de94b8a8",
-    "sha256": "16506ec31294c1253250f4e6eac780dca247b2204db40af34002395dd363a9c3",
-    "build_reference": "climate-3d.html",
-    "commit": "fd5f727f26b86814b4f1943e4bcf8c52e02c1061"
-  },
-  {
-    "game": "firered",
-    "view": "winter",
-    "file": "firered-winter.png",
-    "source": "winter-completion/native/screenshots/firered-winter-top.png",
-    "source_sha256": "8bf35fe98f7ea820cc291ff951e3c0da09c867ae3a1124f918e1695140a0b0c6",
-    "sha256": "980894fe755fc36bb9d7b0bdbfbba1e7a8a4b22e8c288933f92678d76501440d",
-    "build_reference": "climate-3d.html",
-    "commit": "fd5f727f26b86814b4f1943e4bcf8c52e02c1061"
-  },
-  {
-    "game": "firered",
-    "view": "clear",
-    "file": "firered-clear.png",
-    "source": "winter-completion/native/screenshots/firered-clear-top.png",
-    "source_sha256": "71e2cffe579f2d88d9c43709baca370294177c00cbb0abfc950db27478b8a977",
-    "sha256": "e7d6182ebebeb2c1f939c1a03b346dcf130cb4cf45cd69ac2cbb4c4b02e4c908",
-    "build_reference": "climate-3d.html",
-    "commit": "fd5f727f26b86814b4f1943e4bcf8c52e02c1061"
-  },
-  {
-    "game": "firered",
-    "view": "rain",
-    "file": "firered-rain.png",
-    "source": "winter-completion/native/screenshots/firered-rain-top.png",
-    "source_sha256": "7c4251552f904d51b34df484aeb484542ae2c13df163e6e5db1b8bc8d778c791",
-    "sha256": "27afdbb73610bedb3643a419e00e5da4918fc31705d43fad5b9d7d87b28fbc34",
-    "build_reference": "climate-3d.html",
-    "commit": "fd5f727f26b86814b4f1943e4bcf8c52e02c1061"
-  },
-  {
-    "game": "firered",
-    "view": "snow",
-    "file": "firered-snow.png",
-    "source": "winter-completion/native/screenshots/firered-snow-top.png",
-    "source_sha256": "ae2c49130f451a89d05afe8f58ed808c7bffc5e82462393ba40891af5e2ae7be",
-    "sha256": "3a5c969d717b97dda62aeb26cde45c789a88c8d063553534c8543aabb2619ae5",
-    "build_reference": "climate-3d.html",
-    "commit": "fd5f727f26b86814b4f1943e4bcf8c52e02c1061"
-  },
-  {
-    "game": "firered",
-    "view": "fog",
-    "file": "firered-fog.png",
-    "source": "winter-completion/native/screenshots/firered-fog-top.png",
-    "source_sha256": "5308d316d1c43a303c4ca915c694b748d80eef9fc536ed48cd20c0da39c691c3",
-    "sha256": "967c96eaaabe6636b7c0227968b5a0bc177f198d862d3bd237e9e7b9c6e714a4",
-    "build_reference": "climate-3d.html",
-    "commit": "fd5f727f26b86814b4f1943e4bcf8c52e02c1061"
-  },
-  {
-    "game": "firered",
-    "view": "battle",
-    "file": "firered-battle.png",
-    "source": "winter-completion/native/screenshots/firered-battle-top.png",
-    "source_sha256": "927512f913a923856f7d68e74adab570ceb878f0ea6e818a978597f772c87c34",
-    "sha256": "f553f1521a1f7eefed5f233195d3d35b980f1024560bd862b03d3262df03062f",
-    "build_reference": "climate-3d.html",
-    "commit": "fd5f727f26b86814b4f1943e4bcf8c52e02c1061"
-  },
-  {
-    "game": "firered",
-    "view": "rock-smash",
-    "file": "firered-rock-smash.gif",
-    "sha256": "71d1a6363ddebc3fdf9973ed541d1d53b46ef08305c4982ecaade25362656db4",
-    "commit": "fd5f727f26b86814b4f1943e4bcf8c52e02c1061",
-    "build_reference": "climate-3d.html"
-  },
-  {
-    "game": "firered",
-    "view": "boulder-moving",
-    "file": "firered-boulder-moving.gif",
-    "sha256": "7da9e3ceb269f2284f1eae464d021d4daead480b0f4f69e535919acac3a42692",
-    "commit": "fd5f727f26b86814b4f1943e4bcf8c52e02c1061",
-    "build_reference": "climate-3d.html"
-  },
-  {
-    "game": "firered",
-    "view": "cut-tree",
-    "file": "firered-cut-tree.gif",
-    "sha256": "666ad84aee99babd8ef1adf9c1bfeabe5972f5cfc015e598062ab972e24cfcd1",
-    "commit": "fd5f727f26b86814b4f1943e4bcf8c52e02c1061",
-    "build_reference": "climate-3d.html"
-  },
-  {
-    "game": "firered",
-    "view": "winter-ground",
-    "file": "firered-winter-ground.gif",
-    "sha256": "6d736439cf751c6cc93386b738fa16c066e12040e2e19ef28b901f2e395712c3",
-    "commit": "fd5f727f26b86814b4f1943e4bcf8c52e02c1061",
-    "build_reference": "climate-3d.html"
-  },
-  {
-    "game": "firered",
-    "view": "battle",
-    "file": "firered-battle.gif",
-    "sha256": "0a89409d6fa35db5e4d3ee4b846e2ba301c356db67384e90997c6d17b6d3e34b",
-    "commit": "fd5f727f26b86814b4f1943e4bcf8c52e02c1061",
-    "build_reference": "climate-3d.html"
-  },
-  {
-    "game": "firered",
-    "view": "rain",
-    "file": "firered-rain.gif",
-    "sha256": "b2bda3bd9ea73b521280d36c40192ab2a6475b419b8e7c1051e6ed9d26088a2f",
-    "commit": "fd5f727f26b86814b4f1943e4bcf8c52e02c1061",
-    "build_reference": "climate-3d.html"
-  },
-  {
-    "game": "firered",
-    "view": "snow",
-    "file": "firered-snow.gif",
-    "sha256": "5e81d0e36ac2303ae9f52b00fb39c825d907037d68e0329ec82fb2b7cf01f5b6",
-    "commit": "fd5f727f26b86814b4f1943e4bcf8c52e02c1061",
-    "build_reference": "climate-3d.html"
-  },
-  {
-    "game": "firered",
-    "view": "fog",
-    "file": "firered-fog.gif",
-    "sha256": "7375a2897f72fa319c4e751437388d833af013dffdd65d5d1ea1a74a923d3a59",
-    "commit": "fd5f727f26b86814b4f1943e4bcf8c52e02c1061",
-    "build_reference": "climate-3d.html"
-  },
-  {
-    "game": "firered",
-    "view": "motion",
-    "file": "firered-motion.gif",
-    "sha256": "3b090cc5f980d1ee74aacfad1f5035efd8c0f701f8c91f3dec26e54d835d6f8f",
-    "build_reference": "climate-3d.html",
-    "commit": "fd5f727f26b86814b4f1943e4bcf8c52e02c1061",
-    "format": "480px,10FPS; not a pacing measurement"
-  },
-  {
-    "game": "frlg",
-    "view": "2d",
-    "file": "frlg-2d.png",
-    "source": "winter-completion/native/screenshots/frlg-2d-top.png",
-    "source_sha256": "971e2f53126915a16aefca6af543c89ab75c0b68c7f86234e31eae6d8dd350fa",
-    "sha256": "58d8cfc75b7e94bb47123e5837a52a9e80360259b4a4521db877d0774c62bda0",
-    "build_reference": "climate-3d.html",
-    "commit": "c14c941d34d71a63cecc758e5353072d4d7fb9f6"
-  },
-  {
-    "game": "frlg",
-    "view": "3d",
-    "file": "frlg-3d.png",
-    "source": "winter-completion/native/screenshots/frlg-3d-top.png",
-    "source_sha256": "cfa10f765c87c12e49b97ad77a451f91af8a6ba630776fb18e8db8d9c00818f4",
-    "sha256": "19a366081d25ea6fb25d859a24b8d0c61f70ddeb516c0768bc32d1262b282c09",
-    "build_reference": "climate-3d.html",
-    "commit": "c14c941d34d71a63cecc758e5353072d4d7fb9f6"
-  },
-  {
-    "game": "frlg",
-    "view": "spring",
-    "file": "frlg-spring.png",
-    "source": "winter-completion/native/screenshots/frlg-spring-top.png",
-    "source_sha256": "b98142bd0ad3cdf5e6e8ba7f024f2970c7b30147610c0db4d5011597f3d9510b",
-    "sha256": "df730f15e7bf184576e73eac9c2515efd0eee22edce8d53ba1fb29e3bb36afc6",
-    "build_reference": "climate-3d.html",
-    "commit": "c14c941d34d71a63cecc758e5353072d4d7fb9f6"
-  },
-  {
-    "game": "frlg",
-    "view": "summer",
-    "file": "frlg-summer.png",
-    "source": "winter-completion/native/screenshots/frlg-summer-top.png",
-    "source_sha256": "c86f9efa1d8f081e9905f5c67461e66048673f2cb074e783ee8fab2d69e694cd",
-    "sha256": "fb6343203dac5969612d82177058a9ff663921d4d627d4298a9260bc5d156cb7",
-    "build_reference": "climate-3d.html",
-    "commit": "c14c941d34d71a63cecc758e5353072d4d7fb9f6"
-  },
-  {
-    "game": "frlg",
-    "view": "autumn",
-    "file": "frlg-autumn.png",
-    "source": "winter-completion/native/screenshots/frlg-autumn-top.png",
-    "source_sha256": "142033fd28235664c85d19197cc3fe7d4d1cb53370649b0fc64e1302e8fb72a3",
-    "sha256": "7b7b01c97fee581b513a8c4728d90ddfc3e73cc43cd6011a1bab1e9e8b199b94",
-    "build_reference": "climate-3d.html",
-    "commit": "c14c941d34d71a63cecc758e5353072d4d7fb9f6"
-  },
-  {
-    "game": "frlg",
-    "view": "winter",
-    "file": "frlg-winter.png",
-    "source": "winter-completion/native/screenshots/frlg-winter-top.png",
-    "source_sha256": "6021d073f05f11aaa768216f812321d70170e437f0533f6e81e86550b8061aef",
-    "sha256": "262336a532b8a02e77969bcdaea7ba187da1de7651a01c82b01fe61b7b751023",
-    "build_reference": "climate-3d.html",
-    "commit": "c14c941d34d71a63cecc758e5353072d4d7fb9f6"
-  },
-  {
-    "game": "frlg",
-    "view": "clear",
-    "file": "frlg-clear.png",
-    "source": "winter-completion/native/screenshots/frlg-clear-top.png",
-    "source_sha256": "0798cbf9b2a2fda4fb10ba01d2f865bb8daba677b145bb132100c4d635e68d46",
-    "sha256": "bca453cdb4fe18f040224b4655295666c8d9e258b1b0099b7bcc6d970b2e7b1f",
-    "build_reference": "climate-3d.html",
-    "commit": "c14c941d34d71a63cecc758e5353072d4d7fb9f6"
-  },
-  {
-    "game": "frlg",
-    "view": "rain",
-    "file": "frlg-rain.png",
-    "source": "winter-completion/native/screenshots/frlg-rain-top.png",
-    "source_sha256": "4148da6c1d48deabb4c04121f729559fe6b2a96a4bfb0bc27aada90567be3269",
-    "sha256": "973f6025bef9418045c5c72391bf501bae7c12a3afd90ca13063d522fb66001e",
-    "build_reference": "climate-3d.html",
-    "commit": "c14c941d34d71a63cecc758e5353072d4d7fb9f6"
-  },
-  {
-    "game": "frlg",
-    "view": "snow",
-    "file": "frlg-snow.png",
-    "source": "winter-completion/native/screenshots/frlg-snow-top.png",
-    "source_sha256": "72fbdb96af6a407cb776e72bbd2a6da082b83f1760a6d88534139604b0e9a6a2",
-    "sha256": "9f778700fdd79aad462e61b27e0b08e81d529ba6b3bceb148646ca40599dad69",
-    "build_reference": "climate-3d.html",
-    "commit": "c14c941d34d71a63cecc758e5353072d4d7fb9f6"
-  },
-  {
-    "game": "frlg",
-    "view": "fog",
-    "file": "frlg-fog.png",
-    "source": "winter-completion/native/screenshots/frlg-fog-top.png",
-    "source_sha256": "8079500d89f40d36f5750c20a21bb500da24acfe134e94edfc49e90ac9f2b89f",
-    "sha256": "2013af68389e23ffdae78270a38030f2e32fcd5fe6e6d83543fa5cad3f9d767f",
-    "build_reference": "climate-3d.html",
-    "commit": "c14c941d34d71a63cecc758e5353072d4d7fb9f6"
-  },
-  {
-    "game": "frlg",
-    "view": "battle",
-    "file": "frlg-battle.png",
-    "source": "winter-completion/native/screenshots/frlg-battle-top.png",
-    "source_sha256": "6f011bb7b301089d61b8d476d469f0ac9f76fcc96d19818c9f8eff2151f7692d",
-    "sha256": "974f58958be0f108664cb8969451759aaf488cc33ea774fbb26a225d83571d63",
-    "build_reference": "climate-3d.html",
-    "commit": "c14c941d34d71a63cecc758e5353072d4d7fb9f6"
-  },
-  {
-    "game": "frlg",
-    "view": "rock-smash",
-    "file": "frlg-rock-smash.gif",
-    "sha256": "c33adb8d9a538a45004ad978cf0a6060809a10b60c1e385ed25326dd44b64d43",
-    "commit": "c14c941d34d71a63cecc758e5353072d4d7fb9f6",
-    "build_reference": "climate-3d.html"
-  },
-  {
-    "game": "frlg",
-    "view": "boulder-moving",
-    "file": "frlg-boulder-moving.gif",
-    "sha256": "e755cfe2c4d5bef295b6c23e619ff181ef607500dc97f3d9e44a6b223ec7cfd0",
-    "commit": "c14c941d34d71a63cecc758e5353072d4d7fb9f6",
-    "build_reference": "climate-3d.html"
-  },
-  {
-    "game": "frlg",
-    "view": "cut-tree",
-    "file": "frlg-cut-tree.gif",
-    "sha256": "c9fb7c4a91ca354e8cfb147b50e9bf4eaea5f0a90a5d0db6665310a767151881",
-    "commit": "c14c941d34d71a63cecc758e5353072d4d7fb9f6",
-    "build_reference": "climate-3d.html"
-  },
-  {
-    "game": "frlg",
-    "view": "winter-ground",
-    "file": "frlg-winter-ground.gif",
-    "sha256": "bef102525505b60a4d41180595fea6fa6c075a4c7a66605fb3e403fcb48cf648",
-    "commit": "c14c941d34d71a63cecc758e5353072d4d7fb9f6",
-    "build_reference": "climate-3d.html"
-  },
-  {
-    "game": "frlg",
-    "view": "battle",
-    "file": "frlg-battle.gif",
-    "sha256": "fffc6f256a965a0593c1ccc9bf04e23f437dbb528a9a4f44d799240545051564",
-    "commit": "c14c941d34d71a63cecc758e5353072d4d7fb9f6",
-    "build_reference": "climate-3d.html"
-  },
-  {
-    "game": "frlg",
-    "view": "rain",
-    "file": "frlg-rain.gif",
-    "sha256": "3b39dc558425c8d296cd45d84fa2e052d30a90076d4ac40934075f268121e0f4",
-    "commit": "c14c941d34d71a63cecc758e5353072d4d7fb9f6",
-    "build_reference": "climate-3d.html"
-  },
-  {
-    "game": "frlg",
-    "view": "snow",
-    "file": "frlg-snow.gif",
-    "sha256": "3891f2b028879550b411353188a533da25207444ab3fcd7ea5abceaf99f5bec4",
-    "commit": "c14c941d34d71a63cecc758e5353072d4d7fb9f6",
-    "build_reference": "climate-3d.html"
-  },
-  {
-    "game": "frlg",
-    "view": "fog",
-    "file": "frlg-fog.gif",
-    "sha256": "dd775197481280d2ffcf4469b6d4dda8cb3a24bca3a4b31f8ba405727279754e",
-    "commit": "c14c941d34d71a63cecc758e5353072d4d7fb9f6",
-    "build_reference": "climate-3d.html"
-  },
-  {
-    "game": "frlg",
-    "view": "motion",
-    "file": "frlg-motion.gif",
-    "sha256": "eb8d96046bab8fc5636051328047c5400fb39ca6b6b45d5dbe3a411fc12eed42",
-    "build_reference": "climate-3d.html",
-    "commit": "c14c941d34d71a63cecc758e5353072d4d7fb9f6",
-    "format": "480px,10FPS; not a pacing measurement"
-  },
-  {
     "game": "letsgo",
     "view": "2d",
     "file": "letsgo-2d.png",
@@ -1051,5 +685,441 @@
     "sha256": "7d2ab770c4ee313bef101a0b7c942ff2122b7edd556b66307ec044934b545d74",
     "commit": "3709641e534ce5fb01fd9cfa9827734e7759e91a",
     "build_reference": "android-climate.html"
+  },
+  {
+    "game": "firered",
+    "view": "2d",
+    "file": "firered-2d.png",
+    "source_sha256": "ee0107982c5e52f5c541d967e6022e93b46a56cc1adc94938446a010f456653f",
+    "sha256": "6e32e02cae7eef145bf1273ccffe99a37d8823227a95ac3e9ab635928fb1b3da",
+    "commit": "82c85ec0bc8f648822c077734844d11e497e277e",
+    "build_reference": "climate-3d.html"
+  },
+  {
+    "game": "firered",
+    "view": "3d",
+    "file": "firered-3d.png",
+    "source_sha256": "d5d57c5e3f0b4d0ca9cb2d3318026212ea4bed56a83b7d3d99790bc41f7f3b6a",
+    "sha256": "27dc3f2023e09822c7372908d3722444e92649a039408e8c7a48b518d6175b3b",
+    "commit": "82c85ec0bc8f648822c077734844d11e497e277e",
+    "build_reference": "climate-3d.html"
+  },
+  {
+    "game": "firered",
+    "view": "spring",
+    "file": "firered-spring.png",
+    "source_sha256": "51305bec9dce239ff205e14f188c7474e7797d35f792d42e9a3b3a7274664ad4",
+    "sha256": "6e243e269833c1ce610ab7023155a969ed15ef0bfdaf60aa1ae48e50dcbcc530",
+    "commit": "82c85ec0bc8f648822c077734844d11e497e277e",
+    "build_reference": "climate-3d.html"
+  },
+  {
+    "game": "firered",
+    "view": "summer",
+    "file": "firered-summer.png",
+    "source_sha256": "446d557ffa78bcfd67a3641b3e183e7682e4b9605985aa793bd5ba70fe6b63a6",
+    "sha256": "47be015f9a0cd650607f7fd5b29ae13d48cf39ae2dcaf4fe37dd2a112e8bdd0f",
+    "commit": "82c85ec0bc8f648822c077734844d11e497e277e",
+    "build_reference": "climate-3d.html"
+  },
+  {
+    "game": "firered",
+    "view": "autumn",
+    "file": "firered-autumn.png",
+    "source_sha256": "e294e95534ea51cd380310d669d45163bc21367171469d8353f9847a2b51ab4a",
+    "sha256": "21faa32b21d90d674286353fca27d45416489d5daf4e49dd8f45a539c8c95a8c",
+    "commit": "82c85ec0bc8f648822c077734844d11e497e277e",
+    "build_reference": "climate-3d.html"
+  },
+  {
+    "game": "firered",
+    "view": "winter",
+    "file": "firered-winter.png",
+    "source_sha256": "93b9c5a4858cfaa476af1300f65d8e19f4bcb6921f63b6ac1a431375bc2d1354",
+    "sha256": "7149991b14d53c6b83cfa8c936b8fff18aeda9a5789e0ccf6548610f1b776c0b",
+    "commit": "82c85ec0bc8f648822c077734844d11e497e277e",
+    "build_reference": "climate-3d.html"
+  },
+  {
+    "game": "firered",
+    "view": "clear",
+    "file": "firered-clear.png",
+    "source_sha256": "5fb8f2b0f5f9fe3b294038be3be79edd6006cd960ed2a452dd50f71f80948ac1",
+    "sha256": "0edb4818474df6fed101812756eacf841aa040e5f4112f705c31baf9a9227d7e",
+    "commit": "82c85ec0bc8f648822c077734844d11e497e277e",
+    "build_reference": "climate-3d.html"
+  },
+  {
+    "game": "firered",
+    "view": "rain",
+    "file": "firered-rain.png",
+    "source_sha256": "7ce3db1cc390e26998e1665830232e031b8c836470e3fa96d533255bdf40f7ad",
+    "sha256": "73d32a9bd6ce71a6775f0ea39fd62727ab2c161fbf95a328540cd729b5b9b547",
+    "commit": "82c85ec0bc8f648822c077734844d11e497e277e",
+    "build_reference": "climate-3d.html"
+  },
+  {
+    "game": "firered",
+    "view": "snow",
+    "file": "firered-snow.png",
+    "source_sha256": "dec6c2421f2f80e089e11957e2f9ec9910ec398f6d73ed275d9a2a4d15d777b6",
+    "sha256": "07be201b2382bbfa781fadd22a9ec9ad84ea875af657e1237c4a8825370f0a19",
+    "commit": "82c85ec0bc8f648822c077734844d11e497e277e",
+    "build_reference": "climate-3d.html"
+  },
+  {
+    "game": "firered",
+    "view": "fog",
+    "file": "firered-fog.png",
+    "source_sha256": "e15c2cf178f7b061653dfa538d80166e96e7270567f464cb6c112009c6a5b964",
+    "sha256": "89abdfdfeee8a86e4c4101aa9cb3c5dce228a6e82f85f0042e355ba3f8757b76",
+    "commit": "82c85ec0bc8f648822c077734844d11e497e277e",
+    "build_reference": "climate-3d.html"
+  },
+  {
+    "game": "firered",
+    "view": "battle",
+    "file": "firered-battle.png",
+    "source_sha256": "3ff4530e4104417bbb5943682edaece09feec6e59a292c4f35211e381e668396",
+    "sha256": "f3f0335164eb8e7f672187d00dd431c948d22aba8e96ee0e29c544c0a7a8eb5e",
+    "commit": "82c85ec0bc8f648822c077734844d11e497e277e",
+    "build_reference": "climate-3d.html"
+  },
+  {
+    "game": "firered",
+    "view": "winter-battle",
+    "file": "firered-winter-battle.png",
+    "source_sha256": "215cd554608a88cf047e2c9b7e2614cb590da0ce086c7eb743701950fbbe234b",
+    "sha256": "8120a6154146d2c6a6abc6f5a62444bf3214f347e502decfa5e07ca46cddab60",
+    "commit": "82c85ec0bc8f648822c077734844d11e497e277e",
+    "build_reference": "climate-3d.html"
+  },
+  {
+    "game": "firered",
+    "view": "motion",
+    "file": "firered-motion.gif",
+    "source_sha256": "501d34874a9b88447279b3bba52f4cbb78389d4e6c209c2c1684995514c1bc57",
+    "sha256": "501d34874a9b88447279b3bba52f4cbb78389d4e6c209c2c1684995514c1bc57",
+    "commit": "82c85ec0bc8f648822c077734844d11e497e277e",
+    "build_reference": "climate-3d.html",
+    "format": "Reduced-resolution actual Thor capture; not a frame-rate measurement"
+  },
+  {
+    "game": "firered",
+    "view": "boulder-moving",
+    "file": "firered-boulder-moving.gif",
+    "source_sha256": "df5f61b3738bc72a31ec5cfacd92ef48a69bc559d4d87b592057e6f9e868873e",
+    "sha256": "df5f61b3738bc72a31ec5cfacd92ef48a69bc559d4d87b592057e6f9e868873e",
+    "commit": "82c85ec0bc8f648822c077734844d11e497e277e",
+    "build_reference": "climate-3d.html",
+    "format": "Reduced-resolution actual Thor capture; not a frame-rate measurement"
+  },
+  {
+    "game": "firered",
+    "view": "rock-smash",
+    "file": "firered-rock-smash.gif",
+    "source_sha256": "2e6cb2b5e5ba806b18a90c09d15197fff4c5615a24c32101cd8819e277ba4296",
+    "sha256": "2e6cb2b5e5ba806b18a90c09d15197fff4c5615a24c32101cd8819e277ba4296",
+    "commit": "82c85ec0bc8f648822c077734844d11e497e277e",
+    "build_reference": "climate-3d.html",
+    "format": "Reduced-resolution actual Thor capture; not a frame-rate measurement"
+  },
+  {
+    "game": "firered",
+    "view": "cut-tree",
+    "file": "firered-cut-tree.gif",
+    "source_sha256": "db24e5bd924629b8a07aaa0e6db8a993f170baabc9c1405a02f0f98a153da3f7",
+    "sha256": "db24e5bd924629b8a07aaa0e6db8a993f170baabc9c1405a02f0f98a153da3f7",
+    "commit": "82c85ec0bc8f648822c077734844d11e497e277e",
+    "build_reference": "climate-3d.html",
+    "format": "Reduced-resolution actual Thor capture; not a frame-rate measurement"
+  },
+  {
+    "game": "firered",
+    "view": "winter-ground",
+    "file": "firered-winter-ground.gif",
+    "source_sha256": "f1a9c6f0fde3c9be3fffdceb6d09847648c6fce925f9f54518cfa981778e818b",
+    "sha256": "f1a9c6f0fde3c9be3fffdceb6d09847648c6fce925f9f54518cfa981778e818b",
+    "commit": "82c85ec0bc8f648822c077734844d11e497e277e",
+    "build_reference": "climate-3d.html",
+    "format": "Reduced-resolution actual Thor capture; not a frame-rate measurement"
+  },
+  {
+    "game": "firered",
+    "view": "rain",
+    "file": "firered-rain.gif",
+    "source_sha256": "1227d6b44bdef3d68cdeaffc59accf8d1e69ed16c7f47272795f3a8f0d603318",
+    "sha256": "1227d6b44bdef3d68cdeaffc59accf8d1e69ed16c7f47272795f3a8f0d603318",
+    "commit": "82c85ec0bc8f648822c077734844d11e497e277e",
+    "build_reference": "climate-3d.html",
+    "format": "Reduced-resolution actual Thor capture; not a frame-rate measurement"
+  },
+  {
+    "game": "firered",
+    "view": "snow",
+    "file": "firered-snow.gif",
+    "source_sha256": "d8a28423a8e37615b15075d1426a956ff4630a4b9938522e756e26e76420f9ed",
+    "sha256": "d8a28423a8e37615b15075d1426a956ff4630a4b9938522e756e26e76420f9ed",
+    "commit": "82c85ec0bc8f648822c077734844d11e497e277e",
+    "build_reference": "climate-3d.html",
+    "format": "Reduced-resolution actual Thor capture; not a frame-rate measurement"
+  },
+  {
+    "game": "firered",
+    "view": "fog",
+    "file": "firered-fog.gif",
+    "source_sha256": "b800ae3ab96d09155d405ba443b3ca44631f6aa01df7204b55d05f6150bb0414",
+    "sha256": "b800ae3ab96d09155d405ba443b3ca44631f6aa01df7204b55d05f6150bb0414",
+    "commit": "82c85ec0bc8f648822c077734844d11e497e277e",
+    "build_reference": "climate-3d.html",
+    "format": "Reduced-resolution actual Thor capture; not a frame-rate measurement"
+  },
+  {
+    "game": "firered",
+    "view": "winter-battle",
+    "file": "firered-winter-battle.gif",
+    "source_sha256": "ad06052b041004f1e459f40c34faa6b9e8469fe587832aea31480c0a22e03e47",
+    "sha256": "ad06052b041004f1e459f40c34faa6b9e8469fe587832aea31480c0a22e03e47",
+    "commit": "82c85ec0bc8f648822c077734844d11e497e277e",
+    "build_reference": "climate-3d.html",
+    "format": "Reduced-resolution actual Thor capture; not a frame-rate measurement"
+  },
+  {
+    "game": "firered",
+    "view": "weather-transition",
+    "file": "firered-weather-transition.gif",
+    "source_sha256": "f6c7010e4762f4b19f6d19b7dead6024d2a6045d0536fdb69570e5ff65724c10",
+    "sha256": "f6c7010e4762f4b19f6d19b7dead6024d2a6045d0536fdb69570e5ff65724c10",
+    "commit": "82c85ec0bc8f648822c077734844d11e497e277e",
+    "build_reference": "climate-3d.html",
+    "format": "Reduced-resolution actual Thor capture; not a frame-rate measurement"
+  },
+  {
+    "game": "firered",
+    "view": "battle",
+    "file": "firered-battle.gif",
+    "source_sha256": "ad06052b041004f1e459f40c34faa6b9e8469fe587832aea31480c0a22e03e47",
+    "sha256": "ad06052b041004f1e459f40c34faa6b9e8469fe587832aea31480c0a22e03e47",
+    "commit": "82c85ec0bc8f648822c077734844d11e497e277e",
+    "build_reference": "climate-3d.html",
+    "format": "Reduced-resolution actual Thor capture; not a frame-rate measurement"
+  },
+  {
+    "game": "frlg",
+    "view": "2d",
+    "file": "frlg-2d.png",
+    "source_sha256": "d97279ca7a309f288738b9573b878bb1a17d525583d977668c6ffab8fe9b1c9c",
+    "sha256": "342c466e99c550afcf358bb772056682ba3de8043850d26abe398377394da0ee",
+    "commit": "bddbefd318e658799c9ba4476e106cd0bccc3962",
+    "build_reference": "climate-3d.html"
+  },
+  {
+    "game": "frlg",
+    "view": "3d",
+    "file": "frlg-3d.png",
+    "source_sha256": "8aa4bc44adc78d048bf3d7cead175b5991ecfc6190799b1c834cb1dc693d88a9",
+    "sha256": "a36b71ea7dfe012be91999c1258b3d19c32a5a550990b02fb66c9f4ff2a1ce31",
+    "commit": "bddbefd318e658799c9ba4476e106cd0bccc3962",
+    "build_reference": "climate-3d.html"
+  },
+  {
+    "game": "frlg",
+    "view": "spring",
+    "file": "frlg-spring.png",
+    "source_sha256": "162a2e6d0223620fb68d8ebfcb88e1d581c613b4e6078d51a558431ed0262263",
+    "sha256": "65512eaba39d4ffb52c3a722aa8e9f453e106999915e40f40bbcc1866dfe1cd3",
+    "commit": "bddbefd318e658799c9ba4476e106cd0bccc3962",
+    "build_reference": "climate-3d.html"
+  },
+  {
+    "game": "frlg",
+    "view": "summer",
+    "file": "frlg-summer.png",
+    "source_sha256": "f4b25593cfd5e15175bf124b28cc33c73e09df761b14389f8984183864286df1",
+    "sha256": "24c0e16e35360f14d774b2402589d37b840393480d98fdfbb7a25ecc12eec121",
+    "commit": "bddbefd318e658799c9ba4476e106cd0bccc3962",
+    "build_reference": "climate-3d.html"
+  },
+  {
+    "game": "frlg",
+    "view": "autumn",
+    "file": "frlg-autumn.png",
+    "source_sha256": "e051230852db465dec060352db36deb8bcda946c706f257e7a346263ff15aebd",
+    "sha256": "4b4a8a8bfb73e0ce74f426ec83a25bd170110665e574442c633c59e69585c85e",
+    "commit": "bddbefd318e658799c9ba4476e106cd0bccc3962",
+    "build_reference": "climate-3d.html"
+  },
+  {
+    "game": "frlg",
+    "view": "winter",
+    "file": "frlg-winter.png",
+    "source_sha256": "af79157bed8b2a7906c1a67e9e9c83105f462640e355070f00e2938cce71292f",
+    "sha256": "796d5677b0acf88938f8245b7da0c2cf9d6d8f7288972355ad17408291b6c014",
+    "commit": "bddbefd318e658799c9ba4476e106cd0bccc3962",
+    "build_reference": "climate-3d.html"
+  },
+  {
+    "game": "frlg",
+    "view": "clear",
+    "file": "frlg-clear.png",
+    "source_sha256": "75931ce0e43a2a4be37faa25c262720075bf87e267d8c9296fc462f814d8e0d6",
+    "sha256": "bb15198c1f6259770abfd194b01af5af31c6cda62cee9bb6c16960ab657bb302",
+    "commit": "bddbefd318e658799c9ba4476e106cd0bccc3962",
+    "build_reference": "climate-3d.html"
+  },
+  {
+    "game": "frlg",
+    "view": "rain",
+    "file": "frlg-rain.png",
+    "source_sha256": "f8e69824bc96ad51bc1038b88376317e32a83a43d1e0adb7858169fd3394f56e",
+    "sha256": "afde4718c59d328e64e75fe429d2d0be284bfcaaba2701bc59b93cb291a49e71",
+    "commit": "bddbefd318e658799c9ba4476e106cd0bccc3962",
+    "build_reference": "climate-3d.html"
+  },
+  {
+    "game": "frlg",
+    "view": "snow",
+    "file": "frlg-snow.png",
+    "source_sha256": "b67558b2f43f6bb8f6511d8c87420b7831b1fd6db5e26873a7d8b9d11fbf7ac1",
+    "sha256": "2afb7bc4d70b9a90d0de114d217a433bea202f8916836c5b343d3538d377ee83",
+    "commit": "bddbefd318e658799c9ba4476e106cd0bccc3962",
+    "build_reference": "climate-3d.html"
+  },
+  {
+    "game": "frlg",
+    "view": "fog",
+    "file": "frlg-fog.png",
+    "source_sha256": "19d723630cf7c0f4b3a1c566e3ebba09524ccdd0ffd1b667f276398860c363fd",
+    "sha256": "bfcd7b5d080d259a81599fba782fb05ff0fbae6dc45594281fe6a84a6cf48896",
+    "commit": "bddbefd318e658799c9ba4476e106cd0bccc3962",
+    "build_reference": "climate-3d.html"
+  },
+  {
+    "game": "frlg",
+    "view": "battle",
+    "file": "frlg-battle.png",
+    "source_sha256": "b587e3278b91bca304a502b298eb235f25a28a87af1d87384a8b28d64a6c3d2e",
+    "sha256": "08e503e3e128b664ea2df4055d04c109abf331bd5aed28bc1104d36286cae529",
+    "commit": "bddbefd318e658799c9ba4476e106cd0bccc3962",
+    "build_reference": "climate-3d.html"
+  },
+  {
+    "game": "frlg",
+    "view": "winter-battle",
+    "file": "frlg-winter-battle.png",
+    "source_sha256": "d17ae2c5c287ddfe0c412db69582e1a873ede5b4360821fc6296d24b749a6a8c",
+    "sha256": "4e298d46292a5d70810072be599b656ec4994ef922a4afff7f4c9b170f084464",
+    "commit": "bddbefd318e658799c9ba4476e106cd0bccc3962",
+    "build_reference": "climate-3d.html"
+  },
+  {
+    "game": "frlg",
+    "view": "motion",
+    "file": "frlg-motion.gif",
+    "source_sha256": "7dbfca4920f5ba995a670e242cb4957d850284726d2e979561d4edd39f32c015",
+    "sha256": "7dbfca4920f5ba995a670e242cb4957d850284726d2e979561d4edd39f32c015",
+    "commit": "bddbefd318e658799c9ba4476e106cd0bccc3962",
+    "build_reference": "climate-3d.html",
+    "format": "Reduced-resolution actual Thor capture; not a frame-rate measurement"
+  },
+  {
+    "game": "frlg",
+    "view": "boulder-moving",
+    "file": "frlg-boulder-moving.gif",
+    "source_sha256": "400d7d8dc3227ce5091fac656bc1c3bccc4f0b0780068b3b34f44523e1ad8026",
+    "sha256": "400d7d8dc3227ce5091fac656bc1c3bccc4f0b0780068b3b34f44523e1ad8026",
+    "commit": "bddbefd318e658799c9ba4476e106cd0bccc3962",
+    "build_reference": "climate-3d.html",
+    "format": "Reduced-resolution actual Thor capture; not a frame-rate measurement"
+  },
+  {
+    "game": "frlg",
+    "view": "rock-smash",
+    "file": "frlg-rock-smash.gif",
+    "source_sha256": "d7234265cbd48b62d3ef181486e62bb639de13f9c315742f8d69d5c4d70d7d5b",
+    "sha256": "d7234265cbd48b62d3ef181486e62bb639de13f9c315742f8d69d5c4d70d7d5b",
+    "commit": "bddbefd318e658799c9ba4476e106cd0bccc3962",
+    "build_reference": "climate-3d.html",
+    "format": "Reduced-resolution actual Thor capture; not a frame-rate measurement"
+  },
+  {
+    "game": "frlg",
+    "view": "cut-tree",
+    "file": "frlg-cut-tree.gif",
+    "source_sha256": "2d6288cd1132343134d92d9cea47b452b45611f1dee1b5b0cd05880b5fe696b7",
+    "sha256": "2d6288cd1132343134d92d9cea47b452b45611f1dee1b5b0cd05880b5fe696b7",
+    "commit": "bddbefd318e658799c9ba4476e106cd0bccc3962",
+    "build_reference": "climate-3d.html",
+    "format": "Reduced-resolution actual Thor capture; not a frame-rate measurement"
+  },
+  {
+    "game": "frlg",
+    "view": "winter-ground",
+    "file": "frlg-winter-ground.gif",
+    "source_sha256": "9a2331837a2e6dc425132a0a3550ae18ae3c21a90598f2a03adca4e8933f7d57",
+    "sha256": "9a2331837a2e6dc425132a0a3550ae18ae3c21a90598f2a03adca4e8933f7d57",
+    "commit": "bddbefd318e658799c9ba4476e106cd0bccc3962",
+    "build_reference": "climate-3d.html",
+    "format": "Reduced-resolution actual Thor capture; not a frame-rate measurement"
+  },
+  {
+    "game": "frlg",
+    "view": "rain",
+    "file": "frlg-rain.gif",
+    "source_sha256": "44e75624ad10202e22d0e595e1be0b0c8c661138671da857b8f2d7e87178b91d",
+    "sha256": "44e75624ad10202e22d0e595e1be0b0c8c661138671da857b8f2d7e87178b91d",
+    "commit": "bddbefd318e658799c9ba4476e106cd0bccc3962",
+    "build_reference": "climate-3d.html",
+    "format": "Reduced-resolution actual Thor capture; not a frame-rate measurement"
+  },
+  {
+    "game": "frlg",
+    "view": "snow",
+    "file": "frlg-snow.gif",
+    "source_sha256": "b9714509b5c3f1a4fd1cd8c081858a7bb94bae904ccd8d3edccbeaccb7895c74",
+    "sha256": "b9714509b5c3f1a4fd1cd8c081858a7bb94bae904ccd8d3edccbeaccb7895c74",
+    "commit": "bddbefd318e658799c9ba4476e106cd0bccc3962",
+    "build_reference": "climate-3d.html",
+    "format": "Reduced-resolution actual Thor capture; not a frame-rate measurement"
+  },
+  {
+    "game": "frlg",
+    "view": "fog",
+    "file": "frlg-fog.gif",
+    "source_sha256": "05b9aee36f80e88b11cefc5907ec146460c503866ca3f51e6afc962a863a00ae",
+    "sha256": "05b9aee36f80e88b11cefc5907ec146460c503866ca3f51e6afc962a863a00ae",
+    "commit": "bddbefd318e658799c9ba4476e106cd0bccc3962",
+    "build_reference": "climate-3d.html",
+    "format": "Reduced-resolution actual Thor capture; not a frame-rate measurement"
+  },
+  {
+    "game": "frlg",
+    "view": "winter-battle",
+    "file": "frlg-winter-battle.gif",
+    "source_sha256": "5c121fdb2a09dd4214662949fc80c88599d71d7887a8065fb175fa730cb67df9",
+    "sha256": "5c121fdb2a09dd4214662949fc80c88599d71d7887a8065fb175fa730cb67df9",
+    "commit": "bddbefd318e658799c9ba4476e106cd0bccc3962",
+    "build_reference": "climate-3d.html",
+    "format": "Reduced-resolution actual Thor capture; not a frame-rate measurement"
+  },
+  {
+    "game": "frlg",
+    "view": "weather-transition",
+    "file": "frlg-weather-transition.gif",
+    "source_sha256": "363f9e792798f0310563d18ec1c1ff09fa12a0466bc7fbb7f7aeeed417ab6606",
+    "sha256": "363f9e792798f0310563d18ec1c1ff09fa12a0466bc7fbb7f7aeeed417ab6606",
+    "commit": "bddbefd318e658799c9ba4476e106cd0bccc3962",
+    "build_reference": "climate-3d.html",
+    "format": "Reduced-resolution actual Thor capture; not a frame-rate measurement"
+  },
+  {
+    "game": "frlg",
+    "view": "battle",
+    "file": "frlg-battle.gif",
+    "source_sha256": "5c121fdb2a09dd4214662949fc80c88599d71d7887a8065fb175fa730cb67df9",
+    "sha256": "5c121fdb2a09dd4214662949fc80c88599d71d7887a8065fb175fa730cb67df9",
+    "commit": "bddbefd318e658799c9ba4476e106cd0bccc3962",
+    "build_reference": "climate-3d.html",
+    "format": "Reduced-resolution actual Thor capture; not a frame-rate measurement"
   }
 ]

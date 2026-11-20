@@ -1,185 +1,234 @@
 {
   "approved": true,
-  "commit": "8e6f7969f6825155333ccdbf8522b20a5602777e",
-  "run_id": 44596143287,
-  "apk_sha256": "54c1d2b80124bb544d2f9ab462c83b113aeb95a2292c5dc6924c5dec21c43a69",
+  "commit": "3709641e534ce5fb01fd9cfa9827734e7759e91a",
+  "run_id": 44660762219,
+  "apk_sha256": "792acde17cfb990572883d0da66811cde74ab8a407a48bc0bb0b753af513b4c0",
   "games": [
     {
       "game": "letsgo",
-      "gallery_verified": true,
+      "build_commit": "3709641e534ce5fb01fd9cfa9827734e7759e91a",
+      "winter_ground_verified": true,
+      "winter_clears_verified": true,
       "battle_return_verified": true,
+      "gallery_verified": true,
       "season_weather_verified": true,
       "automatic_weather_verified": true,
-      "weather_transition_season_stable": true,
-      "automatic_weather_scope": "Actual clear-to-rain transition at 20:00 UTC on unchanged Thor clock/settings; eight intermediate frames show stable autumn trees and palms.",
       "strength_push_verified": true,
-      "passed": true,
+      "cut_tree_verified": true,
+      "interior_unchanged_verified": true,
+      "winter_map_boundary_verified": true,
       "rock_smash_verified": true,
-      "multiple_rocks_visible": true,
       "title_verified": true,
-      "rock_scope": "Victory Road actual Strength push; Mt Ember rock removed via party Rock Smash, original Geodude encounter escaped, player walked through cleared tile, other rocks retained.",
+      "weather_transition_season_stable": true,
+      "passed": true,
       "phases": {
         "field": {
           "metrics": {
-            "samples": 33,
-            "fps_min": 59.6,
-            "fps_median": 59.7,
-            "fps_max": 59.8,
-            "fps_harmonic_mean": 59.72419138023425,
-            "audio_samples_dropped": 0,
-            "refresh_median": 118.14,
-            "pacing_modes": [
-              0
-            ],
-            "late_waits": 0,
-            "work_median_ms": 7.9,
-            "work_peak_ms": 10.4,
-            "underruns_max": 0,
-            "unshown_frames": 0,
-            "repeated_refreshes": 3871
-          },
-          "audio_start": {
-            "pid": 15063,
-            "track": 1595,
-            "server_frames": 538560,
-            "underruns": 0
-          },
-          "audio_end": {
-            "pid": 15063,
-            "track": 1595,
-            "server_frames": 3663360,
-            "underruns": 0
-          },
-          "startup_metrics": {
-            "samples": 4,
-            "fps_min": 59.7,
-            "fps_median": 59.7,
-            "fps_max": 59.7,
-            "fps_harmonic_mean": 59.7,
-            "audio_samples_dropped": 0,
-            "refresh_median": 118.205,
-            "pacing_modes": [
-              0
-            ],
-            "late_waits": 0,
-            "work_median_ms": 7.95,
-            "work_peak_ms": 9.7,
-            "underruns_max": 0,
-            "unshown_frames": 0,
-            "repeated_refreshes": 470
-          }
-        },
-        "battle": {
-          "metrics": {
-            "samples": 33,
-            "fps_min": 59.7,
-            "fps_median": 59.7,
-            "fps_max": 59.8,
-            "fps_harmonic_mean": 59.706051084532746,
-            "audio_samples_dropped": 0,
-            "refresh_median": 118.23,
-            "pacing_modes": [
-              0
-            ],
-            "late_waits": 0,
-            "work_median_ms": 2.6,
-            "work_peak_ms": 5.8,
-            "underruns_max": 0,
-            "unshown_frames": 0,
-            "repeated_refreshes": 3869
-          },
-          "audio_start": {
-            "pid": 16288,
-            "track": 1602,
-            "server_frames": 539520,
-            "underruns": 0
-          },
-          "audio_end": {
-            "pid": 16288,
-            "track": 1602,
-            "server_frames": 3664320,
-            "underruns": 0
-          },
-          "startup_metrics": {
-            "samples": 4,
-            "fps_min": 59.7,
-            "fps_median": 59.7,
-            "fps_max": 59.7,
-            "fps_harmonic_mean": 59.7,
-            "audio_samples_dropped": 0,
-            "refresh_median": 117.41499999999999,
-            "pacing_modes": [
-              0
-            ],
-            "late_waits": 0,
-            "work_median_ms": 2.75,
-            "work_peak_ms": 4.4,
-            "underruns_max": 0,
-            "unshown_frames": 0,
-            "repeated_refreshes": 469
-          }
-        },
-        "active": {
-          "metrics": {
-            "samples": 45,
-            "fps_min": 59.5,
-            "fps_median": 59.7,
-            "fps_max": 59.8,
-            "fps_harmonic_mean": 59.71551120048983,
-            "audio_samples_dropped": 0,
-            "refresh_median": 118.02,
-            "pacing_modes": [
-              0
-            ],
-            "late_waits": 0,
-            "work_median_ms": 7.6,
-            "work_peak_ms": 9.9,
-            "underruns_max": 0,
-            "unshown_frames": 0,
-            "repeated_refreshes": 5277
-          },
-          "audio_start": {
-            "pid": 16288,
-            "track": 1602,
-            "server_frames": 3709440,
-            "underruns": 0
-          },
-          "audio_end": {
-            "pid": 16288,
-            "track": 1602,
-            "server_frames": 8034240,
-            "underruns": 0
-          }
-        },
-        "climate": {
-          "metrics": {
+            "audio_pending_frames_peak": 0,
+            "audio_pending_frames_last": 0,
             "samples": 32,
             "fps_min": 59.6,
             "fps_median": 59.7,
             "fps_max": 59.8,
-            "fps_harmonic_mean": 59.709350317935126,
+            "fps_harmonic_mean": 59.715592473582454,
             "audio_samples_dropped": 0,
-            "refresh_median": 118.21,
+            "refresh_median": 118.17500000000001,
             "pacing_modes": [
               0
             ],
             "late_waits": 0,
-            "work_median_ms": 8.7,
-            "work_peak_ms": 11.0,
+            "work_median_ms": 7.8,
+            "work_peak_ms": 10.9,
             "underruns_max": 0,
             "unshown_frames": 0,
             "repeated_refreshes": 3753
           },
           "audio_start": {
-            "pid": 17623,
-            "track": 1607,
-            "server_frames": 4387200,
+            "pid": 8256,
+            "track": 1879,
+            "server_frames": 534720,
             "underruns": 0
           },
           "audio_end": {
-            "pid": 17623,
-            "track": 1607,
-            "server_frames": 7511040,
+            "pid": 8256,
+            "track": 1879,
+            "server_frames": 3659520,
+            "underruns": 0
+          },
+          "startup_metrics": {
+            "audio_pending_frames_peak": 0,
+            "audio_pending_frames_last": 0,
+            "samples": 5,
+            "fps_min": 56.4,
+            "fps_median": 59.7,
+            "fps_max": 59.7,
+            "fps_harmonic_mean": 59.00946372239748,
+            "audio_samples_dropped": 0,
+            "refresh_median": 118.16,
+            "pacing_modes": [
+              0
+            ],
+            "late_waits": -1,
+            "work_median_ms": 8.0,
+            "work_peak_ms": 82.4,
+            "underruns_max": 0,
+            "unshown_frames": 7,
+            "repeated_refreshes": 583
+          }
+        },
+        "battle": {
+          "metrics": {
+            "audio_pending_frames_peak": 0,
+            "audio_pending_frames_last": 0,
+            "samples": 33,
+            "fps_min": 59.7,
+            "fps_median": 59.7,
+            "fps_max": 59.8,
+            "fps_harmonic_mean": 59.703025388942386,
+            "audio_samples_dropped": 0,
+            "refresh_median": 118.18,
+            "pacing_modes": [
+              0
+            ],
+            "late_waits": 0,
+            "work_median_ms": 2.7,
+            "work_peak_ms": 5.7,
+            "underruns_max": 0,
+            "unshown_frames": 0,
+            "repeated_refreshes": 3869
+          },
+          "audio_start": {
+            "pid": 9742,
+            "track": 1886,
+            "server_frames": 537600,
+            "underruns": 0
+          },
+          "audio_end": {
+            "pid": 9742,
+            "track": 1886,
+            "server_frames": 3662400,
+            "underruns": 0
+          },
+          "startup_metrics": {
+            "audio_pending_frames_peak": 0,
+            "audio_pending_frames_last": 0,
+            "samples": 5,
+            "fps_min": 57.8,
+            "fps_median": 59.7,
+            "fps_max": 59.8,
+            "fps_harmonic_mean": 59.32978532539316,
+            "audio_samples_dropped": 0,
+            "refresh_median": 117.94,
+            "pacing_modes": [
+              0
+            ],
+            "late_waits": -1,
+            "work_median_ms": 2.7,
+            "work_peak_ms": 54.8,
+            "underruns_max": 0,
+            "unshown_frames": 7,
+            "repeated_refreshes": 578
+          }
+        },
+        "active": {
+          "metrics": {
+            "audio_pending_frames_peak": 0,
+            "audio_pending_frames_last": 0,
+            "samples": 44,
+            "fps_min": 59.6,
+            "fps_median": 59.7,
+            "fps_max": 59.8,
+            "fps_harmonic_mean": 59.72268265442273,
+            "audio_samples_dropped": 0,
+            "refresh_median": 118.31,
+            "pacing_modes": [
+              0
+            ],
+            "late_waits": 0,
+            "work_median_ms": 7.6,
+            "work_peak_ms": 10.5,
+            "underruns_max": 0,
+            "unshown_frames": 0,
+            "repeated_refreshes": 5161
+          },
+          "audio_start": {
+            "pid": 9742,
+            "track": 1886,
+            "server_frames": 4139520,
+            "underruns": 0
+          },
+          "audio_end": {
+            "pid": 9742,
+            "track": 1886,
+            "server_frames": 8464320,
+            "underruns": 0
+          }
+        },
+        "climate": {
+          "metrics": {
+            "audio_pending_frames_peak": 0,
+            "audio_pending_frames_last": 0,
+            "samples": 33,
+            "fps_min": 59.6,
+            "fps_median": 59.7,
+            "fps_max": 59.9,
+            "fps_harmonic_mean": 59.730227096727006,
+            "audio_samples_dropped": 0,
+            "refresh_median": 118.19,
+            "pacing_modes": [
+              0
+            ],
+            "late_waits": 0,
+            "work_median_ms": 8.7,
+            "work_peak_ms": 12.1,
+            "underruns_max": 0,
+            "unshown_frames": 0,
+            "repeated_refreshes": 3870
+          },
+          "audio_start": {
+            "pid": 11158,
+            "track": 1891,
+            "server_frames": 941760,
+            "underruns": 0
+          },
+          "audio_end": {
+            "pid": 11158,
+            "track": 1891,
+            "server_frames": 4065600,
+            "underruns": 0
+          }
+        },
+        "winter": {
+          "metrics": {
+            "audio_pending_frames_peak": 0,
+            "audio_pending_frames_last": 0,
+            "samples": 32,
+            "fps_min": 59.6,
+            "fps_median": 59.7,
+            "fps_max": 59.8,
+            "fps_harmonic_mean": 59.71246075921126,
+            "audio_samples_dropped": 0,
+            "refresh_median": 118.17,
+            "pacing_modes": [
+              0
+            ],
+            "late_waits": 0,
+            "work_median_ms": 9.1,
+            "work_peak_ms": 11.8,
+            "underruns_max": 0,
+            "unshown_frames": 0,
+            "repeated_refreshes": 3753
+          },
+          "audio_start": {
+            "pid": 9274,
+            "track": 1885,
+            "server_frames": 319680,
+            "underruns": 0
+          },
+          "audio_end": {
+            "pid": 9274,
+            "track": 1885,
+            "server_frames": 3444480,
             "underruns": 0
           }
         }
@@ -187,178 +236,229 @@
     },
     {
       "game": "radical",
-      "gallery_verified": true,
+      "build_commit": "3709641e534ce5fb01fd9cfa9827734e7759e91a",
+      "winter_ground_verified": true,
+      "winter_clears_verified": true,
       "battle_return_verified": true,
+      "gallery_verified": true,
       "season_weather_verified": true,
       "automatic_weather_verified": true,
-      "weather_transition_season_stable": true,
-      "weather_transition_scope": "Live Manual clear-to-rain switch with autumn retained across 0/1/2/3/4/5/8/15-second frames. Automatic timing and current autumn/rain reviewed separately; clock-boundary regression tests cover the same engine.",
-      "passed": true,
       "strength_push_verified": true,
+      "cut_tree_verified": true,
+      "winter_map_boundary_verified": true,
+      "winter_grass_effect_verified": true,
+      "interior_unchanged_verified": true,
       "rock_smash_verified": true,
-      "multiple_rocks_visible": true,
+      "weather_transition_season_stable": true,
+      "passed": true,
       "phases": {
         "field": {
           "metrics": {
-            "samples": 32,
+            "audio_pending_frames_peak": 0,
+            "audio_pending_frames_last": 0,
+            "samples": 33,
             "fps_min": 59.6,
             "fps_median": 59.7,
             "fps_max": 59.8,
-            "fps_harmonic_mean": 59.72808070111356,
+            "fps_harmonic_mean": 59.71207292811704,
             "audio_samples_dropped": 0,
-            "refresh_median": 118.00999999999999,
+            "refresh_median": 118.17,
             "pacing_modes": [
               0
             ],
             "late_waits": 0,
-            "work_median_ms": 7.9,
-            "work_peak_ms": 10.1,
-            "underruns_max": 0,
-            "unshown_frames": 0,
-            "repeated_refreshes": 3754
-          },
-          "audio_start": {
-            "pid": 18153,
-            "track": 1609,
-            "server_frames": 536640,
-            "underruns": 0
-          },
-          "audio_end": {
-            "pid": 18153,
-            "track": 1609,
-            "server_frames": 3661440,
-            "underruns": 0
-          },
-          "startup_metrics": {
-            "samples": 4,
-            "fps_min": 59.7,
-            "fps_median": 59.7,
-            "fps_max": 59.8,
-            "fps_harmonic_mean": 59.7249686323714,
-            "audio_samples_dropped": 0,
-            "refresh_median": 118.195,
-            "pacing_modes": [
-              0
-            ],
-            "late_waits": 0,
-            "work_median_ms": 7.4,
-            "work_peak_ms": 9.6,
-            "underruns_max": 0,
-            "unshown_frames": 0,
-            "repeated_refreshes": 469
-          }
-        },
-        "battle": {
-          "metrics": {
-            "samples": 33,
-            "fps_min": 59.7,
-            "fps_median": 59.7,
-            "fps_max": 59.8,
-            "fps_harmonic_mean": 59.71513001165797,
-            "audio_samples_dropped": 0,
-            "refresh_median": 118.21,
-            "pacing_modes": [
-              0
-            ],
-            "late_waits": 0,
-            "work_median_ms": 2.6,
-            "work_peak_ms": 4.4,
+            "work_median_ms": 8.0,
+            "work_peak_ms": 10.9,
             "underruns_max": 0,
             "unshown_frames": 0,
             "repeated_refreshes": 3871
           },
           "audio_start": {
-            "pid": 19420,
-            "track": 1616,
-            "server_frames": 540480,
+            "pid": 11444,
+            "track": 1892,
+            "server_frames": 536640,
             "underruns": 0
           },
           "audio_end": {
-            "pid": 19420,
-            "track": 1616,
-            "server_frames": 3664320,
+            "pid": 11444,
+            "track": 1892,
+            "server_frames": 3660480,
             "underruns": 0
           },
           "startup_metrics": {
-            "samples": 4,
+            "audio_pending_frames_peak": 973,
+            "audio_pending_frames_last": 0,
+            "samples": 5,
+            "fps_min": 58.1,
+            "fps_median": 59.7,
+            "fps_max": 59.8,
+            "fps_harmonic_mean": 59.39274369093168,
+            "audio_samples_dropped": 0,
+            "refresh_median": 118.14,
+            "pacing_modes": [
+              0
+            ],
+            "late_waits": -1,
+            "work_median_ms": 7.9,
+            "work_peak_ms": 58.6,
+            "underruns_max": 0,
+            "unshown_frames": 7,
+            "repeated_refreshes": 573
+          }
+        },
+        "battle": {
+          "metrics": {
+            "audio_pending_frames_peak": 0,
+            "audio_pending_frames_last": 0,
+            "samples": 32,
             "fps_min": 59.7,
             "fps_median": 59.7,
             "fps_max": 59.8,
-            "fps_harmonic_mean": 59.7249686323714,
+            "fps_harmonic_mean": 59.70624020068988,
             "audio_samples_dropped": 0,
-            "refresh_median": 118.13,
+            "refresh_median": 118.385,
             "pacing_modes": [
               0
             ],
             "late_waits": 0,
-            "work_median_ms": 2.45,
-            "work_peak_ms": 4.0,
+            "work_median_ms": 2.6,
+            "work_peak_ms": 4.9,
             "underruns_max": 0,
             "unshown_frames": 0,
-            "repeated_refreshes": 469
+            "repeated_refreshes": 3753
+          },
+          "audio_start": {
+            "pid": 12855,
+            "track": 1899,
+            "server_frames": 535680,
+            "underruns": 0
+          },
+          "audio_end": {
+            "pid": 12855,
+            "track": 1899,
+            "server_frames": 3660480,
+            "underruns": 0
+          },
+          "startup_metrics": {
+            "audio_pending_frames_peak": 0,
+            "audio_pending_frames_last": 0,
+            "samples": 5,
+            "fps_min": 56.9,
+            "fps_median": 59.7,
+            "fps_max": 59.7,
+            "fps_harmonic_mean": 59.11816916115559,
+            "audio_samples_dropped": 0,
+            "refresh_median": 118.25,
+            "pacing_modes": [
+              0
+            ],
+            "late_waits": -1,
+            "work_median_ms": 2.7,
+            "work_peak_ms": 83.5,
+            "underruns_max": 0,
+            "unshown_frames": 7,
+            "repeated_refreshes": 582
           }
         },
         "active": {
           "metrics": {
+            "audio_pending_frames_peak": 0,
+            "audio_pending_frames_last": 0,
             "samples": 90,
             "fps_min": 59.6,
             "fps_median": 59.7,
             "fps_max": 59.8,
-            "fps_harmonic_mean": 59.713310281366425,
+            "fps_harmonic_mean": 59.71441632561015,
+            "audio_samples_dropped": 0,
+            "refresh_median": 118.2,
+            "pacing_modes": [
+              0
+            ],
+            "late_waits": 0,
+            "work_median_ms": 4.05,
+            "work_peak_ms": 12.5,
+            "underruns_max": 0,
+            "unshown_frames": 0,
+            "repeated_refreshes": 10555
+          },
+          "audio_start": {
+            "pid": 12855,
+            "track": 1899,
+            "server_frames": 4131840,
+            "underruns": 0
+          },
+          "audio_end": {
+            "pid": 12855,
+            "track": 1899,
+            "server_frames": 12777600,
+            "underruns": 0
+          }
+        },
+        "climate": {
+          "metrics": {
+            "audio_pending_frames_peak": 0,
+            "audio_pending_frames_last": 0,
+            "samples": 33,
+            "fps_min": 59.6,
+            "fps_median": 59.7,
+            "fps_max": 59.8,
+            "fps_harmonic_mean": 59.71811630244051,
             "audio_samples_dropped": 0,
             "refresh_median": 118.21,
             "pacing_modes": [
               0
             ],
             "late_waits": 0,
-            "work_median_ms": 2.6,
-            "work_peak_ms": 11.0,
-            "underruns_max": 0,
-            "unshown_frames": 0,
-            "repeated_refreshes": 10558
-          },
-          "audio_start": {
-            "pid": 19420,
-            "track": 1616,
-            "server_frames": 3707520,
-            "underruns": 0
-          },
-          "audio_end": {
-            "pid": 19420,
-            "track": 1616,
-            "server_frames": 12352320,
-            "underruns": 0
-          }
-        },
-        "climate": {
-          "metrics": {
-            "samples": 33,
-            "fps_min": 59.6,
-            "fps_median": 59.7,
-            "fps_max": 59.8,
-            "fps_harmonic_mean": 59.715119854715994,
-            "audio_samples_dropped": 0,
-            "refresh_median": 118.12,
-            "pacing_modes": [
-              0
-            ],
-            "late_waits": 0,
-            "work_median_ms": 8.9,
+            "work_median_ms": 9.1,
             "work_peak_ms": 11.8,
             "underruns_max": 0,
             "unshown_frames": 0,
             "repeated_refreshes": 3869
           },
           "audio_start": {
-            "pid": 21113,
-            "track": 1621,
-            "server_frames": 942720,
+            "pid": 14506,
+            "track": 1904,
+            "server_frames": 939840,
             "underruns": 0
           },
           "audio_end": {
-            "pid": 21113,
-            "track": 1621,
-            "server_frames": 4067520,
+            "pid": 14506,
+            "track": 1904,
+            "server_frames": 4063680,
+            "underruns": 0
+          }
+        },
+        "winter": {
+          "metrics": {
+            "audio_pending_frames_peak": 0,
+            "audio_pending_frames_last": 0,
+            "samples": 32,
+            "fps_min": 59.6,
+            "fps_median": 59.7,
+            "fps_max": 59.8,
+            "fps_harmonic_mean": 59.71869308965516,
+            "audio_samples_dropped": 0,
+            "refresh_median": 118.255,
+            "pacing_modes": [
+              0
+            ],
+            "late_waits": 0,
+            "work_median_ms": 9.3,
+            "work_peak_ms": 12.2,
+            "underruns_max": 0,
+            "unshown_frames": 0,
+            "repeated_refreshes": 3753
+          },
+          "audio_start": {
+            "pid": 12454,
+            "track": 1898,
+            "server_frames": 319680,
+            "underruns": 0
+          },
+          "audio_end": {
+            "pid": 12454,
+            "track": 1898,
+            "server_frames": 3444480,
             "underruns": 0
           }
         }
@@ -366,185 +466,582 @@
     },
     {
       "game": "unbound",
+      "build_commit": "3709641e534ce5fb01fd9cfa9827734e7759e91a",
+      "cut_tree_verified": true,
+      "strength_push_verified": true,
       "automatic_weather_verified": true,
       "weather_transition_season_stable": true,
-      "automatic_weather_scope": "Actual unchanged-device-clock rain-to-clear boundary at 19:45 UTC, 28-second video and intermediate-frame review; autumn remains stable.",
+      "battle_return_verified": true,
+      "winter_ground_verified": true,
+      "winter_clears_verified": true,
       "gallery_verified": true,
       "season_weather_verified": true,
-      "battle_return_verified": true,
-      "battle_scope": "Three-minute active battle returned to Frozen Heights post-battle dialogue; two manual A inputs advanced dialogue during final portion. Initial 90-second recording retained as incomplete evidence.",
-      "strength_push_verified": true,
-      "strength_scope": "Route 17 live local object 7 moved from (60,7) to (60,6) after original party Strength; before/after state coordinates verified. No patched Strength flag. Other local rocks remained intact.",
-      "passed": true,
+      "interior_unchanged_verified": true,
+      "winter_map_boundary_verified": true,
       "rock_smash_verified": true,
-      "multiple_rocks_visible": true,
-      "smash_scope": "Route 17 local object 4 at (62,6) disappeared after original party Rock Smash; player walked from (62,7) to (62,6), verified via state coordinates. Other three Strength boulders and other smash rock stayed intact.",
+      "passed": true,
       "phases": {
         "field": {
           "metrics": {
-            "samples": 33,
-            "fps_min": 59.6,
-            "fps_median": 59.7,
-            "fps_max": 59.8,
-            "fps_harmonic_mean": 59.715119854715994,
-            "audio_samples_dropped": 0,
-            "refresh_median": 118.21,
-            "pacing_modes": [
-              0
-            ],
-            "late_waits": 0,
-            "work_median_ms": 7.3,
-            "work_peak_ms": 10.0,
-            "underruns_max": 0,
-            "unshown_frames": 0,
-            "repeated_refreshes": 3870
-          },
-          "audio_start": {
-            "pid": 11639,
-            "track": 1578,
-            "server_frames": 539520,
-            "underruns": 0
-          },
-          "audio_end": {
-            "pid": 11639,
-            "track": 1578,
-            "server_frames": 3663360,
-            "underruns": 0
-          },
-          "startup_metrics": {
-            "samples": 4,
+            "audio_pending_frames_peak": 0,
+            "audio_pending_frames_last": 0,
+            "samples": 32,
             "fps_min": 59.7,
             "fps_median": 59.7,
             "fps_max": 59.8,
-            "fps_harmonic_mean": 59.7249686323714,
+            "fps_harmonic_mean": 59.71872451646629,
             "audio_samples_dropped": 0,
-            "refresh_median": 118.14500000000001,
+            "refresh_median": 118.04499999999999,
             "pacing_modes": [
               0
             ],
             "late_waits": 0,
-            "work_median_ms": 6.25,
-            "work_peak_ms": 9.5,
+            "work_median_ms": 7.0,
+            "work_peak_ms": 10.2,
             "underruns_max": 0,
             "unshown_frames": 0,
-            "repeated_refreshes": 469
+            "repeated_refreshes": 3752
+          },
+          "audio_start": {
+            "pid": 14806,
+            "track": 1905,
+            "server_frames": 535680,
+            "underruns": 0
+          },
+          "audio_end": {
+            "pid": 14806,
+            "track": 1905,
+            "server_frames": 3660480,
+            "underruns": 0
+          },
+          "startup_metrics": {
+            "audio_pending_frames_peak": 0,
+            "audio_pending_frames_last": 0,
+            "samples": 5,
+            "fps_min": 56.8,
+            "fps_median": 59.7,
+            "fps_max": 59.7,
+            "fps_harmonic_mean": 59.096549320320676,
+            "audio_samples_dropped": 0,
+            "refresh_median": 118.31,
+            "pacing_modes": [
+              0
+            ],
+            "late_waits": -1,
+            "work_median_ms": 6.9,
+            "work_peak_ms": 98.8,
+            "underruns_max": 0,
+            "unshown_frames": 7,
+            "repeated_refreshes": 581
           }
         },
         "battle": {
           "metrics": {
+            "audio_pending_frames_peak": 0,
+            "audio_pending_frames_last": 0,
             "samples": 33,
             "fps_min": 59.7,
             "fps_median": 59.7,
             "fps_max": 59.8,
-            "fps_harmonic_mean": 59.71815693430658,
+            "fps_harmonic_mean": 59.7121033958439,
             "audio_samples_dropped": 0,
-            "refresh_median": 118.2,
+            "refresh_median": 118.26,
             "pacing_modes": [
               0
             ],
             "late_waits": 0,
             "work_median_ms": 3.1,
-            "work_peak_ms": 5.4,
+            "work_peak_ms": 5.3,
             "underruns_max": 0,
             "unshown_frames": 0,
-            "repeated_refreshes": 3871
+            "repeated_refreshes": 3870
           },
           "audio_start": {
-            "pid": 12914,
-            "track": 1585,
-            "server_frames": 540480,
+            "pid": 16253,
+            "track": 1912,
+            "server_frames": 536640,
             "underruns": 0
           },
           "audio_end": {
-            "pid": 12914,
-            "track": 1585,
-            "server_frames": 3664320,
+            "pid": 16253,
+            "track": 1912,
+            "server_frames": 3660480,
             "underruns": 0
           },
           "startup_metrics": {
-            "samples": 4,
-            "fps_min": 59.7,
+            "audio_pending_frames_peak": 0,
+            "audio_pending_frames_last": 0,
+            "samples": 5,
+            "fps_min": 57.7,
             "fps_median": 59.7,
             "fps_max": 59.7,
-            "fps_harmonic_mean": 59.7,
+            "fps_harmonic_mean": 59.288984509466445,
             "audio_samples_dropped": 0,
-            "refresh_median": 117.99,
+            "refresh_median": 118.24,
             "pacing_modes": [
               0
             ],
-            "late_waits": 0,
-            "work_median_ms": 2.65,
-            "work_peak_ms": 8.8,
+            "late_waits": -1,
+            "work_median_ms": 3.1,
+            "work_peak_ms": 50.4,
             "underruns_max": 0,
-            "unshown_frames": 0,
-            "repeated_refreshes": 469
+            "unshown_frames": 7,
+            "repeated_refreshes": 580
           }
         },
         "active": {
           "metrics": {
-            "samples": 90,
+            "audio_pending_frames_peak": 0,
+            "audio_pending_frames_last": 0,
+            "samples": 44,
             "fps_min": 59.7,
             "fps_median": 59.7,
             "fps_max": 59.8,
-            "fps_harmonic_mean": 59.712204278094745,
+            "fps_harmonic_mean": 59.71815693430658,
             "audio_samples_dropped": 0,
-            "refresh_median": 118.10499999999999,
+            "refresh_median": 118.13499999999999,
             "pacing_modes": [
               0
             ],
             "late_waits": 0,
-            "work_median_ms": 3.0,
-            "work_peak_ms": 13.3,
+            "work_median_ms": 3.1,
+            "work_peak_ms": 5.6,
             "underruns_max": 0,
             "unshown_frames": 0,
-            "repeated_refreshes": 10555
+            "repeated_refreshes": 5159
           },
           "audio_start": {
-            "pid": 21710,
-            "track": 1623,
-            "server_frames": 544320,
+            "pid": 16253,
+            "track": 1912,
+            "server_frames": 4140480,
             "underruns": 0
           },
           "audio_end": {
-            "pid": 21710,
-            "track": 1623,
-            "server_frames": 9188160,
+            "pid": 16253,
+            "track": 1912,
+            "server_frames": 8464320,
             "underruns": 0
           }
         },
         "climate": {
           "metrics": {
-            "samples": 32,
-            "fps_min": 59.7,
+            "audio_pending_frames_peak": 0,
+            "audio_pending_frames_last": 0,
+            "samples": 33,
+            "fps_min": 59.6,
             "fps_median": 59.7,
             "fps_max": 59.8,
-            "fps_harmonic_mean": 59.72184641120812,
+            "fps_harmonic_mean": 59.72117400483479,
             "audio_samples_dropped": 0,
-            "refresh_median": 118.055,
+            "refresh_median": 118.18,
             "pacing_modes": [
               0
             ],
             "late_waits": 0,
-            "work_median_ms": 7.1,
-            "work_peak_ms": 9.3,
+            "work_median_ms": 7.6,
+            "work_peak_ms": 11.4,
+            "underruns_max": 0,
+            "unshown_frames": 0,
+            "repeated_refreshes": 3870
+          },
+          "audio_start": {
+            "pid": 7585,
+            "track": 1878,
+            "server_frames": 945600,
+            "underruns": 0
+          },
+          "audio_end": {
+            "pid": 7585,
+            "track": 1878,
+            "server_frames": 4068480,
+            "underruns": 0
+          }
+        },
+        "winter": {
+          "metrics": {
+            "audio_pending_frames_peak": 0,
+            "audio_pending_frames_last": 0,
+            "samples": 32,
+            "fps_min": 59.6,
+            "fps_median": 59.7,
+            "fps_max": 59.8,
+            "fps_harmonic_mean": 59.72183593450544,
+            "audio_samples_dropped": 0,
+            "refresh_median": 118.11,
+            "pacing_modes": [
+              0
+            ],
+            "late_waits": 0,
+            "work_median_ms": 7.4,
+            "work_peak_ms": 9.9,
             "underruns_max": 0,
             "unshown_frames": 0,
             "repeated_refreshes": 3754
           },
           "audio_start": {
-            "pid": 10802,
-            "track": 1577,
-            "server_frames": 1081920,
+            "pid": 15816,
+            "track": 1911,
+            "server_frames": 319680,
             "underruns": 0
           },
           "audio_end": {
-            "pid": 10802,
-            "track": 1577,
-            "server_frames": 4205760,
+            "pid": 15816,
+            "track": 1911,
+            "server_frames": 3444480,
+            "underruns": 0
+          }
+        },
+        "green-winter": {
+          "metrics": {
+            "audio_pending_frames_peak": 0,
+            "audio_pending_frames_last": 0,
+            "samples": 32,
+            "fps_min": 59.6,
+            "fps_median": 59.7,
+            "fps_max": 59.8,
+            "fps_harmonic_mean": 59.70620878701704,
+            "audio_samples_dropped": 0,
+            "refresh_median": 118.11,
+            "pacing_modes": [
+              0
+            ],
+            "late_waits": 0,
+            "work_median_ms": 7.9,
+            "work_peak_ms": 10.9,
+            "underruns_max": 0,
+            "unshown_frames": 0,
+            "repeated_refreshes": 3753
+          },
+          "audio_start": {
+            "pid": 18554,
+            "track": 1922,
+            "server_frames": 530880,
+            "underruns": 0
+          },
+          "audio_end": {
+            "pid": 18554,
+            "track": 1922,
+            "server_frames": 3655680,
             "underruns": 0
           }
         }
       }
     }
-  ]
+  ],
+  "startup_audio_tests": {
+    "commit": "3709641e534ce5fb01fd9cfa9827734e7759e91a",
+    "apk_sha256": "792acde17cfb990572883d0da66811cde74ab8a407a48bc0bb0b753af513b4c0",
+    "passed": true,
+    "runs": [
+      {
+        "game": "letsgo",
+        "scene": "field",
+        "metrics": {
+          "audio_pending_frames_peak": 0,
+          "audio_pending_frames_last": 0,
+          "samples": 6,
+          "fps_min": 57.7,
+          "fps_median": 59.75,
+          "fps_max": 59.8,
+          "fps_harmonic_mean": 59.38995301804624,
+          "audio_samples_dropped": 0,
+          "refresh_median": 118.17500000000001,
+          "pacing_modes": [
+            0
+          ],
+          "late_waits": -1,
+          "work_median_ms": 7.9,
+          "work_peak_ms": 46.8,
+          "underruns_max": 0,
+          "unshown_frames": 12,
+          "repeated_refreshes": 690
+        },
+        "priming_buffers": [
+          [
+            "6438",
+            "5766"
+          ]
+        ],
+        "passed": true
+      },
+      {
+        "game": "letsgo",
+        "scene": "battle",
+        "metrics": {
+          "audio_pending_frames_peak": 0,
+          "audio_pending_frames_last": 0,
+          "samples": 6,
+          "fps_min": 57.7,
+          "fps_median": 59.7,
+          "fps_max": 59.7,
+          "fps_harmonic_mean": 59.35709362435382,
+          "audio_samples_dropped": 0,
+          "refresh_median": 118.44,
+          "pacing_modes": [
+            0
+          ],
+          "late_waits": -1,
+          "work_median_ms": 2.75,
+          "work_peak_ms": 76.6,
+          "underruns_max": 0,
+          "unshown_frames": 7,
+          "repeated_refreshes": 695
+        },
+        "priming_buffers": [
+          [
+            "6438",
+            "5766"
+          ]
+        ],
+        "passed": true
+      },
+      {
+        "game": "letsgo",
+        "scene": "battle",
+        "metrics": {
+          "audio_pending_frames_peak": 0,
+          "audio_pending_frames_last": 0,
+          "samples": 6,
+          "fps_min": 56.8,
+          "fps_median": 59.7,
+          "fps_max": 59.7,
+          "fps_harmonic_mean": 59.19627582193774,
+          "audio_samples_dropped": 0,
+          "refresh_median": 118.12,
+          "pacing_modes": [
+            0
+          ],
+          "late_waits": -1,
+          "work_median_ms": 2.75,
+          "work_peak_ms": 80.9,
+          "underruns_max": 0,
+          "unshown_frames": 7,
+          "repeated_refreshes": 699
+        },
+        "priming_buffers": [
+          [
+            "6438",
+            "5766"
+          ]
+        ],
+        "passed": true
+      },
+      {
+        "game": "radical",
+        "scene": "field",
+        "metrics": {
+          "audio_pending_frames_peak": 0,
+          "audio_pending_frames_last": 0,
+          "samples": 6,
+          "fps_min": 57.5,
+          "fps_median": 59.7,
+          "fps_max": 59.7,
+          "fps_harmonic_mean": 59.32171658986176,
+          "audio_samples_dropped": 0,
+          "refresh_median": 118.185,
+          "pacing_modes": [
+            0
+          ],
+          "late_waits": -1,
+          "work_median_ms": 7.9,
+          "work_peak_ms": 51.8,
+          "underruns_max": 0,
+          "unshown_frames": 7,
+          "repeated_refreshes": 696
+        },
+        "priming_buffers": [
+          [
+            "6438",
+            "5766"
+          ]
+        ],
+        "passed": true
+      },
+      {
+        "game": "radical",
+        "scene": "battle",
+        "metrics": {
+          "audio_pending_frames_peak": 0,
+          "audio_pending_frames_last": 0,
+          "samples": 6,
+          "fps_min": 56.6,
+          "fps_median": 59.7,
+          "fps_max": 59.7,
+          "fps_harmonic_mean": 59.15996498395098,
+          "audio_samples_dropped": 0,
+          "refresh_median": 118.19,
+          "pacing_modes": [
+            0
+          ],
+          "late_waits": -1,
+          "work_median_ms": 2.7,
+          "work_peak_ms": 82.2,
+          "underruns_max": 0,
+          "unshown_frames": 7,
+          "repeated_refreshes": 700
+        },
+        "priming_buffers": [
+          [
+            "6438",
+            "5766"
+          ]
+        ],
+        "passed": true
+      },
+      {
+        "game": "radical",
+        "scene": "battle",
+        "metrics": {
+          "audio_pending_frames_peak": 0,
+          "audio_pending_frames_last": 0,
+          "samples": 6,
+          "fps_min": 57.5,
+          "fps_median": 59.7,
+          "fps_max": 59.8,
+          "fps_harmonic_mean": 59.33814974458985,
+          "audio_samples_dropped": 0,
+          "refresh_median": 118.425,
+          "pacing_modes": [
+            0
+          ],
+          "late_waits": -1,
+          "work_median_ms": 2.7,
+          "work_peak_ms": 52.7,
+          "underruns_max": 0,
+          "unshown_frames": 7,
+          "repeated_refreshes": 696
+        },
+        "priming_buffers": [
+          [
+            "6438",
+            "5766"
+          ]
+        ],
+        "passed": true
+      },
+      {
+        "game": "unbound",
+        "scene": "field",
+        "metrics": {
+          "audio_pending_frames_peak": 0,
+          "audio_pending_frames_last": 0,
+          "samples": 6,
+          "fps_min": 56.6,
+          "fps_median": 59.7,
+          "fps_max": 59.7,
+          "fps_harmonic_mean": 59.15996498395098,
+          "audio_samples_dropped": 0,
+          "refresh_median": 118.245,
+          "pacing_modes": [
+            0
+          ],
+          "late_waits": -1,
+          "work_median_ms": 7.05,
+          "work_peak_ms": 78.6,
+          "underruns_max": 0,
+          "unshown_frames": 7,
+          "repeated_refreshes": 700
+        },
+        "priming_buffers": [
+          [
+            "6438",
+            "5766"
+          ]
+        ],
+        "passed": true
+      },
+      {
+        "game": "unbound",
+        "scene": "battle",
+        "metrics": {
+          "audio_pending_frames_peak": 0,
+          "audio_pending_frames_last": 0,
+          "samples": 6,
+          "fps_min": 56.6,
+          "fps_median": 59.7,
+          "fps_max": 59.8,
+          "fps_harmonic_mean": 59.17630863245444,
+          "audio_samples_dropped": 0,
+          "refresh_median": 117.97,
+          "pacing_modes": [
+            0
+          ],
+          "late_waits": -1,
+          "work_median_ms": 3.2,
+          "work_peak_ms": 78.4,
+          "underruns_max": 0,
+          "unshown_frames": 7,
+          "repeated_refreshes": 698
+        },
+        "priming_buffers": [
+          [
+            "6438",
+            "5766"
+          ]
+        ],
+        "passed": true
+      },
+      {
+        "game": "unbound",
+        "scene": "battle",
+        "metrics": {
+          "audio_pending_frames_peak": 0,
+          "audio_pending_frames_last": 0,
+          "samples": 6,
+          "fps_min": 56.4,
+          "fps_median": 59.7,
+          "fps_max": 59.7,
+          "fps_harmonic_mean": 59.12344161545215,
+          "audio_samples_dropped": 0,
+          "refresh_median": 118.225,
+          "pacing_modes": [
+            0
+          ],
+          "late_waits": -1,
+          "work_median_ms": 3.15,
+          "work_peak_ms": 82.2,
+          "underruns_max": 0,
+          "unshown_frames": 7,
+          "repeated_refreshes": 700
+        },
+        "priming_buffers": [
+          [
+            "6438",
+            "5766"
+          ]
+        ],
+        "passed": true
+      }
+    ]
+  },
+  "natural_weather_transition": {
+    "passed": true,
+    "commit": "3709641e534ce5fb01fd9cfa9827734e7759e91a",
+    "gif_sha256": "7d2ab770c4ee313bef101a0b7c942ff2122b7edd556b66307ec044934b545d74",
+    "observed_transition": "rain to clear",
+    "boundary_utc_epoch": 1795142700,
+    "settings_changed_during_capture": false,
+    "device_clock_changed": false,
+    "reviewed_frames_seconds": [
+      0,
+      4,
+      8,
+      12,
+      16,
+      20,
+      24,
+      27
+    ],
+    "seasonal_foliage_stable": true
+  },
+  "scope": "Steady field, winter, battle, active battle and automatic-climate windows are gated for cadence and delivery. Cold-start audio priming is checked separately across nine process launches; startup visual warm-up statistics are retained without claiming steady frame cadence during loading. Environmental coverage is limited to verified materials and profiles.",
+  "fixture_scope": "Disposable copied scene saves with prepared positions, badges and field moves. Radical Red and Unbound Cut fixtures include normal HM01 in the runtime TM/HM pocket. Unbound uses Cut from its party menu; Radical Red uses the owned HM at the tree. These are interaction checks, not progression or full-playthrough certification. Personal saves were preserved.",
+  "tested_configuration": {
+    "voxel_3d": true,
+    "aspect": "Expand",
+    "effect_detail": "Reduced",
+    "native_game_speed": "1x",
+    "full_effect_detail_qualified": false
+  },
+  "unbound_battle_return_scope": "After the measured active battle window, two A presses advanced the final dialogue to the expected Professor Log field conversation. Free roaming after the full story sequence was not part of this check."
 }

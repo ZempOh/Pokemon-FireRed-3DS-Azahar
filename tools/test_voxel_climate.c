@@ -15,6 +15,14 @@ static time_t fakeTime(time_t *out) { if(out)*out=fakeSeconds;return fakeSeconds
 #undef time
 #undef clock_gettime
 int main(void) {
+    const uint32_t profiles[]={0x25c3d89f,0xfba55dd8,0x4b3d4957};
+    for(int i=0;i<3;i++) {
+        assert(climateGrassEffect(profiles[i],0x083a5420,0x083a53dc));
+        assert(climateGrassEffect(profiles[i],0x083a5e38,0x083a5e18));
+        assert(!climateGrassEffect(profiles[i],0x083a5420,0x08eb3810));
+        assert(!climateGrassEffect(profiles[i],0x03007d6c,0x083a53dc));
+    }
+    assert(!climateGrassEffect(0,0x083a5420,0x083a53dc));
     uint32_t tealLeaf=0xff606800u;
     voxelClimate.season=3;voxelClimate.seasonBlend=256;
     assert(climateTerrain(tealLeaf)==tealLeaf); // Generic terrain keeps its water protection.

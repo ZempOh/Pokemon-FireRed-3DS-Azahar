@@ -1,6 +1,14 @@
 --- a/app/src/main/cpp/pk_wide.c
 +++ b/app/src/main/cpp/pk_wide.c
-@@ -1501,11 +1501,11 @@
+@@ -1448,6 +1448,7 @@
+ static uint32_t solidRom;
+ struct Piece {
+     int solidKind;
++    bool vegetation;
+     int x, y, w, h, tile, prio, pal, mode;   // mode: OAM objMode (0 normal, 1 semi-transparent, 2 OBJ window)
+     bool hflip, vflip;
+     bool copy;                               // a weather sprite repeated past the screen: margins only
+@@ -1501,11 +1502,11 @@
              /* CFRU reuses low graphics IDs in other banks. Require the live
               * sprite's image table to match the base-bank rock record too. */
              int gfx=oe[5];
@@ -14,7 +22,15 @@
              }
          }
      }
-@@ -2065,25 +2065,48 @@
+@@ -1536,6 +1537,7 @@
+         }
+         struct Piece base = { .tile = (int) (a2 & 0x3FF), .prio = (int) ((a2 >> 10) & 3), .pal = (int) (a2 >> 12),
+                               .solidKind=propKind[id],
++                              .vegetation=climateGrassEffect(solidRom,le32(sp+0x14),le32(sp+0x0c)),
+                               .mode = (int) ((a0 >> 10) & 3), .hflip = !(rot & 1) && (a1 & 0x1000), .vflip = !(rot & 1) && (a1 & 0x2000),
+                               .copy = false, .world = world, .rot = rot, .mat = (int) ((a1 >> 9) & 31) };
+         uint32_t tables = (uint32_t) sp[0x18] | (uint32_t) sp[0x19] << 8 | (uint32_t) sp[0x1A] << 16 | (uint32_t) sp[0x1B] << 24;
+@@ -2065,25 +2067,48 @@
              vx = voxelX(voxel, p[i].x, foot);
              vy = voxelY(voxel, foot, z) - bh + 1;
          }
@@ -69,7 +85,15 @@
          }
          if(voxel&&p[i].world&&p[i].solidKind==6&&!(p[i].rot&1)&&p[i].mode==0&&bw>=24&&bh>=24) {
              unsigned counts[16]={0};
-@@ -4969,11 +4992,11 @@
+@@ -2146,6 +2171,7 @@
+                 takenBuf[J][X] = 1;
+                 if (p[i].prio > OBJ_PRIO(J, X)) continue;
+                 uint32_t c = color(P[256 + p[i].pal * 16 + ci], alpha);
++                if(voxel && p[i].world && p[i].vegetation)c=climateLeafColor(c);
+                 c = p[i].mode == 1 ? blend(c, OBJ_BELOW(J, X), OBJ_LAYER(J, X)) : wl & 0x20 ? brightness(c, 4) : c;
+                 if (!voxel) {
+                     dst[J * stride + X] = c;
+@@ -4969,11 +4995,11 @@
  }
  
  // Profiles are tied to verified ROM CRC + primary tileset, never to green pixels.
@@ -83,7 +107,7 @@
      if (!snow && !kanto) return 0;
      int n=0, cellX=(cx+v->left)/16, cellY=(cy+v->top)/16;
      for(int row=0;row+2<v->rows;row++) for(int col=0;col+1<v->cols;col++) {
-@@ -5010,7 +5033,7 @@
+@@ -5010,7 +5036,7 @@
              if(ci){rgb=P[(e>>12)*16+ci];break;}
          }
          ground[y*16+x]=color(rgb,alpha);
@@ -92,7 +116,7 @@
      }
      for(int i=0;i<n;i++)for(int y=snow?16:0;y<48;y++)for(int x=0;x<32;x++)
          texture[(trees[i].y-v->top+y)*v->stride+trees[i].x-v->left+x]=ground[(y&15)*16+(x&15)];
-@@ -5028,16 +5051,57 @@
+@@ -5028,16 +5054,57 @@
      return n;
  }
  
@@ -151,7 +175,7 @@
          if(snow) {
              ground=0;
              if(solidSnowRockId(id))kind=3;
-@@ -5045,7 +5109,7 @@
+@@ -5045,7 +5112,7 @@
              ground=letsgo?8:1;
              if((letsgo&&id==1)||(radical&&(id==0x12||id==0x1a)))kind=1;
              else if(id==4)kind=letsgo?2:5;
@@ -160,7 +184,7 @@
              else if(id==0x9f)kind=3;
              else if(id==0xaf||id==0xb7){kind=3;ground=0x115;}
          }
-@@ -5066,7 +5130,7 @@
+@@ -5066,7 +5133,7 @@
                  int ci=(vram[off]>>(px&1?4:0))&15;
                  if(ci){rgb=P[(e>>12)*16+ci];break;}
              }
@@ -169,7 +193,7 @@
              texture[(row*16+y)*v->stride+col*16+x]=c;
          }
      }
-@@ -5129,8 +5193,19 @@
+@@ -5129,8 +5196,19 @@
      for (int i=0; i<npieces[shown]; i++)
          if (!pieces[shown][i].world) nativeWeather = 1;
      climateUpdate(mapType >= 1 && mapType <= 3, nativeWeather);
@@ -193,11 +217,23 @@
      static struct SolidProp props[384];
 --- a/app/src/main/cpp/pk_voxel_climate.h
 +++ b/app/src/main/cpp/pk_voxel_climate.h
-@@ -70,11 +70,10 @@
+@@ -70,11 +70,22 @@
      // No residual weather or recoloring is carried into interiors or scripted effects.
      if (!outdoor) voxelClimate.blend=voxelClimate.seasonBlend=0;
  }
 -static uint32_t climateTerrain(uint32_t c) {
++/* Exact live field-effect templates verified in these three ROM profiles.
++ * Palette color alone must never classify an actor, splash or battle sprite. */
++static int climateGrassEffect(uint32_t rom,uint32_t template,uint32_t images) {
++    if(rom!=0x25c3d89f && rom!=0xfba55dd8 && rom!=0x4b3d4957)return 0;
++    static const uint32_t grass[5][2]={
++        {0x083a5420,0x083a53dc},{0x083a5698,0x083a5660},
++        {0x083a593c,0x083a58f8},{0x083a59a4,0x083a5954},
++        {0x083a5e38,0x083a5e18}
++    };
++    for(int i=0;i<5;i++)if(template==grass[i][0]&&images==grass[i][1])return 1;
++    return 0;
++}
 +/* Only callers with verified foliage identity may bypass the terrain hue mask. */
 +static uint32_t climateLeafColor(uint32_t c) {
      if (!voxelClimate.seasonBlend) return c;
@@ -207,7 +243,7 @@
      uint32_t target=c;
      switch (voxelClimate.season) {
      case 0: target=(c&0xff000000u) | ((r+g)/2) | ((g+(255-g)/5)<<8) | ((b+12>255?255:b+12)<<16); break;
-@@ -83,6 +82,29 @@
+@@ -83,6 +94,29 @@
      case 3: target=climateMix(c,0x00fff1e5u,215); break;
      }
      return climateMix(c,target,voxelClimate.seasonBlend);

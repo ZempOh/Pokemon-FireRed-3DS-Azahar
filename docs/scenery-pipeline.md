@@ -354,3 +354,16 @@ cells. A patch of grass alone does not prove wild encounters are enabled there.
 Retain failed route attempts; phone calls, defeated trainers, story state and
 held encounter-reducing items can prevent a battle without a renderer defect.
 Keep manual input notes with any subsequently captured battle fixture.
+
+`tools/scenery_snapshot.py LOCAL_RESUME.companion` reads the versioned location
+and party-count header without touching the device. Check this before calling
+a fixture a field or battle scene: the retained Rocket seed is a partyless
+hideout, not an outdoor field. Preserve it, then prepare and review a separate
+disposable scene. Never expose these snapshots or saves in public artifacts.
+
+`tools/scenery_gallery.py --media RELEASE_MEDIA_DIR --output gallery.html`
+checks every selected image hash and requires build references before rendering
+the shared 2D/3D, season, weather, motion and battle sections. Run it only after
+the release gate selects passing media; it is a media integrity check, not an
+independent device qualification. It preserves published games in the manifest
+and replaces stale candidate panels with their actual selected-build references.

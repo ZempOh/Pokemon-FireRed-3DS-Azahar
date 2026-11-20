@@ -29,6 +29,19 @@ Let’s Go, Radical Red and Unbound. Actors and battle Pokémon are a separate p
 
 ## Shared geometry rules
 
+Host stages can be expressed once as a JSON recipe and reused:
+`run-host --game firered --recipe steps.json --output WORK/run --toolchain COMPILER_VERSION`.
+Each stage has `name`, `kind: "host"`, a `commands` list of argument lists,
+`inputs` and `outputs`. List all external inputs (local ROM, recipe, reconstructed
+tree, build scripts and dependencies) in `inputs`; files and directories are
+hashed without uploading their contents. The profile fingerprint covers the
+scenery source, not every possible external build dependency.
+Available substitutions are `{python}`, `{repo}`, `{workspace}`,
+`{output}` and `{game}`. Commands run without a shell; failure stops the recipe.
+Successful results are reused only when the source/profile, recipe, command,
+toolchain identity and every output hash match. Device stages cannot use this
+cache. Keep fixture execution and Thor qualification fresh.
+
 - Leaves, stems and pots can share a silhouette-volume kernel. Equal down/back
   extrusion preserves the original 45-degree projection while adding visible sides.
 - Use opaque neighboring texels on silhouette edges. Horizontal runs reduce triangles.

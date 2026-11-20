@@ -30,4 +30,15 @@ class GateTests(unittest.TestCase):
  def test_full_coverage_requires_each_family(self):
   self.report.update(claim='all_environment_assets',coverage={'plants':'passed'})
   self.assertFalse(self.gate()['eligible'])
+ def test_host_cache_invalidates_changed_output(self):
+  recipe=self.root/'steps.json';out=self.root/'host'
+  recipe.write_text(json.dumps({'steps':[{'name':'geometry','kind':'host','commands':[['{python}','-c','from pathlib import Path; Path("result.txt").write_text("passed")']],'outputs':['{repo}/result.txt']}]}))
+  first=p.run_host_steps(self.root,self.config,'test',recipe,out,'python-test')
+  self.assertTrue(first['passed']);self.assertFalse(first['steps'][0]['cached'])
+  self.assertTrue(p.run_host_steps(self.root,self.config,'test',recipe,out,'python-test')['steps'][0]['cached'])
+  (self.root/'game/result.txt').write_text('changed')
+  self.assertFalse(p.run_host_steps(self.root,self.config,'test',recipe,out,'python-test')['steps'][0]['cached'])
+ def test_device_stages_cannot_be_cached(self):
+  recipe=self.root/'device.json';recipe.write_text(json.dumps({'steps':[{'name':'thor','kind':'device'}]}))
+  with self.assertRaises(ValueError):p.run_host_steps(self.root,self.config,'test',recipe,self.root/'host','test')
 if __name__=='__main__':unittest.main()

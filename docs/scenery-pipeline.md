@@ -462,3 +462,9 @@ the interaction setup. Preserve each load capture under a unique name.
 Select indoor and HM evidence explicitly after review; verify their exact build
 and file hashes before copying room comparisons or interaction GIFs into the
 shared website/repository gallery. A generated seed is never an interaction pass.
+
+The gallery command also accepts `--repository --output README.md`; both HTML
+and Markdown use the same hash-verified media manifest. Replace obsolete status
+and download sections when publishing, including the builder's supported-game
+list and its linked ROM-identity instructions. For seasonal comparisons, use
+naturally green terrain rather than a map whose original art is permanently snow.

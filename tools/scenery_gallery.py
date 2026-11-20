@@ -2,13 +2,17 @@
 from pathlib import Path
 import argparse,hashlib,html,json
 NAMES={'classic':'Pokémon Classic','firered':'FireRed 3DS','frlg':'FireRed & LeafGreen+','letsgo':'Let’s Go Pikachu','radical':'Radical Red','unbound':'Unbound','better-emerald-2':'Better Than Better Emerald 2','modern-emerald':'Modern Emerald','fakemon':'Fakemon FireRed','lazarus':'Lazarus','dragonsden':'Dragonsden','ash-gray':'Ash Gray','gaia':'Gaia','rocket':'FireRed Rocket Edition','seaglass':'Emerald Seaglass','odyssey':'Odyssey'}
-def render(media,output):
- rows=json.loads((media/'manifest.json').read_text(encoding='utf-8'));by={}
+def verified_rows(media):
+ rows=json.loads((media/'manifest.json').read_text(encoding='utf-8'))
  for row in rows:
   assert row['game'] in NAMES and Path(row['file']).name==row['file']
   file=media/row['file'];assert hashlib.sha256(file.read_bytes()).hexdigest()==row['sha256'],file
   assert row.get('commit') and row.get('build_reference')
-  by.setdefault(row['game'],[]).append(row)
+ return rows
+
+def render(media,output):
+ rows=verified_rows(media);by={}
+ for row in rows:by.setdefault(row['game'],[]).append(row)
  esc=html.escape
  body=['<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PokéDaisy graphics gallery</title><link rel="stylesheet" href="assets/css/site.css"><style>.views{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}.views figure{margin:0}.views img{width:100%;height:auto;image-rendering:auto;border-radius:10px}section{margin:40px 0}figcaption{padding:8px 0}.games{display:flex;flex-wrap:wrap;gap:14px}code{overflow-wrap:anywhere}</style><main class="wrap"><p><a href="voxel.html">Back to builder</a></p><h1>Graphics on the Thor</h1><p>Actual device captures from the published builds. Each game links to its test scope. Coverage is limited to the reviewed environmental profiles and scenes; character and battle Pokémon sprites remain their original art.</p><nav class="games">']
  for g in NAMES:
@@ -35,7 +39,7 @@ def render(media,output):
  body.append('<p><a href="assets/gallery/manifest.json">Capture hashes and build references</a>. GIF frame rate is reduced for download size and is not a gameplay performance measurement.</p></main></html>')
  output.write_text(''.join(body),encoding='utf-8');print('Rendered',len(by),'games from',len(rows),'hash-verified release images')
 def render_builder_motion(media,page):
- rows=json.loads((media/'manifest.json').read_text(encoding='utf-8'));cards=[];esc=html.escape
+ rows=verified_rows(media);cards=[];esc=html.escape
  for game,name in NAMES.items():
   selected={}
   for view,ext in (('3d','png'),('motion','gif')):
@@ -51,5 +55,32 @@ def render_builder_motion(media,page):
  page.write_text(text[:a]+body+text[b:],encoding='utf-8')
  print('Rendered builder motion cards:',len(cards))
 
+def render_repo_gallery(media,output):
+ rows=verified_rows(media)
+ lines=['# Actual Thor graphics gallery','','These captures belong to the published builds linked below. Coverage is limited to reviewed environmental assets and scenes; character and battle artwork stays original. GIF frame rates are reduced for size and are not performance measurements.','']
+ for game,name in NAMES.items():
+  selected=[row for row in rows if row['game']==game]
+  if not selected:continue
+  def find(view,ext):
+   hits=[row['file'] for row in selected if row['view']==view and row['file'].endswith('.'+ext)]
+   assert len(hits)<=1
+   return hits[0] if hits else None
+  lines+=['## '+name,'','[Build and test scope](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/'+selected[0]['build_reference']+').','']
+  for title,views in [('2D / 3D',('2d','3d')),('Seasons',('spring','summer','autumn','winter')),('Indoor plants',('room-2d','room-3d','room-winter'))]:
+   available=[(view,find(view,'png')) for view in views];available=[item for item in available if item[1]]
+   if not available:continue
+   lines+=[title,'','| '+' | '.join(view.replace('-',' ').title() for view,file in available)+' |','| '+' | '.join('---' for _ in available)+' |','| '+' | '.join('!['+name+' '+view+']('+file+')' for view,file in available)+' |','']
+  motion=find('motion','gif')
+  if motion:lines+=['!['+name+' actual gameplay]('+motion+')','']
+  clips=[(view,find(view,'gif')) for view in ('rain','snow','fog','natural-transition','weather-transition','battle','boulder-moving','rock-smash','cut-tree')]
+  lines+=[' · '.join('['+view.replace('-',' ').title()+' GIF]('+file+')' for view,file in clips if file),'']
+  battle=find('battle','png')
+  if battle:lines+=['!['+name+' battle capture]('+battle+')','']
+  lines+=['Source: '+', '.join('`'+commit+'`' for commit in sorted({row['commit'] for row in selected}))+'.','']
+ lines+=['[Capture hashes and build references](manifest.json).','']
+ output.write_text('\n'.join(lines),encoding='utf-8')
+ print('Rendered repository gallery:',len({row['game'] for row in rows}),'games')
+
 if __name__=='__main__':
- p=argparse.ArgumentParser();p.add_argument('--media',type=Path,required=True);p.add_argument('--output',type=Path,required=True);a=p.parse_args();render(a.media,a.output)
+ p=argparse.ArgumentParser();p.add_argument('--media',type=Path,required=True);p.add_argument('--output',type=Path,required=True);p.add_argument('--repository',action='store_true');a=p.parse_args()
+ (render_repo_gallery if a.repository else render)(a.media,a.output)

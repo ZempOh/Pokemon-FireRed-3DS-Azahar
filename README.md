@@ -22,11 +22,11 @@ cartridge dump.
 
 | Games | Published version | Latest retest status |
 | --- | --- | --- |
-| FireRed, FRLG+ | v3 winter scenery | Passed |
-| Classic | v2 flora and climate | v3 held: 59.5 FPS samples below the 59.6 gate |
-| Let’s Go, Radical Red, Unbound | v3 winter scenery | Passed the shared APK retest |
+| Classic, FireRed, FRLG+ | v5 botanical scenery and winter coverage | Exact builds passed all recorded Thor checks |
+| Let’s Go, Radical Red, Unbound | v3 winter scenery | Previous passing shared APK; expanded update under test |
+| Ten additional Android hacks | Unpublished scenery candidates | Device qualification pending |
 
-[Native scenery and GIFs](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/climate-3d.html) · [Android scenery and GIFs](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/android-climate.html) · [Unreleased Classic preview](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/classic-candidate.html). Environmental coverage is still partial; trainers and battle Pokémon retain their original sprites.
+[Native scenery and GIFs](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/climate-3d.html) · [Published Android scenery and GIFs](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/android-climate.html). Coverage is limited to reviewed environmental families and tested scenes; trainers and battle Pokémon retain their original sprites.
 <!-- CURRENT SCENERY STATUS END -->
 
 ## Six-game graphics preview
@@ -486,27 +486,20 @@ Let’s Go, Radical Red and Unbound passed the same APK on the Thor. [Download A
 
 [Verified Thor builds, screenshots and GIFs](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/climate-3d.html). Automatic climate follows calendar seasons and selects season-weighted weather every 15 minutes, with eight-second fades. Repeated weather can last longer; Manual keeps fixed choices. Native weather takes priority. These cosmetic effects do not change battle weather or gameplay RNG.
 
-The v4 updates add closed botanical plant geometry and reviewed winter path/ledge coverage. Full asset coverage is not claimed; each bundle records its exact build, checksums and tested scenes. Only passing builds replace downloads.
+The v5 updates add closed botanical plant geometry and reviewed winter path/ledge coverage. Full asset coverage is not claimed; each bundle records its exact build, checksums and tested scenes. Only passing builds replace downloads.
 
-**FRLG+** — [FRLG-Plus-3D-Scenery-v4-2026-11-20.zip](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/FRLG-Plus-3D-Scenery-v4-2026-11-20.zip)
+**FRLG+** — [FRLG-Plus-3D-Scenery-v5-2026-11-20.zip](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/FRLG-Plus-3D-Scenery-v5-2026-11-20.zip)
 
 ![FRLG+ actual Thor graphics](docs/screenshots/graphics-gallery/frlg-motion.gif)
 
-**FireRed** — [FireRed-3D-Scenery-v4-2026-11-20.zip](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/FireRed-3D-Scenery-v4-2026-11-20.zip)
+**FireRed** — [FireRed-3D-Scenery-v5-2026-11-20.zip](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/FireRed-3D-Scenery-v5-2026-11-20.zip)
 
 ![FireRed actual Thor graphics](docs/screenshots/graphics-gallery/firered-motion.gif)
 
-**Classic** — [Classic-3D-Flora-Climate-v2-2026-11-19.zip](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/Classic-3D-Flora-Climate-v2-2026-11-19.zip)
+**Classic** — [Classic-3D-Scenery-v5-2026-11-20.zip](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/Classic-3D-Scenery-v5-2026-11-20.zip)
 
 ![Classic actual Thor graphics](docs/screenshots/graphics-gallery/classic-motion.gif)
 
 <!-- FLORA CLIMATE END -->
 
-<!-- CLASSIC V3 HOLD -->
-### Classic v3 candidate: held
 
-Classic’s v3 candidate remains unreleased: field and automatic-climate samples reached 59.5 FPS, below the 59.6 FPS release gate. Its scenery and interaction checks passed, but the previously qualified v2 download remains in place. [Fresh unreleased-candidate screenshots and GIFs](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/classic-candidate.html).
-
-![Unreleased Classic v3 candidate winter ground](docs/screenshots/candidates/classic-v3/winter-ground.gif)
-
-<!-- CLASSIC V3 HOLD END -->

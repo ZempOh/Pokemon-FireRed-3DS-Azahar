@@ -124,7 +124,7 @@ def generate(profiles, plants, output):
         seen.add(key)
         assert p['shape'] in (0,1,2)
         if p['shape']==2:
-            assert p.get('asset_kind')=='bamboo_room_screen' and p['height']==32 and p['width']==16
+            assert p.get('asset_kind')=='bamboo_room_screen' and p['height']==24 and p['width']==16
         assert len(p['ink'])==12 and all(0<=v<16 for v in p['ink'][::2]) and all(0<=v<32 for v in p['ink'][1::2])
         top_layer,bottom_layer=p.get('top_layer',1),p.get('bottom_layer',1)
         assert top_layer in (1,2) and bottom_layer in (1,2)

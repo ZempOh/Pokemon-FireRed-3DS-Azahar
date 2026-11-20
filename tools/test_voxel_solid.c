@@ -200,10 +200,14 @@ int main(void) {
         struct SolidProp plant={.kind=11,.plantProfile=(int)profile};
         plant.surface.x=32;plant.surface.y=24;plant.surface.rise=8;
         for(int i=0;i<6;i++)plant.surface.art[i]=0xff40c080;
-        if(model->shape==2)for(int y=0;y<32;y++)for(int x=0;x<16;x++)plant.surface.art[y*32+x]=0xff40c080;
+        // Red source padding represents the wall above a framed screen; no
+        // visible face may sample it. Green is the actual screen artwork.
+        if(model->shape==2)for(int y=0;y<32;y++)for(int x=0;x<16;x++)
+            plant.surface.art[y*32+x]=y<8?0xff0000ff:0xff00ff00;
         memset(depth,0,sizeof depth);memset(v.out,0,N*4);solidPropDraw(&v,&plant);
         int pixels=0;for(int i=0;i<N;i++)if(v.out[i])pixels++;
         assert(pixels>40&&pixels<1000);
+        if(model->shape==2)for(int i=0;i<N;i++)assert(!(v.out[i]&255));
         for(int y=-160;y<=160;y+=32)for(int x=-160;x<=160;x+=32) {
             plant.surface.x=x;plant.surface.y=y;solidPropDraw(&v,&plant);
             assert(guarded[0]==0x12345678 && guarded[N+1]==0x12345678);

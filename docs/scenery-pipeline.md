@@ -475,3 +475,15 @@ Patch 0027 assigns those ten profiles shape 2: closed shallow furniture retainin
 the full source motif on its faces and frame colors on its sides. Shapes 0/1
 remain botanical geometry. Match artwork identity, not just inherited slot IDs;
 require a 2D/3D room comparison before approving any new asset family.
+Patch 0028 crops the eight transparent rows above the 24-pixel screen rather
+than sampling the wall underneath them. A contrasting-color render regression
+ensures no face samples that padding.
+
+Reuse checksum-linked disposable HM starting states after their target is visibly
+confirmed. Stop dialogue inputs when fresh native scene telemetry returns to the
+field; repeated A presses can reopen Strength's completion text. Rock Smash may
+start a wild encounter: capture normal escape and return to the cleared path.
+Retain failed probes separately. The sequential QA queue records job failures,
+resumes only under the same APK hash, and never grants visual approvals itself.
+Winter-boundary evidence must hash the clip and summer restoration, and the
+actual destination must match the planned neighboring map before publication.

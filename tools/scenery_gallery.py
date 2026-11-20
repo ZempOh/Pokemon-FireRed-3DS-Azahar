@@ -18,8 +18,8 @@ def render(media,output):
  for g in NAMES:
   if g in by:body.append(f'<a href="#{g}">{esc(NAMES[g])}</a>')
  body.append('</nav>')
- groups=[('2D and 3D', [('2d','png'),('3d','png')]),('Four seasons',[(v,'png') for v in ('spring','summer','autumn','winter')]),('Weather',[(v,'png') for v in ('clear','rain','snow','fog','automatic')]),('Weather in motion',[(v,'gif') for v in ('rain','snow','fog')]),('Scenery in motion',[('motion','gif'),('natural-transition','gif'),('weather-transition','gif')]),('Battles and scenery interactions',[('battle','png'),('battle','gif'),('boulder-moving','gif'),('rock-smash','gif'),('cut-tree','gif')])]
- groups.insert(1,('Indoor plants',[('room-2d','png'),('room-3d','png'),('room-winter','png')]))
+ groups=[('2D and 3D', [('2d','png'),('3d','png')]),('Four seasons',[(v,'png') for v in ('spring','summer','autumn','winter')]),('Weather',[(v,'png') for v in ('clear','rain','snow','fog','automatic')]),('Weather in motion',[(v,'gif') for v in ('rain','snow','fog')]),('Scenery in motion',[('motion','gif'),('natural-transition','gif'),('weather-transition','gif'),('winter-boundary','gif')]),('Battles and scenery interactions',[('battle','png'),('battle','gif'),('boulder-moving','gif'),('rock-smash','gif'),('cut-tree','gif')])]
+ groups.insert(1,('Indoor scenery',[('room-2d','png'),('room-3d','png'),('room-winter','png')]))
  for g in NAMES:
   if g not in by:continue
   items=by[g];commits=sorted({x['commit'] for x in items});refs=sorted({x['build_reference'] for x in items})
@@ -66,13 +66,13 @@ def render_repo_gallery(media,output):
    assert len(hits)<=1
    return hits[0] if hits else None
   lines+=['## '+name,'','[Build and test scope](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/'+selected[0]['build_reference']+').','']
-  for title,views in [('2D / 3D',('2d','3d')),('Seasons',('spring','summer','autumn','winter')),('Indoor plants',('room-2d','room-3d','room-winter'))]:
+  for title,views in [('2D / 3D',('2d','3d')),('Seasons',('spring','summer','autumn','winter')),('Indoor scenery',('room-2d','room-3d','room-winter'))]:
    available=[(view,find(view,'png')) for view in views];available=[item for item in available if item[1]]
    if not available:continue
    lines+=[title,'','| '+' | '.join(view.replace('-',' ').title() for view,file in available)+' |','| '+' | '.join('---' for _ in available)+' |','| '+' | '.join('!['+name+' '+view+']('+file+')' for view,file in available)+' |','']
   motion=find('motion','gif')
   if motion:lines+=['!['+name+' actual gameplay]('+motion+')','']
-  clips=[(view,find(view,'gif')) for view in ('rain','snow','fog','natural-transition','weather-transition','battle','boulder-moving','rock-smash','cut-tree')]
+  clips=[(view,find(view,'gif')) for view in ('rain','snow','fog','natural-transition','weather-transition','winter-boundary','battle','boulder-moving','rock-smash','cut-tree')]
   lines+=[' · '.join('['+view.replace('-',' ').title()+' GIF]('+file+')' for view,file in clips if file),'']
   battle=find('battle','png')
   if battle:lines+=['!['+name+' battle capture]('+battle+')','']

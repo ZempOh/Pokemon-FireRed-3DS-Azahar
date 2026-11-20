@@ -2,6 +2,11 @@
 #include <stdio.h>
 #include "voxel_winter_material.h"
 int main(void) {
+    const unsigned caps[]={0x97,0xc8,0xc9};
+    for(unsigned i=0;i<3;i++)for(unsigned y=0;y<16;y++)
+        assert(VoxelWinter_PixelPath(caps[i],y)==(y<8));
+    assert(!VoxelWinter_PixelPath(0x98,0));
+    assert(VoxelWinter_PixelPath(0xdc,15));
     assert(VoxelWinter_IsPath(0xdc) && VoxelWinter_IsPath(0x105));
     assert(VoxelWinter_IsPath(0xd0) && VoxelWinter_IsPath(0xd9) && VoxelWinter_IsPath(0xe2));
     assert(VoxelWinter_IsPath(0xc1) && VoxelWinter_IsPath(0xfe) && VoxelWinter_IsPath(0x107));

@@ -135,7 +135,9 @@ uses EX objects (16-bit graphics ID at +4, sprite ID +35), not vanilla Emerald's
 layout. Its exact source compiler gives SaveBlock1 templates/flags/vars at
 3428/4964/5264. Dragonsden's fixture verifies EX objects, graphics table 0x08ba3760,
 and save templates/flags/vars at 0x16a8/0x1ca8/0x1f6c. Its bank lists are halfword
-aligned; do not reinterpret their low bit as an XOR key.
+aligned; do not reinterpret their low bit as an XOR key. It uses 24-byte,
+three-layer metatiles. A 16-byte decoder produces plausible but wrong fragments;
+verify complete source objects before selecting a profile.
 
 The 38 reviewed live profiles match ROM CRC plus the actual sprite image table,
 preserve visibility and movement, and sample the live palette. Let's Go's movable
@@ -143,10 +145,9 @@ slot is a metal bin; Rocket's corresponding blank slot stays blank. Source palet
 indices preserve Ash Gray's yellow cut-tree canopy. Never infer semantics solely
 from a numeric graphics ID.
 
-The 79 complete 2x2 tree patterns cover Better Emerald 2, Seaglass, Lazarus and
-Modern Emerald. Source tiles and palettes must be primary-owned. Lazarus patterns
-containing a neighboring canopy are excluded. Dragonsden's same numeric IDs contain
-different artwork and are excluded. Ground reconstruction caches one tile instead
+The 85 complete 2x2 tree patterns cover Better Emerald 2, Seaglass, Lazarus,
+Modern Emerald and Dragonsden. Source tiles and palettes must be primary-owned.
+Lazarus patterns containing a neighboring canopy are excluded. Ground reconstruction caches one tile instead
 of sampling it for every tree pixel. These counts describe partial coverage only.
 
 Required fields: `game`, `build_commit`, `source_sha256`, `artifact_sha256`,

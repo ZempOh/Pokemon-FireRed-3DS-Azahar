@@ -1341,5 +1341,107 @@
     "source_sha256": "23c3869ad49a3e4518768dfb12c696fabbb795b9897ff14ee362e3c2939ad965",
     "reviewed": true,
     "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "dragonsden",
+    "rom_crc32": "cec21496",
+    "primary": "0x87c0700",
+    "secondary": "0x87c0730",
+    "cells": [
+      468,
+      469,
+      476,
+      477
+    ],
+    "ground": 1,
+    "instances": 82,
+    "source_sha256": "2533c47d6f4b0964f08c2dc43c3fa6fbc4f7283e4c9f20e6173a67e506320b4f",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "dragonsden",
+    "rom_crc32": "cec21496",
+    "primary": "0x87c0700",
+    "secondary": "0x87c0730",
+    "cells": [
+      468,
+      469,
+      486,
+      485
+    ],
+    "ground": 1,
+    "instances": 8,
+    "source_sha256": "6d2a8905e780a3fa024afaa64b73a4e8ddbb0f9c291c28d8fdb91b4bcfe55334",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "dragonsden",
+    "rom_crc32": "cec21496",
+    "primary": "0x87c0700",
+    "secondary": "0x87c0730",
+    "cells": [
+      468,
+      471,
+      476,
+      477
+    ],
+    "ground": 1,
+    "instances": 8,
+    "source_sha256": "867789fabe529b952b2c551a8c8d772ffec1379f68dc1b0b799023964831b43c",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "dragonsden",
+    "rom_crc32": "cec21496",
+    "primary": "0x87c0700",
+    "secondary": "0x87c0730",
+    "cells": [
+      470,
+      469,
+      476,
+      477
+    ],
+    "ground": 1,
+    "instances": 6,
+    "source_sha256": "4fd9618ac55ce27ef04f5bc662b367264ae9dca75cedea30a7cf310727246677",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "dragonsden",
+    "rom_crc32": "cec21496",
+    "primary": "0x87c0700",
+    "secondary": "0x87c0730",
+    "cells": [
+      468,
+      469,
+      484,
+      485
+    ],
+    "ground": 1,
+    "instances": 5,
+    "source_sha256": "d8f6cb6f6ea9075d71bcc472526205203a68f1e0959f33cdbd65e2237b86bca0",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
+  },
+  {
+    "game": "dragonsden",
+    "rom_crc32": "cec21496",
+    "primary": "0x87c0700",
+    "secondary": "0x87c0730",
+    "cells": [
+      468,
+      469,
+      484,
+      487
+    ],
+    "ground": 1,
+    "instances": 1,
+    "source_sha256": "ee4dc575174747755556446bb5615b36ddbe705437bbe6f0510db30e347503fd",
+    "reviewed": true,
+    "proof": "Complete observed 2x2 source tree, primary-owned tiles and palette; overlapping Lazarus canopy variants excluded"
   }
 ]

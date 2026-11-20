@@ -605,3 +605,16 @@ earlier APK and in standalone mGBA. Retain the failed evidence and investigate
 the cartridge and disposable party/save compatibility before changing rendering
 or accepting another fixture. A clean timing measurement does not qualify a
 resetting battle.
+
+Audit patch inputs before generating profiles or starting device tests.
+RomPatcher JS uses `requireValidation`, not `validateChecksum`; unrecognized
+options are silently ignored. Independently verify all three embedded BPS/UPS
+checksums (source, target and patch) with `scenery_patch_audit.py`. IPS lacks these
+checksums and needs separately reviewed base/patch hashes and deterministic
+output verification. Do not mark `embedded_checksums: true` as validation.
+The earlier Better Emerald 2 preparation used a source CRC of `1f1c08fb` where
+its BPS requires `b7aca3ff`; its resulting `70823957` also differs from the
+expected `5b5e4ecb`. This invalid input is held from qualification. Its retained
+screenshots and failed attack probes do not establish compatibility or a bug
+in the author's correctly patched game. The other six BPS/UPS expansion inputs
+and outputs matched their embedded checksums in the independent audit.

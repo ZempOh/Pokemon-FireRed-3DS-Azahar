@@ -141,6 +141,18 @@ class LayoutArt:
             fx, fy = entry & 0x400, entry & 0x800
             out.append([data[(7 - y if fy else y) * 8 + (7 - x if fx else x)]
                         for y in range(8) for x in range(8)])
+        if layer == 1 and METATILE_ENTRIES == 12:
+            # Classic has two overlays. Combining them here keeps the
+            # building/room generators' two-layer interface aligned with
+            # the live three-layer atlas (including leaves above pots).
+            for q, entry in enumerate(self.entries(m)[8:12]):
+                data = self.ts.subtile(entry & 0x3FF, (entry >> 12) & 0xF)
+                fx, fy = entry & 0x400, entry & 0x800
+                for y in range(8):
+                    for x in range(8):
+                        pixel = data[(7-y if fy else y)*8+(7-x if fx else x)]
+                        if pixel[1]:
+                            out[q][y*8+x] = pixel
         return out
 
     def ground_tiles(self, metatiles):

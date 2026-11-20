@@ -1,0 +1,13 @@
+{
+  "games": ["firered", "frlg"],
+  "steps": [{
+    "name": "room-volume-geometry",
+    "kind": "host",
+    "inputs": ["{repo}/3ds_port/tests/voxel_room_volume_test.c"],
+    "commands": [
+      ["gcc", "-O2", "-std=c99", "-Wall", "-Wextra", "-Werror", "-Wno-unused-const-variable", "-I{repo}/3ds_port/src/voxel", "{repo}/3ds_port/tests/voxel_room_volume_test.c", "-o", "{output}/room-volume-test.exe"],
+      ["{output}/room-volume-test.exe"]
+    ],
+    "outputs": ["{output}/room-volume-test.exe"]
+  }]
+}

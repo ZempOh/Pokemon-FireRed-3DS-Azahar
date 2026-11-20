@@ -42,6 +42,11 @@ Successful results are reused only when the source/profile, recipe, command,
 toolchain identity and every output hash match. Device stages cannot use this
 cache. Keep fixture execution and Thor qualification fresh.
 
+The first shared recipe, `tools/scenery-recipes/native-room-volume.json`, compiles
+and checks every generated plant cell for FireRed and FRLG+. It requires the
+candidate's volume renderer and test sources. Reusing it for another game requires
+an explicit adapter; it rejects games outside its supported list.
+
 - Leaves, stems and pots can share a silhouette-volume kernel. Equal down/back
   extrusion preserves the original 45-degree projection while adding visible sides.
 - Use opaque neighboring texels on silhouette edges. Horizontal runs reduce triangles.

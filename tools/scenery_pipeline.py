@@ -78,6 +78,7 @@ def run_host_steps(workspace,config,game,recipe_path,output,toolchain):
     """
     recipe=json.loads(recipe_path.read_text());profile=config['games'][game]
     if not recipe.get('steps'):raise ValueError('At least one host stage is required')
+    if recipe.get('games') and game not in recipe['games']:raise ValueError('This recipe is not implemented for '+game)
     repo=(workspace/profile['repo']).resolve();output=output.resolve();output.mkdir(parents=True,exist_ok=True)
     source_hash,_=fingerprint(repo,profile)
     variables={'python':sys.executable,'repo':str(repo),'workspace':str(workspace.resolve()),'output':str(output),'game':game}

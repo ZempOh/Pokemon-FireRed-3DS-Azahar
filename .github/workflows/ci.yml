@@ -22,6 +22,12 @@ jobs:
         run: python -m unittest discover -s builder/tests -v
       - name: Three-layer scenery art composition
         run: python 3ds_port/tests/voxel_building_layers_test.py
+      - name: Shared closed botanical mesh and source palette
+        run: |
+          python 3ds_port/tests/classic_botanical_test.py
+          cc -std=c99 -I3ds_port/src/voxel 3ds_port/tests/export_plant_mesh.c -o /tmp/export-plant-mesh
+          /tmp/export-plant-mesh > /tmp/scenery-plant-mesh.json
+          python -c "import json; assert json.load(open('/tmp/scenery-plant-mesh.json')) == json.load(open('3ds_port/scripts/scenery_plant_mesh.json'))"
       - name: Presentation clock and real-stall regression
         run: |
           cc -std=c99 -Wall -Wextra -Werror -I3ds_port/src 3ds_port/tests/frame_rate_test.c -o /tmp/frame-rate-test

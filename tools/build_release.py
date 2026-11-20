@@ -62,7 +62,8 @@ DIST = ROOT / "dist"
 CIA_NAME = "Emerald3DS-Forwarder.cia"
 GENERATORS = ["gen_voxel_regions.py", "gen_voxel_sign_masks.py",
               "gen_voxel_relief.py", "gen_voxel_buildings.py"]
-VOXELGEN_FILES = ["src/voxel/voxel_regions.h", "assets/voxel/relief_fixes.json"]
+VOXELGEN_FILES = ["src/voxel/voxel_regions.h", "assets/voxel/relief_fixes.json",
+                  "scripts/scenery_plant_mesh.json"]
 
 
 def run(cmd, cwd=None, env=None):

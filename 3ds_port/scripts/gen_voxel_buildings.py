@@ -2902,7 +2902,8 @@ def build_models(only=None):
     models = []
     layouts = {}
     expanded = []
-    for spec in SPECS:
+    import classic_botanical
+    for spec in SPECS + classic_botanical.specs():
         if "components" in spec:
             expanded += component_specs(spec, layouts)
         elif "kit" in spec:
@@ -4772,6 +4773,11 @@ def verify(models, out, complete=True):
     not built a stale one."""
     failed = False
     for model in models:
+        if model.spec.get("botanical"):
+            import classic_botanical
+            classic_botanical.verify(model)
+            print("%-22s %4d tris  botanical: closed, positive volume, bounded, source materials" % (model.name, model.triangle_count()))
+            continue
         judged = model
         if getattr(model, "own", None) is not None:
             # a bare piece: its own pixels, without its room's floor marks

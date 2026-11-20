@@ -454,3 +454,11 @@ The local Kotlin before/after harness reproduced invalid coordinates in the
 old camera (zero scale and NaN offsets), then completed two million concurrent
 reset/frame calculations with the fixed class and no invalid window. Keep this
 host result separate from the exact-APK Thor visibility and performance gates.
+
+Disposable save loaders must stop advancing buttons once connected field
+telemetry and actual field rendering appear. A fixed sequence of extra A
+presses can remove the facing Cut tree before the "before" capture, invalidating
+the interaction setup. Preserve each load capture under a unique name.
+Select indoor and HM evidence explicitly after review; verify their exact build
+and file hashes before copying room comparisons or interaction GIFs into the
+shared website/repository gallery. A generated seed is never an interaction pass.

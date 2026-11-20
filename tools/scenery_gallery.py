@@ -15,6 +15,7 @@ def render(media,output):
   if g in by:body.append(f'<a href="#{g}">{esc(NAMES[g])}</a>')
  body.append('</nav>')
  groups=[('2D and 3D', [('2d','png'),('3d','png')]),('Four seasons',[(v,'png') for v in ('spring','summer','autumn','winter')]),('Weather',[(v,'png') for v in ('clear','rain','snow','fog','automatic')]),('Weather in motion',[(v,'gif') for v in ('rain','snow','fog')]),('Scenery in motion',[('motion','gif'),('natural-transition','gif'),('weather-transition','gif')]),('Battles and scenery interactions',[('battle','png'),('battle','gif'),('boulder-moving','gif'),('rock-smash','gif'),('cut-tree','gif')])]
+ groups.insert(1,('Indoor plants',[('room-2d','png'),('room-3d','png'),('room-winter','png')]))
  for g in NAMES:
   if g not in by:continue
   items=by[g];commits=sorted({x['commit'] for x in items});refs=sorted({x['build_reference'] for x in items})

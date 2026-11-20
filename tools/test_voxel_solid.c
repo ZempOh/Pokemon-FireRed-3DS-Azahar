@@ -8,8 +8,25 @@
 #include "pk_scenery_object_profiles.h"
 #include "pk_scenery_tree_profiles.h"
 #include "pk_scenery_tall_tree_profiles.h"
+#include "pk_scenery_ui.h"
 
 int main(void) {
+    assert(sceneryOutdoor(0xcec21496,1,6,0));
+    assert(!sceneryOutdoor(0xcec21496,1,7,0));
+    assert(!sceneryOutdoor(0xcec21496,1,6,8));
+    static uint8_t uiVram[65536];
+    assert(!sceneryUiTileHasInk(uiVram,0x1f08,530));
+    uiVram[0x8000+530*32+31]=0x10;
+    assert(sceneryUiTileHasInk(uiVram,0x1f08,530));
+    assert(!sceneryUiTileHasInk(uiVram,0x1f08,529));
+    memset(uiVram,0,sizeof(uiVram));uiVram[63]=1;
+    assert(sceneryUiTileHasInk(uiVram,0x80,0));
+    assert(!sceneryUiTileHasInk(uiVram,0,0));
+    assert(!sceneryUiTileHasInk(uiVram,0x8c,1023));
+    assert(sceneryKanto(0xcec21496,0x087c0e10));
+    assert(!sceneryKanto(0xcec21496,0x087c0700));
+    assert(sceneryLand(0xcec21496,0x087c0700,1));
+    assert(!sceneryLand(0xcec21496,0x087c0700,0x9f));
     for(unsigned i=0;i<sizeof(sceneryTallTrees)/sizeof(sceneryTallTrees[0]);i++) {
         const struct SceneryTallTree *p=&sceneryTallTrees[i];int cells[6];
         for(int j=0;j<6;j++)cells[j]=p->cells[j];

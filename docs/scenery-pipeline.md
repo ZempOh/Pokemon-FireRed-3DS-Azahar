@@ -186,3 +186,16 @@ metatiles. Supply `--rom`, `--state`, `--profiles`, `--game`, `--metatiles`, `--
 and `--output`. It verifies the ROM hash and exports metadata only. Both Modern
 Emerald (512/16) and Dragonsden (640/24) match 1,800/1,800 captured BG entries.
 This is an engine diagnostic, not a release qualification.
+
+Dragonsden's corrected source inventory also verifies both base ground cells and
+its Kanto tree/grass/shrub/rock/flower family. Capabilities can now specify their
+own primary tileset address instead of inheriting FireRed's address. Celadon
+(1/6) stores map type NONE despite being outdoors, so an exact reviewed map
+override enables climate there; other NONE maps remain unclassified because the
+ROM uses that type for interiors too.
+
+Dragonsden uses transparent BG0 tile 530 for empty UI. `textUp` now checks actual
+tile transparency, caching visibility per tile for each check. It no longer
+mistakes that empty layer for dialogue. Regression checks cover nonzero blank
+IDs, real ink, 4/8-bit pixels and VRAM bounds. Actual menus still trigger 2D
+fallback. This fix awaits the next exact Thor candidate.

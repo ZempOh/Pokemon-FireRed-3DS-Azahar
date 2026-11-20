@@ -10,17 +10,18 @@
  
 --- a/app/src/main/cpp/pk_wide.c
 +++ b/app/src/main/cpp/pk_wide.c
-@@ -32,6 +32,9 @@
+@@ -32,6 +32,10 @@
  #include "pk_wide_props.h"
  #include "pk_voxel_climate.h"
  #include "pk_scenery_candidates.h"
 +#include "pk_scenery_object_profiles.h"
 +#include "pk_scenery_tree_profiles.h"
 +#include "pk_scenery_tall_tree_profiles.h"
++#include "pk_scenery_ui.h"
  
  #include <stdbool.h>
  #include <stdio.h>
-@@ -81,6 +84,7 @@
+@@ -81,6 +85,7 @@
      // Epsilon Emerald: EX (Emerald's map and tilesets, expansion's objects) whose tilesets keep FireRed's u32 attributes (the
      // layer type in bits 29-30), still at the Emerald tileset's +0x10: the u16 reading scored 830 of 1000 on its field, this 1000.
      // Its struct Subsprite is 6 bytes (s16 x, y; a tile offset byte; shape / size / priority in a byte: buildPieces).
@@ -28,7 +29,7 @@
      [PK_WIDE_FAMILY_EX32] = { 512, 0x10, 4, 29, 3, 0, 0, 0x439, 6, 0x23, 0, 0, 0, 6, 3, 0, 64 },
  };
  
-@@ -1448,7 +1452,7 @@
+@@ -1448,7 +1453,7 @@
  
  static uint32_t solidRom;
  struct Piece {
@@ -37,7 +38,7 @@
      bool vegetation;
      int x, y, w, h, tile, prio, pal, mode;   // mode: OAM objMode (0 normal, 1 semi-transparent, 2 OBJ window)
      bool hflip, vflip;
-@@ -1491,24 +1495,17 @@
+@@ -1491,24 +1496,17 @@
  static int buildPieces(const struct Snap* s, struct Piece* out) {
      int nspr = C[PK_WIDE_MAX_SPRITES];
      bool offscreen[SPRITES_CAP] = { false };   // sprites the game hid only for being off screen
@@ -67,7 +68,7 @@
          }
      }
      int n = 0;
-@@ -1537,7 +1534,7 @@
+@@ -1537,7 +1535,7 @@
              if (y > 255 - bh) y -= 256;    // reaching past 255 shows at the top, as the hardware wraps it
          }
          struct Piece base = { .tile = (int) (a2 & 0x3FF), .prio = (int) ((a2 >> 10) & 3), .pal = (int) (a2 >> 12),
@@ -76,7 +77,7 @@
                                .vegetation=climateGrassEffect(solidRom,le32(sp+0x14),le32(sp+0x0c)),
                                .mode = (int) ((a0 >> 10) & 3), .hflip = !(rot & 1) && (a1 & 0x1000), .vflip = !(rot & 1) && (a1 & 0x2000),
                                .copy = false, .world = world, .rot = rot, .mat = (int) ((a1 >> 9) & 31) };
-@@ -2068,14 +2065,14 @@
+@@ -2068,14 +2066,14 @@
              vx = voxelX(voxel, p[i].x, foot);
              vy = voxelY(voxel, foot, z) - bh + 1;
          }
@@ -94,7 +95,7 @@
                  // Narrow cut-tree sprites have transparent centers beside their
                  // trunk. Never turn palette index zero into the black outline.
                  for(int y=0;y<sh;y++)for(int x=0;x<sw;x++) {
-@@ -2101,7 +2098,7 @@
+@@ -2101,7 +2099,7 @@
                  int ci=(vram[0x10000+(off&0x7fff)]>>((px&1)*4))&15;
                  if(p[i].solidKind==9) {
                      if(y>=36)ci=bark?bark:leaf;
@@ -103,7 +104,7 @@
                  } else if(!ci)ci=1;
                  uint32_t ink=color(P[256+p[i].pal*16+ci],alpha);
                  t->art[y*32+x]=p[i].solidKind==9&&y<36?climateLeafColor(ink):ink;
-@@ -2840,7 +2837,7 @@
+@@ -2840,7 +2838,7 @@
      int k = playerObject();
      const uint8_t* oe = k < 0 ? NULL : mem(F.objects + 0x24u * (uint32_t) k, 0x24);
      if (!oe) return -1;
@@ -112,7 +113,7 @@
      return wide ? (int) le16(oe + 4) : oe[5];
  }
  
-@@ -2854,7 +2851,7 @@
+@@ -2854,7 +2852,7 @@
   */
  int pk_look_refresh(struct mCore* core, const uint8_t* pal) {
      if (!F.locked || !F.sprites || !F.gfxInfo || !core) return 0;
@@ -121,7 +122,7 @@
      G = (struct GBA*) core->board;
      int k = playerObject();
      const uint8_t* oe = k < 0 ? NULL : mem(F.objects + 0x24u * (uint32_t) k, 0x24);
-@@ -3916,7 +3913,7 @@
+@@ -3916,7 +3914,7 @@
      if (partnerReq.frame < 0 || partnerReq.frame >= PK_PARTNER_FRAMES || partnerReq.blob >= PK_PARTNER_FRAMES || partnerReq.blob < -1 ||
          partnerReq.bob < -64 || partnerReq.bob > 64) { partnerWhy = PK_PARTNER_BAD_FRAME; return; }
      if (!hookGba || !F.objects || F.family == PK_WIDE_FAMILY_EX || F.family == PK_WIDE_FAMILY_FR_EX ||
@@ -130,7 +131,7 @@
      G = hookGba;
      int cx, cy, px, py;
      uint32_t spriteId;
-@@ -4139,7 +4136,7 @@
+@@ -4139,7 +4137,7 @@
      uint8_t bit;
      if (F.family == PK_WIDE_FAMILY_FR || F.family == PK_WIDE_FAMILY_FR_EX) { off = 0x19; bit = 2; }
      else if (F.family == PK_WIDE_FAMILY_EM || F.family == PK_WIDE_FAMILY_EX || F.family == PK_WIDE_FAMILY_MM ||
@@ -139,7 +140,32 @@
      else return;
      uint8_t* p = (uint8_t*) mem(F.mapHeader + off, 1);
      if (p && !(*p & bit)) *p |= bit;
-@@ -4997,11 +4994,45 @@
+@@ -4241,7 +4239,7 @@
+     return (a & 0xFF000000) | rb | g;
+ }
+ 
+-/** BG0 - the field's text boxes, menus, signs - shows something: enough of its visible tilemap isn't tile 0. The
++/** BG0 - the field's text boxes, menus, signs - shows enough opaque tile pixels. The
+  * map-name popup (the top-left corner, every game) doesn't count: leaving a building, the game locks the controls
+  * for the walk out of the door while the popup is up, and the camera pulled in and back out for it. */
+ static bool textUp(void) {
+@@ -4249,11 +4247,14 @@
+     const uint8_t* vram = (const uint8_t*) G->video.vram;
+     uint32_t scr = ((io(0x08) >> 8) & 31) * 0x800u;
+     int hofs = io(0x10) & 0x1FF, vofs = io(0x12) & 0x1FF, n = 0;
++    uint8_t ink[1024]={0};uint16_t control=io(0x08);
+     for (int ty = 0; ty < 20; ty++)
+         for (int tx = 0; tx < 30; tx++) {
+             if (ty < POPUP_ROWS && tx < POPUP_COLS) continue;
+             int rx = ((hofs >> 3) + tx) & 31, ry = ((vofs >> 3) + ty) & 31;
+-            if (le16(vram + scr + 2 * (uint32_t) (ry * 32 + rx)) & 0x3FF) n++;
++            unsigned tile=le16(vram+scr+2*(uint32_t)(ry*32+rx))&0x3ff;
++            if(!ink[tile])ink[tile]=(uint8_t)(1+sceneryUiTileHasInk(vram,control,tile));
++            if(ink[tile]==2)n++;
+         }
+     return n >= 8;
+ }
+@@ -4997,11 +4998,45 @@
  
  // Profiles are tied to verified ROM CRC + primary tileset, never to green pixels.
  // Unknown trees/tilesets retain the original art. Live cut trees use the object pass.
@@ -186,7 +212,7 @@
      int n=0, cellX=(cx+v->left)/16, cellY=(cy+v->top)/16;
      for(int row=0;row+2<v->rows;row++) for(int col=0;col+1<v->cols;col++) {
          int ids[6],ok=1;
-@@ -5011,6 +5042,7 @@
+@@ -5011,6 +5046,7 @@
              if(conn>=0 && s->conn[conn].primary!=s->primary)ok=0;
          }
          if(snow) ok=ok && (ids[2]==10||ids[2]==0x184) && ids[3]==11 && ids[4]==18 && ids[5]==19;
@@ -194,7 +220,7 @@
          else ok=ok && (ids[0]==14||ids[0]==20||ids[0]==22) && (ids[1]==15||ids[1]==21||ids[1]==23) &&
              (ids[2]==28||ids[2]==30) && (ids[3]==29||ids[3]==31) &&
              (ids[4]==20||ids[4]==22||ids[4]==36||ids[4]==38) &&
-@@ -5029,7 +5061,7 @@
+@@ -5029,7 +5065,7 @@
      for(int y=0;y<16;y++)for(int x=0;x<16;x++) {
          uint16_t rgb=P[0];
          for(int i=0;i<3;i++) {
@@ -203,7 +229,7 @@
              int px=x&7,py=y&7;if(e&0x400)px=7-px;if(e&0x800)py=7-py;
              unsigned off=bgChar[b]+(e&1023)*32+py*4+px/2;
              if(off>=0x10000)continue;
-@@ -5037,7 +5069,7 @@
+@@ -5037,7 +5073,7 @@
              if(ci){rgb=P[(e>>12)*16+ci];break;}
          }
          ground[y*16+x]=color(rgb,alpha);
@@ -212,7 +238,15 @@
      }
      for(int i=0;i<n;i++)for(int y=snow?16:0;y<48;y++)for(int x=0;x<32;x++)
          texture[(trees[i].y-v->top+y)*v->stride+trees[i].x-v->left+x]=ground[(y&15)*16+(x&15)];
-@@ -5239,7 +5271,8 @@
+@@ -5232,14 +5268,15 @@
+     int nativeWeather = F.mapHeader ? r8(F.mapHeader + 0x16) > 2 : 1;
+     for (int i=0; i<npieces[shown]; i++)
+         if (!pieces[shown][i].world) nativeWeather = 1;
+-    climateUpdate(mapType >= 1 && mapType <= 3, nativeWeather);
++    climateUpdate(sceneryOutdoor(solidRom,s->group,s->num,(int)mapType), nativeWeather);
+     if (voxelClimate.seasonBlend) {
+         for(int row=0;row<rows;row++)for(int col=0;col<cols;col++) {
+             int conn,id=blockIn(s,cellX+col,cellY+row,&conn,false);
              /* Primary basic ground cells only: secondary IDs can be furniture,
               * walls or roofs in another tileset. Blue water stays unchanged. */
              int kanto=sceneryKanto(solidRom,s->primary);
@@ -287,9 +321,42 @@
      case 0x63478921:
      case 0xb9465c5a:
      case 0xf2d16ebd:
-@@ -40,3 +42,18 @@
-     default:return 0;
+@@ -19,24 +21,40 @@
      }
+ }
+ static int sceneryKanto(uint32_t crc,uint32_t primary) {
+-    if(primary!=0x082d4a94)return 0;
+-    switch(crc) {
+-    case 0x25c3d89f:
+-    case 0xfba55dd8:
+-    case 0x4b3d4957:
+-    case 0x5e704d77:
+-    case 0xf2d16ebd:
+-        return 1;
+-    default:return 0;
+-    }
++    if(crc==0x25c3d89f)return primary==0x082d4a94;
++    if(crc==0xfba55dd8)return primary==0x082d4a94;
++    if(crc==0x4b3d4957)return primary==0x082d4a94;
++    if(crc==0x5e704d77)return primary==0x082d4a94;
++    if(crc==0xcec21496)return primary==0x087c0e10;
++    if(crc==0xf2d16ebd)return primary==0x082d4a94;
++    return 0;
+ }
+ static int sceneryRadicalProps(uint32_t crc,uint32_t primary) {
+-    if(primary!=0x082d4a94)return 0;
+-    switch(crc) {
+-    case 0xfba55dd8:
+-    case 0x5e704d77:
+-    case 0xf2d16ebd:
+-        return 1;
+-    default:return 0;
+-    }
++    if(crc==0xfba55dd8)return primary==0x082d4a94;
++    if(crc==0x5e704d77)return primary==0x082d4a94;
++    if(crc==0xcec21496)return primary==0x087c0e10;
++    if(crc==0xf2d16ebd)return primary==0x082d4a94;
++    return 0;
  }
 +static int sceneryLand(uint32_t crc,uint32_t primary,int id) {
 +    if(crc==0x25c3d89f && primary==0x082d4a94 && (id==8))return 1;
@@ -299,11 +366,18 @@
 +    if(crc==0x263a1187 && primary==0x08bb3ac8 && (id==1))return 1;
 +    if(crc==0x5e704d77 && primary==0x082d4a94 && (id==1))return 1;
 +    if(crc==0x558ae42f && primary==0x08e3e21c && (id==1))return 1;
++    if(crc==0xcec21496 && primary==0x087c0700 && (id==1))return 1;
++    if(crc==0xcec21496 && primary==0x087c0e10 && (id==1))return 1;
 +    if(crc==0x63478921 && primary==0x082d4a94 && (id==1))return 1;
 +    if(crc==0xb9465c5a && primary==0x082d4a94 && (id==1))return 1;
 +    if(crc==0xf2d16ebd && primary==0x082d4a94 && (id==1))return 1;
 +    if(crc==0x14465a33 && primary==0x08a2e6ac && (id==1))return 1;
 +    if(crc==0x6c5ee1b2 && primary==0x082d4a94 && (id==1))return 1;
++    return 0;
++}
++static int sceneryOutdoor(uint32_t crc,int group,int num,int mapType) {
++    if(mapType>=1 && mapType<=3)return 1;
++    if(crc==0xcec21496 && group==1 && num==6 && mapType==0)return 1;
 +    return 0;
 +}
 --- /dev/null
@@ -505,6 +579,19 @@
 +        if(match)return p->ground;
 +    }
 +    return -1;
++}
+--- /dev/null
++++ b/app/src/main/cpp/pk_scenery_ui.h
+@@ -0,0 +1,10 @@
++// UI visibility follows transparent pixels, not a game's chosen blank tile ID.
++#pragma once
++#include <stdint.h>
++static int sceneryUiTileHasInk(const uint8_t *vram,uint16_t control,unsigned tile) {
++    unsigned bytes=(control&0x80)?64:32;
++    unsigned offset=((control>>2)&3)*0x4000+(tile&1023)*bytes;
++    if(offset+bytes>0x10000)return 0;
++    for(unsigned i=0;i<bytes;i++)if(vram[offset+i])return 1;
++    return 0;
 +}
 --- a/scripts/gen_area_maps.py
 +++ b/scripts/gen_area_maps.py

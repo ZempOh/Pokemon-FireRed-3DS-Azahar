@@ -119,10 +119,36 @@
     "game": "dragonsden",
     "rom_crc32": "cec21496",
     "climate": true,
-    "kanto": false,
-    "radical_props": false,
+    "kanto": true,
+    "radical_props": true,
     "engine": "Mapped EX candidate; source/fixture layout evidence; Thor qualification pending",
-    "thor_qualified": false
+    "thor_qualified": false,
+    "kanto_primary": [
+      "0x087c0e10"
+    ],
+    "radical_props_primary": [
+      "0x087c0e10"
+    ],
+    "land": [
+      {
+        "primary": "0x087c0700",
+        "ids": [
+          1
+        ]
+      },
+      {
+        "primary": "0x087c0e10",
+        "ids": [
+          1
+        ]
+      }
+    ],
+    "outdoor_maps": [
+      [
+        1,
+        6
+      ]
+    ]
   },
   {
     "game": "ash-gray",

@@ -15,6 +15,13 @@ static time_t fakeTime(time_t *out) { if(out)*out=fakeSeconds;return fakeSeconds
 #undef time
 #undef clock_gettime
 int main(void) {
+    uint32_t tealLeaf=0xff606800u;
+    voxelClimate.season=3;voxelClimate.seasonBlend=256;
+    assert(climateTerrain(tealLeaf)==tealLeaf); // Generic terrain keeps its water protection.
+    assert(climateLeafColor(tealLeaf)!=tealLeaf); // Known conifer foliage includes dark teal.
+    assert((climateLeafColor(tealLeaf)&0xff000000u)==(tealLeaf&0xff000000u));
+    voxelClimate.seasonBlend=0;
+    assert(climateLeafColor(tealLeaf)==tealLeaf);
     assert(climateKantoPath(0xdc) && climateKantoPath(0x105));
     assert(climateKantoPath(0xd0) && climateKantoPath(0xd9) && climateKantoPath(0xe2));
     assert(climateKantoPath(0xc1) && climateKantoPath(0xfe) && climateKantoPath(0x107));

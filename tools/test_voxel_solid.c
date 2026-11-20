@@ -6,6 +6,11 @@
 #include "pk_wide_props.h"
 
 int main(void) {
+    assert(solidDrescoConifer(0x082d4a94,0x082d4af4,0x2f0,0x2f8));
+    assert(solidDrescoConifer(0x082d4a94,0x082d4af4,0x2f2,0x2fa));
+    assert(!solidDrescoConifer(0x082d4a94,0x082d4af4,0x2f1,0x2f9));
+    assert(!solidDrescoConifer(0x082d4a94,0x082d4af0,0x2f2,0x2fa));
+    assert(!solidDrescoConifer(0x082d4a94,0x082d4af4,0x2f2,0x2fb));
     enum { W=96,H=96,N=W*H };
     uint32_t guarded[N+2],depth[N],first[N];
     guarded[0]=guarded[N+1]=0x12345678;
@@ -36,7 +41,7 @@ int main(void) {
     memset(depth,0,sizeof depth);memset(v.out,0,N*4);
     solidTriangle(&v,&t,a,c,b,256,0);
     assert(memcmp(first,v.out,sizeof first)==0);
-    for(int kind=1;kind<=9;kind++) {
+    for(int kind=1;kind<=10;kind++) {
         struct SolidProp p={.surface=t,.kind=kind};
         p.surface.x=32;p.surface.y=40;
         memset(depth,0,sizeof depth);memset(v.out,0,N*4);

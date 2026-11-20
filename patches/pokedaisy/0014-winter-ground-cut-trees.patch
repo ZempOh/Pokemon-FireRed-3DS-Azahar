@@ -55,7 +55,24 @@
      }
      for(int i=0;i<n;i++)for(int y=snow?16:0;y<48;y++)for(int x=0;x<32;x++)
          texture[(trees[i].y-v->top+y)*v->stride+trees[i].x-v->left+x]=ground[(y&15)*16+(x&15)];
-@@ -5032,8 +5032,9 @@
+@@ -5028,16 +5028,57 @@
+     return n;
+ }
+ 
++static uint32_t solidMaterialPixel(const struct Snap* s,int id,int x,int y,uint32_t alpha) {
++    const uint8_t* vram=(const uint8_t*)G->video.vram;
++    uint16_t rgb=P[0];
++    for(int i=0;i<3;i++) {
++        int b=order3[i];uint16_t e=metatile(s,id,b)[(y/8)*2+x/8];
++        int px=x&7,py=y&7;if(e&0x400)px=7-px;if(e&0x800)py=7-py;
++        unsigned off=bgChar[b]+(e&1023)*32+py*4+px/2;if(off>=0x10000)continue;
++        int ci=(vram[off]>>(px&1?4:0))&15;
++        if(ci){rgb=P[(e>>12)*16+ci];break;}
++    }
++    return color(rgb,alpha);
++}
++
+ static int solidPropsPrepare(const struct Snap* s,struct VoxelView* v,int cx,int cy,
                               uint32_t* texture,struct SolidProp* props,int cap,uint32_t alpha) {
      int letsgo=solidRom==0x25c3d89f && s->primary==0x082d4a94;
      int radical=solidRom==0xfba55dd8 && s->primary==0x082d4a94;
@@ -66,7 +83,38 @@
      int count=0,cellX=(cx+v->left)/16,cellY=(cy+v->top)/16;
      for(int row=0;row<v->rows;row++)for(int col=0;col<v->cols;col++) {
          int conn,id=blockIn(s,cellX+col,cellY+row,&conn,false),kind=0,ground=8;
-@@ -5045,7 +5046,7 @@
+         if(conn>=0 && s->conn[conn].primary!=s->primary)continue;
++        if(unboundGreen && row+1<v->rows && count<cap) {
++            int belowConn,below=blockIn(s,cellX+col,cellY+row+1,&belowConn,false);
++            uint32_t secondary=conn>=0?s->conn[conn].secondary:s->secondary;
++            uint32_t belowSecondary=belowConn>=0?s->conn[belowConn].secondary:s->secondary;
++            int same=belowSecondary==secondary && (belowConn<0 || s->conn[belowConn].primary==s->primary);
++            if(same && solidDrescoConifer(s->primary,secondary,id,below)) {
++                uint32_t card[512];
++                for(int y=0;y<32;y++)for(int x=0;x<16;x++)
++                    card[y*16+x]=solidMaterialPixel(s,y<16?id:below,x,y&15,alpha);
++                struct SolidProp* p=&props[count++];p->kind=10;
++                struct SolidTree* t=&p->surface;
++                t->x=v->left+col*16;t->y=v->top+(row+1)*16;t->rise=voxelRise(v,col,row+1);
++                for(int y=0;y<48;y++)for(int x=0;x<32;x++)
++                    t->art[y*32+x]=climateLeafColor(card[(y*2/3)*16+(x&15)]);
++                // Remove only the verified foliage silhouette; cliff pixels beside it survive.
++                for(int y=0;y<32;y++) {
++                    int left=16,right=-1;
++                    for(int x=0;x<16;x++) {
++                        uint32_t c=card[y*16+x];unsigned cr=c&255,cg=(c>>8)&255,cb=(c>>16)&255;
++                        if(cg>cr+6 && cg>=cb){if(x<left)left=x;right=x;}
++                    }
++                    for(int x=left;x<=right;x++)
++                        texture[(row*16+y)*v->stride+col*16+x]=climateGround(solidMaterialPixel(s,8,x,y&15,alpha),1);
++                }
++                continue;
++            }
++        }
+         if(snow) {
+             ground=0;
+             if(solidSnowRockId(id))kind=3;
+@@ -5045,7 +5086,7 @@
              ground=letsgo?8:1;
              if((letsgo&&id==1)||(radical&&(id==0x12||id==0x1a)))kind=1;
              else if(id==4)kind=letsgo?2:5;
@@ -75,7 +123,7 @@
              else if(id==0x9f)kind=3;
              else if(id==0xaf||id==0xb7){kind=3;ground=0x115;}
          }
-@@ -5066,7 +5067,7 @@
+@@ -5066,7 +5107,7 @@
                  int ci=(vram[off]>>(px&1?4:0))&15;
                  if(ci){rgb=P[(e>>12)*16+ci];break;}
              }
@@ -84,7 +132,7 @@
              texture[(row*16+y)*v->stride+col*16+x]=c;
          }
      }
-@@ -5129,8 +5130,19 @@
+@@ -5129,8 +5170,19 @@
      for (int i=0; i<npieces[shown]; i++)
          if (!pieces[shown][i].world) nativeWeather = 1;
      climateUpdate(mapType >= 1 && mapType <= 3, nativeWeather);
@@ -108,10 +156,30 @@
      static struct SolidProp props[384];
 --- a/app/src/main/cpp/pk_voxel_climate.h
 +++ b/app/src/main/cpp/pk_voxel_climate.h
-@@ -84,6 +84,24 @@
+@@ -70,11 +70,10 @@
+     // No residual weather or recoloring is carried into interiors or scripted effects.
+     if (!outdoor) voxelClimate.blend=voxelClimate.seasonBlend=0;
+ }
+-static uint32_t climateTerrain(uint32_t c) {
++/* Only callers with verified foliage identity may bypass the terrain hue mask. */
++static uint32_t climateLeafColor(uint32_t c) {
+     if (!voxelClimate.seasonBlend) return c;
+     unsigned r=c&255, g=(c>>8)&255, b=(c>>16)&255;
+-    // Select foliage hues only; protect water, stone, signs, paths and original sprite art.
+-    if (g <= r+8 || g <= b+8) return c;
+     uint32_t target=c;
+     switch (voxelClimate.season) {
+     case 0: target=(c&0xff000000u) | ((r+g)/2) | ((g+(255-g)/5)<<8) | ((b+12>255?255:b+12)<<16); break;
+@@ -83,6 +82,29 @@
+     case 3: target=climateMix(c,0x00fff1e5u,215); break;
      }
      return climateMix(c,target,voxelClimate.seasonBlend);
- }
++}
++static uint32_t climateTerrain(uint32_t c) {
++    unsigned r=c&255,g=(c>>8)&255,b=(c>>16)&255;
++    if(g<=r+8 || g<=b+8)return c;
++    return climateLeafColor(c);
++}
 +/* Ground material, before projection. Water and neutral/blue materials keep
 + * their palette; snow on earth is lighter than on grass to preserve paths. */
 +static int climateKantoPath(int id) {
@@ -129,16 +197,41 @@
 +    unsigned f=voxelClimate.seasonBlend;
 +    if(earth)f=f*3/4;
 +    return climateMix(c,(c&0xff000000u)|nr|(ng<<8)|(nb<<16),f);
-+}
+ }
  static void climateAtmosphere(uint32_t* out, const uint32_t* depth, int w, int h) {
      unsigned f=voxelClimate.blend;
-     if (!f || voxelClimate.nativeWeather) return;
 --- a/app/src/main/cpp/pk_wide_props.h
 +++ b/app/src/main/cpp/pk_wide_props.h
-@@ -59,6 +59,20 @@
+@@ -6,6 +6,11 @@
+     // Full single-cell rocks only. e8 is stairs; fc and 158 contain scenery
+     // edges, and f1 includes a border that must not be replaced with snow.
+     return id==0x24 || id==0x53 || id==0x159 || id==0x15f;
++}
++
++static int solidDrescoConifer(uint32_t primary,uint32_t secondary,int top,int bottom) {
++    return primary==0x082d4a94 && secondary==0x082d4af4 &&
++        ((top==0x2f0 && bottom==0x2f8) || (top==0x2f2 && bottom==0x2fa));
+ }
+ 
+ static void propFace(const struct VoxelView* v,const struct SolidTree* t,
+@@ -59,6 +64,34 @@
  static void solidPropDraw(const struct VoxelView* v,const struct SolidProp* p) {
      const struct SolidTree* t=&p->surface;
      float x=t->x+8,y=t->y+9,z=t->rise;
++    if(p->kind==10) {
++        const float dx[9]={1,.707107f,0,-.707107f,-1,-.707107f,0,.707107f,1};
++        const float dy[9]={0,.707107f,1,.707107f,0,-.707107f,-1,-.707107f,0};
++        const float radius[5]={6.2f,6.8f,4.7f,2.7f,0},height[5]={0,4,13,21,29};
++        const float ink[5]={38,32,23,14,8};
++        for(int band=0;band<4;band++)for(int e=0;e<8;e++) {
++            struct SolidVertex a={x+dx[e]*radius[band],y+dy[e]*radius[band],z+height[band],6.5f,ink[band]};
++            struct SolidVertex b={x+dx[e+1]*radius[band],y+dy[e+1]*radius[band],z+height[band],10.5f,ink[band]};
++            struct SolidVertex c={x+dx[e+1]*radius[band+1],y+dy[e+1]*radius[band+1],z+height[band+1],10.5f,ink[band+1]};
++            struct SolidVertex d={x+dx[e]*radius[band+1],y+dy[e]*radius[band+1],z+height[band+1],6.5f,ink[band+1]};
++            propFace(v,t,a,b,c,d,180+band*16+(e<4?18:0));
++        }
++        return;
++    }
 +    if(p->kind==9) {
 +        const float dx[7]={1,.5f,-.5f,-1,-.5f,.5f,1},dy[7]={0,.866025f,.866025f,0,-.866025f,-.866025f,0};
 +        const float radius[5]={1.8f,1.8f,8.3f,6.8f,0},height[5]={0,5,6,14,20};

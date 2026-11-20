@@ -1,0 +1,122 @@
+--- a/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt
++++ b/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt
+@@ -1180,6 +1180,7 @@
+                 run.musicStep()
+                 run.pacingMode()
+                 run.writeAudio()
++                run.presentFrame()
+                 run.frameStats()
+                 run.pace()
+             }
+@@ -1330,6 +1331,8 @@
+         var frame = 0L
+         // Read across a frame's stages (were the loop's locals).
+         var frameStart = 0L
++        var pendingNativePresentation = false
++        var presentationWaitNanos = 0L
+         var rewinding = false
+         var probeOnly = false
+         var frameCoop: CoopFrameHook? = null
+@@ -1340,6 +1343,7 @@
+         /** Before the core runs: holds, rewind, EXPAND's camera, the keys, DS drawing. False = no frame this time round. */
+         fun beforeFrame(): Boolean {
+             frameStart = System.nanoTime()
++            presentationWaitNanos = 0L
+             if (rewindHeld && !rewindAllowed(CoopGuards.statesBlocked)) rewindHeld = false
+             if (loopAction(CoopGuards.held, !running, pendingSave >= 0) != LoopAction.RUN) {
+                 wasHeld = true
+@@ -1492,7 +1496,10 @@
+             val coreEnd = System.nanoTime()
+             // Before the frame is shown: the frame a menu transition starts fading on is never seen.
+             if (nds) stepDsHold()
+-            onFrame?.invoke()
++            // The native clock has a full frame budget regardless of whether the
++            // current scene is a cheap battle or an expensive projected field.
++            pendingNativePresentation = voxelNativeClock && gba && effectiveSpeed() == 1f
++            if (!pendingNativePresentation) onFrame?.invoke()
+             frameCoop?.afterFrame()
+             framesRun++
+             ticksSinceFrame = 0
+@@ -2054,9 +2061,22 @@
+             }
+         }
+ 
++        /** Keep native-speed presentation cadence stable across render-cost changes. */
++        fun presentFrame() {
++            if (!pendingNativePresentation) return
++            pendingNativePresentation = false
++            if (nativeClockAudio && !rewinding && !battleInput.holdFrame) {
++                val started = System.nanoTime()
++                if (speed != prevSpeed) { next = started; prevSpeed = speed }
++                VoxelFrameClock.awaitDeadline(next + frameNanos)
++                presentationWaitNanos = System.nanoTime() - started
++            }
++            onFrame?.invoke()
++        }
++
+         /** Work time, the fps log line every 120 frames and [slowFrames]. */
+         fun frameStats() {
+-            val work = System.nanoTime() - frameStart
++            val work = System.nanoTime() - frameStart - presentationWaitNanos
+             workNanos += work
+             if (work > maxWork.get()) maxWork.set(work)
+             currentSpeed = speed
+--- a/app/src/main/kotlin/com/pokedaisy/app/VoxelFrameClock.kt
++++ b/app/src/main/kotlin/com/pokedaisy/app/VoxelFrameClock.kt
+@@ -3,6 +3,19 @@
+ /** A GBA frame is 280896 cycles of its 16777216 Hz clock, independent of Android's refresh. */
+ internal object VoxelFrameClock {
+     const val FRAME_NANOS = 280896L * 1_000_000_000L / 16777216L
++
++    /** Publish on the cartridge deadline, not at a scene-dependent render finish.
++     * The clock and sleeper are injectable so work transitions and early wakes can
++     * be checked without depending on the host scheduler. Late frames never wait.
++     */
++    fun awaitDeadline(deadline: Long, now: () -> Long = System::nanoTime,
++                      park: (Long) -> Unit = java.util.concurrent.locks.LockSupport::parkNanos) {
++        while (!Thread.currentThread().isInterrupted) {
++            val left = deadline - now()
++            if (left <= 0L) return
++            park(left)
++        }
++    }
+ 
+     /** Caller holds the pending-frame monitor; wait at most one cartridge frame. */
+     fun awaitPresentation(monitor: Object, pending: () -> Boolean) {
+--- a/app/src/test/kotlin/com/pokedaisy/app/VoxelFrameClockTest.kt
++++ b/app/src/test/kotlin/com/pokedaisy/app/VoxelFrameClockTest.kt
+@@ -7,6 +7,34 @@
+ import java.util.concurrent.TimeUnit
+ 
+ class VoxelFrameClockTest {
++    @Test fun battleToFieldWorkDoesNotStretchPresentationIntervals() {
++        val period = VoxelFrameClock.FRAME_NANOS
++        var clock = 0L
++        val presented = mutableListOf<Long>()
++        repeat(360) { frame ->
++            // Match the observed battle -> field change, then return to battle.
++            val work = if (frame in 120..239) 14_000_000L else 2_000_000L
++            clock += work
++            VoxelFrameClock.awaitDeadline((frame + 1L) * period, { clock }, { clock += it })
++            presented += clock
++        }
++        assertTrue(presented.zipWithNext().all { (a, b) -> b - a == period })
++        // Publishing immediately exposes the render-cost change as a longer gap.
++        assertTrue(period + 14_000_000L - 2_000_000L > period * 3 / 2)
++    }
++
++    @Test fun earlyWakeWaitsAgainAndOverdueFramesPublishWithoutSleeping() {
++        var clock = 10L
++        var wakes = 0
++        VoxelFrameClock.awaitDeadline(30L, { clock }, { remaining ->
++            wakes++
++            clock += if (wakes == 1) remaining / 2 else remaining
++        })
++        assertEquals(30L, clock)
++        assertEquals(2, wakes)
++        VoxelFrameClock.awaitDeadline(29L, { clock }, { error("Late frame must not wait") })
++    }
++
+     @Test fun presentationWaitReleasesTheMonitorForTheConsumer() {
+         val monitor = Object()
+         var pending = true

@@ -569,3 +569,21 @@ actual starting tile: short stick taps can turn without stepping. The reviewed
 Unbound setup uses down/left 0.18-second inputs and a captured snapshot confirming
 (60,8) before pushing the rock at (60,7) north. Preserve blocked attempts, and
 approve only observed rock displacement plus normal field movement.
+
+Native-clock frames must be presented on cartridge deadlines, not as soon as
+scene-dependent work ends. Radical Red's battle-to-field transition changed
+work from roughly 2 ms to 12–14 ms; immediate publication produced a retained
+59.4 fps window despite no dropped audio or overwritten frames. Patch 0031
+defers native-speed publication until its existing frame deadline, writes audio
+before waiting, and excludes that intentional wait from CPU-work telemetry.
+Late frames remain visible and are never skipped; other pacing modes retain
+their original path. Deterministic clock tests exercise battle/field work changes,
+early wakes and overdue frames. The unchanged Thor timing/audio gates must pass
+on the resulting APK before publication; a host clock test is not a Thor pass.
+
+An active battle probe can lose and enter lengthy healer dialogue. Preserve that
+outcome rather than assuming victory. Use B to dismiss post-battle text and allow
+enough inputs for all pages; A can reopen the conversation. Require positive
+scene-0 rendering after connected non-battle telemetry. Keep failed attempts and
+select any corrected replay explicitly with its reason; recheck every original
+timing/audio gate on that replay instead of accepting a screenshot alone.

@@ -7,7 +7,7 @@ expansion manifest. Actors and battle Pokémon are a separate pass.
 ## Repeatable sequence
 
 1. Run `python tools/scenery_pipeline.py --workspace WORK inventory --output inventory.json`.
-   This records active entrypoints and source hashes for all six games. Coverage
+   This records active entrypoints and source hashes for all sixteen games. Coverage
    starts unverified; finding a definition does not prove it is rendered.
 2. Identify a family using ROM revision plus primary/secondary tileset plus the
    complete metatile pattern. Keep raw ROM atlases local. Add a declarative profile
@@ -449,3 +449,8 @@ coordinates. Patch 0026 serializes reset, mode changes and frame calculation;
 the concurrent-reset test requires finite, nonempty windows throughout.
 This fixes the identified race; exact-build Thor startup/scene testing remains
 necessary before attributing or closing the observed black-screen failure.
+
+The local Kotlin before/after harness reproduced invalid coordinates in the
+old camera (zero scale and NaN offsets), then completed two million concurrent
+reset/frame calculations with the fixed class and no invalid window. Keep this
+host result separate from the exact-APK Thor visibility and performance gates.

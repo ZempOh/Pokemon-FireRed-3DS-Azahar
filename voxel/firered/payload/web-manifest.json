@@ -13,7 +13,7 @@
       "name": "FireRed (USA Rev 1)"
     }
   ],
-  "cartridgeSha256": "cf8a72ca3b1f48ac8f3a5d567d78a75231648c451a67263a6ddf4341d22168f9",
+  "cartridgeSha256": "b113019247d90b2ca8637138c9125bfd3e7d052032c9d2a20e61643761a9f021",
   "files": [
     {
       "path": "licenses/NOTICE.md",
@@ -27,8 +27,8 @@
     },
     {
       "path": "payload/FireRed3DS.3dsx",
-      "sha256": "c9d875a33648c7d08bfb0ec61854b32792b491fcb70d09dfeb84aa1767c2091f",
-      "size": 4666420
+      "sha256": "ffc39aa20d777f651db7ed4b477f26cf15469fd0d0235e69ead2b6c5be4d3d2f",
+      "size": 4665380
     },
     {
       "path": "payload/FireRed3DS.smdh",

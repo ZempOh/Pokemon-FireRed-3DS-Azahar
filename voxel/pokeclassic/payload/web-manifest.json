@@ -3,8 +3,8 @@
     "ciaForwarder": null,
     "recipe": {
       "path": "payload/emerald3ds.recipe",
-      "sha256": "eb143733ae22349ec0f433eaa64e11de0ec81234f4fe91431dd9e74be28f9483",
-      "size": 585920
+      "sha256": "79dc8119735f634690088eef2f84863394775894bc8c455a1cc222be105a0eb4",
+      "size": 578900
     },
     "smdh": {
       "path": "payload/Emerald3DS.smdh",
@@ -15,12 +15,12 @@
     "threeDsx": {
       "path": "payload/Emerald3DS.3dsx",
       "releaseAsset": "Emerald3DS.3dsx",
-      "sha256": "7ca3a4c04d73d773a92d5f0e318be681207f2ca5cf745af35572718be55beec3",
-      "size": 6690128
+      "sha256": "e4cff9383bdff217b3c126cf27c2e00eeabd10d0ec59bd9c96baca118aa849e3",
+      "size": 6695476
     }
   },
   "builderVersion": "0.5.0",
-  "dataAbi": "468d08f1",
+  "dataAbi": "58051cbe",
   "entrypoint": {
     "apiVersion": 2,
     "function": "run_web_build",
@@ -50,8 +50,8 @@
     },
     {
       "path": "payload/Emerald3DS.3dsx",
-      "sha256": "7ca3a4c04d73d773a92d5f0e318be681207f2ca5cf745af35572718be55beec3",
-      "size": 6690128
+      "sha256": "e4cff9383bdff217b3c126cf27c2e00eeabd10d0ec59bd9c96baca118aa849e3",
+      "size": 6695476
     },
     {
       "path": "payload/Emerald3DS.smdh",
@@ -60,13 +60,18 @@
     },
     {
       "path": "payload/emerald3ds.recipe",
-      "sha256": "eb143733ae22349ec0f433eaa64e11de0ec81234f4fe91431dd9e74be28f9483",
-      "size": 585920
+      "sha256": "79dc8119735f634690088eef2f84863394775894bc8c455a1cc222be105a0eb4",
+      "size": 578900
     },
     {
       "path": "payload/voxelgen/assets/voxel/relief_fixes.json",
       "sha256": "6d6eb755382e53f9d706d4160072886d03e2150ef60552b9f606a1e48171018c",
       "size": 1706500
+    },
+    {
+      "path": "payload/voxelgen/scripts/classic_botanical.py",
+      "sha256": "15b539cacc45e7cf1d87357beb9d70a6e845fe969e074bd93f6d086ee5c2cc7e",
+      "size": 4945
     },
     {
       "path": "payload/voxelgen/scripts/classic_building_specs.py",
@@ -80,8 +85,8 @@
     },
     {
       "path": "payload/voxelgen/scripts/gen_voxel_buildings.py",
-      "sha256": "7c19d3aae68696d64d4d6a438b0d336acba5aaf4245055b23afc85e9ff09b514",
-      "size": 245019
+      "sha256": "93af6403c0b55ac7bca07fd2f311a7c07aa32942d9845e3c108cf43bf8322650",
+      "size": 245356
     },
     {
       "path": "payload/voxelgen/scripts/gen_voxel_regions.py",
@@ -99,6 +104,11 @@
       "size": 7551
     },
     {
+      "path": "payload/voxelgen/scripts/scenery_plant_mesh.json",
+      "sha256": "35a88c7f30ee8c2682ae704a20e58fc6f9ce033304136bc5c3ce4551fed13542",
+      "size": 14127
+    },
+    {
       "path": "payload/voxelgen/scripts/voxel_art.py",
       "sha256": "f6b55162faad0adb5f4a94f6331a2c773f106dfd119ca9a388796abb58da5bb6",
       "size": 7193
@@ -110,8 +120,8 @@
     },
     {
       "path": "payload/voxelgen/scripts/voxel_building.py",
-      "sha256": "2d5b454a6540f934a2233737e3c5f75da9bc62352a83c2756638b63eedaad7ee",
-      "size": 177362
+      "sha256": "cf24607670be01df0136d0ce2b60df8bf42d992f85c533cb34c701ac540fdfa2",
+      "size": 178057
     },
     {
       "path": "payload/voxelgen/scripts/voxel_building_specs.py",

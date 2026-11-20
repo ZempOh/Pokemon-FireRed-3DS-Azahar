@@ -1,0 +1,92 @@
+[
+  {
+    "game": "letsgo",
+    "primary": "0x82d4a94",
+    "id": 192,
+    "pixel_sha256": "3f162645a85461003ca4351d0eae03b1732e4a7ffbc4cad0814ac02e2c28ebbd",
+    "rom_sha256": "ffb57f40fa4be71707fec0d36b0356220edc9b30648c31641d2b97118d792282",
+    "reviewed": true,
+    "land_rows": 8,
+    "scope": "Upper land cap reviewed; lower cliff face retained."
+  },
+  {
+    "game": "radical",
+    "primary": "0x82d4a94",
+    "id": 192,
+    "pixel_sha256": "2eaf9a3b610902cbe2d3af99064ff9046a56805fd2ce490661a65c067871e550",
+    "rom_sha256": "679d112cdfe699c2793d82c7e7999ac9dfca9e222ad5a85d4f8f1e457cd0283f",
+    "reviewed": true,
+    "land_rows": 8,
+    "scope": "Upper land cap reviewed; lower cliff face retained."
+  },
+  {
+    "game": "unbound",
+    "primary": "0x82d4a94",
+    "id": 192,
+    "pixel_sha256": "16bb7879fdc4f2a00008649a51c4324ec07cba365b5ca873fa0836a0a9bd1b59",
+    "rom_sha256": "7aa25bbf568f7cfcf6ee1cf2e9e6ff637350b3d0705c2375cabb6baa7d9739f7",
+    "reviewed": true,
+    "land_rows": 8,
+    "scope": "Upper land cap reviewed; lower cliff face retained."
+  },
+  {
+    "game": "ash-gray",
+    "primary": "0x82d4a94",
+    "id": 192,
+    "pixel_sha256": "0ca4f0883997d126ee76a5b15e76134472f2d1504a07f9f53bc1fac8553e7c10",
+    "rom_sha256": "a08055484c8366768d3e98e2dbed0998641abd2899ffbfc8d7f132925875f7a1",
+    "reviewed": true,
+    "land_rows": 8,
+    "scope": "Upper land cap reviewed; lower cliff face retained."
+  },
+  {
+    "game": "gaia",
+    "primary": "0x82d4a94",
+    "id": 192,
+    "pixel_sha256": "acd04df1f2f83a4b642bef52c5f831e887f6a90ecb8b9794303cc81b7e355e3c",
+    "rom_sha256": "186a36cd389aecf10fb9ba112e7340fd81127fcb23d9564294df80b1e1473ab5",
+    "reviewed": true,
+    "land_rows": 8,
+    "scope": "Upper land cap reviewed; lower cliff face retained."
+  },
+  {
+    "game": "odyssey",
+    "primary": "0x82d4a94",
+    "id": 192,
+    "pixel_sha256": "0bdf4bbc2b0c60ae12fcf2d3a0d629fed5f0365dfb55a276418b8a2b14adb576",
+    "rom_sha256": "44c7e3eafab19c39df7c39d54bafb78a1d9caf7c371244b6f5efb12cfd98d0d0",
+    "reviewed": true,
+    "land_rows": 8,
+    "scope": "Upper land cap reviewed; lower cliff face retained."
+  },
+  {
+    "game": "dragonsden",
+    "primary": "0x87c0e10",
+    "id": 192,
+    "pixel_sha256": "2eaf9a3b610902cbe2d3af99064ff9046a56805fd2ce490661a65c067871e550",
+    "rom_sha256": "6ca88c3ecd54c78bf8a8cbb80f2b9ab049d66d4b070e97849cf4073ee8d2f15c",
+    "reviewed": true,
+    "land_rows": 8,
+    "scope": "Upper land cap reviewed; lower cliff face retained."
+  },
+  {
+    "game": "rocket",
+    "primary": "0x82d4a94",
+    "id": 192,
+    "pixel_sha256": "2eaf9a3b610902cbe2d3af99064ff9046a56805fd2ce490661a65c067871e550",
+    "rom_sha256": "e6f232d0df265323c995e6025fe0ebcc532dfaf7634548a13ee9fb5673152442",
+    "reviewed": true,
+    "land_rows": 8,
+    "scope": "Upper land cap reviewed; lower cliff face retained."
+  },
+  {
+    "game": "fakemon",
+    "primary": "0x82d4a94",
+    "id": 192,
+    "pixel_sha256": "2eaf9a3b610902cbe2d3af99064ff9046a56805fd2ce490661a65c067871e550",
+    "rom_sha256": "05572f4dfbb96a1161a284292971d50c37e521d340bcecf48b574cca3dd8b4c6",
+    "reviewed": true,
+    "land_rows": 8,
+    "scope": "Upper land cap reviewed; lower cliff face retained."
+  }
+]

@@ -524,15 +524,15 @@
 +    return 0;
 +}
 +static int sceneryLandCapRows(uint32_t crc,uint32_t primary,int id) {
-+    if(crc==0x25c3d89f && primary==0x082d4a94 && (id==151 || id==193 || id==200 || id==201))return 8;
-+    if(crc==0xfba55dd8 && primary==0x082d4a94 && (id==151 || id==193 || id==200 || id==201))return 8;
-+    if(crc==0x4b3d4957 && primary==0x082d4a94 && (id==193 || id==200 || id==201))return 8;
-+    if(crc==0x5e704d77 && primary==0x082d4a94 && (id==151 || id==193 || id==200 || id==201))return 8;
-+    if(crc==0xcec21496 && primary==0x087c0e10 && (id==151 || id==193 || id==200 || id==201))return 8;
-+    if(crc==0x63478921 && primary==0x082d4a94 && (id==193 || id==200 || id==201))return 8;
-+    if(crc==0xb9465c5a && primary==0x082d4a94 && (id==151 || id==193 || id==200 || id==201))return 8;
-+    if(crc==0xf2d16ebd && primary==0x082d4a94 && (id==151 || id==193 || id==200 || id==201))return 8;
-+    if(crc==0x6c5ee1b2 && primary==0x082d4a94 && (id==151 || id==193 || id==200 || id==201))return 8;
++    if(crc==0x25c3d89f && primary==0x082d4a94 && (id==151 || id==192 || id==193 || id==200 || id==201))return 8;
++    if(crc==0xfba55dd8 && primary==0x082d4a94 && (id==151 || id==192 || id==193 || id==200 || id==201))return 8;
++    if(crc==0x4b3d4957 && primary==0x082d4a94 && (id==192 || id==193 || id==200 || id==201))return 8;
++    if(crc==0x5e704d77 && primary==0x082d4a94 && (id==151 || id==192 || id==193 || id==200 || id==201))return 8;
++    if(crc==0xcec21496 && primary==0x087c0e10 && (id==151 || id==192 || id==193 || id==200 || id==201))return 8;
++    if(crc==0x63478921 && primary==0x082d4a94 && (id==192 || id==193 || id==200 || id==201))return 8;
++    if(crc==0xb9465c5a && primary==0x082d4a94 && (id==151 || id==192 || id==193 || id==200 || id==201))return 8;
++    if(crc==0xf2d16ebd && primary==0x082d4a94 && (id==151 || id==192 || id==193 || id==200 || id==201))return 8;
++    if(crc==0x6c5ee1b2 && primary==0x082d4a94 && (id==151 || id==192 || id==193 || id==200 || id==201))return 8;
 +    return 0;
 +}
 +static int sceneryOutdoor(uint32_t crc,int group,int num,int mapType) {

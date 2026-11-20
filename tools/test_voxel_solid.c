@@ -11,6 +11,25 @@
 #include "pk_scenery_ui.h"
 
 int main(void) {
+    /* Mixed grass/sand caps must not expose yellow land in winter battles. */
+    assert(sceneryLandCapRows(0x25c3d89f,0x82d4a94,0xc0)==8);
+    assert(!sceneryLand(0x25c3d89f,0x82d4a94,0xc0));
+    assert(sceneryLandCapRows(0xfba55dd8,0x82d4a94,0xc0)==8);
+    assert(!sceneryLand(0xfba55dd8,0x82d4a94,0xc0));
+    assert(sceneryLandCapRows(0x4b3d4957,0x82d4a94,0xc0)==8);
+    assert(!sceneryLand(0x4b3d4957,0x82d4a94,0xc0));
+    assert(sceneryLandCapRows(0x63478921,0x82d4a94,0xc0)==8);
+    assert(!sceneryLand(0x63478921,0x82d4a94,0xc0));
+    assert(sceneryLandCapRows(0xb9465c5a,0x82d4a94,0xc0)==8);
+    assert(!sceneryLand(0xb9465c5a,0x82d4a94,0xc0));
+    assert(sceneryLandCapRows(0x6c5ee1b2,0x82d4a94,0xc0)==8);
+    assert(!sceneryLand(0x6c5ee1b2,0x82d4a94,0xc0));
+    assert(sceneryLandCapRows(0xcec21496,0x87c0e10,0xc0)==8);
+    assert(!sceneryLand(0xcec21496,0x87c0e10,0xc0));
+    assert(sceneryLandCapRows(0xf2d16ebd,0x82d4a94,0xc0)==8);
+    assert(!sceneryLand(0xf2d16ebd,0x82d4a94,0xc0));
+    assert(sceneryLandCapRows(0x5e704d77,0x82d4a94,0xc0)==8);
+    assert(!sceneryLand(0x5e704d77,0x82d4a94,0xc0));
     for(unsigned i=0;i<sizeof(sceneryGroundProps)/sizeof(sceneryGroundProps[0]);i++) {
         const struct SceneryGroundProp *p=&sceneryGroundProps[i];
         assert(sceneryGroundProp(p->rom,p->primary,p->id)==p);

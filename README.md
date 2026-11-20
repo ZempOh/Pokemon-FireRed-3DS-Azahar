@@ -17,6 +17,18 @@ cartridge dump.
 · **[Shared voxel builder](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/voxel.html)**
 · **[Graphics preview release](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/tag/graphics-upgrade-2026-11-18)**
 
+<!-- CURRENT SCENERY STATUS -->
+### Current scenery downloads
+
+| Games | Published version | Latest retest status |
+| --- | --- | --- |
+| FireRed, FRLG+ | v3 winter scenery | Passed |
+| Classic | v2 flora and climate | v3 held: 59.5 FPS samples below the 59.6 gate |
+| Let’s Go, Radical Red, Unbound | v2 flora and climate | New winter candidate remains unpublished |
+
+[Native scenery and GIFs](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/climate-3d.html) · [Android scenery and GIFs](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/android-climate.html) · [Unreleased Classic preview](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/classic-candidate.html). Environmental coverage is still partial; trainers and battle Pokémon retain their original sprites.
+<!-- CURRENT SCENERY STATUS END -->
+
 ## Six-game graphics preview
 
 The [shared builder](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/voxel.html)

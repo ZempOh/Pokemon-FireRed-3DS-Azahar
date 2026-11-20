@@ -12,9 +12,25 @@ static time_t fakeTime(time_t *out) { if(out)*out=fakeSeconds;return fakeSeconds
 #define clock_gettime fakeGetTime
 #define time fakeTime
 #include "pk_voxel_climate.h"
+#include "pk_scenery_candidates.h"
 #undef time
 #undef clock_gettime
 int main(void) {
+    /* Same type-zero engine metadata, different scene semantics. Route 16
+     * must keep winter on crossing from Celadon; an actual room must clear it. */
+    voxelClimate.config=62;
+    fakeMs=5000;
+    climateUpdate(sceneryOutdoor(0xcec21496,1,6,0),0);
+    fakeMs+=5000;
+    climateUpdate(sceneryOutdoor(0xcec21496,1,26,0),0);
+    assert(voxelClimate.seasonBlend>0 && voxelClimate.season==3);
+    fakeMs+=5000;
+    climateUpdate(sceneryOutdoor(0xcec21496,13,83,0),0);
+    assert(voxelClimate.seasonBlend==0 && voxelClimate.blend==0);
+    assert(!sceneryOutdoor(0xcec21496,55,5,0)); /* Ice cave. */
+    assert(!sceneryOutdoor(0xcec21497,1,26,0)); /* Unreviewed ROM. */
+    assert(!sceneryOutdoor(0xcec21496,1,26,8)); /* Explicit indoor metadata wins. */
+    memset(&voxelClimate,0,sizeof(voxelClimate));fakeMs=0;
     const uint32_t profiles[]={0x25c3d89f,0xfba55dd8,0x4b3d4957};
     for(int i=0;i<3;i++) {
         assert(climateGrassEffect(profiles[i],0x083a5420,0x083a53dc));

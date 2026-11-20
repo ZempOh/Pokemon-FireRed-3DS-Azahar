@@ -135,7 +135,19 @@ def generate(profiles, plants, output):
 if __name__=='__main__':
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--output',type=Path,required=True);args=p.parse_args()
     root=Path(__file__).with_name('scenery-profiles')
-    generate(json.loads((root/'android-capabilities.json').read_text()),json.loads((root/'android-potted-plants.json').read_text()),args.output)
+    capabilities=json.loads((root/'android-capabilities.json').read_text())
+    outdoor_review=json.loads((root/'android-outdoor-review.json').read_text())
+    keys=set()
+    for row in outdoor_review:
+        key=(row['rom_crc32'],row['group'],row['map'])
+        assert row['reviewed'] and key not in keys
+        assert len(row['rom_sha256'])==len(row['source_map_sha256'])==64
+        keys.add(key)
+    for profile in capabilities:
+        declared={tuple(x) for x in profile.get('outdoor_maps',[])}
+        reviewed={(x['group'],x['map']) for x in outdoor_review if x['rom_crc32']==profile['rom_crc32'] and x['outdoor']}
+        assert declared==reviewed,('Outdoor overrides require explicit source-art review',profile['game'])
+    generate(capabilities,json.loads((root/'android-potted-plants.json').read_text()),args.output)
     generate_engines(json.loads((root/'android-engines.json').read_text()),args.output)
     generate_objects(json.loads((root/'android-live-objects.json').read_text()),args.output)
     generate_trees(json.loads((root/'android-tree-quads.json').read_text()),args.output)

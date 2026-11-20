@@ -487,3 +487,31 @@ Retain failed probes separately. The sequential QA queue records job failures,
 resumes only under the same APK hash, and never grants visual approvals itself.
 Winter-boundary evidence must hash the clip and summer restoration, and the
 actual destination must match the planned neighboring map before publication.
+
+Select interaction fixtures from the game's connected world when possible,
+not simply the lowest inherited map number containing that graphics slot.
+The QA map-graph audit follows own-ROM door warps and map connections from
+the reviewed field. It found better targets in Lazarus's actual starting town,
+Dragonsden's connected region, and Fakemon/Rocket's active Kanto towns. Keep
+seed-set overrides separate and checksum-linked so old probes remain auditable.
+Missing graph paths are unknown, not proof of an unused map: Odyssey uses
+scripted travel that the structural graph does not resolve. Malformed legacy
+edges must also remain explicit unknowns instead of invented connections.
+
+A collision-clear connection can still be water. Unbound's first proposed
+boundary started beside its bridge and produced water-heavy footage. Probe
+neighboring connection coordinates, preserve the native offset, and inspect
+source artwork before creating a replacement fixture. A color filter can reject
+obvious water for this fixture search; it is not an asset-recognition rule or a
+visual pass. Require the actual land crossing and the same destination restored
+to summer, retaining the rejected attempt separately.
+
+Dragon's Den uses map type zero for both outdoor routes and some interiors.
+The Celadon-only override lost winter on entering Route 16. Patch 0029 uses
+140 explicit outdoor entries from a local visual review of all 176 type-zero
+maps; 36 interiors, caves or ambiguous scenes remain excluded. The metadata-only
+`android-outdoor-review.json` retains ROM and source-map hashes. The generator
+requires exact agreement between approved entries and capability overrides.
+The climate regression crosses Celadon to Route 16, then enters an excluded
+room; winter persists outdoors and clears inside. These source reviews are not
+140 Thor passes. Keep the exact-build boundary and indoor checks mandatory.

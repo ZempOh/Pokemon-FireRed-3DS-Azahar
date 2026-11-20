@@ -14,7 +14,7 @@
              }
          }
      }
-@@ -2065,7 +2065,7 @@
+@@ -2065,25 +2065,48 @@
              vx = voxelX(voxel, p[i].x, foot);
              vy = voxelY(voxel, foot, z) - bh + 1;
          }
@@ -23,16 +23,53 @@
             !(p[i].rot&1) && p[i].mode==0 && sw>=16 && sh>=16) {
              struct SolidProp prop={.kind=p[i].solidKind};
              struct SolidTree* t=&prop.surface;
-@@ -2080,7 +2080,7 @@
+             t->x=p[i].x+bw/2-8; t->y=foot-9;
+             t->rise=voxelRiseAt(voxel,p[i].x+bw/2,foot);
++            int leaf=0,bark=0;unsigned counts[16]={0};
++            if(p[i].solidKind==9) {
++                // Narrow cut-tree sprites have transparent centers beside their
++                // trunk. Never turn palette index zero into the black outline.
++                for(int y=0;y<sh;y++)for(int x=0;x<sw;x++) {
++                    unsigned off=(p[i].tile+(y/8)*(sw/8)+x/8)*32+(y&7)*4+(x&7)/2;
++                    int ci=(vram[0x10000+(off&0x7fff)]>>((x&1)*4))&15;
++                    if(ci)counts[ci]++;
++                }
++                for(int ci=1;ci<16;ci++) {
++                    uint16_t rgb=P[256+p[i].pal*16+ci];
++                    int r=rgb&31,g=(rgb>>5)&31,b=(rgb>>10)&31;
++                    if(solidCutLeaf(rgb)&&counts[ci]>counts[leaf])leaf=ci;
++                    if(r>g&&g>=b&&counts[ci]>counts[bark])bark=ci;
++                }
++            }
+             /* Sample the live OBJ tiles, honoring flips. Geometry follows
+              * the actual sprite foot through pushes and disappears with OAM. */
+             for(int y=0;y<48;y++)for(int x=0;x<32;x++) {
+                 int px=sw/4+(x&15)*sw/32,py=sh/4+(y/3)*sh/32;
++                if(p[i].solidKind==9){px=(x&15)*sw/16;py=sh/8+y*sh/144;}
+                 if(p[i].hflip)px=sw-1-px;
+                 if(p[i].vflip)py=sh-1-py;
                  unsigned off=(p[i].tile+(py/8)*(sw/8)+px/8)*32+(py&7)*4+(px&7)/2;
                  int ci=(vram[0x10000+(off&0x7fff)]>>((px&1)*4))&15;
-                 if(!ci)ci=1;
+-                if(!ci)ci=1;
 -                t->art[y*32+x]=color(P[256+p[i].pal*16+ci],alpha);
-+                t->art[y*32+x]=p[i].solidKind==9?climateTerrain(color(P[256+p[i].pal*16+ci],alpha)):color(P[256+p[i].pal*16+ci],alpha);
-             }
-             solidPropDraw(voxel,&prop);
-             continue;
-@@ -4969,11 +4969,11 @@
+-            }
+-            solidPropDraw(voxel,&prop);
+-            continue;
++                if(p[i].solidKind==9) {
++                    if(y>=36)ci=bark?bark:leaf;
++                    else if(!ci||!solidCutLeaf(P[256+p[i].pal*16+ci]))ci=leaf;
++                } else if(!ci)ci=1;
++                uint32_t ink=color(P[256+p[i].pal*16+ci],alpha);
++                t->art[y*32+x]=p[i].solidKind==9&&y<36?climateLeafColor(ink):ink;
++            }
++            if(p[i].solidKind!=9||leaf) {
++                solidPropDraw(voxel,&prop);
++                continue;
++            } // An unrecognized palette retains the original live sprite.
+         }
+         if(voxel&&p[i].world&&p[i].solidKind==6&&!(p[i].rot&1)&&p[i].mode==0&&bw>=24&&bh>=24) {
+             unsigned counts[16]={0};
+@@ -4969,11 +4992,11 @@
  }
  
  // Profiles are tied to verified ROM CRC + primary tileset, never to green pixels.
@@ -46,7 +83,7 @@
      if (!snow && !kanto) return 0;
      int n=0, cellX=(cx+v->left)/16, cellY=(cy+v->top)/16;
      for(int row=0;row+2<v->rows;row++) for(int col=0;col+1<v->cols;col++) {
-@@ -5010,7 +5010,7 @@
+@@ -5010,7 +5033,7 @@
              if(ci){rgb=P[(e>>12)*16+ci];break;}
          }
          ground[y*16+x]=color(rgb,alpha);
@@ -55,7 +92,7 @@
      }
      for(int i=0;i<n;i++)for(int y=snow?16:0;y<48;y++)for(int x=0;x<32;x++)
          texture[(trees[i].y-v->top+y)*v->stride+trees[i].x-v->left+x]=ground[(y&15)*16+(x&15)];
-@@ -5028,16 +5028,57 @@
+@@ -5028,16 +5051,57 @@
      return n;
  }
  
@@ -114,7 +151,7 @@
          if(snow) {
              ground=0;
              if(solidSnowRockId(id))kind=3;
-@@ -5045,7 +5086,7 @@
+@@ -5045,7 +5109,7 @@
              ground=letsgo?8:1;
              if((letsgo&&id==1)||(radical&&(id==0x12||id==0x1a)))kind=1;
              else if(id==4)kind=letsgo?2:5;
@@ -123,7 +160,7 @@
              else if(id==0x9f)kind=3;
              else if(id==0xaf||id==0xb7){kind=3;ground=0x115;}
          }
-@@ -5066,7 +5107,7 @@
+@@ -5066,7 +5130,7 @@
                  int ci=(vram[off]>>(px&1?4:0))&15;
                  if(ci){rgb=P[(e>>12)*16+ci];break;}
              }
@@ -132,7 +169,7 @@
              texture[(row*16+y)*v->stride+col*16+x]=c;
          }
      }
-@@ -5129,8 +5170,19 @@
+@@ -5129,8 +5193,19 @@
      for (int i=0; i<npieces[shown]; i++)
          if (!pieces[shown][i].world) nativeWeather = 1;
      climateUpdate(mapType >= 1 && mapType <= 3, nativeWeather);
@@ -202,7 +239,16 @@
      unsigned f=voxelClimate.blend;
 --- a/app/src/main/cpp/pk_wide_props.h
 +++ b/app/src/main/cpp/pk_wide_props.h
-@@ -6,6 +6,11 @@
+@@ -2,10 +2,20 @@
+ // Coordinates and depth use the same world space as terrain, actors and trees.
+ #pragma once
+ struct SolidProp { struct SolidTree surface; int kind; };
++static int solidCutLeaf(uint16_t rgb) {
++    int r=rgb&31,g=(rgb>>5)&31,b=(rgb>>10)&31;
++    return g>r && g>=b && g>=4;
++}
++
+ static int solidSnowRockId(int id) {
      // Full single-cell rocks only. e8 is stairs; fc and 158 contain scenery
      // edges, and f1 includes a border that must not be replaced with snow.
      return id==0x24 || id==0x53 || id==0x159 || id==0x15f;
@@ -214,7 +260,7 @@
  }
  
  static void propFace(const struct VoxelView* v,const struct SolidTree* t,
-@@ -59,6 +64,34 @@
+@@ -59,6 +69,34 @@
  static void solidPropDraw(const struct VoxelView* v,const struct SolidProp* p) {
      const struct SolidTree* t=&p->surface;
      float x=t->x+8,y=t->y+9,z=t->rise;

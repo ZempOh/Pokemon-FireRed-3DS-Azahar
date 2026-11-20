@@ -6,6 +6,12 @@
 #include "pk_wide_props.h"
 
 int main(void) {
+    assert(!solidCutLeaf(0));
+    assert(!solidCutLeaf(1|(1<<5)|(1<<10)));
+    assert(!solidCutLeaf(20|(12<<5)|(6<<10)));
+    assert(solidCutLeaf(8|(16<<5)|(12<<10)));
+    assert(solidCutLeaf(4|(10<<5)|(10<<10)));
+
     assert(solidDrescoConifer(0x082d4a94,0x082d4af4,0x2f0,0x2f8));
     assert(solidDrescoConifer(0x082d4a94,0x082d4af4,0x2f2,0x2fa));
     assert(!solidDrescoConifer(0x082d4a94,0x082d4af4,0x2f1,0x2f9));

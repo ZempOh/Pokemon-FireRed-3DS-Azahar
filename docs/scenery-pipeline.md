@@ -367,3 +367,12 @@ the shared 2D/3D, season, weather, motion and battle sections. Run it only after
 the release gate selects passing media; it is a media integrity check, not an
 independent device qualification. It preserves published games in the manifest
 and replaces stale candidate panels with their actual selected-build references.
+
+`tools/scenery_interaction_candidates.py` combines the hash-locked map inventory
+with reviewed live-object graphics. Supply the engine's actual template-kind
+and banking settings. It proposes a walkable cell below each target, retaining
+the local object ID, visibility flag, interaction-script pointer and nearby
+same-kind count. It does not edit saves or grant an interaction pass. Check the
+game's own HM/item/badge requirements before testing removal or movement, and
+keep unreadable-map failures visible. This avoids repeating object-layout and
+coordinate discovery for every new game.

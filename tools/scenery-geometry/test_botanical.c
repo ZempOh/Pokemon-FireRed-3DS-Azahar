@@ -1,11 +1,13 @@
 #include <assert.h>
 #include <math.h>
 #include <stdio.h>
+#include <string.h>
 #include "scenery_plant_geometry.h"
 typedef struct {long x,y,z;} Point;
 typedef struct {Point a,b;int count;} Edge;
 static Edge edges[1000];static int used,triangles;static double volume;
 static double component[10];
+static int rounded;
 static int cmp(Point a,Point b){if(a.x!=b.x)return a.x<b.x?-1:1;if(a.y!=b.y)return a.y<b.y?-1:1;return a.z==b.z?0:a.z<b.z?-1:1;}
 static Point point(const SceneryPlantVertex*p){return(Point){lroundf(p->x*10000),lroundf(p->y*10000),lroundf(p->z*10000)};}
 static void edge(Point a,Point b){
@@ -22,7 +24,7 @@ static void emit(void*ctx,const SceneryPlantVertex*a,const SceneryPlantVertex*b,
  }
  edge(point(a),point(b));edge(point(b),point(c));edge(point(c),point(a));
  double part=(a->x*(b->y*c->z-b->z*c->y)+a->y*(b->z*c->x-b->x*c->z)+a->z*(b->x*c->y-b->y*c->x))/6.;
- volume+=part;component[triangles<=64?0:triangles<=80?1:2+(triangles-81)/8]+=part;
+ volume+=part;component[triangles<=64?0:triangles<=80?1:rounded?2:2+(triangles-81)/8]+=part;
 }
 int main(void){
  SceneryPlant_Emit(NULL,emit,28,16);
@@ -30,4 +32,10 @@ int main(void){
  assert(volume>0&&triangles<=160);
  for(int i=0;i<10;i++)assert(component[i]>0);
  printf("Botanical family: %d triangles, %d closed edges, positive volume %.3f; bounds/materials passed\n",triangles,used,volume);
+ used=triangles=0;volume=0;rounded=1;memset(edges,0,sizeof(edges));memset(component,0,sizeof(component));
+ SceneryPlant_EmitStyle(NULL,emit,28,16,1);
+ for(int i=0;i<used;i++)assert(edges[i].count==2);
+ for(int i=0;i<3;i++)assert(component[i]>0);
+ assert(triangles==128);
+ printf("Rounded topiary: %d triangles, %d closed edges; bounds/materials passed\n",triangles,used);
 }

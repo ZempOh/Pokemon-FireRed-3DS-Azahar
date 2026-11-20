@@ -91,5 +91,22 @@ int main(void) {
     assert(solidSnowRockId(0x159) && solidSnowRockId(0x15f));
     assert(!solidSnowRockId(0xe8) && !solidSnowRockId(0xf1));
     assert(!solidSnowRockId(0xfc) && !solidSnowRockId(0x158));
-    puts("Solid trees and field props: clipping, volume, winding and occlusion passed");
+    for(unsigned profile=0;profile<sizeof(solidPlantProfiles)/sizeof(solidPlantProfiles[0]);profile++) {
+        const struct SolidPlantProfile *model=&solidPlantProfiles[profile];
+        assert(solidPlantProfile(model->rom,model->primary,model->top,model->bottom)==(int)profile);
+        assert(solidPlantProfile(model->rom^1,model->primary,model->top,model->bottom)<0);
+        assert(solidPlantProfile(model->rom,model->primary^4,model->top,model->bottom)<0);
+        assert(solidPlantProfile(model->rom,model->primary,model->top,0xffff)<0);
+        struct SolidProp plant={.kind=11,.plantProfile=(int)profile};
+        plant.surface.x=32;plant.surface.y=24;plant.surface.rise=8;
+        for(int i=0;i<6;i++)plant.surface.art[i]=0xff40c080;
+        memset(depth,0,sizeof depth);memset(v.out,0,N*4);solidPropDraw(&v,&plant);
+        int pixels=0;for(int i=0;i<N;i++)if(v.out[i])pixels++;
+        assert(pixels>40&&pixels<1000);
+        for(int y=-160;y<=160;y+=32)for(int x=-160;x<=160;x+=32) {
+            plant.surface.x=x;plant.surface.y=y;solidPropDraw(&v,&plant);
+            assert(guarded[0]==0x12345678 && guarded[N+1]==0x12345678);
+        }
+    }
+    puts("Solid trees, props and nine plant profiles: clipping, volume, winding and occlusion passed");
 }

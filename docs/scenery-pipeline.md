@@ -47,9 +47,8 @@ and checks every generated plant cell for FireRed and FRLG+. It requires the
 candidate's volume renderer and test sources. Reusing it for another game requires
 an explicit adapter; it rejects games outside its supported list.
 
-- Leaves, stems and pots can share a silhouette-volume kernel. Equal down/back
-  extrusion preserves the original 45-degree projection while adding visible sides.
-- Use opaque neighboring texels on silhouette edges. Horizontal runs reduce triangles.
+- Plants share closed botanical geometry with source-palette materials. Silhouette
+  extrusion was rejected after rotating previews exposed striped, flattened sides.
 - Preserve source backgrounds separately: grass, water, cliffs, walls and floors
   are different materials. Snow must not turn water or indoor flooring white.
 - Movable/breakable objects follow live object position and visibility. Never bake
@@ -58,7 +57,8 @@ an explicit adapter; it rejects games outside its supported list.
   fixtures, not another renderer implementation.
 
 `tools/scenery-geometry/scenery_plant_geometry.h` is the shared renderer-neutral
-botanical family: rounded pot, closed stem and eight solid leaves, 144 triangles.
+botanical family: rounded pot, closed stem and eight solid leaves, 144 triangles,
+or a rounded topiary canopy, 128 triangles.
 Its adapter receives triangles in pixel units (Y is height), six material indices,
 and shading. Native and Android adapters can reuse it with their coordinate and UV
 conventions. The CI test checks closed edges, finite coordinates, material bounds
@@ -68,10 +68,19 @@ Do not classify by comments alone: Sea Cottage's `0x29c/0x2af` pair was describe
 as a plant in an old list but its actual artwork is a blue cabinet. Palette/profile
 validation caught it. Keep such exclusions explicit and preserve the original asset.
 
+`tools/scenery-profiles/android-potted-plants.json` records nine verified source
+patterns across Let's Go, Radical Red and Unbound. The Android adapter matches the
+ROM CRC, primary tileset and both metatiles, samples live palette colors, and keeps
+the original lower floor/wall layer. Unbound's rounded topiary uses the second
+shared shape. These profiles establish recognition, not complete scenery coverage.
+
 ## Findings that must not be rediscovered
 
 - Classic uses `classic_building_specs.py`; the imported Emerald definitions are
   not its active model list. Its outdoor renderer and indoor path differ from FireRed.
+- Classic metatiles can have three layers. Omitting entries 8–11 drops plant leaves
+  from extracted artwork; compare the composite against the live atlas/reference
+  compositor before building geometry from it.
 - FireRed and FRLG+ buildings use `fr_building_specs.py`; indoor objects use
   `fr_gen_rooms.py` and `voxel_room.c`. Editing generic `vb.Card` hooks alone has no
   effect on these active plant paths.

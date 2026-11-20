@@ -41,6 +41,13 @@ jobs:
           /tmp/winter-atlas
           gcc -std=c99 -Wall -Wextra -Werror -Isrc/voxel tests/voxel_winter_test.c -o /tmp/winter-material
           /tmp/winter-material
+      - name: Botanical family and actual room geometry
+        run: |
+          cd build/upstream/3ds_port
+          gcc -std=c99 -O2 -Wall -Wextra -Werror -Isrc/voxel tests/scenery_plant_geometry_test.c -lm -o /tmp/botanical-geometry
+          /tmp/botanical-geometry
+          gcc -std=c99 -O2 -Wall -Wextra -Werror -Wno-unused-const-variable -Isrc/voxel tests/voxel_room_volume_test.c -o /tmp/room-volume
+          /tmp/room-volume
       - uses: actions/upload-artifact@v4
         with:
           name: frlg-plus-cartridge-template

@@ -39,14 +39,28 @@ jobs:
           run('make','-C','build/source','-j4')
           rom=pathlib.Path('build/source')/row['rom']
           actual=hashlib.sha256(rom.read_bytes()).hexdigest()
-          assert actual==row['sha256'],f'Exact revision mismatch: {actual}'
           pathlib.Path('symbol-output').mkdir()
-          pathlib.Path('symbol-output/provenance.json').write_text(json.dumps(dict(row,verified_sha256=actual),indent=2))
+          pathlib.Path('symbol-output/provenance.json').write_text(json.dumps(dict(row,built_sha256=actual,exact_revision_match=actual==row['sha256'],source_path_alias='SeviiIslands5 -> seviiislands5'),indent=2))
           with open('symbol-output/symbols.txt','w') as out:
               subprocess.run(['arm-none-eabi-nm','-S','--defined-only',str(rom.with_suffix('.elf'))],stdout=out,check=True)
+          data=rom.read_bytes();ranges=[]
+          for line in pathlib.Path('symbol-output/symbols.txt').read_text().splitlines():
+              parts=line.split()
+              if len(parts)!=4: continue
+              address,size=int(parts[0],16),int(parts[1],16)
+              if size and 0x08000000<=address and address+size<=0x08000000+len(data):
+                  ranges.append(dict(address=address,size=size,type=parts[2],name=parts[3],sha256=hashlib.sha256(data[address-0x08000000:address-0x08000000+size]).hexdigest()))
+          pathlib.Path('symbol-output/range-hashes.json').write_text(json.dumps(ranges))
           PY
       - uses: actions/upload-artifact@v4
         with:
-          name: frlgplus-exact-symbols
+          name: frlgplus-source-symbols-diagnostic
           path: symbol-output/
           if-no-files-found: error
+      - name: Require exact revision before treating symbols as authoritative
+        run: |
+          python3 - <<'PY'
+          import json,pathlib
+          row=json.loads(pathlib.Path('symbol-output/provenance.json').read_text())
+          assert row['exact_revision_match'],f"Exact revision mismatch: {row['built_sha256']}; diagnostic hashes only, no adapter approval"
+          PY

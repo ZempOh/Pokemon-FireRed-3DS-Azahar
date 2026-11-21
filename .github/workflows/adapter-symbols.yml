@@ -1,0 +1,46 @@
+name: Verify exact adapter source symbols
+on:
+  push:
+    branches: [graphics/adapter-symbols]
+    paths: ['.github/workflows/adapter-symbols.yml', 'tools/adapter-source-builds.json']
+permissions:
+  contents: read
+jobs:
+  frlgplus:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    container: devkitpro/devkitarm:20260610
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install host tools
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends build-essential libpng-dev python3 git
+      - name: Build pinned source and verify exact user revision
+        run: |
+          python3 - <<'PY'
+          import json,subprocess,pathlib,hashlib
+          row=json.loads(pathlib.Path('tools/adapter-source-builds.json').read_text())['frlgplus']
+          def run(*args,cwd=None): subprocess.run(args,cwd=cwd,check=True)
+          run('git','init','build/source')
+          run('git','-C','build/source','fetch','--depth','1',row['repository'],row['commit'])
+          run('git','-C','build/source','checkout','--detach','FETCH_HEAD')
+          run('git','init','build/agbcc')
+          run('git','-C','build/agbcc','fetch','--depth','1','https://github.com/pret/agbcc.git','da598c1d918402c42c0c0d7128ba14567f3175e9')
+          run('git','-C','build/agbcc','checkout','--detach','FETCH_HEAD')
+          run('./build.sh',cwd='build/agbcc')
+          run('./install.sh','../source',cwd='build/agbcc')
+          run('make','-C','build/source','-j4')
+          rom=pathlib.Path('build/source')/row['rom']
+          actual=hashlib.sha256(rom.read_bytes()).hexdigest()
+          assert actual==row['sha256'],f'Exact revision mismatch: {actual}'
+          pathlib.Path('symbol-output').mkdir()
+          pathlib.Path('symbol-output/provenance.json').write_text(json.dumps(dict(row,verified_sha256=actual),indent=2))
+          with open('symbol-output/symbols.txt','w') as out:
+              subprocess.run(['arm-none-eabi-nm','-S','--defined-only',str(rom.with_suffix('.elf'))],stdout=out,check=True)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: frlgplus-exact-symbols
+          path: symbol-output/
+          if-no-files-found: error

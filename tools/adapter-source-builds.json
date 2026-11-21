@@ -1,0 +1,10 @@
+{
+  "frlgplus": {
+    "repository": "https://github.com/Deokishisu/FRLG-Plus.git",
+    "commit": "5d81c49c383d1197fcde608d304ed233def3bda2",
+    "tag": "v1.5.1",
+    "rom": "pokefirered.gba",
+    "sha256": "41b51f4f1d0a894dbb27572d6580821c6a192231f930d85c2805af664c13bbb6",
+    "purpose": "Exact source layout evidence for Android adapter; no ROM or generated asset upload"
+  }
+}

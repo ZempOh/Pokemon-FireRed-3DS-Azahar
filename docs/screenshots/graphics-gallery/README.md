@@ -1,158 +1,137 @@
-# Six-game Thor graphics gallery
+# Actual Thor graphics gallery
 
-Captured on the AYN Thor. Images show real gameplay; GIFs are six-second recordings reduced to 480 px / 10 FPS for download size, not performance measurements.
-
-Native ports render voxel battles; Android previews retain the ROM’s standard battle renderer. Seasonal controls are cosmetic. Unbound’s native snowy terrain/weather takes precedence; winter does not replace its map tiles.
-
-## FireRed 3DS
-
-![FireRed 3DS gameplay](./firered-motion.gif)
-
-**2D view — same player position**
-![FireRed 3DS 2D view — same player position](./firered-2d.png)
-
-**Voxel 3D view — same player position**
-![FireRed 3DS Voxel 3D view — same player position](./firered-3d.png)
-
-**Manual Spring · Original weather**
-![FireRed 3DS Manual Spring · Original weather](./firered-spring.png)
-
-**Manual Summer · Original weather**
-![FireRed 3DS Manual Summer · Original weather](./firered-summer.png)
-
-**Manual Autumn · Original weather**
-![FireRed 3DS Manual Autumn · Original weather](./firered-autumn.png)
-
-**Manual Winter · Original weather**
-![FireRed 3DS Manual Winter · Original weather](./firered-winter.png)
-
-**Battle and companion interface**
-![FireRed 3DS Battle and companion interface](./firered-battle.png)
-
-## FireRed & LeafGreen+
-
-![FireRed & LeafGreen+ gameplay](./frlg-motion.gif)
-
-**2D view — same player position**
-![FireRed & LeafGreen+ 2D view — same player position](./frlg-2d.png)
-
-**Voxel 3D view — same player position**
-![FireRed & LeafGreen+ Voxel 3D view — same player position](./frlg-3d.png)
-
-**Manual Spring · Original weather**
-![FireRed & LeafGreen+ Manual Spring · Original weather](./frlg-spring.png)
-
-**Manual Summer · Original weather**
-![FireRed & LeafGreen+ Manual Summer · Original weather](./frlg-summer.png)
-
-**Manual Autumn · Original weather**
-![FireRed & LeafGreen+ Manual Autumn · Original weather](./frlg-autumn.png)
-
-**Manual Winter · Original weather**
-![FireRed & LeafGreen+ Manual Winter · Original weather](./frlg-winter.png)
-
-**Battle and companion interface**
-![FireRed & LeafGreen+ Battle and companion interface](./frlg-battle.png)
+These screenshots belong to the published builds linked below. Coverage is limited to reviewed environmental assets and scenes; character and battle artwork stays original.
 
 ## Pokémon Classic
 
-![Pokémon Classic gameplay](./classic-motion.gif)
+[Build and test scope](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/climate-3d.html).
 
-**2D view — same player position**
-![Pokémon Classic 2D view — same player position](./classic-2d.png)
+More scenery — 2D / 3D
 
-**Voxel 3D view — same player position**
-![Pokémon Classic Voxel 3D view — same player position](./classic-3d.png)
+| 2D | 3D |
+| --- | --- |
+| ![Pokémon Classic 2d](classic-2d.png?v=5d6bb18adf0a) | ![Pokémon Classic 3d](classic-3d.png?v=c8ecef7b2362) |
 
-**Manual Spring · Original weather**
-![Pokémon Classic Manual Spring · Original weather](./classic-spring.png)
+Seasons
 
-**Manual Summer · Original weather**
-![Pokémon Classic Manual Summer · Original weather](./classic-summer.png)
+| Spring | Summer | Autumn | Winter |
+| --- | --- | --- | --- |
+| ![Pokémon Classic spring](classic-spring.png?v=764f177d47c8) | ![Pokémon Classic summer](classic-summer.png?v=7607b8dc8be1) | ![Pokémon Classic autumn](classic-autumn.png?v=0f09d24f749b) | ![Pokémon Classic winter](classic-winter.png?v=dad7bd81e4ba) |
 
-**Manual Autumn · Original weather**
-![Pokémon Classic Manual Autumn · Original weather](./classic-autumn.png)
+[Rain screenshot](classic-rain.png?v=0bab2a293e68) · [Snow screenshot](classic-snow.png?v=09da971eaadb) · [Fog screenshot](classic-fog.png?v=dfeb8025ac2c)
 
-**Manual Winter · Original weather**
-![Pokémon Classic Manual Winter · Original weather](./classic-winter.png)
+![Pokémon Classic battle capture](classic-battle.png?v=d2e9bb347dbd)
 
-**Battle and companion interface**
-![Pokémon Classic Battle and companion interface](./classic-battle.png)
+Source: `35b5d965f650b7d5b3bd2a05aae1881651750584`.
 
-## Pokémon Let’s Go Pikachu
+## FireRed 3DS
 
-![Pokémon Let’s Go Pikachu gameplay](./letsgo-motion.gif)
+[Build and test scope](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/climate-3d.html).
 
-**2D view — same player position**
-![Pokémon Let’s Go Pikachu 2D view — same player position](./letsgo-2d.png)
+More scenery — 2D / 3D
 
-**Voxel 3D view — same player position**
-![Pokémon Let’s Go Pikachu Voxel 3D view — same player position](./letsgo-3d.png)
+| 2D | 3D |
+| --- | --- |
+| ![FireRed 3DS 2d](firered-2d.png?v=3ee1223d8728) | ![FireRed 3DS 3d](firered-3d.png?v=81503168000b) |
 
-**Manual Spring · Original weather**
-![Pokémon Let’s Go Pikachu Manual Spring · Original weather](./letsgo-spring.png)
+Seasons
 
-**Manual Summer · Original weather**
-![Pokémon Let’s Go Pikachu Manual Summer · Original weather](./letsgo-summer.png)
+| Spring | Summer | Autumn | Winter |
+| --- | --- | --- | --- |
+| ![FireRed 3DS spring](firered-spring.png?v=7a529fa28c0a) | ![FireRed 3DS summer](firered-summer.png?v=81503168000b) | ![FireRed 3DS autumn](firered-autumn.png?v=72be387a578d) | ![FireRed 3DS winter](firered-winter.png?v=d0b97f2c8565) |
 
-**Manual Autumn · Original weather**
-![Pokémon Let’s Go Pikachu Manual Autumn · Original weather](./letsgo-autumn.png)
+[Rain screenshot](firered-rain.png?v=bff6db03339f) · [Snow screenshot](firered-snow.png?v=5e7193de2ce6) · [Fog screenshot](firered-fog.png?v=811db5b453ac)
 
-**Manual Winter · Original weather**
-![Pokémon Let’s Go Pikachu Manual Winter · Original weather](./letsgo-winter.png)
+![FireRed 3DS battle capture](firered-battle.png?v=447c790a164e)
 
-**Battle and companion interface**
-![Pokémon Let’s Go Pikachu Battle and companion interface](./letsgo-battle.png)
+Source: `7a97d7c79e6efeb281987bea707b4a3944d54c8f`.
 
-**Corrected settings title**
-![Let’s Go settings title](./letsgo-title.png)
+## FireRed & LeafGreen+
 
-## Pokémon Radical Red
+[Build and test scope](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/climate-3d.html).
 
-![Pokémon Radical Red gameplay](./radical-motion.gif)
+More scenery — 2D / 3D
 
-**2D view — same player position**
-![Pokémon Radical Red 2D view — same player position](./radical-2d.png)
+| 2D | 3D |
+| --- | --- |
+| ![FireRed & LeafGreen+ 2d](frlg-2d.png?v=a1f4a6bce88c) | ![FireRed & LeafGreen+ 3d](frlg-3d.png?v=efbfc37c370e) |
 
-**Voxel 3D view — same player position**
-![Pokémon Radical Red Voxel 3D view — same player position](./radical-3d.png)
+Seasons
 
-**Manual Spring · Original weather**
-![Pokémon Radical Red Manual Spring · Original weather](./radical-spring.png)
+| Spring | Summer | Autumn | Winter |
+| --- | --- | --- | --- |
+| ![FireRed & LeafGreen+ spring](frlg-spring.png?v=6d64a4e72270) | ![FireRed & LeafGreen+ summer](frlg-summer.png?v=ca459b013e21) | ![FireRed & LeafGreen+ autumn](frlg-autumn.png?v=c8cd30a95390) | ![FireRed & LeafGreen+ winter](frlg-winter.png?v=2a4c15739c2a) |
 
-**Manual Summer · Original weather**
-![Pokémon Radical Red Manual Summer · Original weather](./radical-summer.png)
+[Rain screenshot](frlg-rain.png?v=6dd07965d794) · [Snow screenshot](frlg-snow.png?v=e1d0ad3b6188) · [Fog screenshot](frlg-fog.png?v=5da273ad6f23)
 
-**Manual Autumn · Original weather**
-![Pokémon Radical Red Manual Autumn · Original weather](./radical-autumn.png)
+![FireRed & LeafGreen+ battle capture](frlg-battle.png?v=b298c259ecfa)
 
-**Manual Winter · Original weather**
-![Pokémon Radical Red Manual Winter · Original weather](./radical-winter.png)
+Source: `e83efae5ffad851b41246e88636ef9cc61e062ba`.
 
-**Battle and companion interface**
-![Pokémon Radical Red Battle and companion interface](./radical-battle.png)
+## Let’s Go Pikachu
 
-## Pokémon Unbound
+[Build and test scope](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/android-climate.html).
 
-![Pokémon Unbound gameplay](./unbound-motion.gif)
+More scenery — 2D / 3D
 
-**2D view — same player position**
-![Pokémon Unbound 2D view — same player position](./unbound-2d.png)
+| 2D | 3D |
+| --- | --- |
+| ![Let’s Go Pikachu 2d](letsgo-2d.png?v=96c72a04ded2) | ![Let’s Go Pikachu 3d](letsgo-3d.png?v=0170139bff59) |
 
-**Voxel 3D view — same player position**
-![Pokémon Unbound Voxel 3D view — same player position](./unbound-3d.png)
+Seasons
 
-**Manual Spring · Original weather**
-![Pokémon Unbound Manual Spring · Original weather](./unbound-spring.png)
+| Spring | Summer | Autumn | Winter |
+| --- | --- | --- | --- |
+| ![Let’s Go Pikachu spring](letsgo-spring.png?v=61eb7acc554d) | ![Let’s Go Pikachu summer](letsgo-summer.png?v=98d2ebb89ee5) | ![Let’s Go Pikachu autumn](letsgo-autumn.png?v=9f5dc2340e0c) | ![Let’s Go Pikachu winter](letsgo-winter.png?v=ada17071fa0a) |
 
-**Manual Summer · Original weather**
-![Pokémon Unbound Manual Summer · Original weather](./unbound-summer.png)
+[Rain screenshot](letsgo-rain.png?v=6c400c1b3e79) · [Snow screenshot](letsgo-snow.png?v=0631ee55a936) · [Fog screenshot](letsgo-fog.png?v=80008963f6c1)
 
-**Manual Autumn · Original weather**
-![Pokémon Unbound Manual Autumn · Original weather](./unbound-autumn.png)
+![Let’s Go Pikachu battle capture](letsgo-battle.png?v=b368470e7f0f)
 
-**Manual Winter · Original weather**
-![Pokémon Unbound Manual Winter · Original weather](./unbound-winter.png)
+Source: `3709641e534ce5fb01fd9cfa9827734e7759e91a`.
 
-**Battle and companion interface**
-![Pokémon Unbound Battle and companion interface](./unbound-battle.png)
+## Radical Red
+
+[Build and test scope](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/android-climate.html).
+
+More scenery — 2D / 3D
+
+| 2D | 3D |
+| --- | --- |
+| ![Radical Red 2d](radical-2d.png?v=32ae38650b31) | ![Radical Red 3d](radical-3d.png?v=c92c31a963a9) |
+
+Seasons
+
+| Spring | Summer | Autumn | Winter |
+| --- | --- | --- | --- |
+| ![Radical Red spring](radical-spring.png?v=eee5d6e31f90) | ![Radical Red summer](radical-summer.png?v=3973e67f7589) | ![Radical Red autumn](radical-autumn.png?v=13624921f674) | ![Radical Red winter](radical-winter.png?v=d5c62dffdc54) |
+
+[Rain screenshot](radical-rain.png?v=c3f695f8ae83) · [Snow screenshot](radical-snow.png?v=b6b24343f3c1) · [Fog screenshot](radical-fog.png?v=db370d8718b0)
+
+![Radical Red battle capture](radical-battle.png?v=42cdfcb4633b)
+
+Source: `3709641e534ce5fb01fd9cfa9827734e7759e91a`.
+
+## Unbound
+
+[Build and test scope](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/android-climate.html).
+
+More scenery — 2D / 3D
+
+| 2D | 3D |
+| --- | --- |
+| ![Unbound 2d](unbound-2d.png?v=fc4c631989f3) | ![Unbound 3d](unbound-3d.png?v=9d6aa7b19818) |
+
+Seasons
+
+| Spring | Summer | Autumn | Winter |
+| --- | --- | --- | --- |
+| ![Unbound spring](unbound-spring.png?v=276f84b4481e) | ![Unbound summer](unbound-summer.png?v=9b18040d12a5) | ![Unbound autumn](unbound-autumn.png?v=6d18704370bd) | ![Unbound winter](unbound-winter.png?v=8de2fd99904a) |
+
+[Rain screenshot](unbound-rain.png?v=711dd749bea0) · [Snow screenshot](unbound-snow.png?v=ddc871831dc0) · [Fog screenshot](unbound-fog.png?v=1c327d4a23e8)
+
+![Unbound battle capture](unbound-battle.png?v=30e687c7bd14)
+
+Source: `3709641e534ce5fb01fd9cfa9827734e7759e91a`.
+
+[Capture hashes and build references](manifest.json).

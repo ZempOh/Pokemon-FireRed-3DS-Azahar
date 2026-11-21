@@ -796,3 +796,21 @@ steady-gameplay thresholds remain unchanged. Unit tests cover a late first UI
 callback and the reserve/quiet-window boundaries. This is a startup latency
 tradeoff requiring fresh cold-start, input, UI and sustained Thor checks, not
 an inherited pass or a fix for an unrelated gameplay pacing failure.
+
+Patch43 passed ten Fakemon and ten Rocket cold starts without application or
+endpoint underruns, and Radical Red passed all five timing phases, including
+the 180-second active battle/return test. Full-size winter review then exposed
+Unbound's custom plant-base ground still green in Dresco. Candidate43 remains
+blocked despite those timing results. Inspect full-size mixed-material edges,
+not just the building silhouette or reduced contact sheets, before long tests.
+
+Patch44 reuses the source-palette mask pipeline for 90 reviewed Unbound cells.
+Grass palette indices 2/3/4 are traced from its own source ground cell; explicit
+masks preserve water, plant bodies, bark, roofs, fences and signs. Exact source
+artwork matching registers 437 mixed cells across that ROM's tileset pairs,
+plus three full secondary ground cells and three full primary ground cells.
+Two ambiguous source cells stay excluded. Tests protect a plant body, roof
+slope and wooden sign against recoloring. Atlas images and ROM pixels remain
+private; public data contains identities, masks and evidence hashes. Verify
+Dresco winter at full size and the bridge boundary on the new exact APK before
+repeating all-game qualification. Startup and timing passes are not inherited.

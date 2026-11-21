@@ -26,6 +26,18 @@ class SecondaryLandTests(unittest.TestCase):
   cell=next(x for x in group['cells'] if x['id']==0x282)
   cell['rows'][15]=65535
   with self.assertRaises(AssertionError):validate_land_masks(caps,MASKS)
+ def test_unbound_dresco_ground_preserves_plants_and_roofs(self):
+  cap=next(p for p in CAPS if p['game']=='unbound')
+  group=next(g for g in cap['secondary_land_masks'] if int(g['secondary'],16)==0x82d4af4)
+  cells={c['id']:c['rows'] for c in group['cells']}
+  self.assertTrue(cells[0x2f8][15]&1) # ground beside the plant base
+  self.assertFalse(cells[0x2f8][8]&(1<<8)) # plant body
+  self.assertTrue(cells[0x2d1][0]&1) # grass above the roof slope
+  self.assertFalse(cells[0x2d1][15]&(1<<8)) # roof itself
+  self.assertFalse(cells[3][8]&(1<<8)) # wooden sign
+  self.assertNotIn(0x348,cells) # ambiguous material is not guessed
+  land=next(g for g in cap['secondary_land'] if int(g['secondary'],16)==0x82d4af4)
+  self.assertEqual(set(land['ids']),{0x298,0x29f,0x2ca})
  def test_source_mask_respects_overlay_transparency_and_flips(self):
   class Art:
    primary=0;secondary=24;numbers=dict(metatiles=640,size=16)

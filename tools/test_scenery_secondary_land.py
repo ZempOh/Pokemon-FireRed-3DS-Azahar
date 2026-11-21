@@ -9,6 +9,18 @@ PROOF=json.loads((ROOT/'android-secondary-land-review.json').read_text())
 MASKS=json.loads((ROOT/'android-land-mask-review.json').read_text())
 
 class SecondaryLandTests(unittest.TestCase):
+ def test_lazarus_acrisia_ground_preserves_posts_and_facade(self):
+  cap=next(p for p in CAPS if p['game']=='lazarus')
+  group=next(g for g in cap['secondary_land_masks'] if int(g['secondary'],16)==0x8e3e92c)
+  cells={c['id']:c['rows'] for c in group['cells']}
+  self.assertTrue(cells[0x248][8]&(1<<8))
+  self.assertFalse(cells[0x248][8]&(1<<2))
+  self.assertTrue(cells[0x249][8]&(1<<2))
+  self.assertFalse(cells[0x249][8]&(1<<13))
+  self.assertEqual(cells[0x216][0],0) # Overhanging facade trim.
+  self.assertEqual(cells[0x216][15],65535)
+  self.assertTrue(any(0x26c in g['ids'] for g in cap['secondary_land']))
+  self.assertNotIn(0x240,cells);self.assertNotIn(0x241,cells)
  def test_odyssey_paving_excludes_adjacent_walls_and_stairs(self):
   cap=next(p for p in CAPS if p['game']=='odyssey')
   ids=set(next(g for g in cap['land'] if int(g['primary'],16)==0x82d4a94)['ids'])

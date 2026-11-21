@@ -960,3 +960,18 @@ shared palette colors can belong to structures. Output PNGs stay private, and
 the tool never sets approval or Thor qualification. Fixture map atlases now keep
 coordinates in a JSON sidecar and show only tile IDs on each cell, avoiding
 ambiguous overlapping labels. They honor the game's configured metatile mask.
+
+Exact56 corrected Let Go's path corners and Odyssey's paving. Lazarus's lamp,
+shrub and sign footprints improved, but its facade-post cells0x248/0x249 still
+showed ground in winter, so that APK is also rejected. A map-wide review now
+registers17 additional mixed masks and one full ground cell in Acrisia. The
+overhanging trim on0x216 and posts on0x248/0x249 stay untouched. Twelve foliage
+cells share the reference palette and were explicitly excluded from this ground
+approval. See `lazarus-acrisia-ground-proof.json`; fresh Thor review is required.
+
+Use `scenery_ground_coverage.py` with `--workspace`, `--game`, `--group`, `--map`,
+`--reference` and `--output` to inspect all used cells around a failure in one
+pass. It subtracts already registered full ground and masks, then produces
+unapproved source/preview pairs with exact ROM and map hashes. It deliberately
+does not treat shared palette colors as semantic proof. Review structures and
+foliage separately, preserve exclusions, and still check the final Thor image.

@@ -51,7 +51,8 @@
     "better-plaza:0x2ea",
     "better-plaza:0x2f0",
     "better-plaza:0x2f1",
-    "better-plaza:0x2f2"
+    "better-plaza:0x2f2",
+    "lazarus-acrisia:0x26c"
   ],
   "targets": [
     {
@@ -817,6 +818,22 @@
       ],
       "source_review_sha256": "091f9c6f26dbe9849d9f43c948e1e95c792a9f83797c2a63bee023e1dfab78fb",
       "scope": "Complete pale path family: nine reviewed cells plus one identical flat center in another tileset; no decorative walls or vegetation"
+    },
+    {
+      "game": "lazarus",
+      "rom_crc32": "558ae42f",
+      "rom_sha256": "d756b2783dede0bb2c534d1f07713bef733cf53500388e3912f14220a7e16e97",
+      "primary": "0x8e3e21c",
+      "secondary": "0x8e3e92c",
+      "source_review_sha256": "914c274f423063392cd2d57ee7a3d32b26c4f2f9f7c0584a326343eabda75e5e",
+      "reviewed": true,
+      "cells": [
+        {
+          "id": 620,
+          "reference_id": "lazarus-acrisia:0x26c",
+          "rgba_sha256": "60b28e2a5d7a6f2d24fa77a6ddb1d08d928d374ada5a8defc5d7f4b017f6c742"
+        }
+      ]
     }
   ],
   "scope": "Full visible-ground cells only, verified against source palette-index masks. Supersedes the coarse patch33 list; mixed structures are masked separately.",

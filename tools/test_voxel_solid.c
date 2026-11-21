@@ -219,9 +219,12 @@ int main(void) {
         enum {W=128,H=128,N=W*H};
         uint32_t guarded[N+2],depth[N],floor[N];uint8_t rises[64]={0};
         struct SceneryBuildingProfile profile={0};profile.width=5;profile.height=5;
-        profile.shape=(SceneryBuildingShape){80,80,16,32,56,12,8,48,80,0,.5f,24,56};
+        profile.shape=(SceneryBuildingShape){80,80,16,32,56,12,8,48,80,0,.5f,24,56,5,75,78};
         static struct SolidBuilding building;building.profile=&profile;building.rise=0;
         for(int i=0;i<80*80;i++)building.art[i]=i/80<48?0xff3030c0:0xffb8c8d0;
+        /* Red padding stands in for grass around the source facade. */
+        for(int y=48;y<80;y++)for(int x=0;x<80;x++)
+            if(x<5||x>=75||y>=78)building.art[y*80+x]=0xff0000ff;
         struct VoxelView view={guarded+1,depth,floor,W,H,40,40,-24,-64,8,8,W,rises};
         for(int kind=0;kind<3;kind++)for(int pass=0;pass<3;pass++) {
             profile.shape.roofKind=kind;
@@ -231,6 +234,7 @@ int main(void) {
             solidBuildingDraw(&view,&building);
             unsigned changed=0;for(int i=0;i<N;i++)changed+=guarded[i+1]!=0xff508050;
             assert(pass==2?changed==0:changed>20);
+            for(int i=0;i<N;i++)assert(guarded[i+1]&0x0000ff00); /* no red padding */
             assert(guarded[0]==0x12345678&&guarded[N+1]==0x12345678);
         }
     }

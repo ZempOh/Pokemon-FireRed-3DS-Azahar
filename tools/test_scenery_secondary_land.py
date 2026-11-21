@@ -9,6 +9,18 @@ PROOF=json.loads((ROOT/'android-secondary-land-review.json').read_text())
 MASKS=json.loads((ROOT/'android-land-mask-review.json').read_text())
 
 class SecondaryLandTests(unittest.TestCase):
+ def test_better_plaza_preserves_lamps_fountain_water_and_sign(self):
+  cap=next(p for p in CAPS if p['game']=='better-emerald-2')
+  land=next(g for g in cap['secondary_land'] if int(g['secondary'],16)==0x83df734)
+  self.assertTrue({0x2bb,0x2e0,0x2e1,0x2e2,0x2e8,0x2ea,0x2f0,0x2f1,0x2f2}<=set(land['ids']))
+  group=next(g for g in cap['secondary_land_masks'] if int(g['secondary'],16)==0x83df734)
+  cells={c['id']:c['rows'] for c in group['cells']}
+  self.assertTrue(cells[0x212][0]&1) # Ground left of the lamp.
+  self.assertFalse(cells[0x212][8]&(1<<8)) # Lamp remains visible.
+  self.assertTrue(cells[0x338][0]&1) # Ground outside fountain corner.
+  self.assertFalse(cells[0x338][15]&(1<<15)) # Fountain basin stays water/stone.
+  for mid in (0x2e9,0x341):
+   self.assertNotIn(mid,land['ids']);self.assertNotIn(mid,cells)
  def test_better_town_path_covers_every_edge_without_decorative_walls(self):
   cap=next(p for p in CAPS if p['game']=='better-emerald-2')
   land=next(g for g in cap['secondary_land'] if int(g['secondary'],16)==0x83df734)

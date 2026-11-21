@@ -42,7 +42,16 @@
     "better-emerald-2:300",
     "better-emerald-2:301",
     "better-emerald-2:302",
-    "better-emerald-2:30a"
+    "better-emerald-2:30a",
+    "better-plaza:0x2bb",
+    "better-plaza:0x2e0",
+    "better-plaza:0x2e1",
+    "better-plaza:0x2e2",
+    "better-plaza:0x2e8",
+    "better-plaza:0x2ea",
+    "better-plaza:0x2f0",
+    "better-plaza:0x2f1",
+    "better-plaza:0x2f2"
   ],
   "targets": [
     {
@@ -742,6 +751,51 @@
           "id": 778,
           "reference_id": "better-emerald-2:30a",
           "rgba_sha256": "65c366830cae712d790a7778a59f2f677e3a72d0f92bbfa30f6d940ce960acae"
+        },
+        {
+          "id": 699,
+          "reference_id": "better-plaza:0x2bb",
+          "rgba_sha256": "224dbe4389679f4727ea8885900f3412351a7fe5dba52e3616a5c8ff3eec83b3"
+        },
+        {
+          "id": 736,
+          "reference_id": "better-plaza:0x2e0",
+          "rgba_sha256": "24534e32c45e537ca3a213bc3afb0b8fba889772c95e9c861b7cbf1730b2496e"
+        },
+        {
+          "id": 737,
+          "reference_id": "better-plaza:0x2e1",
+          "rgba_sha256": "4f8c08f7eb1efd1effc7809a95c4f6296c1830997ebe2f7e1b46fdcbd3e1efe1"
+        },
+        {
+          "id": 738,
+          "reference_id": "better-plaza:0x2e2",
+          "rgba_sha256": "971a38459a8b6a8663885d65a00de3a5e73a8dd41d9ab11f38c4270194f12845"
+        },
+        {
+          "id": 744,
+          "reference_id": "better-plaza:0x2e8",
+          "rgba_sha256": "9ba23ead5c7098c61e679a1dad29b214f783c0e49cee0875e77b7f64cde5f6b7"
+        },
+        {
+          "id": 746,
+          "reference_id": "better-plaza:0x2ea",
+          "rgba_sha256": "665e3b3d77d6c6638ad83f875661ae4f8e9f4c4ac39256d9a625723e5237dd8a"
+        },
+        {
+          "id": 752,
+          "reference_id": "better-plaza:0x2f0",
+          "rgba_sha256": "8bd4d178a1291f250709b65d42d2c760e5d18484abca1515c0ba18f9ffbb3798"
+        },
+        {
+          "id": 753,
+          "reference_id": "better-plaza:0x2f1",
+          "rgba_sha256": "466f07f661457642225d49f9aa1ec452014856eba05518a4b5226ce00bac9cf7"
+        },
+        {
+          "id": 754,
+          "reference_id": "better-plaza:0x2f2",
+          "rgba_sha256": "28c6c3b4f5ccf5696e98f8ef6b381b76730b17260017ba5f2f825246c82fb0ee"
         }
       ],
       "source_review_sha256": "091f9c6f26dbe9849d9f43c948e1e95c792a9f83797c2a63bee023e1dfab78fb",

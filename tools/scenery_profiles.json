@@ -114,7 +114,7 @@
       ],
       "rom_crc32": "2be557a3",
       "rom_sha256": "8025d00d96a801387fe7c234475c9662b6bcf771ffaa55a29502c919238b039b",
-      "notes": "Accepted archived sequel; source-art transfer verified in better-archive-source-proof.json. Exact52/53 corrected labels and houses but failed partial winter path edges. Complete nine-cell family plus an identical center is recorded in better-archive-town-path-proof.json; fresh Thor qualification required. Previous invalid patch remains rejected."
+      "notes": "Accepted archived sequel; source-art transfer verified in better-archive-source-proof.json. Exact52/53 failed path edges; exact54 fixed those but wider Thor pilots exposed the beige plaza. Complete path proof plus nine full plaza cells and ten mixed masks are recorded in better-archive-town-path-proof.json and better-archive-plaza-proof.json. Sign and fountain water are excluded. Fresh Thor qualification required; previous invalid patch and exact-build visual failures remain rejected."
     },
     "modern-emerald": {
       "repo": "pokedaisy",

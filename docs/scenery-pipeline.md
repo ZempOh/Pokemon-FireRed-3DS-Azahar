@@ -924,3 +924,20 @@ pixels beneath Unbound's doorway on source row62. Patch48 excludes both
 bottom grass rows62/63. The audited cropped facades now contain no pixels
 from their explicit source ground materials. The intermediate APK remains
 unqualified; this pre-device correction avoids another long rejected retest.
+
+Exact54 fixed the archived Better Emerald town's pale path family, but the wider
+north/south Thor pilots exposed a separate beige plaza around its fountain. That
+APK is rejected and its captures are retained. Patch54 adds nine reviewed full
+plaza cells and ten pixel masks for paving around lamps and the fountain. The
+sign at 0x2e9 lies inside the apparent path atlas rectangle and is explicitly
+excluded; 0x341 contains fountain water and is excluded too. Never infer a whole
+rectangular tile family from its corners. Review every source cell and adjacent
+material family before device timing, including mixed-material footprints.
+The source preview and exact-ROM hashes are recorded in
+`tools/scenery-profiles/better-archive-plaza-proof.json`. Regression checks protect
+lamp and fountain pixels. This correction has no Thor qualification yet.
+
+The private QA queue now routes Rocket Cut through its actual Leto NPC sequence,
+not the unused retail HM script. The helper checks its queue ownership before
+device input; earlier diagnostic probes remain retained. Public media remains
+paired screenshots only; private interaction recordings contain no new GIFs.

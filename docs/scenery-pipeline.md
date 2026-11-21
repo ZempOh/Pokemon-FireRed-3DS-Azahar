@@ -999,6 +999,14 @@ scope. Reuse the shared input resolver, map/cell/building review tools and
 recorded proofs instead of repeating source discovery. Runtime source stays
 frozen during device capture; later fixes are prepared in isolated staging.
 
+Native Android indoor proposals now reuse reviewed geometry only after exact
+foreground RGBA matches and full source/foreground review. Twelve observed plant
+pairs across Classic, FireRed and FRLG+ preserve their own floor layers. Classic's
+top foreground is layer2; record `top_layer`/`bottom_layer` explicitly. The
+generator rejects camelCase aliases to prevent silently reading background art.
+Patch59 adds these profiles to the isolated adapter branch; no Android Thor pass
+is implied. Wider indoor recognition and all device gates remain pending.
+
 The graphics/native-android-adapters branch assembles an initial diagnostic
 Android adapter for Classic, FRLG+ and retail FireRed. It adds own-source Pallet
 ground/buildings, flowers/shrubs, complete tree patterns and interactive-object

@@ -188,6 +188,7 @@ def generate(profiles, plants, output):
     lines=['// Generated from verified local ROM profiles; no ROM textures.','#pragma once','struct SolidPlantProfile { uint32_t rom,primary,secondary; uint16_t top,bottom; uint8_t shape,height,width,centerX2,foot,ink[12],topLayer,bottomLayer; };','static const struct SolidPlantProfile solidPlantProfiles[] = {']
     seen=set()
     for p in plants:
+        assert not {'topLayer','bottomLayer'} & p.keys(), 'Plant profiles require top_layer/bottom_layer; camelCase would silently select the wrong layer'
         key=(crc(p),int(p['primary'],16),int(p.get('secondary','0'),16),p['top'],p['bottom'])
         if key in seen:raise ValueError('Duplicate plant profile')
         seen.add(key)

@@ -9,6 +9,13 @@ PROOF=json.loads((ROOT/'android-secondary-land-review.json').read_text())
 MASKS=json.loads((ROOT/'android-land-mask-review.json').read_text())
 
 class SecondaryLandTests(unittest.TestCase):
+ def test_plant_layer_alias_cannot_silently_select_background(self):
+  plant=next(p for p in json.loads((ROOT/'android-potted-plants.json').read_text()) if p['game']=='classic')
+  self.assertEqual(plant['top_layer'],2)
+  bad=copy.deepcopy(plant);bad['topLayer']=bad.pop('top_layer')
+  with tempfile.TemporaryDirectory() as folder:
+   with self.assertRaisesRegex(AssertionError,'top_layer/bottom_layer'):
+    generate(CAPS,[bad],Path(folder))
  def test_odyssey_tree_shadow_ground_preserves_trunk(self):
   cap=next(p for p in CAPS if p['game']=='odyssey')
   groups=[g for g in cap['secondary_land_masks'] if any(c['id'] in (64,65) for c in g['cells'])]

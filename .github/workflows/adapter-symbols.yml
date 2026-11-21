@@ -19,7 +19,7 @@ jobs:
       - name: Build pinned source and verify exact user revision
         run: |
           python3 - <<'PY'
-          import json,subprocess,pathlib,hashlib
+          import json,subprocess,pathlib,hashlib,os
           row=json.loads(pathlib.Path('tools/adapter-source-builds.json').read_text())['frlgplus']
           def run(*args,cwd=None): subprocess.run(args,cwd=cwd,check=True)
           run('git','init','build/source')
@@ -42,7 +42,7 @@ jobs:
           pathlib.Path('symbol-output').mkdir()
           pathlib.Path('symbol-output/provenance.json').write_text(json.dumps(dict(row,built_sha256=actual,exact_revision_match=actual==row['sha256'],source_path_alias='SeviiIslands5 -> seviiislands5'),indent=2))
           with open('symbol-output/symbols.txt','w') as out:
-              subprocess.run(['arm-none-eabi-nm','-S','--defined-only',str(rom.with_suffix('.elf'))],stdout=out,check=True)
+              subprocess.run([str(pathlib.Path(os.environ['DEVKITARM'])/'bin/arm-none-eabi-nm'),'-S','--defined-only',str(rom.with_suffix('.elf'))],stdout=out,check=True)
           data=rom.read_bytes();ranges=[]
           for line in pathlib.Path('symbol-output/symbols.txt').read_text().splitlines():
               parts=line.split()

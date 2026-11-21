@@ -39,9 +39,9 @@ jobs:
           key: pokedaisy-voxel-preview-signing-v1
       - name: Prepare explicit preview signing key
         run: |
-          mkdir -p "$HOME/.android"
           if [ ! -f "$HOME/.android/debug.keystore" ]; then
-            keytool -genkeypair -keystore "$HOME/.android/debug.keystore" -storepass android -keypass android -alias androiddebugkey -dname "CN=Android Debug,O=Android,C=US" -keyalg RSA -keysize 2048 -validity 10000
+            echo "::error::Existing preview signing identity unavailable. Build on graphics/pokedaisy-upgrade; do not generate a replacement key or uninstall the user's app."
+            exit 1
           fi
           echo "POKEDAISY_PREVIEW_KEYSTORE=$HOME/.android/debug.keystore" >> "$GITHUB_ENV"
       - uses: android-actions/setup-android@9fc6c4e9069bf8d3d10b2204b1fb8f6ef7065407

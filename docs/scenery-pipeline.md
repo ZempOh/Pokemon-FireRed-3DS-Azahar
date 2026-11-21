@@ -999,6 +999,14 @@ scope. Reuse the shared input resolver, map/cell/building review tools and
 recorded proofs instead of repeating source discovery. Runtime source stays
 frozen during device capture; later fixes are prepared in isolated staging.
 
+Native adapter60 compiled but could not update the Thor installation: its
+isolated branch generated a different signing key. GitHub Actions caches are
+branch-scoped; sibling branches cannot restore the established upgrade branch's
+key. Integrate reviewed adapters into `graphics/pokedaisy-upgrade` for installable
+diagnostics. The workflow now fails if its signing key is absent instead of
+creating an incompatible replacement. Preserve both APK identities and failed
+installation evidence; never uninstall user data to bypass a signing mismatch.
+
 Native Android indoor proposals now reuse reviewed geometry only after exact
 foreground RGBA matches and full source/foreground review. Twelve observed plant
 pairs across Classic, FireRed and FRLG+ preserve their own floor layers. Classic's

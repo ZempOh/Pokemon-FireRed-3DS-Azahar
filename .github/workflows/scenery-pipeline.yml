@@ -15,6 +15,7 @@ jobs:
         with:
           python-version: '3.12'
       - run: python tools/tests/test_scenery_pipeline.py
+      - run: python tools/tests/test_scenery_inputs.py
       - run: python tools/tests/test_scenery_transfer.py
       - run: python tools/tests/test_scenery_object_variants.py
       - run: python tools/test_scenery_interaction_candidates.py

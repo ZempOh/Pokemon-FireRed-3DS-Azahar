@@ -9,14 +9,14 @@ from PIL import Image
 from scenery_inventory import MapArt
 from scenery_material_masks import visible_palette_indices
 from scenery_buildings import validate
+from scenery_inputs import resolve_input
 
 def audit(workspace,profiles):
  validate(profiles);results=[]
  for profile in profiles:
   if 'wall_crop_review' not in profile:continue
   game=profile['game'];shape=profile['shape']
-  inventory=json.loads((workspace/'scenery-completion/all-game-inventory'/game/'inventory.json').read_text())
-  rom=workspace/'solid-rollout'/('' if game in ('letsgo','radical','unbound') else 'expansion')/(game+'.gba')
+  rom,inventory=resolve_input(workspace,game,profile['rom_sha256'])
   art=MapArt(rom)
   assert hashlib.sha256(art.data).hexdigest()==profile['rom_sha256']==inventory['rom_sha256']
   art.setup(inventory['numbers'],int(profile['primary'],16),int(profile['secondary'],16))

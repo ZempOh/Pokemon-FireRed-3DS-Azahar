@@ -86,6 +86,19 @@ shared shape. These profiles establish recognition, not complete scenery coverag
   cannot inherit a pass. Regenerate the exact-version companion overlay: gender
   ratios and growth rates differ. The invalid `70823957` patch output remains
   rejected in historical evidence and is no longer the active supported identity.
+  Exact candidate `7fdff4a` connected and defeated a wild Lumitel on the Thor,
+  but its companion still labeled the archive's Route 212 as retail Route 115.
+  The generator now accepts an explicit map-section table (213 entries at
+  `0x085a147c` for this archive), with pointer and string-boundary checks.
+  Entry 211 points into unrelated dialogue and is explicitly shown as unknown.
+  The own-source town-house profile also excludes grass from its wall texture;
+  full-size device review remains required. These changes do not certify the
+  game or supersede the last passing public build.
+- `tools/scenery_inputs.py` resolves optional private revision overrides from
+  `WORK/scenery-completion/rom-inputs.json`, verifies the ROM against both its
+  inventory and requested profile, and leaves historical inputs intact. Use
+  this resolver for revision-specific source audits instead of renaming ROMs
+  or rewriting old evidence to match a new version.
 - Missing companion support is part of the expanded rollout, together with
   per-game 2D/3D scenery, calendar seasons and naturally changing weather.
   Platform-specific adapters and exact-version profiles are required; generic

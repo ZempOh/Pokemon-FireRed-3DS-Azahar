@@ -1254,5 +1254,61 @@
       "source_art_sha256": "698ecf05f392dff4131fe7df15c55a39f2d1574e9a389e900876723749fe49d9",
       "scope": "Reviewed original facade: exclude source grass border from wall/side UV sampling; roof UVs retain their own span. Decorative facade remains source artwork."
     }
+  },
+  {
+    "game": "better-emerald-2",
+    "name": "town-house",
+    "reference": {
+      "group": 0,
+      "map": 0,
+      "x": 4,
+      "y": 16
+    },
+    "primary": "0x83df704",
+    "secondary": "0x83df734",
+    "cells": [
+      8,
+      9,
+      9,
+      10,
+      16,
+      17,
+      17,
+      18,
+      24,
+      25,
+      11,
+      26,
+      32,
+      33,
+      19,
+      34
+    ],
+    "width": 4,
+    "height": 4,
+    "source_art_sha256": "20e338ce73c09bf01c39f214020f7b177e7baa1248889462d1a92a2c7bedf8e4",
+    "reviewed": true,
+    "rom_crc32": "2be557a3",
+    "rom_sha256": "8025d00d96a801387fe7c234475c9662b6bcf771ffaa55a29502c919238b039b",
+    "ground": 1,
+    "shape": {
+      "back": 0,
+      "wall_height": 32,
+      "ridge_height": 56,
+      "roof_top": 0,
+      "wall_row": 38,
+      "roof_kind": 0,
+      "hip_inset": 8,
+      "gable_x": 0.5,
+      "gable_row": 0,
+      "wall_left": 3,
+      "wall_right": 62,
+      "wall_bottom": 64
+    },
+    "wall_crop_review": {
+      "source_art_sha256": "20e338ce73c09bf01c39f214020f7b177e7baa1248889462d1a92a2c7bedf8e4",
+      "scope": "Reviewed own archive town-house image: exclude green outer columns from facade sampling. Device render review pending."
+    },
+    "scope": "Reviewed own archive town-house source rectangle; Thor render qualification pending"
   }
 ]

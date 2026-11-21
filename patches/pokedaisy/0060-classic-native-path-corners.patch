@@ -1,0 +1,20 @@
+--- a/app/src/main/cpp/pk_scenery_candidates.h
++++ b/app/src/main/cpp/pk_scenery_candidates.h
+@@ -55,7 +55,7 @@
+     if(crc==0xf2d16ebd && primary==0x082d4a94 && (id==1 || id==8 || id==9 || id==16 || id==17 || id==190 || id==191 || id==197 || id==199 || id==205 || id==206 || id==207 || id==208 || id==209 || id==210 || id==211 || id==212 || id==213 || id==216 || id==217 || id==218 || id==219 || id==220 || id==221 || id==224 || id==225 || id==226 || id==227 || id==228 || id==229 || id==254 || id==255 || id==258 || id==259 || id==260 || id==261 || id==262 || id==263))return 1;
+     if(crc==0x14465a33 && primary==0x08a2e6ac && (id==1 || id==280 || id==281 || id==282 || id==288 || id==289 || id==290 || id==292 || id==296 || id==297 || id==298))return 1;
+     if(crc==0x6c5ee1b2 && primary==0x082d4a94 && (id==1 || id==208 || id==209 || id==210 || id==211 || id==212 || id==213 || id==216 || id==217 || id==218 || id==219 || id==220 || id==221 || id==224 || id==225 || id==226 || id==227 || id==228 || id==229 || id==254 || id==255 || id==258 || id==259 || id==260 || id==261 || id==262 || id==263 || id==354 || id==355 || id==356 || id==362 || id==363 || id==364 || id==370 || id==371 || id==372))return 1;
+-    if(crc==0xe4deb9be && primary==0x84ad600 && (id==17 || id==9))return 1;
++    if(crc==0xe4deb9be && primary==0x84ad600 && (id==8 || id==9 || id==17))return 1;
+     if(crc==0x964763c0 && primary==0x8316a4c && (id==8 || id==9 || id==17))return 1;
+     if(crc==0xdd88761c && primary==0x82d4a94 && (id==8 || id==9 || id==17))return 1;
+     return 0;
+@@ -71,7 +71,7 @@
+     if(crc==0xcec21496 && primary==0x87c0e10 && secondary==0x87c0e28 && (id==645 || id==646 || id==648 || id==652 || id==654 || id==655 || id==656 || id==661 || id==662 || id==663 || id==670 || id==671 || id==678 || id==679 || id==686 || id==687 || id==694 || id==702 || id==703 || id==710 || id==711 || id==718))return 1;
+     if(crc==0x63478921 && primary==0x82d4a94 && secondary==0x82d4aac && (id==646 || id==662))return 1;
+     if(crc==0xf2d16ebd && primary==0x82d4a94 && secondary==0x82d4aac && (id==645 || id==646 || id==648 || id==652 || id==654 || id==655 || id==656 || id==661 || id==662 || id==663 || id==670 || id==671 || id==678 || id==679 || id==686 || id==687 || id==694 || id==702 || id==703 || id==710 || id==711 || id==718))return 1;
+-    if(crc==0xe4deb9be && primary==0x84ad600 && secondary==0x84add10 && (id==662 || id==654 || id==670 || id==661 || id==663 || id==710 || id==711 || id==702 || id==703 || id==718 || id==686))return 1;
++    if(crc==0xe4deb9be && primary==0x84ad600 && secondary==0x84add10 && (id==648 || id==654 || id==655 || id==656 || id==661 || id==662 || id==663 || id==670 || id==671 || id==686 || id==694 || id==702 || id==703 || id==710 || id==711 || id==718))return 1;
+     if(crc==0x964763c0 && primary==0x8316a4c && secondary==0x8316a64 && (id==645 || id==646 || id==648 || id==652 || id==654 || id==655 || id==656 || id==661 || id==662 || id==663 || id==670 || id==671 || id==678 || id==679 || id==686 || id==687 || id==694 || id==702 || id==703 || id==710 || id==711 || id==718))return 1;
+     if(crc==0xdd88761c && primary==0x82d4a94 && secondary==0x82d4aac && (id==645 || id==646 || id==648 || id==652 || id==654 || id==655 || id==656 || id==661 || id==662 || id==663 || id==670 || id==671 || id==678 || id==679 || id==686 || id==687 || id==694 || id==702 || id==703 || id==710 || id==711 || id==718))return 1;
+     return 0;

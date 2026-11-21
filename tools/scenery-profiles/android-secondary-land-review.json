@@ -107,7 +107,12 @@
     "firered-own-ground:0x2bf",
     "firered-own-ground:0x2c6",
     "firered-own-ground:0x2c7",
-    "firered-own-ground:0x2ce"
+    "firered-own-ground:0x2ce",
+    "classic-own-ground:0x288",
+    "classic-own-ground:0x28f",
+    "classic-own-ground:0x290",
+    "classic-own-ground:0x29f",
+    "classic-own-ground:0x2b6"
   ],
   "targets": [
     {
@@ -952,8 +957,34 @@
           "id": 686,
           "reference_id": "classic-own-ground:0x2ae",
           "rgba_sha256": "566dc6963baa597edf5fef3575564a6ca7d0c717d43dfe57071b2ae1d7785131"
+        },
+        {
+          "id": 648,
+          "reference_id": "classic-own-ground:0x288",
+          "rgba_sha256": "0f634ea914f18d38f354f29c89d04c8ec0d4dcba0aa11373a3c6874f013d2d4b"
+        },
+        {
+          "id": 655,
+          "reference_id": "classic-own-ground:0x28f",
+          "rgba_sha256": "5547802fc4f51f31019c3f805f84caa542f6dbe5db267ecddf38e36d1fbba1ec"
+        },
+        {
+          "id": 656,
+          "reference_id": "classic-own-ground:0x290",
+          "rgba_sha256": "c2841d2d5714affb1b80f0c6d959a9f7f90d1b0b29126998d361ce83de1d0752"
+        },
+        {
+          "id": 671,
+          "reference_id": "classic-own-ground:0x29f",
+          "rgba_sha256": "72ab63482d176e2eb02809724c4dabebc79820fd94cedc209c7a5f2d244359ad"
+        },
+        {
+          "id": 694,
+          "reference_id": "classic-own-ground:0x2b6",
+          "rgba_sha256": "9346c93fac977e601999cb6e013f880549b8c7251a2f67031b5c044ff299d039"
         }
-      ]
+      ],
+      "additional_source_proof": "classic-android-path-corner-proof.json"
     },
     {
       "game": "frlgplus",

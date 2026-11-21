@@ -1007,6 +1007,16 @@ diagnostics. The workflow now fails if its signing key is absent instead of
 creating an incompatible replacement. Preserve both APK identities and failed
 installation evidence; never uninstall user data to bypass a signing mismatch.
 
+Exact61 installed with the established signer and booted all three native games
+in Android. Its full-size Classic winter pilot exposed uncovered path-corner
+ground. Patch60 adds six individually source-reviewed ground cells (8,288,28f,
+290,29f,2b6 in hexadecimal) while excluding signs, fences, mailboxes and trees.
+Own-source hashes are in `classic-android-path-corner-proof.json`; exact61 remains
+rejected, and the correction needs a new Thor test. FRLG+ and FireRed Pallet
+pilots showed 2D/3D changes and covered winter ground, but are partial checks.
+CI now checks the signing certificate fingerprint before compiling, preventing
+another branch's cached key from wasting a full build or blocking an update.
+
 Native Android indoor proposals now reuse reviewed geometry only after exact
 foreground RGBA matches and full source/foreground review. Twelve observed plant
 pairs across Classic, FireRed and FRLG+ preserve their own floor layers. Classic's

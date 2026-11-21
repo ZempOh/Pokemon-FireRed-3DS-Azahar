@@ -1,0 +1,45 @@
+{
+  "game": "classic",
+  "group": 6,
+  "map": 0,
+  "primary": "0x84ad600",
+  "secondary": "0x84add10",
+  "rom_crc32": "e4deb9be",
+  "rom_sha256": "4ab7b1f7fb246490d798f49db1511d197d7c72376b6347d08e7c557122c6d722",
+  "map_sha256": "5144da8763ffa94723f749399d0c4f4c3361ade82c9e0b1214add5dea6ec8f51",
+  "ground_reference": 9,
+  "palette_indices": [
+    13,
+    14
+  ],
+  "cells": [
+    {
+      "id": 8,
+      "rgba_sha256": "015e1efefe4a6149047b8805c80a939a554a15d2039fb54881b4f4bd14544402"
+    },
+    {
+      "id": 648,
+      "rgba_sha256": "0f634ea914f18d38f354f29c89d04c8ec0d4dcba0aa11373a3c6874f013d2d4b"
+    },
+    {
+      "id": 655,
+      "rgba_sha256": "5547802fc4f51f31019c3f805f84caa542f6dbe5db267ecddf38e36d1fbba1ec"
+    },
+    {
+      "id": 656,
+      "rgba_sha256": "c2841d2d5714affb1b80f0c6d959a9f7f90d1b0b29126998d361ce83de1d0752"
+    },
+    {
+      "id": 671,
+      "rgba_sha256": "72ab63482d176e2eb02809724c4dabebc79820fd94cedc209c7a5f2d244359ad"
+    },
+    {
+      "id": 694,
+      "rgba_sha256": "9346c93fac977e601999cb6e013f880549b8c7251a2f67031b5c044ff299d039"
+    }
+  ],
+  "reviewed": true,
+  "thor_qualified": false,
+  "source_review_sha256": "c9cae576c4d7e0ff790e95d45948cdaa41400dd945f4df1602eaeeed00ca6981",
+  "review_note": "Full-size exact61 Thor winter exposed path corners. Source atlas reviewed: six selected cells contain ground only. Fences, signs, mailboxes, tree foliage and trunks explicitly excluded; new Thor review required."
+}

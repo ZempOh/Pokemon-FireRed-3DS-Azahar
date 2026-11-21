@@ -726,3 +726,23 @@ telemetry, camera-edge behavior, actor occlusion, door alignment, winter and
 native-clock pacing before transferring families to other games. The closed-mesh
 test checks nondegenerate faces, shared edges, height and UV bounds; the software
 raster test checks clipping guards and foreground occlusion.
+
+The exact patch37 Thor pilot rendered all three Fakemon Pallet buildings and
+held 59.7 FPS in all 32 field samples, with zero application/endpoint underruns
+or unshown frames. Actual movement captures confirmed stable house volume.
+This is a targeted pilot, not an all-game qualification. Central-town winter
+ground was continuous, but the northern dense tree rows exposed ground pixels
+around unmatched canopy edges. Patch38 adds source-reviewed tree-edge masks:
+1,866 mixed masks overall. Preserve foliage and trunks; flowers and shrubs are
+not included in that transfer. Tests check ground and canopy pixels separately.
+
+Patch39 extends the shared mesh to front gables, including offset peaks and
+different front/back ridge heights. Eighteen exact building patterns cover
+reviewed families in the eleven eligible Android games. Lazarus's cathedral is
+three adjoining source rectangles, retaining its two wings and sloping central
+entry roof. These are source identities, not eighteen device passes or full-map
+coverage claims. The larger source capture margin needs fresh timing tests.
+Keep flat-roof machinery, roof trim and unrecognized architecture limitations
+explicit. Test doors, camera edges, actors, winter and battle returns before
+publication. The private extraction pipeline retains source rectangles and
+hashes; the public registry contains geometry, IDs and hashes, never ROM pixels.

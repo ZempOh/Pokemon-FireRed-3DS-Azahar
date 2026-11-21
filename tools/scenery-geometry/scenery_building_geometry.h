@@ -6,7 +6,8 @@ typedef void (*SceneryBuildingTriangle)(void*,const SceneryBuildingVertex*,const
 typedef struct {
     float width,depth,back,wallHeight,ridgeHeight,hipInset;
     float roofTop,wallRow,artHeight;
-    int flatRoof;
+    int roofKind; /* 0 hip, 1 flat, 2 front gable. */
+    float gableX,gableRow,ridgeBackHeight;
 } SceneryBuildingShape;
 static void SceneryBuilding_Quad(void* ctx,SceneryBuildingTriangle emit,
     SceneryBuildingVertex a,SceneryBuildingVertex b,SceneryBuildingVertex c,SceneryBuildingVertex d,unsigned shade) {
@@ -28,8 +29,20 @@ static void SceneryBuilding_Emit(void* ctx,SceneryBuildingTriangle emit,const Sc
     SceneryBuilding_Quad(ctx,emit,br,bl,rl,rr,184);
     SceneryBuilding_Quad(ctx,emit,bl,br,fr,fl,160);
     tl.v=tr.v=s->wallRow-.5f;rl.v=rr.v=s->roofTop+.5f;
-    if(s->flatRoof) {
+    if(s->roofKind==1) {
         SceneryBuilding_Quad(ctx,emit,tl,tr,rr,rl,244);
+        return;
+    }
+    if(s->roofKind==2) {
+        float peak=w*s->gableX;
+        SceneryBuildingVertex front={peak,s->ridgeHeight,f,peak,s->gableRow+.5f};
+        SceneryBuildingVertex back={peak,s->ridgeBackHeight,b,peak,s->roofTop+.5f};
+        SceneryBuilding_Quad(ctx,emit,rl,tl,front,back,216);
+        SceneryBuilding_Quad(ctx,emit,tr,rr,back,front,248);
+        emit(ctx,&tl,&tr,&front,250);
+        SceneryBuildingVertex rb=rr,lb=rl,rear=back;
+        rb.v=lb.v=s->wallRow-.5f;rear.v=s->gableRow+.5f;
+        emit(ctx,&rb,&lb,&rear,184);
         return;
     }
     float m=(b+f)*.5f;

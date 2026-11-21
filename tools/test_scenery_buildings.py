@@ -15,4 +15,12 @@ class BuildingsTest(unittest.TestCase):
   with self.assertRaises(AssertionError):validate(rows)
  def test_duplicate_identity_rejected(self):
   with self.assertRaises(AssertionError):validate(ROWS+copy.deepcopy(ROWS))
+ def test_gable_and_flat_roofs_reject_invalid_shapes(self):
+  for key,value in [('gable_x',0),('gable_row',999),('ridge_back_height',0),('ridge_back_height',float('nan'))]:
+   rows=copy.deepcopy(ROWS);row=next(r for r in rows if r['shape'].get('roof_kind')==2)
+   row['shape'][key]=value
+   with self.assertRaises(AssertionError):validate(rows)
+  rows=copy.deepcopy(ROWS);row=next(r for r in rows if r['shape'].get('flat_roof') or r['shape'].get('roof_kind')==1)
+  row['shape']['ridge_height']+=1
+  with self.assertRaises(AssertionError):validate(rows)
 if __name__=='__main__':unittest.main()

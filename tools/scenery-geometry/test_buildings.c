@@ -11,8 +11,11 @@ static void collect(void* ctx,const SceneryBuildingVertex* a,const SceneryBuildi
     float nx=uy*vz-uz*vy,ny=uz*vx-ux*vz,nz=ux*vy-uy*vx;assert(nx*nx+ny*ny+nz*nz>0);
 }
 static int same(SceneryBuildingVertex a,SceneryBuildingVertex b) {return a.x==b.x&&a.y==b.y&&a.z==b.z;}
-static void check(int flat) {
-    SceneryBuildingShape s={80,80,16,32,56,12,8,48,80,flat};count=0;SceneryBuilding_Emit(0,collect,&s);
+static void check(int kind,float peak) {
+    int flat=kind==1;
+    SceneryBuildingShape s={80,80,16,32,flat?32:56,12,8,48,80,kind,peak,24,56};
+    if(kind==2 && peak>.6f)s.ridgeHeight=48; /* Sloping ridge on compound entry roofs. */
+    count=0;SceneryBuilding_Emit(0,collect,&s);
     assert(count==(unsigned)(flat?36:48));
     float highest=0;
     for(unsigned i=0;i<count;i++) {
@@ -27,4 +30,4 @@ static void check(int flat) {
     }
     assert(highest==(flat?32:56));
 }
-int main(void) {check(0);check(1);puts("PASS closed hip/flat buildings, depth, nondegenerate faces, source UV bounds");return 0;}
+int main(void) {check(0,.5f);check(1,.5f);check(2,.5f);check(2,.65f);puts("PASS closed hip/flat/gable buildings, depth, nondegenerate faces, source UV bounds");return 0;}

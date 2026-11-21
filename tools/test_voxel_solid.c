@@ -219,11 +219,12 @@ int main(void) {
         enum {W=128,H=128,N=W*H};
         uint32_t guarded[N+2],depth[N],floor[N];uint8_t rises[64]={0};
         struct SceneryBuildingProfile profile={0};profile.width=5;profile.height=5;
-        profile.shape=(SceneryBuildingShape){80,80,16,32,56,12,8,48,80,0};
+        profile.shape=(SceneryBuildingShape){80,80,16,32,56,12,8,48,80,0,.5f,24,56};
         static struct SolidBuilding building;building.profile=&profile;building.rise=0;
         for(int i=0;i<80*80;i++)building.art[i]=i/80<48?0xff3030c0:0xffb8c8d0;
         struct VoxelView view={guarded+1,depth,floor,W,H,40,40,-24,-64,8,8,W,rises};
-        for(int pass=0;pass<3;pass++) {
+        for(int kind=0;kind<3;kind++)for(int pass=0;pass<3;pass++) {
+            profile.shape.roofKind=kind;
             guarded[0]=guarded[N+1]=0x12345678;
             for(int i=0;i<N;i++){guarded[i+1]=floor[i]=0xff508050;depth[i]=pass==2?UINT32_MAX:0;}
             building.x=pass==1?-50:0;building.y=pass==1?-50:0;

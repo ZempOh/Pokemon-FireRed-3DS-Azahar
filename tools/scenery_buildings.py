@@ -1,17 +1,26 @@
 """Emit exact-pattern building profiles without embedding source artwork."""
-import argparse,json
+import argparse,json,math
 from pathlib import Path
 
 def validate(rows):
  seen=set()
  for row in rows:
   w,h=row['width'],row['height'];shape=row['shape']
+  assert all(isinstance(v,(int,float)) and math.isfinite(v) for v in shape.values())
   assert row['reviewed'] and 1<=w<=20 and 2<=h<=10
   assert len(row['cells'])==w*h and all(0<=x<1024 for x in row['cells'])
   assert len(row['source_art_sha256'])==len(row['rom_sha256'])==64
   assert 0<=shape['roof_top']<shape['wall_row']<h*16
   assert 0<=shape['back']<h*16 and 0<shape['wall_height']<=shape['ridge_height']<=128
   assert 0<=shape['hip_inset']<w*8 and 0<=row['ground']<1024
+  kind=shape.get('roof_kind',int(shape.get('flat_roof',False)))
+  assert kind in (0,1,2)
+  if kind==1:assert shape['ridge_height']==shape['wall_height']
+  else:assert shape['ridge_height']>shape['wall_height']
+  if kind==2:
+   assert .1<=shape['gable_x']<=.9
+   assert shape['roof_top']<=shape['gable_row']<shape['wall_row']
+   assert shape['wall_height']<shape.get('ridge_back_height',shape['ridge_height'])<=128
   key=(row['rom_crc32'],row['primary'],row['secondary'],tuple(row['cells']))
   assert key not in seen;seen.add(key)
 
@@ -21,7 +30,7 @@ def generate(rows,output):
   'struct SceneryBuildingProfile { uint32_t crc,primary,secondary; unsigned char width,height; unsigned short ground; SceneryBuildingShape shape; unsigned short cells[200]; };',
   'static const struct SceneryBuildingProfile sceneryBuildings[] = {']
  for row in rows:
-  s=row['shape'];shape=[row['width']*16,row['height']*16,s['back'],s['wall_height'],s['ridge_height'],s['hip_inset'],s['roof_top'],s['wall_row'],row['height']*16,int(s.get('flat_roof',False))]
+  s=row['shape'];shape=[row['width']*16,row['height']*16,s['back'],s['wall_height'],s['ridge_height'],s['hip_inset'],s['roof_top'],s['wall_row'],row['height']*16,s.get('roof_kind',int(s.get('flat_roof',False))),s.get('gable_x',.5),s.get('gable_row',s['roof_top']),s.get('ridge_back_height',s['ridge_height'])]
   lines.append(' {0x%s,%s,%s,%d,%d,%d,{%s},{%s}},'%(row['rom_crc32'],row['primary'],row['secondary'],row['width'],row['height'],row['ground'],','.join(map(str,shape)),','.join(map(str,row['cells']))))
  lines+=['};']
  output.write_text('\n'.join(lines)+'\n')

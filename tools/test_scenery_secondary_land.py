@@ -39,6 +39,11 @@ class SecondaryLandTests(unittest.TestCase):
  def test_missing_evidence_rejected(self):
   proof=copy.deepcopy(PROOF);proof['targets'][0]['cells'].pop()
   with self.assertRaises(AssertionError):validate_secondary_land(CAPS,proof)
+ def test_tree_edge_mask_preserves_canopy(self):
+  cap=next(p for p in CAPS if p['game']=='fakemon')
+  cell=next(c for g in cap['secondary_land_masks'] if int(g['secondary'],16)==0x82d4aac for c in g['cells'] if c['id']==0xe)
+  self.assertTrue(cell['rows'][0]&1)
+  self.assertFalse(cell['rows'][15]&(1<<15))
  def test_wrong_tileset_rejected(self):
   proof=copy.deepcopy(PROOF);proof['targets'][0]['secondary']='0x08000000'
   with self.assertRaises(AssertionError):validate_secondary_land(CAPS,proof)

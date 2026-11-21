@@ -9,6 +9,23 @@ PROOF=json.loads((ROOT/'android-secondary-land-review.json').read_text())
 MASKS=json.loads((ROOT/'android-land-mask-review.json').read_text())
 
 class SecondaryLandTests(unittest.TestCase):
+ def test_odyssey_paving_excludes_adjacent_walls_and_stairs(self):
+  cap=next(p for p in CAPS if p['game']=='odyssey')
+  ids=set(next(g for g in cap['land'] if int(g['primary'],16)==0x82d4a94)['ids'])
+  self.assertTrue({0x162,0x163,0x164,0x16a,0x16b,0x16c,0x172,0x173,0x174}<=ids)
+  self.assertFalse(ids&{0x161,0x165,0x169,0x16d,0x171,0x175})
+ def test_letsgo_diagonal_ground_excludes_adjacent_water_and_rock(self):
+  cap=next(p for p in CAPS if p['game']=='letsgo')
+  ids=set(next(g for g in cap['land'] if int(g['primary'],16)==0x82d4a94)['ids'])
+  self.assertTrue({0x1d5,0x1d6,0x1d7,0x1dc,0x1dd,0x1de,0x1df}<=ids)
+  self.assertFalse(ids&{0x1d0,0x1d1,0x1d2,0x1d3,0x1d4,0x1d8,0x1d9,0x1da,0x1db})
+ def test_lazarus_footprints_preserve_lamp_and_sign(self):
+  cap=next(p for p in CAPS if p['game']=='lazarus')
+  cells={c['id']:c['rows'] for g in cap['secondary_land_masks'] if int(g['secondary'],16)==0x8e3e92c for c in g['cells']}
+  self.assertTrue(cells[0x1b][0]&1)
+  self.assertFalse(cells[0x1b][8]&(1<<8))
+  self.assertTrue(cells[0x66][15]&1)
+  self.assertFalse(cells[0x66][8]&(1<<8))
  def test_better_plaza_preserves_lamps_fountain_water_and_sign(self):
   cap=next(p for p in CAPS if p['game']=='better-emerald-2')
   land=next(g for g in cap['secondary_land'] if int(g['secondary'],16)==0x83df734)

@@ -941,3 +941,22 @@ The private QA queue now routes Rocket Cut through its actual Leto NPC sequence,
 not the unused retail HM script. The helper checks its queue ownership before
 device input; earlier diagnostic probes remain retained. Public media remains
 paired screenshots only; private interaction recordings contain no new GIFs.
+
+Exact55 passed the archived Better town's three full-size ground pilots and five
+pacing phases, but is rejected: Let Go's Pallet diagonal path corners remained
+yellow in winter. Wider full-size reviews also found Lazarus lamp/shrub/sign
+footprints and Odyssey paving outside the ground registry. Patch55 registers
+seven Let Go ground cells, seven Lazarus mixed masks scoped to Acrisia's tileset,
+and nine Odyssey paving cells. Adjacent water, rocks, walls and stairs stay
+excluded. The three source-proof JSON files record exact ROM and cell hashes;
+these corrections still require new exact-APK Thor reviews. Earlier captures
+and failures remain intact; Better's timing success does not override rejection.
+
+For future source reviews, use `tools/scenery_cell_review.py --workspace work
+--game GAME --primary ADDRESS --secondary ADDRESS --ids ID ... --output PREFIX`.
+Optional `--ground-reference ID` proposes pixel masks from the reference cell's
+visible palette. Review every cell and preview manually before registration;
+shared palette colors can belong to structures. Output PNGs stay private, and
+the tool never sets approval or Thor qualification. Fixture map atlases now keep
+coordinates in a JSON sidecar and show only tile IDs on each cell, avoiding
+ambiguous overlapping labels. They honor the game's configured metatile mask.

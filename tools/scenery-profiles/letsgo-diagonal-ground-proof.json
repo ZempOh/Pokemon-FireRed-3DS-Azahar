@@ -1,0 +1,96 @@
+{
+  "game": "letsgo",
+  "rom_crc32": "25c3d89f",
+  "rom_sha256": "ffb57f40fa4be71707fec0d36b0356220edc9b30648c31641d2b97118d792282",
+  "primary": "0x82d4a94",
+  "secondary": "0x82d4aac",
+  "cells": [
+    {
+      "id": 464,
+      "rgba_sha256": "01b32efb08de6a5ccb97286d98278c2525698016fce8a1d86ad14a33d076e768"
+    },
+    {
+      "id": 465,
+      "rgba_sha256": "b5bc5b926eb71596388844f48697e7c167feb1afa747343a3a32f86187810e51"
+    },
+    {
+      "id": 466,
+      "rgba_sha256": "18c329ae92c3ff1d79604955dd8b5eaffa892a1a5574515382c33566a4127b88"
+    },
+    {
+      "id": 467,
+      "rgba_sha256": "fe53005606dd1251731907ebfb5d2036c5b1c6953eb32ce8e3384a0dbcd80ca2"
+    },
+    {
+      "id": 468,
+      "rgba_sha256": "89d7191a1e357501aad1de773016b3a086be36f883b96cfd06a7e8bfdd3b507a"
+    },
+    {
+      "id": 469,
+      "rgba_sha256": "0dc0ee3a41e4f8209c4e7944b066b74283ae211a657dc6cf9c6daf8c91869b0c"
+    },
+    {
+      "id": 470,
+      "rgba_sha256": "00647f676a20411f297848c3ff6c3c6018f6af26cfb114670b78f9a73b140573"
+    },
+    {
+      "id": 471,
+      "rgba_sha256": "aa4259622388761c105a7d5dc5cd14bcb35214af413cd6eaf5b2224416aad5b8"
+    },
+    {
+      "id": 472,
+      "rgba_sha256": "b5bc5b926eb71596388844f48697e7c167feb1afa747343a3a32f86187810e51"
+    },
+    {
+      "id": 473,
+      "rgba_sha256": "b5bc5b926eb71596388844f48697e7c167feb1afa747343a3a32f86187810e51"
+    },
+    {
+      "id": 474,
+      "rgba_sha256": "b5bc5b926eb71596388844f48697e7c167feb1afa747343a3a32f86187810e51"
+    },
+    {
+      "id": 475,
+      "rgba_sha256": "47f6100999e147264be4248ce4479a4ba8d1b4ae97897a00527f738bb9c07e42"
+    },
+    {
+      "id": 476,
+      "rgba_sha256": "976cafff58b1b191eac2d7742918fd698815e45e13852312068621936a102846"
+    },
+    {
+      "id": 477,
+      "rgba_sha256": "333d3340a33b08667f4105917d0ad045574924c1db9233035ff87bee95a6c642"
+    },
+    {
+      "id": 478,
+      "rgba_sha256": "9f4abf81472943ee0302264fd5de323a35c7bea86f097163e87266a839bd5ad9"
+    },
+    {
+      "id": 479,
+      "rgba_sha256": "178454cfdd43600b2288d815e3f3261c5562f0617c52da6938c64d8d6faacd5b"
+    }
+  ],
+  "reviewed": true,
+  "selected_ids": [
+    469,
+    470,
+    471,
+    476,
+    477,
+    478,
+    479
+  ],
+  "excluded_ids": [
+    464,
+    465,
+    466,
+    467,
+    468,
+    472,
+    473,
+    474,
+    475
+  ],
+  "source_review_sha256": "d8727b3089c714a2d6bbcbb3c81cdf2b581abd7e25fe6adcbbbdb9c6959d9cea",
+  "thor_qualified": false
+}

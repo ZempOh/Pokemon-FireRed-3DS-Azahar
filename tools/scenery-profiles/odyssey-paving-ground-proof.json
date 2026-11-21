@@ -1,0 +1,215 @@
+{
+  "game": "odyssey",
+  "rom_crc32": "6c5ee1b2",
+  "rom_sha256": "44c7e3eafab19c39df7c39d54bafb78a1d9caf7c371244b6f5efb12cfd98d0d0",
+  "primary": "0x82d4a94",
+  "secondary": "0x82d4b54",
+  "cells": [
+    {
+      "id": 353,
+      "rgba_sha256": "1cb712992b3acc1374032e1629367b4955516fddabcf994b55bebc02773e680c",
+      "palette_indices": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        12,
+        14,
+        15
+      ]
+    },
+    {
+      "id": 354,
+      "rgba_sha256": "f9354db3d7108f62b290602ef3d1dd3bfd2b0143e0ee304a1beba97351d60284",
+      "palette_indices": [
+        86,
+        87,
+        88,
+        89,
+        94,
+        95
+      ]
+    },
+    {
+      "id": 355,
+      "rgba_sha256": "0aaf4935f07c66d2db7966b20934e4c294a076b7f91b0c7df2376c436b0a6f90",
+      "palette_indices": [
+        86,
+        87,
+        88,
+        89,
+        94,
+        95
+      ]
+    },
+    {
+      "id": 356,
+      "rgba_sha256": "fb3b5da07f46c758470bf3618feca8cc5a7bbf67df4a4c8faca523400c56937b",
+      "palette_indices": [
+        86,
+        87,
+        88,
+        89,
+        94,
+        95
+      ]
+    },
+    {
+      "id": 357,
+      "rgba_sha256": "bc85108b23a43bf7ec695a08335ac57e9236ba3ccebf9b45a31a20b7b9806a08",
+      "palette_indices": [
+        20,
+        21,
+        28,
+        29,
+        30
+      ]
+    },
+    {
+      "id": 361,
+      "rgba_sha256": "a0faa86135d3a2e78de196fc3ade05acb6f8039a2fe1cf784f5d67a3fae2314b",
+      "palette_indices": [
+        3,
+        13,
+        14,
+        15
+      ]
+    },
+    {
+      "id": 362,
+      "rgba_sha256": "5c7bc251813c5ec614f0e6f8a60156f777af28dedffb88d5a670ae3dab3a71e6",
+      "palette_indices": [
+        86,
+        87,
+        88,
+        89,
+        94,
+        95
+      ]
+    },
+    {
+      "id": 363,
+      "rgba_sha256": "a6efcbcde6a866d06d19b1dbf6e989d1ed9a7e3c3e77e355ccb42e6bccbe7770",
+      "palette_indices": [
+        86,
+        87,
+        88,
+        89,
+        94
+      ]
+    },
+    {
+      "id": 364,
+      "rgba_sha256": "f55a5f141b5ba783c788c18e9627b1d2a76489fcd971f6063d1b262af1de62b6",
+      "palette_indices": [
+        86,
+        87,
+        88,
+        89,
+        94,
+        95
+      ]
+    },
+    {
+      "id": 365,
+      "rgba_sha256": "8b435c3df2218cb211b5ae5e687fa25e443a641f8c956eac31802c0bf21744b0",
+      "palette_indices": [
+        21,
+        28,
+        29,
+        30
+      ]
+    },
+    {
+      "id": 369,
+      "rgba_sha256": "2e847bf97e81fc9b12c0eb58066fb956428adff1130411cb797a0f2f30dfa26f",
+      "palette_indices": [
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        82,
+        83,
+        86,
+        87,
+        88
+      ]
+    },
+    {
+      "id": 370,
+      "rgba_sha256": "cf013b2e9dca8ae0aafb4c61c52abc62471e7609d28b04e0856c061911869f91",
+      "palette_indices": [
+        86,
+        87,
+        88,
+        89,
+        94,
+        95
+      ]
+    },
+    {
+      "id": 371,
+      "rgba_sha256": "ca368ed2534eea3781ed1c2fefcd64864b7674f7786084d9840d3e430df579e1",
+      "palette_indices": [
+        86,
+        87,
+        88,
+        89,
+        94,
+        95
+      ]
+    },
+    {
+      "id": 372,
+      "rgba_sha256": "0a77c107afa143484bc124fa725d970d091b2c08d8d6d628c265d01322e56563",
+      "palette_indices": [
+        86,
+        87,
+        88,
+        89,
+        94,
+        95
+      ]
+    },
+    {
+      "id": 373,
+      "rgba_sha256": "13ea6d45fa9cb65ed29f9504bd21ea614c5786f66d00d0834466bc41851b262e",
+      "palette_indices": [
+        20,
+        21,
+        23,
+        28,
+        29,
+        30,
+        31
+      ]
+    }
+  ],
+  "reviewed": true,
+  "thor_qualified": false,
+  "source_review_sha256": "a2666327e37dcf6f713a99dfc62f60defe82db9004845cba589bf79c75f6af12",
+  "selected_ids": [
+    354,
+    355,
+    356,
+    362,
+    363,
+    364,
+    370,
+    371,
+    372
+  ],
+  "excluded_ids": [
+    353,
+    357,
+    361,
+    365,
+    369,
+    373
+  ],
+  "note": "Own Fibernia paving family; adjacent tree, walls and stairs excluded. Exact55 screenshot shows uncovered paving."
+}

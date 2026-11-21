@@ -675,3 +675,24 @@ native 2D on the Thor. Its injected move produced the same stuck field pose.
 That fixture cannot qualify the interaction; keep the game explicitly held
 until a legitimate working fixture is established. This observation does not
 establish a renderer defect or a bug in the author's normal game progression.
+
+Use the approved native FireRed 3D build as the visual benchmark across games,
+per the user's November 20 request. Compare actual device captures for plant
+volume, rock silhouettes, building depth, contact shadows and seasonal ground
+continuity. Shared geometry does not establish equal visual quality: the native
+GPU renderer and Android software projection have different camera and raster
+characteristics. Keep remaining differences explicit and require exact-build
+pacing and interaction checks after renderer changes.
+
+Patch35 follows the full-primary-ground atlas audit. Modern Emerald's path/tree
+join and doorstep exposed missed secondary ground, while Lazarus's custom paving
+was only partly covered by generic Emerald IDs. Add its 30 reviewed paving cells
+and the exact Modern mixed-cell masks. Metatile 0x11c contains water-edge pixels
+in Modern Emerald, Lazarus and Seaglass; remove it from full-land recognition and
+mask its ground pixels only. Metatile 0x124 is plain sand and remains valid land.
+The same proof-checked lookup supports primary mixed cells, retaining both
+tileset identities. Coverage is now 91 full secondary cells, 89 mixed masks and
+35 explicit primary registration proofs. Keep source atlases private; retain
+hashes and row masks in the registry. The earlier candidate's timing passes do
+not qualify these changes. Review targeted Modern/Lazarus winter captures and
+the water-edge mask before starting another complete device suite.

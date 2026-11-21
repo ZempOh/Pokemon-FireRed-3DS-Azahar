@@ -162,7 +162,9 @@ def generate(profiles, plants, output):
             lines.append('    if(crc==0x%s && primary==%s && secondary==%s) {'%(p['rom_crc32'],group['primary'],group['secondary']))
             lines.append('        static const uint16_t rows[][16] = {')
             for cell in group['cells']:
-                assert len(cell['rows'])==16 and 512<=cell['id']<1024
+                # Legacy group name also accepts reviewed primary mixed cells.
+                # Both tileset identities remain required by the lookup/proof.
+                assert len(cell['rows'])==16 and 0<=cell['id']<1024
                 lines.append('            {%s},'%','.join(hex(x) for x in cell['rows']))
             lines+=['        };','        switch(id) {']
             for i,cell in enumerate(group['cells']):lines.append('        case %d:return rows[%d];'%(cell['id'],i))

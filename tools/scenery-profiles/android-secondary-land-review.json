@@ -26,7 +26,8 @@
     703,
     710,
     711,
-    718
+    718,
+    "modern-emerald:201"
   ],
   "targets": [
     {
@@ -618,7 +619,84 @@
           "reference_id": 718
         }
       ]
+    },
+    {
+      "game": "modern-emerald",
+      "rom_crc32": "263a1187",
+      "rom_sha256": "bc7286dca750cf735480fece3ff68c7d86ecbf8391031b5ca2964da78fc945a1",
+      "primary": "0x8bb3ac8",
+      "secondary": "0x8bb3ae0",
+      "reviewed": true,
+      "cells": [
+        {
+          "id": 513,
+          "reference_id": "modern-emerald:201",
+          "rgba_sha256": "86f23c83e4097037474d464ce8c41dc184669a748a266424538b47b5def47e88"
+        }
+      ]
     }
   ],
-  "scope": "Full visible-ground cells only, verified against source palette-index masks. Supersedes the coarse patch33 list; mixed structures are masked separately."
+  "scope": "Full visible-ground cells only, verified against source palette-index masks. Supersedes the coarse patch33 list; mixed structures are masked separately.",
+  "additional_references": [
+    {
+      "game": "modern-emerald",
+      "rom_sha256": "bc7286dca750cf735480fece3ff68c7d86ecbf8391031b5ca2964da78fc945a1",
+      "primary": "0x8bb3ac8",
+      "secondary": "0x8bb3ae0",
+      "source_ground_reference_ids": [
+        1,
+        289,
+        292
+      ],
+      "source_ground_palette_indices": [
+        44,
+        45,
+        46,
+        91,
+        92,
+        93
+      ],
+      "private_atlas_sha256": "287348192403d49a7e791cafdadc05730ba66ac0accedf04ac4a137fc471116c"
+    },
+    {
+      "game": "lazarus",
+      "rom_sha256": "d756b2783dede0bb2c534d1f07713bef733cf53500388e3912f14220a7e16e97",
+      "primary": "0x8e3e21c",
+      "secondary": "0x8e3e92c",
+      "source_ground_reference_ids": [
+        1,
+        241,
+        289,
+        292
+      ],
+      "source_ground_palette_indices": [
+        33,
+        34,
+        41,
+        53,
+        57,
+        91,
+        92
+      ],
+      "private_atlas_sha256": "81ba6f93cf472a407879d896c3668e0d92dbb7a4a5141646c70a66fdbfb3510d"
+    },
+    {
+      "game": "seaglass",
+      "rom_sha256": "6098296dca53655bb51493658d74ba206abe6bacbbe60db8d4f497367926809f",
+      "primary": "0x8a2e6ac",
+      "secondary": "0x8a2e6c4",
+      "source_ground_reference_ids": [
+        1,
+        289,
+        292
+      ],
+      "source_ground_palette_indices": [
+        44,
+        45,
+        46,
+        92
+      ],
+      "private_atlas_sha256": "cf949d2ec4a7fa4e38f1564f888ae40bda213839011b7f714488df52e665be09"
+    }
+  ]
 }

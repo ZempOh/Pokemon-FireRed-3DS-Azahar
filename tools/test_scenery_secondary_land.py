@@ -11,6 +11,15 @@ MASKS=json.loads((ROOT/'android-land-mask-review.json').read_text())
 class SecondaryLandTests(unittest.TestCase):
  def test_provenance(self):
   validate_secondary_land(CAPS,PROOF);validate_land_masks(CAPS,MASKS)
+ def test_emerald_water_edge_is_never_full_land(self):
+  for game in ('modern-emerald','lazarus','seaglass'):
+   cap=next(p for p in CAPS if p['game']==game)
+   self.assertTrue(all(0x11c not in x['ids'] for x in cap['land']))
+   cells=[c for g in cap['secondary_land_masks'] for c in g['cells'] if c['id']==0x11c]
+   self.assertTrue(cells,game)
+   for cell in cells:
+    self.assertNotEqual(cell['rows'][0],65535)
+    self.assertEqual(cell['rows'][8],65535)
  def test_mask_cannot_expand_into_structure(self):
   caps=copy.deepcopy(CAPS)
   group=next(p for p in caps if p['game']=='fakemon')['secondary_land_masks'][0]
@@ -42,6 +51,10 @@ class SecondaryLandTests(unittest.TestCase):
   with tempfile.TemporaryDirectory() as tmp:
    root=Path(tmp);generate(CAPS,[],root)
    checks=[]
+   for p in CAPS:
+    if p['game'] in ('modern-emerald','lazarus','seaglass'):
+     for land in p['land']:
+      checks.append(f"assert(!sceneryLand(0x{p['rom_crc32']},{land['primary']},0x11c));")
    for p in CAPS:
     for land in p.get('secondary_land',[]):
      crc=int(p['rom_crc32'],16);primary=int(land['primary'],16);secondary=int(land['secondary'],16)

@@ -394,6 +394,126 @@
         0
       ],
       "rgba_sha256": "d9628b0e7e9a64cecab803defc0ab04659211f16e25972f5067d8178d7236bf5"
+    },
+    {
+      "id": "modern-emerald:11c",
+      "source_metatile_id": 284,
+      "game": "modern-emerald",
+      "rows": [
+        1032,
+        22447,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535
+      ],
+      "rgba_sha256": "01d4312a3e01591fcbace531a9e85ecfc2ff9c9853fbd578ad9ad517a797989b"
+    },
+    {
+      "id": "modern-emerald:252",
+      "source_metatile_id": 594,
+      "game": "modern-emerald",
+      "rows": [
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        36863,
+        2047,
+        254,
+        24
+      ],
+      "rgba_sha256": "483bb2421ed9efd6ee39e7c93ca87463c2ff50ee202ec738389fdc16c3a922a1"
+    },
+    {
+      "id": "modern-emerald:253",
+      "source_metatile_id": 595,
+      "game": "modern-emerald",
+      "rows": [
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65521,
+        65504,
+        65152,
+        6144
+      ],
+      "rgba_sha256": "26886b8f4d1d1ad8daa12bb2c56f8aa67212293336fd070c8197cfc20c7de5cc"
+    },
+    {
+      "id": "lazarus:11c",
+      "source_metatile_id": 284,
+      "game": "lazarus",
+      "rows": [
+        24734,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535
+      ],
+      "rgba_sha256": "19e603ae67751650ac8caf9d7de70a8755a57f423b18b64a030a31fb0e90bd13"
+    },
+    {
+      "id": "seaglass:11c",
+      "source_metatile_id": 284,
+      "game": "seaglass",
+      "rows": [
+        0,
+        1807,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535
+      ],
+      "rgba_sha256": "9380cec140504b0cebff6295df1f4bdc952094a3cd069de82bfe7b77ed5cd11d"
     }
   ],
   "targets": [
@@ -2146,6 +2266,623 @@
           ]
         }
       ]
+    },
+    {
+      "game": "modern-emerald",
+      "rom_crc32": "263a1187",
+      "rom_sha256": "bc7286dca750cf735480fece3ff68c7d86ecbf8391031b5ca2964da78fc945a1",
+      "primary": "0x8bb3ac8",
+      "secondary": "0x8bb3ae0",
+      "reviewed": true,
+      "cells": [
+        {
+          "id": 594,
+          "rows": [
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            36863,
+            2047,
+            254,
+            24
+          ],
+          "reference_id": "modern-emerald:252",
+          "rgba_sha256": "483bb2421ed9efd6ee39e7c93ca87463c2ff50ee202ec738389fdc16c3a922a1"
+        },
+        {
+          "id": 595,
+          "rows": [
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65521,
+            65504,
+            65152,
+            6144
+          ],
+          "reference_id": "modern-emerald:253",
+          "rgba_sha256": "26886b8f4d1d1ad8daa12bb2c56f8aa67212293336fd070c8197cfc20c7de5cc"
+        }
+      ]
+    },
+    {
+      "game": "modern-emerald",
+      "rom_crc32": "263a1187",
+      "rom_sha256": "bc7286dca750cf735480fece3ff68c7d86ecbf8391031b5ca2964da78fc945a1",
+      "primary": "0x8bb3ac8",
+      "secondary": "0x8bb3b28",
+      "reviewed": true,
+      "cells": [
+        {
+          "id": 284,
+          "rows": [
+            1032,
+            22447,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535
+          ],
+          "reference_id": "modern-emerald:11c",
+          "rgba_sha256": "01d4312a3e01591fcbace531a9e85ecfc2ff9c9853fbd578ad9ad517a797989b"
+        }
+      ]
+    },
+    {
+      "game": "modern-emerald",
+      "rom_crc32": "263a1187",
+      "rom_sha256": "bc7286dca750cf735480fece3ff68c7d86ecbf8391031b5ca2964da78fc945a1",
+      "primary": "0x8bb3ac8",
+      "secondary": "0x8bb3b40",
+      "reviewed": true,
+      "cells": [
+        {
+          "id": 284,
+          "rows": [
+            1032,
+            22447,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535
+          ],
+          "reference_id": "modern-emerald:11c",
+          "rgba_sha256": "01d4312a3e01591fcbace531a9e85ecfc2ff9c9853fbd578ad9ad517a797989b"
+        }
+      ]
+    },
+    {
+      "game": "modern-emerald",
+      "rom_crc32": "263a1187",
+      "rom_sha256": "bc7286dca750cf735480fece3ff68c7d86ecbf8391031b5ca2964da78fc945a1",
+      "primary": "0x8bb3ac8",
+      "secondary": "0x8bb3b10",
+      "reviewed": true,
+      "cells": [
+        {
+          "id": 284,
+          "rows": [
+            1032,
+            22447,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535
+          ],
+          "reference_id": "modern-emerald:11c",
+          "rgba_sha256": "01d4312a3e01591fcbace531a9e85ecfc2ff9c9853fbd578ad9ad517a797989b"
+        }
+      ]
+    },
+    {
+      "game": "modern-emerald",
+      "rom_crc32": "263a1187",
+      "rom_sha256": "bc7286dca750cf735480fece3ff68c7d86ecbf8391031b5ca2964da78fc945a1",
+      "primary": "0x8bb3ac8",
+      "secondary": "0x8bb3b70",
+      "reviewed": true,
+      "cells": [
+        {
+          "id": 284,
+          "rows": [
+            1032,
+            22447,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535
+          ],
+          "reference_id": "modern-emerald:11c",
+          "rgba_sha256": "01d4312a3e01591fcbace531a9e85ecfc2ff9c9853fbd578ad9ad517a797989b"
+        }
+      ]
+    },
+    {
+      "game": "lazarus",
+      "rom_crc32": "558ae42f",
+      "rom_sha256": "d756b2783dede0bb2c534d1f07713bef733cf53500388e3912f14220a7e16e97",
+      "primary": "0x8e3e21c",
+      "secondary": "0x8e3e27c",
+      "reviewed": true,
+      "cells": [
+        {
+          "id": 284,
+          "rows": [
+            24734,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535
+          ],
+          "reference_id": "lazarus:11c",
+          "rgba_sha256": "19e603ae67751650ac8caf9d7de70a8755a57f423b18b64a030a31fb0e90bd13"
+        }
+      ]
+    },
+    {
+      "game": "lazarus",
+      "rom_crc32": "558ae42f",
+      "rom_sha256": "d756b2783dede0bb2c534d1f07713bef733cf53500388e3912f14220a7e16e97",
+      "primary": "0x8e3e21c",
+      "secondary": "0x8e3e264",
+      "reviewed": true,
+      "cells": [
+        {
+          "id": 284,
+          "rows": [
+            24734,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535
+          ],
+          "reference_id": "lazarus:11c",
+          "rgba_sha256": "19e603ae67751650ac8caf9d7de70a8755a57f423b18b64a030a31fb0e90bd13"
+        }
+      ]
+    },
+    {
+      "game": "lazarus",
+      "rom_crc32": "558ae42f",
+      "rom_sha256": "d756b2783dede0bb2c534d1f07713bef733cf53500388e3912f14220a7e16e97",
+      "primary": "0x8e3e21c",
+      "secondary": "0x8e3e2c4",
+      "reviewed": true,
+      "cells": [
+        {
+          "id": 284,
+          "rows": [
+            24734,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535
+          ],
+          "reference_id": "lazarus:11c",
+          "rgba_sha256": "19e603ae67751650ac8caf9d7de70a8755a57f423b18b64a030a31fb0e90bd13"
+        }
+      ]
+    },
+    {
+      "game": "lazarus",
+      "rom_crc32": "558ae42f",
+      "rom_sha256": "d756b2783dede0bb2c534d1f07713bef733cf53500388e3912f14220a7e16e97",
+      "primary": "0x8e3e21c",
+      "secondary": "0x8e3e98c",
+      "reviewed": true,
+      "cells": [
+        {
+          "id": 284,
+          "rows": [
+            24734,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535
+          ],
+          "reference_id": "lazarus:11c",
+          "rgba_sha256": "19e603ae67751650ac8caf9d7de70a8755a57f423b18b64a030a31fb0e90bd13"
+        }
+      ]
+    },
+    {
+      "game": "lazarus",
+      "rom_crc32": "558ae42f",
+      "rom_sha256": "d756b2783dede0bb2c534d1f07713bef733cf53500388e3912f14220a7e16e97",
+      "primary": "0x8e3e21c",
+      "secondary": "0x8e3e9a4",
+      "reviewed": true,
+      "cells": [
+        {
+          "id": 284,
+          "rows": [
+            24734,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535
+          ],
+          "reference_id": "lazarus:11c",
+          "rgba_sha256": "19e603ae67751650ac8caf9d7de70a8755a57f423b18b64a030a31fb0e90bd13"
+        }
+      ]
+    },
+    {
+      "game": "lazarus",
+      "rom_crc32": "558ae42f",
+      "rom_sha256": "d756b2783dede0bb2c534d1f07713bef733cf53500388e3912f14220a7e16e97",
+      "primary": "0x8e3e21c",
+      "secondary": "0x8e3eaac",
+      "reviewed": true,
+      "cells": [
+        {
+          "id": 284,
+          "rows": [
+            24734,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535
+          ],
+          "reference_id": "lazarus:11c",
+          "rgba_sha256": "19e603ae67751650ac8caf9d7de70a8755a57f423b18b64a030a31fb0e90bd13"
+        }
+      ]
+    },
+    {
+      "game": "lazarus",
+      "rom_crc32": "558ae42f",
+      "rom_sha256": "d756b2783dede0bb2c534d1f07713bef733cf53500388e3912f14220a7e16e97",
+      "primary": "0x8e3e21c",
+      "secondary": "0x8e3e9bc",
+      "reviewed": true,
+      "cells": [
+        {
+          "id": 284,
+          "rows": [
+            24734,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535
+          ],
+          "reference_id": "lazarus:11c",
+          "rgba_sha256": "19e603ae67751650ac8caf9d7de70a8755a57f423b18b64a030a31fb0e90bd13"
+        }
+      ]
+    },
+    {
+      "game": "lazarus",
+      "rom_crc32": "558ae42f",
+      "rom_sha256": "d756b2783dede0bb2c534d1f07713bef733cf53500388e3912f14220a7e16e97",
+      "primary": "0x8e3e21c",
+      "secondary": "0x8e3e9d4",
+      "reviewed": true,
+      "cells": [
+        {
+          "id": 284,
+          "rows": [
+            24734,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535
+          ],
+          "reference_id": "lazarus:11c",
+          "rgba_sha256": "19e603ae67751650ac8caf9d7de70a8755a57f423b18b64a030a31fb0e90bd13"
+        }
+      ]
+    },
+    {
+      "game": "lazarus",
+      "rom_crc32": "558ae42f",
+      "rom_sha256": "d756b2783dede0bb2c534d1f07713bef733cf53500388e3912f14220a7e16e97",
+      "primary": "0x8e3e21c",
+      "secondary": "0x8e3ea64",
+      "reviewed": true,
+      "cells": [
+        {
+          "id": 284,
+          "rows": [
+            24734,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535
+          ],
+          "reference_id": "lazarus:11c",
+          "rgba_sha256": "19e603ae67751650ac8caf9d7de70a8755a57f423b18b64a030a31fb0e90bd13"
+        }
+      ]
+    },
+    {
+      "game": "lazarus",
+      "rom_crc32": "558ae42f",
+      "rom_sha256": "d756b2783dede0bb2c534d1f07713bef733cf53500388e3912f14220a7e16e97",
+      "primary": "0x8e3e21c",
+      "secondary": "0x8e3ea7c",
+      "reviewed": true,
+      "cells": [
+        {
+          "id": 284,
+          "rows": [
+            24734,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535
+          ],
+          "reference_id": "lazarus:11c",
+          "rgba_sha256": "19e603ae67751650ac8caf9d7de70a8755a57f423b18b64a030a31fb0e90bd13"
+        }
+      ]
+    },
+    {
+      "game": "seaglass",
+      "rom_crc32": "14465a33",
+      "rom_sha256": "6098296dca53655bb51493658d74ba206abe6bacbbe60db8d4f497367926809f",
+      "primary": "0x8a2e6ac",
+      "secondary": "0x8a2e70c",
+      "reviewed": true,
+      "cells": [
+        {
+          "id": 284,
+          "rows": [
+            0,
+            1807,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535
+          ],
+          "reference_id": "seaglass:11c",
+          "rgba_sha256": "9380cec140504b0cebff6295df1f4bdc952094a3cd069de82bfe7b77ed5cd11d"
+        }
+      ]
+    },
+    {
+      "game": "seaglass",
+      "rom_crc32": "14465a33",
+      "rom_sha256": "6098296dca53655bb51493658d74ba206abe6bacbbe60db8d4f497367926809f",
+      "primary": "0x8a2e6ac",
+      "secondary": "0x8a2e6f4",
+      "reviewed": true,
+      "cells": [
+        {
+          "id": 284,
+          "rows": [
+            0,
+            1807,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535
+          ],
+          "reference_id": "seaglass:11c",
+          "rgba_sha256": "9380cec140504b0cebff6295df1f4bdc952094a3cd069de82bfe7b77ed5cd11d"
+        }
+      ]
+    },
+    {
+      "game": "seaglass",
+      "rom_crc32": "14465a33",
+      "rom_sha256": "6098296dca53655bb51493658d74ba206abe6bacbbe60db8d4f497367926809f",
+      "primary": "0x8a2e6ac",
+      "secondary": "0x8a2e754",
+      "reviewed": true,
+      "cells": [
+        {
+          "id": 284,
+          "rows": [
+            0,
+            1807,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535
+          ],
+          "reference_id": "seaglass:11c",
+          "rgba_sha256": "9380cec140504b0cebff6295df1f4bdc952094a3cd069de82bfe7b77ed5cd11d"
+        }
+      ]
     }
   ],
   "primary_full_land": [
@@ -2193,7 +2930,339 @@
       "rgba_sha256": "2ac691155451152075f28c01bfd7997effbc71c367732afd39cdb35e786c9275",
       "behavior": 0,
       "reviewed": true
+    },
+    {
+      "game": "lazarus",
+      "rom_crc32": "558ae42f",
+      "primary": "0x8e3e21c",
+      "id": 232,
+      "rgba_sha256": "13b0a2fb58cbf31d8f67e74bdb03e374ee939af767e01c8c71b02c2a6599a8f4",
+      "reviewed": true,
+      "scope": "Source-reviewed paving, including grass edges; no walls or water."
+    },
+    {
+      "game": "lazarus",
+      "rom_crc32": "558ae42f",
+      "primary": "0x8e3e21c",
+      "id": 233,
+      "rgba_sha256": "4aa61d0b82e388be57f5133662ae160bea074a16e1d6d8b07a7e0558e342ca5a",
+      "reviewed": true,
+      "scope": "Source-reviewed paving, including grass edges; no walls or water."
+    },
+    {
+      "game": "lazarus",
+      "rom_crc32": "558ae42f",
+      "primary": "0x8e3e21c",
+      "id": 234,
+      "rgba_sha256": "e1cf8fa68d835946f55dbecac953c138164f559c441aa3573a1feace7c1a2d0e",
+      "reviewed": true,
+      "scope": "Source-reviewed paving, including grass edges; no walls or water."
+    },
+    {
+      "game": "lazarus",
+      "rom_crc32": "558ae42f",
+      "primary": "0x8e3e21c",
+      "id": 235,
+      "rgba_sha256": "3213fd0dc4af8a9234428c5b6b5db380cf8adc6f99acbc7d546cf815ef5cc082",
+      "reviewed": true,
+      "scope": "Source-reviewed paving, including grass edges; no walls or water."
+    },
+    {
+      "game": "lazarus",
+      "rom_crc32": "558ae42f",
+      "primary": "0x8e3e21c",
+      "id": 236,
+      "rgba_sha256": "dd6b8f8a706ff6a767c66136fc3ab8357bb4fd5fe7393dfb93e82cad872aa66e",
+      "reviewed": true,
+      "scope": "Source-reviewed paving, including grass edges; no walls or water."
+    },
+    {
+      "game": "lazarus",
+      "rom_crc32": "558ae42f",
+      "primary": "0x8e3e21c",
+      "id": 237,
+      "rgba_sha256": "e2c5c323d5eb1a7b3bf0ad09b2f0b8121ae3b8f6d9554da4695ea49b24a12f7f",
+      "reviewed": true,
+      "scope": "Source-reviewed paving, including grass edges; no walls or water."
+    },
+    {
+      "game": "lazarus",
+      "rom_crc32": "558ae42f",
+      "primary": "0x8e3e21c",
+      "id": 238,
+      "rgba_sha256": "80c5905a7f710ff55c6a6ea90b3ec2332ade0ecfa965ba96f19c925d48ac898a",
+      "reviewed": true,
+      "scope": "Source-reviewed paving, including grass edges; no walls or water."
+    },
+    {
+      "game": "lazarus",
+      "rom_crc32": "558ae42f",
+      "primary": "0x8e3e21c",
+      "id": 239,
+      "rgba_sha256": "30001e21f410cb19e1e5d4eb46f89d7de698e259a1462a8bf851ca6150d4f53f",
+      "reviewed": true,
+      "scope": "Source-reviewed paving, including grass edges; no walls or water."
+    },
+    {
+      "game": "lazarus",
+      "rom_crc32": "558ae42f",
+      "primary": "0x8e3e21c",
+      "id": 240,
+      "rgba_sha256": "3a9e43c64748d322db6589e90e6fb42dd39a59ba2f33512fbca3d4afec3704e5",
+      "reviewed": true,
+      "scope": "Source-reviewed paving, including grass edges; no walls or water."
+    },
+    {
+      "game": "lazarus",
+      "rom_crc32": "558ae42f",
+      "primary": "0x8e3e21c",
+      "id": 241,
+      "rgba_sha256": "b5d8cf1197d6c465795df98980f291a38dffaf8f9010c68aafdf3a75dd01eedf",
+      "reviewed": true,
+      "scope": "Source-reviewed paving, including grass edges; no walls or water."
+    },
+    {
+      "game": "lazarus",
+      "rom_crc32": "558ae42f",
+      "primary": "0x8e3e21c",
+      "id": 242,
+      "rgba_sha256": "a47b83bbf95407aecf957924f1982f238eeb54ddb7554f55f565238d02dfe149",
+      "reviewed": true,
+      "scope": "Source-reviewed paving, including grass edges; no walls or water."
+    },
+    {
+      "game": "lazarus",
+      "rom_crc32": "558ae42f",
+      "primary": "0x8e3e21c",
+      "id": 243,
+      "rgba_sha256": "de7e8d8083845efe5f6c2d212646644c6b8b4c2d59020e2fe074c0d4dbd6f3bb",
+      "reviewed": true,
+      "scope": "Source-reviewed paving, including grass edges; no walls or water."
+    },
+    {
+      "game": "lazarus",
+      "rom_crc32": "558ae42f",
+      "primary": "0x8e3e21c",
+      "id": 244,
+      "rgba_sha256": "bd7caca9518d3f8a60641219d9ae914d9d00974038e6c55a23a5bffbd8c769d8",
+      "reviewed": true,
+      "scope": "Source-reviewed paving, including grass edges; no walls or water."
+    },
+    {
+      "game": "lazarus",
+      "rom_crc32": "558ae42f",
+      "primary": "0x8e3e21c",
+      "id": 245,
+      "rgba_sha256": "ec3e1b6ec0db0e5351c81a4ac2d56a740538162ba12f09b9766109a1e4b367ad",
+      "reviewed": true,
+      "scope": "Source-reviewed paving, including grass edges; no walls or water."
+    },
+    {
+      "game": "lazarus",
+      "rom_crc32": "558ae42f",
+      "primary": "0x8e3e21c",
+      "id": 246,
+      "rgba_sha256": "4aa0dc64c946110bea41fc21088574e42de1dfb4ace21d8d1acfcf6a9f1cff9c",
+      "reviewed": true,
+      "scope": "Source-reviewed paving, including grass edges; no walls or water."
+    },
+    {
+      "game": "lazarus",
+      "rom_crc32": "558ae42f",
+      "primary": "0x8e3e21c",
+      "id": 247,
+      "rgba_sha256": "614dc420868d7c1d51870ac239cc8d221328e9359d96f25e520dc62e521da62e",
+      "reviewed": true,
+      "scope": "Source-reviewed paving, including grass edges; no walls or water."
+    },
+    {
+      "game": "lazarus",
+      "rom_crc32": "558ae42f",
+      "primary": "0x8e3e21c",
+      "id": 248,
+      "rgba_sha256": "2d28f170d470d42ce8273bac2b2326f2a1ea52d229d0aacee01922805f440551",
+      "reviewed": true,
+      "scope": "Source-reviewed paving, including grass edges; no walls or water."
+    },
+    {
+      "game": "lazarus",
+      "rom_crc32": "558ae42f",
+      "primary": "0x8e3e21c",
+      "id": 249,
+      "rgba_sha256": "63f8f48a3df22b25a5d73f1fce488124ddd61ed65b7e18f8918fed322a5cb1b1",
+      "reviewed": true,
+      "scope": "Source-reviewed paving, including grass edges; no walls or water."
+    },
+    {
+      "game": "lazarus",
+      "rom_crc32": "558ae42f",
+      "primary": "0x8e3e21c",
+      "id": 250,
+      "rgba_sha256": "41a6e8cac866f794cd27a7ca09050acd5918318d7b7337d6a86dd229fd39cf4f",
+      "reviewed": true,
+      "scope": "Source-reviewed paving, including grass edges; no walls or water."
+    },
+    {
+      "game": "lazarus",
+      "rom_crc32": "558ae42f",
+      "primary": "0x8e3e21c",
+      "id": 251,
+      "rgba_sha256": "69d84b168a7003a0583a4d2442cc18fd7d3ca51619cb0e4fe565a110e966c557",
+      "reviewed": true,
+      "scope": "Source-reviewed paving, including grass edges; no walls or water."
+    },
+    {
+      "game": "lazarus",
+      "rom_crc32": "558ae42f",
+      "primary": "0x8e3e21c",
+      "id": 252,
+      "rgba_sha256": "6f0c9cd8ac25813f76aaabe5ce95f57fe874a8b4c27daf7e5c5efb4070c4e9e2",
+      "reviewed": true,
+      "scope": "Source-reviewed paving, including grass edges; no walls or water."
+    },
+    {
+      "game": "lazarus",
+      "rom_crc32": "558ae42f",
+      "primary": "0x8e3e21c",
+      "id": 253,
+      "rgba_sha256": "47e8a91844a3e2666a1bc0f2f656122ac795229a9fc5d1cbd6e4c5236fd72270",
+      "reviewed": true,
+      "scope": "Source-reviewed paving, including grass edges; no walls or water."
+    },
+    {
+      "game": "lazarus",
+      "rom_crc32": "558ae42f",
+      "primary": "0x8e3e21c",
+      "id": 256,
+      "rgba_sha256": "1d694b05cf53c61edb56768bdf89846ce5be487a5abbdc78c9bad248fd7f0445",
+      "reviewed": true,
+      "scope": "Source-reviewed paving, including grass edges; no walls or water."
+    },
+    {
+      "game": "lazarus",
+      "rom_crc32": "558ae42f",
+      "primary": "0x8e3e21c",
+      "id": 257,
+      "rgba_sha256": "d56c0d77e6f3f255174dd4c54893ead2a0f2d984c70fbc0f07dee76da528bd22",
+      "reviewed": true,
+      "scope": "Source-reviewed paving, including grass edges; no walls or water."
+    },
+    {
+      "game": "lazarus",
+      "rom_crc32": "558ae42f",
+      "primary": "0x8e3e21c",
+      "id": 264,
+      "rgba_sha256": "8faa91f1d6b258a805a858fdb2b90189ebeb7bb1bf367d16e3606f67db9f41c0",
+      "reviewed": true,
+      "scope": "Source-reviewed paving, including grass edges; no walls or water."
+    },
+    {
+      "game": "lazarus",
+      "rom_crc32": "558ae42f",
+      "primary": "0x8e3e21c",
+      "id": 265,
+      "rgba_sha256": "1b6cc3e99fe00e5de5b598fc73c6e659ab1ff379827bc3fb85ff30769d2a1b26",
+      "reviewed": true,
+      "scope": "Source-reviewed paving, including grass edges; no walls or water."
+    },
+    {
+      "game": "lazarus",
+      "rom_crc32": "558ae42f",
+      "primary": "0x8e3e21c",
+      "id": 266,
+      "rgba_sha256": "8b44e99301e8da20c4605ddeb95e23a83f726418653768d6d8b74e48c45aed87",
+      "reviewed": true,
+      "scope": "Source-reviewed paving, including grass edges; no walls or water."
+    },
+    {
+      "game": "lazarus",
+      "rom_crc32": "558ae42f",
+      "primary": "0x8e3e21c",
+      "id": 272,
+      "rgba_sha256": "d369fc08b5840ba2318cc6027118126340aec2d9bdae400dff6afb8d63711041",
+      "reviewed": true,
+      "scope": "Source-reviewed paving, including grass edges; no walls or water."
+    },
+    {
+      "game": "lazarus",
+      "rom_crc32": "558ae42f",
+      "primary": "0x8e3e21c",
+      "id": 273,
+      "rgba_sha256": "0cf993f89bd1b9db133ea698868565081cf1110e159c963b968f3826050937c6",
+      "reviewed": true,
+      "scope": "Source-reviewed paving, including grass edges; no walls or water."
+    },
+    {
+      "game": "lazarus",
+      "rom_crc32": "558ae42f",
+      "primary": "0x8e3e21c",
+      "id": 274,
+      "rgba_sha256": "794913d59145d744d52f6af65c7fc1bdbc854a4208df6d679be4f8a3fe95d4c0",
+      "reviewed": true,
+      "scope": "Source-reviewed paving, including grass edges; no walls or water."
     }
   ],
-  "scope": "Exact RGBA and native-behavior transfers of reviewed visible-ground masks. Mask bits exclude structures, including roof corners, fence posts and mailboxes. Unmatched terrain remains unchanged; outdoor climate only."
+  "scope": "Exact RGBA and native-behavior transfers of reviewed visible-ground masks. Mask bits exclude structures, including roof corners, fence posts and mailboxes. Unmatched terrain remains unchanged; outdoor climate only.",
+  "additional_references": [
+    {
+      "game": "modern-emerald",
+      "rom_sha256": "bc7286dca750cf735480fece3ff68c7d86ecbf8391031b5ca2964da78fc945a1",
+      "primary": "0x8bb3ac8",
+      "secondary": "0x8bb3ae0",
+      "source_ground_reference_ids": [
+        1,
+        289,
+        292
+      ],
+      "source_ground_palette_indices": [
+        44,
+        45,
+        46,
+        91,
+        92,
+        93
+      ],
+      "private_atlas_sha256": "287348192403d49a7e791cafdadc05730ba66ac0accedf04ac4a137fc471116c"
+    },
+    {
+      "game": "lazarus",
+      "rom_sha256": "d756b2783dede0bb2c534d1f07713bef733cf53500388e3912f14220a7e16e97",
+      "primary": "0x8e3e21c",
+      "secondary": "0x8e3e92c",
+      "source_ground_reference_ids": [
+        1,
+        241,
+        289,
+        292
+      ],
+      "source_ground_palette_indices": [
+        33,
+        34,
+        41,
+        53,
+        57,
+        91,
+        92
+      ],
+      "private_atlas_sha256": "81ba6f93cf472a407879d896c3668e0d92dbb7a4a5141646c70a66fdbfb3510d"
+    },
+    {
+      "game": "seaglass",
+      "rom_sha256": "6098296dca53655bb51493658d74ba206abe6bacbbe60db8d4f497367926809f",
+      "primary": "0x8a2e6ac",
+      "secondary": "0x8a2e6c4",
+      "source_ground_reference_ids": [
+        1,
+        289,
+        292
+      ],
+      "source_ground_palette_indices": [
+        44,
+        45,
+        46,
+        92
+      ],
+      "private_atlas_sha256": "cf949d2ec4a7fa4e38f1564f888ae40bda213839011b7f714488df52e665be09"
+    }
+  ]
 }

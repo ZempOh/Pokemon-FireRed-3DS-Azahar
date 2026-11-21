@@ -9,6 +9,12 @@ PROOF=json.loads((ROOT/'android-secondary-land-review.json').read_text())
 MASKS=json.loads((ROOT/'android-land-mask-review.json').read_text())
 
 class SecondaryLandTests(unittest.TestCase):
+ def test_better_town_path_covers_every_edge_without_decorative_walls(self):
+  cap=next(p for p in CAPS if p['game']=='better-emerald-2')
+  land=next(g for g in cap['secondary_land'] if int(g['secondary'],16)==0x83df734)
+  ids=set(land['ids'])
+  self.assertTrue({0x2f8+x+y*8 for x in range(3) for y in range(3)}<=ids)
+  self.assertFalse(ids&{0x2fb,0x2fc,0x303,0x304,0x305,0x30b,0x30c}) # Pillars/walls beside the path atlas.
  def test_provenance(self):
   validate_secondary_land(CAPS,PROOF);validate_land_masks(CAPS,MASKS)
  def test_emerald_water_edge_is_never_full_land(self):

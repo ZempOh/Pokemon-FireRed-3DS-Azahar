@@ -44,6 +44,15 @@ unapproved metadata. Source-material review and full-size device review remain
 separate requirements. The private `inspect_map_ground.py` helper records map
 coordinates, palette indices and source-art hashes for diagnosing edge gaps.
 
+Exact53 corrected those horizontal edges but exposed the same unregistered
+material on the vertical path at the viewport edge. It is also rejected.
+Patch53 completes the source-reviewed nine-cell path family and one identical
+center cell in another tileset. Review the entire material family before
+building, including both axes and corners; a narrow screenshot can hide a
+partial registration. The regression check requires all nine path cells and
+excludes neighboring decorative walls. Private `inspect_tileset_cells.py`
+produces a revision-bound family atlas for this review.
+
 Host stages can be expressed once as a JSON recipe and reused:
 `run-host --game firered --recipe steps.json --output WORK/run --toolchain COMPILER_VERSION`.
 Each stage has `name`, `kind: "host"`, a `commands` list of argument lists,

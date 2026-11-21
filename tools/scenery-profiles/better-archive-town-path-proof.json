@@ -13,12 +13,32 @@
       "rgba_sha256": "3ef237e22b6a8c17fd229283493225da53c91f9a0aa0f49544e5ce8d6cd821b9"
     },
     {
+      "id": "better-emerald-2:2fa",
+      "rgba_sha256": "33db0370b9af4946f8cbad988d5c37cbe1421fb90ab399ac4f1036ff07d51be1"
+    },
+    {
+      "id": "better-emerald-2:300",
+      "rgba_sha256": "0c8809d6499cc28a6828706766d40757a3f2fa60a0e6d6a533439f821e0d245e"
+    },
+    {
+      "id": "better-emerald-2:301",
+      "rgba_sha256": "7bb54569976f4291fbeff569949ff46dd4a4078a926980dd439cf59d89e987a6"
+    },
+    {
+      "id": "better-emerald-2:302",
+      "rgba_sha256": "fd7ac5788427f89fd4a322e3afc04a85174207dd7782bf34b424184e04017897"
+    },
+    {
       "id": "better-emerald-2:308",
       "rgba_sha256": "d703be55317fbb8f373b56485c0f155a82733c98fabe90200107de4a6355e2fa"
     },
     {
       "id": "better-emerald-2:309",
       "rgba_sha256": "806fa0656c3e1981c43a97075e2883649dc494b2e47b7552ac90ea4a5c9034b3"
+    },
+    {
+      "id": "better-emerald-2:30a",
+      "rgba_sha256": "65c366830cae712d790a7778a59f2f677e3a72d0f92bbfa30f6d940ce960acae"
     }
   ],
   "targets": [
@@ -41,6 +61,26 @@
           "rgba_sha256": "3ef237e22b6a8c17fd229283493225da53c91f9a0aa0f49544e5ce8d6cd821b9"
         },
         {
+          "id": 762,
+          "reference_id": "better-emerald-2:2fa",
+          "rgba_sha256": "33db0370b9af4946f8cbad988d5c37cbe1421fb90ab399ac4f1036ff07d51be1"
+        },
+        {
+          "id": 768,
+          "reference_id": "better-emerald-2:300",
+          "rgba_sha256": "0c8809d6499cc28a6828706766d40757a3f2fa60a0e6d6a533439f821e0d245e"
+        },
+        {
+          "id": 769,
+          "reference_id": "better-emerald-2:301",
+          "rgba_sha256": "7bb54569976f4291fbeff569949ff46dd4a4078a926980dd439cf59d89e987a6"
+        },
+        {
+          "id": 770,
+          "reference_id": "better-emerald-2:302",
+          "rgba_sha256": "fd7ac5788427f89fd4a322e3afc04a85174207dd7782bf34b424184e04017897"
+        },
+        {
           "id": 776,
           "reference_id": "better-emerald-2:308",
           "rgba_sha256": "d703be55317fbb8f373b56485c0f155a82733c98fabe90200107de4a6355e2fa"
@@ -49,10 +89,32 @@
           "id": 777,
           "reference_id": "better-emerald-2:309",
           "rgba_sha256": "806fa0656c3e1981c43a97075e2883649dc494b2e47b7552ac90ea4a5c9034b3"
+        },
+        {
+          "id": 778,
+          "reference_id": "better-emerald-2:30a",
+          "rgba_sha256": "65c366830cae712d790a7778a59f2f677e3a72d0f92bbfa30f6d940ce960acae"
         }
       ],
-      "source_review_sha256": "83e3e73c2bcc340ca192c5c04d3acfaede37995b0fe032fbb81064d723188e4d",
-      "scope": "Reviewed pale path surface and its earth edges only; no roof, facade, foliage, water or actor pixels"
+      "source_review_sha256": "091f9c6f26dbe9849d9f43c948e1e95c792a9f83797c2a63bee023e1dfab78fb",
+      "scope": "Complete pale path family: nine reviewed cells plus one identical flat center in another tileset; no decorative walls or vegetation"
+    },
+    {
+      "game": "better-emerald-2",
+      "rom_crc32": "2be557a3",
+      "rom_sha256": "8025d00d96a801387fe7c234475c9662b6bcf771ffaa55a29502c919238b039b",
+      "primary": "0x83df704",
+      "secondary": "0x83df854",
+      "reviewed": true,
+      "cells": [
+        {
+          "id": 880,
+          "reference_id": "better-emerald-2:301",
+          "rgba_sha256": "7bb54569976f4291fbeff569949ff46dd4a4078a926980dd439cf59d89e987a6"
+        }
+      ],
+      "source_review_sha256": "091f9c6f26dbe9849d9f43c948e1e95c792a9f83797c2a63bee023e1dfab78fb",
+      "scope": "Complete pale path family: nine reviewed cells plus one identical flat center in another tileset; no decorative walls or vegetation"
     }
   ],
   "held": [
@@ -68,7 +130,7 @@
     }
   ],
   "qualified": false,
-  "source_review_sha256": "83e3e73c2bcc340ca192c5c04d3acfaede37995b0fe032fbb81064d723188e4d",
+  "source_review_sha256": "091f9c6f26dbe9849d9f43c948e1e95c792a9f83797c2a63bee023e1dfab78fb",
   "source_cells_reviewed": true,
   "thor_qualified": false
 }

@@ -847,3 +847,9 @@ The closed-mesh C test now rejects any wall UV entering synthetic grass padding.
 This is a source-texture correction, not a climate repaint of building walls.
 Patch46 is superseded without device qualification. Review full-size summer
 and winter facade edges on patch47 before all exact-build timing/media checks.
+
+A source-palette audit of all nine cropped facades caught fourteen grass
+pixels beneath Unbound's doorway on source row62. Patch48 excludes both
+bottom grass rows62/63. The audited cropped facades now contain no pixels
+from their explicit source ground materials. The intermediate APK remains
+unqualified; this pre-device correction avoids another long rejected retest.

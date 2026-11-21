@@ -814,12 +814,16 @@
       "ridge_back_height": 30,
       "wall_left": 2,
       "wall_right": 62,
-      "wall_bottom": 63
+      "wall_bottom": 62
     },
     "scope": "Reviewed source rectangle and geometry family; exact APK device qualification remains separate.",
     "wall_crop_review": {
       "source_art_sha256": "a755c87cc802ae4b44a3060badc555a814f6060a6835f9add47879c8bbace463",
-      "scope": "Reviewed original facade: exclude source grass border from wall/side UV sampling; roof UVs retain their own span. Decorative facade remains source artwork."
+      "scope": "Reviewed original facade: exclude source grass border from wall/side UV sampling; roof UVs retain their own span. Decorative facade remains source artwork.",
+      "excluded_bottom_grass_rows": [
+        62,
+        63
+      ]
     }
   },
   {

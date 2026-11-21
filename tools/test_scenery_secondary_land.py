@@ -37,7 +37,12 @@ class SecondaryLandTests(unittest.TestCase):
   self.assertFalse(cells[3][8]&(1<<8)) # wooden sign
   self.assertNotIn(0x348,cells) # ambiguous material is not guessed
   land=next(g for g in cap['secondary_land'] if int(g['secondary'],16)==0x82d4af4)
-  self.assertEqual(set(land['ids']),{0x298,0x29f,0x2ca})
+  self.assertEqual(set(land['ids']),{0x298,0x29f,0x2ca,0x303,0x304,0x305})
+  self.assertEqual(cells[0x133][3],65535) # duplicate grass palette31 below cliff
+  self.assertEqual(cells[0x133][0],0) # cliff face remains stone
+  self.assertTrue(cells[0x342][0]&1) # paving behind the statue wing
+  self.assertFalse(cells[0x342][15]&(1<<15)) # statue body stays unchanged
+  self.assertTrue(any(8 in g['ids'] for g in cap['land'])) # conifer's replacement ground
  def test_source_mask_respects_overlay_transparency_and_flips(self):
   class Art:
    primary=0;secondary=24;numbers=dict(metatiles=640,size=16)

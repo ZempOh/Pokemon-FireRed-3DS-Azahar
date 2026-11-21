@@ -814,3 +814,16 @@ slope and wooden sign against recoloring. Atlas images and ROM pixels remain
 private; public data contains identities, masks and evidence hashes. Verify
 Dresco winter at full size and the bridge boundary on the new exact APK before
 repeating all-game qualification. Startup and timing passes are not inherited.
+
+Patch44's full-size targeted capture removed the large gaps but exposed narrow
+grass strips and the statue's paving background. Patch45 includes the duplicate
+grass palette31 and reviewed path materials, protecting cliff faces and statue
+pixels with explicit masks. It also routes the conifer's replacement ground
+through the same verified-land climate mode as other ground props; the old
+hardcoded color-only mode could repaint night-tinted green after the climate
+pass. Eighty reviewed edge references update 118 registrations. The combined
+registry now has 2,369 mixed masks and 97 full secondary ground cells. Two
+ambiguous roof details remain excluded. Tests separate cliff/grass and
+statue/paving pixels. Candidate44 remains blocked; retest the corrected full-size
+scene before a fresh exact-build suite. Do not hide source-material gaps with
+weather particles, zoom changes or smaller gallery images.

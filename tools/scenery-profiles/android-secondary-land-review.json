@@ -30,7 +30,10 @@
     "modern-emerald:201",
     "unbound-dresco:298",
     "unbound-dresco:29f",
-    "unbound-dresco:2ca"
+    "unbound-dresco:2ca",
+    "unbound-dresco-edge:303",
+    "unbound-dresco-edge:304",
+    "unbound-dresco-edge:305"
   ],
   "targets": [
     {
@@ -660,6 +663,21 @@
           "id": 714,
           "reference_id": "unbound-dresco:2ca",
           "rgba_sha256": "9866574495253bfdee05a5835a322a31ea246c0183e4cf38ae0d008238700df1"
+        },
+        {
+          "id": 771,
+          "reference_id": "unbound-dresco-edge:303",
+          "rgba_sha256": "156b33137c326466fcb5d75cde3c3ffc3d4beec088d1f42d244615c35c859df8"
+        },
+        {
+          "id": 772,
+          "reference_id": "unbound-dresco-edge:304",
+          "rgba_sha256": "0ec74031bda0a97e22aa2ca234a0c7a2ce26caa2749147c79f9e28b8f9687474"
+        },
+        {
+          "id": 773,
+          "reference_id": "unbound-dresco-edge:305",
+          "rgba_sha256": "fff8ef77e7057662d5a313662c53ecb81047a4faadd557f6a943382781a98d2f"
         }
       ]
     }
@@ -841,6 +859,125 @@
         "fd2e3a7497b7f896009238dfbde3c1ccd166491ea91865687053850fba98b6e5"
       ],
       "scope": "Grass pixels around plants, fences, cliffs and structures; water, foliage, bark and architecture excluded. Transfer only matching source artwork within this exact ROM and primary tileset."
+    },
+    {
+      "game": "unbound",
+      "rom_sha256": "7aa25bbf568f7cfcf6ee1cf2e9e6ff637350b3d0705c2375cabb6baa7d9739f7",
+      "primary": "0x82d4a94",
+      "secondary": "0x82d4af4",
+      "source_ground_reference_ids": [
+        1,
+        220,
+        212,
+        307
+      ],
+      "source_ground_palette_indices": [
+        2,
+        3,
+        4,
+        31,
+        81,
+        83,
+        85,
+        86,
+        89,
+        90,
+        91,
+        92
+      ],
+      "reviewed_ids": [
+        121,
+        211,
+        212,
+        213,
+        219,
+        220,
+        221,
+        223,
+        227,
+        228,
+        229,
+        258,
+        259,
+        260,
+        261,
+        306,
+        307,
+        308,
+        553,
+        624,
+        625,
+        645,
+        648,
+        649,
+        650,
+        651,
+        652,
+        653,
+        654,
+        655,
+        656,
+        662,
+        670,
+        672,
+        678,
+        680,
+        686,
+        688,
+        689,
+        690,
+        691,
+        692,
+        693,
+        694,
+        695,
+        696,
+        715,
+        718,
+        732,
+        733,
+        734,
+        735,
+        740,
+        741,
+        743,
+        748,
+        749,
+        755,
+        761,
+        762,
+        768,
+        771,
+        772,
+        773,
+        826,
+        827,
+        828,
+        829,
+        834,
+        835,
+        836,
+        837,
+        842,
+        843,
+        844,
+        845,
+        848,
+        849,
+        880,
+        881
+      ],
+      "excluded_ambiguous_ids": [
+        697,
+        703
+      ],
+      "private_atlas_sha256": [
+        "332a4c87e8d7f6015bb13201cc044f1763bb2a1ffbe71e9693875103a3e708b0",
+        "f9ea8f317bdd89d9eee8d6c9ce0f24749250627ae1ef59b029d8b3670bf89914",
+        "112c06f48aa51404f0f486e8a19615f9e63dc7bd17ad26f8e1a68ea460e0030f",
+        "c3228786f1a3c95ff9a4ac1bbffe5582fe3cf82d836436f8ac929ce3a7e01acf"
+      ],
+      "scope": "Reviewed duplicate grass palette31, grass/path transitions and paving around statue; stone, roofs, statue and cliff faces excluded."
     }
   ]
 }

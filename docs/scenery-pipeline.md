@@ -29,6 +29,21 @@ expansion manifest. Actors and battle Pokémon are a separate pass.
 
 ## Shared geometry rules
 
+Archived Better Emerald 2's exact52 Thor pilot corrected Route 212 and rendered
+the reviewed town houses, but full-size winter review exposed colored earth
+pixels at the edges of pale paths. That APK is rejected. Four source-reviewed
+secondary cells (`2f8`, `2f9`, `308`, `309`) in tileset `083df734` are entirely
+land; patch52 registers them without touching roofs, foliage or water. The
+source comparison found no eligible transfers to other tilesets and explicitly
+held two truncated source-art pairs. No new Thor pass is implied.
+
+Use `tools/scenery_material_transfer.py` for future exact artwork comparisons
+across a game's inventory. It uses the revision resolver and each map's declared
+layer layout, compares RGBA identities instead of numeric cell IDs, and emits
+unapproved metadata. Source-material review and full-size device review remain
+separate requirements. The private `inspect_map_ground.py` helper records map
+coordinates, palette indices and source-art hashes for diagnosing edge gaps.
+
 Host stages can be expressed once as a JSON recipe and reused:
 `run-host --game firered --recipe steps.json --output WORK/run --toolchain COMPILER_VERSION`.
 Each stage has `name`, `kind: "host"`, a `commands` list of argument lists,

@@ -33,7 +33,11 @@
     "unbound-dresco:2ca",
     "unbound-dresco-edge:303",
     "unbound-dresco-edge:304",
-    "unbound-dresco-edge:305"
+    "unbound-dresco-edge:305",
+    "better-emerald-2:2f8",
+    "better-emerald-2:2f9",
+    "better-emerald-2:308",
+    "better-emerald-2:309"
   ],
   "targets": [
     {
@@ -680,6 +684,38 @@
           "rgba_sha256": "fff8ef77e7057662d5a313662c53ecb81047a4faadd557f6a943382781a98d2f"
         }
       ]
+    },
+    {
+      "game": "better-emerald-2",
+      "rom_crc32": "2be557a3",
+      "rom_sha256": "8025d00d96a801387fe7c234475c9662b6bcf771ffaa55a29502c919238b039b",
+      "primary": "0x83df704",
+      "secondary": "0x83df734",
+      "reviewed": true,
+      "cells": [
+        {
+          "id": 760,
+          "reference_id": "better-emerald-2:2f8",
+          "rgba_sha256": "e49b3dc4d95637654c20a976e86b38d710226d765cf42cc8e1fed9698d3e19ec"
+        },
+        {
+          "id": 761,
+          "reference_id": "better-emerald-2:2f9",
+          "rgba_sha256": "3ef237e22b6a8c17fd229283493225da53c91f9a0aa0f49544e5ce8d6cd821b9"
+        },
+        {
+          "id": 776,
+          "reference_id": "better-emerald-2:308",
+          "rgba_sha256": "d703be55317fbb8f373b56485c0f155a82733c98fabe90200107de4a6355e2fa"
+        },
+        {
+          "id": 777,
+          "reference_id": "better-emerald-2:309",
+          "rgba_sha256": "806fa0656c3e1981c43a97075e2883649dc494b2e47b7552ac90ea4a5c9034b3"
+        }
+      ],
+      "source_review_sha256": "83e3e73c2bcc340ca192c5c04d3acfaede37995b0fe032fbb81064d723188e4d",
+      "scope": "Reviewed pale path surface and its earth edges only; no roof, facade, foliage, water or actor pixels"
     }
   ],
   "scope": "Full visible-ground cells only, verified against source palette-index masks. Supersedes the coarse patch33 list; mixed structures are masked separately.",

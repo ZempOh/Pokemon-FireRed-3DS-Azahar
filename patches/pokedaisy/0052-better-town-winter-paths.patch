@@ -1,0 +1,11 @@
+diff --git a/app/src/main/cpp/pk_scenery_candidates.h b/app/src/main/cpp/pk_scenery_candidates.h
+--- a/app/src/main/cpp/pk_scenery_candidates.h
++++ b/app/src/main/cpp/pk_scenery_candidates.h
+@@ -57,6 +57,7 @@
+ static int scenerySecondaryLand(uint32_t crc,uint32_t primary,uint32_t secondary,int id) {
+     if(crc==0xfba55dd8 && primary==0x82d4a94 && secondary==0x82d4aac && (id==645 || id==646 || id==648 || id==652 || id==654 || id==655 || id==656 || id==661 || id==662 || id==663 || id==670 || id==671 || id==678 || id==679 || id==686 || id==687 || id==694 || id==702 || id==703 || id==710 || id==711 || id==718))return 1;
+     if(crc==0x4b3d4957 && primary==0x82d4a94 && secondary==0x82d4af4 && (id==664 || id==671 || id==714 || id==771 || id==772 || id==773))return 1;
++    if(crc==0x2be557a3 && primary==0x83df704 && secondary==0x83df734 && (id==760 || id==761 || id==776 || id==777))return 1;
+     if(crc==0x263a1187 && primary==0x8bb3ac8 && secondary==0x8bb3ae0 && (id==513))return 1;
+     if(crc==0x5e704d77 && primary==0x82d4a94 && secondary==0x82d4aac && (id==645 || id==646 || id==648 || id==652 || id==654 || id==655 || id==656 || id==661 || id==662 || id==663 || id==670 || id==671 || id==678 || id==679 || id==686 || id==687 || id==694 || id==702 || id==703 || id==710 || id==711 || id==718))return 1;
+     if(crc==0xcec21496 && primary==0x87c0e10 && secondary==0x87c0e28 && (id==645 || id==646 || id==648 || id==652 || id==654 || id==655 || id==656 || id==661 || id==662 || id==663 || id==670 || id==671 || id==678 || id==679 || id==686 || id==687 || id==694 || id==702 || id==703 || id==710 || id==711 || id==718))return 1;

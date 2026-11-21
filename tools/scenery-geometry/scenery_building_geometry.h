@@ -1,0 +1,43 @@
+/* Shared closed building geometry. Coordinates/UVs are source-art pixels. */
+#ifndef SCENERY_BUILDING_GEOMETRY_H
+#define SCENERY_BUILDING_GEOMETRY_H
+typedef struct { float x,y,z,u,v; } SceneryBuildingVertex;
+typedef void (*SceneryBuildingTriangle)(void*,const SceneryBuildingVertex*,const SceneryBuildingVertex*,const SceneryBuildingVertex*,unsigned);
+typedef struct {
+    float width,depth,back,wallHeight,ridgeHeight,hipInset;
+    float roofTop,wallRow,artHeight;
+    int flatRoof;
+} SceneryBuildingShape;
+static void SceneryBuilding_Quad(void* ctx,SceneryBuildingTriangle emit,
+    SceneryBuildingVertex a,SceneryBuildingVertex b,SceneryBuildingVertex c,SceneryBuildingVertex d,unsigned shade) {
+    emit(ctx,&a,&b,&c,shade);emit(ctx,&a,&c,&d,shade);
+}
+static void SceneryBuilding_Emit(void* ctx,SceneryBuildingTriangle emit,const SceneryBuildingShape* s) {
+    float w=s->width,f=s->depth,b=s->back,h=s->wallHeight;
+    float u0=.5f,u1=w-.5f,vt=s->wallRow+.5f,vb=s->artHeight-.5f;
+    SceneryBuildingVertex fl={0,0,f,u0,vb},fr={w,0,f,u1,vb},br={w,0,b,u1,vb},bl={0,0,b,u0,vb};
+    SceneryBuildingVertex tl={0,h,f,u0,vt},tr={w,h,f,u1,vt},rr={w,h,b,u1,vt},rl={0,h,b,u0,vt};
+    SceneryBuilding_Quad(ctx,emit,fl,fr,tr,tl,248);
+    /* Side wall material uses the original facade's blank corner posts. */
+    SceneryBuildingVertex l0=bl,l1=fl,l2=tl,l3=rl;
+    l0.u=l3.u=1.5f;l1.u=l2.u=6.5f;
+    SceneryBuilding_Quad(ctx,emit,l0,l1,l2,l3,194);
+    SceneryBuildingVertex r0=fr,r1=br,r2=rr,r3=tr;
+    r0.u=r3.u=w-7.5f;r1.u=r2.u=w-2.5f;
+    SceneryBuilding_Quad(ctx,emit,r0,r1,r2,r3,216);
+    SceneryBuilding_Quad(ctx,emit,br,bl,rl,rr,184);
+    SceneryBuilding_Quad(ctx,emit,bl,br,fr,fl,160);
+    tl.v=tr.v=s->wallRow-.5f;rl.v=rr.v=s->roofTop+.5f;
+    if(s->flatRoof) {
+        SceneryBuilding_Quad(ctx,emit,tl,tr,rr,rl,244);
+        return;
+    }
+    float m=(b+f)*.5f;
+    SceneryBuildingVertex a={s->hipInset,s->ridgeHeight,m,s->hipInset,s->roofTop+.5f};
+    SceneryBuildingVertex c={w-s->hipInset,s->ridgeHeight,m,w-s->hipInset,s->roofTop+.5f};
+    SceneryBuilding_Quad(ctx,emit,tl,tr,c,a,250);
+    SceneryBuildingVertex rb=rr,lb=rl;rb.v=lb.v=s->wallRow-.5f;
+    SceneryBuilding_Quad(ctx,emit,rb,lb,a,c,205);
+    emit(ctx,&lb,&tl,&a,190);emit(ctx,&tr,&rb,&c,224);
+}
+#endif

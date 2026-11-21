@@ -22,8 +22,11 @@ jobs:
       - run: python tools/test_scenery_battle_observation.py
       - run: python tools/test_scenery_patch_audit.py
       - run: python tools/test_scenery_secondary_land.py
+      - run: python tools/test_scenery_buildings.py
       - run: python tools/thor_renderer_evidence.py
       - name: Closed botanical geometry
         run: |
           gcc -std=c99 -O2 -Wall -Wextra -Werror tools/scenery-geometry/test_botanical.c -lm -o /tmp/botanical-test
           /tmp/botanical-test
+          gcc -std=c99 -O2 -Wall -Wextra -Werror tools/scenery-geometry/test_buildings.c -lm -o /tmp/building-test
+          /tmp/building-test

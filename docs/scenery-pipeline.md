@@ -712,3 +712,17 @@ Review those actual device images first. A successful boundary or host atlas
 does not qualify the rest of a town; the 2a6 candidate's central Fakemon and
 Modern/Lazarus winter gaps remain rejected despite clean timing. This visual
 preflight prevents repeated full timing suites for a known asset defect.
+
+Building volume pilot (patch37): the native FireRed benchmark exposed Android
+building artwork still lying on the terrain plane. `scenery_building_geometry.h`
+emits closed hip-roof or flat-roof meshes through a renderer callback; the Android
+adapter samples each live ROM's original facade and roof, with shaded sides and
+contact shadows. `scenery_buildings.py` generates exact CRC/tileset/full-pattern
+identities from reviewed references, with source hashes rather than bitmap data.
+The first pilot covers Fakemon's two identical Pallet houses with one pattern,
+plus its laboratory. It is not an all-game building rollout or a device pass.
+Unknown/partial patterns retain original artwork. Verify the rendered-building
+telemetry, camera-edge behavior, actor occlusion, door alignment, winter and
+native-clock pacing before transferring families to other games. The closed-mesh
+test checks nondegenerate faces, shared edges, height and UV bounds; the software
+raster test checks clipping guards and foreground occlusion.

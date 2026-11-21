@@ -3,7 +3,7 @@ name: Build PokéDaisy voxel preview
 on:
   push:
     branches: [pokedaisy-voxel-field, graphics/pokedaisy-upgrade]
-    paths: ['patches/pokedaisy/**', 'tools/scenery-profiles/**', 'tools/gen_scenery_registry.py', 'tools/test_voxel_*.c', '.github/workflows/pokedaisy-profiles.yml']
+    paths: ['patches/pokedaisy/**', 'tools/scenery-profiles/**', 'tools/scenery-geometry/**', 'tools/scenery_buildings.py', 'tools/gen_scenery_registry.py', 'tools/test_voxel_*.c', '.github/workflows/pokedaisy-profiles.yml']
 
 permissions:
   contents: read
@@ -62,7 +62,13 @@ jobs:
       - name: Test projected sprite depth
         run: |
           python3 tools/test_scenery_secondary_land.py
+          python3 tools/test_scenery_buildings.py
           python3 tools/gen_scenery_registry.py --output /tmp/scenery-registry
+          python3 tools/scenery_buildings.py --output /tmp/scenery-registry/pk_scenery_buildings.h
+          diff /tmp/scenery-registry/pk_scenery_buildings.h pokedaisy/app/src/main/cpp/pk_scenery_buildings.h
+          diff tools/scenery-geometry/scenery_building_geometry.h pokedaisy/app/src/main/cpp/scenery_building_geometry.h
+          cc -std=c99 -O2 -Wall -Wextra -Werror tools/scenery-geometry/test_buildings.c -lm -o /tmp/test-buildings
+          /tmp/test-buildings
           diff /tmp/scenery-registry/pk_scenery_candidates.h pokedaisy/app/src/main/cpp/pk_scenery_candidates.h
           diff /tmp/scenery-registry/pk_scenery_plant_profiles.h pokedaisy/app/src/main/cpp/pk_scenery_plant_profiles.h
           for header in pk_scenery_engine_rows.h pk_scenery_object_profiles.h pk_scenery_tree_profiles.h pk_scenery_tall_tree_profiles.h pk_scenery_ground_props.h pk_scenery_grass_effects.h; do

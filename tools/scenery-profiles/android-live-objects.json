@@ -127,7 +127,7 @@
   },
   {
     "game": "better-emerald-2",
-    "rom_crc32": "70823957",
+    "rom_crc32": "2be557a3",
     "asset": "cut tree",
     "gfx": 82,
     "kind": 9,
@@ -141,7 +141,7 @@
   },
   {
     "game": "better-emerald-2",
-    "rom_crc32": "70823957",
+    "rom_crc32": "2be557a3",
     "asset": "breakable rock",
     "gfx": 86,
     "kind": 8,
@@ -155,7 +155,7 @@
   },
   {
     "game": "better-emerald-2",
-    "rom_crc32": "70823957",
+    "rom_crc32": "2be557a3",
     "asset": "movable rock",
     "gfx": 87,
     "kind": 7,

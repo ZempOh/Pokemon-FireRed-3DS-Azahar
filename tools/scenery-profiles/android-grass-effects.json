@@ -1,8 +1,8 @@
 [
   {
     "game": "better-emerald-2",
-    "rom_crc32": "70823957",
-    "rom_sha256": "2503ed1832224d280d73c2e7e6ffc4b3dc90b58b1df2cfce70d587bed3b5dca3",
+    "rom_crc32": "2be557a3",
+    "rom_sha256": "8025d00d96a801387fe7c234475c9662b6bcf771ffaa55a29502c919238b039b",
     "field_table": "0x85059f8",
     "index": 4,
     "template": "0x850caa0",
@@ -42,8 +42,8 @@
   },
   {
     "game": "better-emerald-2",
-    "rom_crc32": "70823957",
-    "rom_sha256": "2503ed1832224d280d73c2e7e6ffc4b3dc90b58b1df2cfce70d587bed3b5dca3",
+    "rom_crc32": "2be557a3",
+    "rom_sha256": "8025d00d96a801387fe7c234475c9662b6bcf771ffaa55a29502c919238b039b",
     "field_table": "0x85059f8",
     "index": 10,
     "template": "0x850ccf0",
@@ -78,8 +78,8 @@
   },
   {
     "game": "better-emerald-2",
-    "rom_crc32": "70823957",
-    "rom_sha256": "2503ed1832224d280d73c2e7e6ffc4b3dc90b58b1df2cfce70d587bed3b5dca3",
+    "rom_crc32": "2be557a3",
+    "rom_sha256": "8025d00d96a801387fe7c234475c9662b6bcf771ffaa55a29502c919238b039b",
     "field_table": "0x85059f8",
     "index": 15,
     "template": "0x850cf94",
@@ -114,8 +114,8 @@
   },
   {
     "game": "better-emerald-2",
-    "rom_crc32": "70823957",
-    "rom_sha256": "2503ed1832224d280d73c2e7e6ffc4b3dc90b58b1df2cfce70d587bed3b5dca3",
+    "rom_crc32": "2be557a3",
+    "rom_sha256": "8025d00d96a801387fe7c234475c9662b6bcf771ffaa55a29502c919238b039b",
     "field_table": "0x85059f8",
     "index": 16,
     "template": "0x850cffc",
@@ -160,8 +160,8 @@
   },
   {
     "game": "better-emerald-2",
-    "rom_crc32": "70823957",
-    "rom_sha256": "2503ed1832224d280d73c2e7e6ffc4b3dc90b58b1df2cfce70d587bed3b5dca3",
+    "rom_crc32": "2be557a3",
+    "rom_sha256": "8025d00d96a801387fe7c234475c9662b6bcf771ffaa55a29502c919238b039b",
     "field_table": "0x85059f8",
     "index": 30,
     "template": "0x850d4e0",

@@ -76,6 +76,22 @@ shared shape. These profiles establish recognition, not complete scenery coverag
 
 ## Findings that must not be rediscovered
 
+- Better Emerald 2's accepted archive is CRC32 `2be557a3`, SHA-256
+  `8025d00d96a801387fe7c234475c9662b6bcf771ffaa55a29502c919238b039b`.
+  It is a distinct older revision, not the current creator patch output.
+  All 74 reviewed tileset pairs match the rejected input's tile, palette and
+  metatile bytes; 37 live sprite/template checks also match. See
+  `tools/scenery-profiles/better-archive-source-proof.json`. Recognition profiles
+  can reuse those verified assets, but maps, gameplay and Thor qualification
+  cannot inherit a pass. Regenerate the exact-version companion overlay: gender
+  ratios and growth rates differ. The invalid `70823957` patch output remains
+  rejected in historical evidence and is no longer the active supported identity.
+- Missing companion support is part of the expanded rollout, together with
+  per-game 2D/3D scenery, calendar seasons and naturally changing weather.
+  Platform-specific adapters and exact-version profiles are required; generic
+  ROM playback is not evidence of companion or 3D support. Keep the original
+  sixteen in regression coverage while prioritizing popular compatible hacks
+  across GB/GBC/GBA/DS and original-151-focused games.
 - Ash Gray's retail party Strength entry at `0x081be16e` branches to
   `0x081be179`, where this verified ROM contains erased `FF` bytes instead of
   FireRed's `setflag 0x805` script. Both inventoried graphics-97 boulders also

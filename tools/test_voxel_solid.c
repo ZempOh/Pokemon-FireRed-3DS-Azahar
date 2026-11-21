@@ -93,7 +93,7 @@ int main(void) {
     assert(!sceneryRadicalProps(0xb9465c5a,0x082d4a94));
     assert(!sceneryKanto(0x63478921,0x082d4a94));
     assert(sceneryCandidate(0x5e704d77)); // Existing runtime retail proof supplies the engine.
-    assert(sceneryCandidate(0x70823957));
+    assert(sceneryCandidate(0x2be557a3));
     assert(sceneryCandidate(0x558ae42f));
     assert(sceneryCandidate(0x14465a33));
     assert(sceneryCandidate(0x263a1187)); // Source-mapped candidate, not device qualification.

@@ -1,0 +1,235 @@
+{
+  "schema": 1,
+  "game": "better-emerald-2",
+  "source_sha256": "2503ed1832224d280d73c2e7e6ffc4b3dc90b58b1df2cfce70d587bed3b5dca3",
+  "target_sha256": "8025d00d96a801387fe7c234475c9662b6bcf771ffaa55a29502c919238b039b",
+  "target_crc32": "2be557a3",
+  "tileset_pairs": 74,
+  "source_art_equal": true,
+  "live_art_checks": [
+    {
+      "label": "cut tree image table",
+      "pointer": "08506e64",
+      "bytes": 8,
+      "sha256": "6e39613033db01b36cb221c4affe384b2bcce5b9adacdf79f343b445510869bc"
+    },
+    {
+      "label": "cut tree frame",
+      "pointer": "0x84e47b8",
+      "bytes": 128,
+      "sha256": "12ab49164e36dcc2bab825f7444f227eb58998b70d82eb0659bcd441bb449ec5"
+    },
+    {
+      "label": "breakable rock image table",
+      "pointer": "08506f5c",
+      "bytes": 8,
+      "sha256": "417be3732006c73366d79797858b8809d3c8691b112c602bc9bc4a953b52d6e2"
+    },
+    {
+      "label": "breakable rock frame",
+      "pointer": "0x84e49b8",
+      "bytes": 128,
+      "sha256": "f625a5edc98273b7494a59fa1f57747123769f4f24158258d156f325d2d16ac9"
+    },
+    {
+      "label": "movable rock image table",
+      "pointer": "08506f7c",
+      "bytes": 8,
+      "sha256": "6b7b89e47ddfa64f815d157c3a147c47c278e43c93531fef0add09ee64e47202"
+    },
+    {
+      "label": "movable rock frame",
+      "pointer": "0x84e4bb8",
+      "bytes": 128,
+      "sha256": "bcba5804d2b74b684745786e7b630d54c1f629d6965e248d7618f98f35236176"
+    },
+    {
+      "label": "grass template",
+      "pointer": "0x850caa0",
+      "bytes": 24,
+      "sha256": "1ab8170e65b66a59108b70f08e8cd3b2044c4cc28a19951b996c829862ecc801"
+    },
+    {
+      "label": "grass image table",
+      "pointer": "0x850ca5c",
+      "bytes": 40,
+      "sha256": "6c42069458b1f872107be90e843469692d98c6801d4079bec5f32bf4cbd395ea"
+    },
+    {
+      "label": "grass frame",
+      "pointer": "0x84f8738",
+      "bytes": 128,
+      "sha256": "7f11635e095fe524064d873e1159d7cf0bf13705fa0529e5eeef06a71aa6d633"
+    },
+    {
+      "label": "grass frame",
+      "pointer": "0x84f87b8",
+      "bytes": 128,
+      "sha256": "ac690d34e2ee6d6650c932c21bda556956308edff9794ade258747fad3195e49"
+    },
+    {
+      "label": "grass frame",
+      "pointer": "0x84f8838",
+      "bytes": 128,
+      "sha256": "8cbd438db90ebd212f53a4059dcfb100758ea35656cf6d07f3cf736f834786c3"
+    },
+    {
+      "label": "grass frame",
+      "pointer": "0x84f88b8",
+      "bytes": 128,
+      "sha256": "68c73bcc7dc9db507b4cbb761eed3c38746a5a82335f72189b6405187dbe909b"
+    },
+    {
+      "label": "grass frame",
+      "pointer": "0x84f8938",
+      "bytes": 128,
+      "sha256": "32f6e0f3a9064e6a63f6e834ffaf3ad885eaa5b8734ef69719b181cb59a553f8"
+    },
+    {
+      "label": "grass template",
+      "pointer": "0x850ccf0",
+      "bytes": 24,
+      "sha256": "0bfb6d280431aed3cc05eaa974ba2fc748e06af6b058fd071794d236c57742e7"
+    },
+    {
+      "label": "grass image table",
+      "pointer": "0x850ccb8",
+      "bytes": 32,
+      "sha256": "ee15128877a8889f1b78b519b29b4eb912b1c471216654b23ca508fdc65687a7"
+    },
+    {
+      "label": "grass frame",
+      "pointer": "0x84f78b8",
+      "bytes": 64,
+      "sha256": "701d2ff11d7dcfef2d22877421ba0a6bbe08f027a2b1953db1356c78a9713c68"
+    },
+    {
+      "label": "grass frame",
+      "pointer": "0x84f78f8",
+      "bytes": 64,
+      "sha256": "55f6003ad4fbbe405e724ba31a18a199c9a6bfc2db59bc48b2a150520f7b057b"
+    },
+    {
+      "label": "grass frame",
+      "pointer": "0x84f7938",
+      "bytes": 64,
+      "sha256": "3195a6f074889c8b1368e26d7e6a3b4e636a81103b3c9deded62c353f7d74279"
+    },
+    {
+      "label": "grass frame",
+      "pointer": "0x84f7978",
+      "bytes": 64,
+      "sha256": "b8d661ad45a1a3f5d58dae8b25a1b8ca46ab85633b15870297075dd02e5b2243"
+    },
+    {
+      "label": "grass template",
+      "pointer": "0x850cf94",
+      "bytes": 24,
+      "sha256": "70a88bf6d4a9d22dc49da39336e5043b8c16273a7dbe501d9980214317178b7d"
+    },
+    {
+      "label": "grass image table",
+      "pointer": "0x850cf50",
+      "bytes": 32,
+      "sha256": "59b6c5de6f81ec731b121889b26b0874266ae791771628e49611dde0a712676a"
+    },
+    {
+      "label": "grass frame",
+      "pointer": "0x84f8538",
+      "bytes": 128,
+      "sha256": "75146b7dbca803e85f139bb9fa9b7e17a92369d5785c6ba301d947d10273481f"
+    },
+    {
+      "label": "grass frame",
+      "pointer": "0x84f85b8",
+      "bytes": 128,
+      "sha256": "95b41af9904957a4ac9b19212fc6855796f8e6ba90aabf86a6b0cc9d7b1e2247"
+    },
+    {
+      "label": "grass frame",
+      "pointer": "0x84f8638",
+      "bytes": 128,
+      "sha256": "791665dd614bd6a76435fafcc5ca37cd8abf661abb078b90bcaeacb0f100f865"
+    },
+    {
+      "label": "grass frame",
+      "pointer": "0x84f86b8",
+      "bytes": 128,
+      "sha256": "2caf8906c1be35348e023c0230d420ccf322f52aedb83c2110cefd09bc9083e1"
+    },
+    {
+      "label": "grass template",
+      "pointer": "0x850cffc",
+      "bytes": 24,
+      "sha256": "6239b7de417d43f7308acac03d83c899c55e7cab848fde4ef522e1c078617b5e"
+    },
+    {
+      "label": "grass image table",
+      "pointer": "0x850cfac",
+      "bytes": 48,
+      "sha256": "cfa24654a1402fae890f440cf68bb6d6e747f9899f4cb28219c70cecb25ecf70"
+    },
+    {
+      "label": "grass frame",
+      "pointer": "0x84f7bb8",
+      "bytes": 128,
+      "sha256": "151aa542662b5eca787d3e1be21d988c3c62b3d47dee427aeeb97916e9f253e3"
+    },
+    {
+      "label": "grass frame",
+      "pointer": "0x84f7c38",
+      "bytes": 128,
+      "sha256": "f8754f163791c1c143f0c35ac625d430676cb53211ec844b110ac23209160c9c"
+    },
+    {
+      "label": "grass frame",
+      "pointer": "0x84f7cb8",
+      "bytes": 128,
+      "sha256": "2b3daf1f70e89ef1ae5a1949ca4ef62b7d096c3c06cd569d4188b6cf163d99d7"
+    },
+    {
+      "label": "grass frame",
+      "pointer": "0x84f7d38",
+      "bytes": 128,
+      "sha256": "13a36a8bf36540af57ddf16e8e07de7c18e26910a7f9d3246d9a5b767e79d1aa"
+    },
+    {
+      "label": "grass frame",
+      "pointer": "0x84f7db8",
+      "bytes": 128,
+      "sha256": "0738781e9b9a0e3b480473eb9e0f981ae211692f1ded24d70a3c09dc6279cddf"
+    },
+    {
+      "label": "grass frame",
+      "pointer": "0x84f7eb8",
+      "bytes": 128,
+      "sha256": "5f973565acb4a9e4e596a8f587d596eff84054bc967bfe0a34340e886eec5b7a"
+    },
+    {
+      "label": "grass template",
+      "pointer": "0x850d4e0",
+      "bytes": 24,
+      "sha256": "2c4773f5e518aed4d0bf9e4443a178467bc1c30ef84ef65ce2d1928c86969738"
+    },
+    {
+      "label": "grass image table",
+      "pointer": "0x850d4c0",
+      "bytes": 16,
+      "sha256": "8dcf20e349a92717db03735117627a59f62db76bfa4837bf8e66ecbf72bfea10"
+    },
+    {
+      "label": "grass frame",
+      "pointer": "0x84f89b8",
+      "bytes": 128,
+      "sha256": "b5f91160dba34f6c8d9e6fb611cbaf27a32ffb9e94a1b856a0d4f59c07e5237b"
+    },
+    {
+      "label": "grass frame",
+      "pointer": "0x84f8a38",
+      "bytes": 128,
+      "sha256": "a01897513bfaed76563b2b5dcfe0407112b13c654f8d9f26d15f18065d0684ed"
+    }
+  ],
+  "thor_qualified": false,
+  "note": "Archive revision, not the current creator patch output. Geometry recognition transfers; gameplay, maps and companion data require fresh checks."
+}

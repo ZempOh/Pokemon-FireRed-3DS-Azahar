@@ -43,6 +43,13 @@ class SecondaryLandTests(unittest.TestCase):
   self.assertTrue(cells[0x342][0]&1) # paving behind the statue wing
   self.assertFalse(cells[0x342][15]&(1<<15)) # statue body stays unchanged
   self.assertTrue(any(8 in g['ids'] for g in cap['land'])) # conifer's replacement ground
+ def test_emerald_hedge_ground_preserves_hedge_surface(self):
+  cap=next(p for p in CAPS if p['game']=='modern-emerald')
+  group=next(g for g in cap['secondary_land_masks'] if int(g['secondary'],16)==0x8bb3ae0)
+  cells={c['id']:c['rows'] for c in group['cells']}
+  for mid in (0x23c,0x23d,0x23e):
+   self.assertEqual(cells[mid][0],65535) # exposed grass above the hedge
+   self.assertFalse(cells[mid][15]&(1<<8)) # hedge itself keeps its artwork
  def test_source_mask_respects_overlay_transparency_and_flips(self):
   class Art:
    primary=0;secondary=24;numbers=dict(metatiles=640,size=16)

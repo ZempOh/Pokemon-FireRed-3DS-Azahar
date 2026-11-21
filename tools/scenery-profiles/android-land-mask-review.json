@@ -4882,6 +4882,78 @@
         32768
       ],
       "rgba_sha256": "a6b8e0f1e1a3ecd7010bd4890aa2c4431ece616e5bd98fc1e92af9297c406242"
+    },
+    {
+      "id": "emerald-hedge-edge:23c",
+      "source_metatile_id": 572,
+      "game": "modern-emerald",
+      "rows": [
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        15391,
+        50119,
+        3,
+        3,
+        1,
+        1
+      ],
+      "rgba_sha256": "413de04dd66c0cbf101551cfdbfcb4714bfcffbf6d2ccbfef17174ff0e746443"
+    },
+    {
+      "id": "emerald-hedge-edge:23d",
+      "source_metatile_id": 573,
+      "game": "modern-emerald",
+      "rows": [
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        15420,
+        50115,
+        0,
+        0,
+        0,
+        0
+      ],
+      "rgba_sha256": "98f5b643cfcf8333be1dd94c70c234434b8164505fdad5de48c7dabb5b37ce6f"
+    },
+    {
+      "id": "emerald-hedge-edge:23e",
+      "source_metatile_id": 574,
+      "game": "modern-emerald",
+      "rows": [
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        63548,
+        58307,
+        49152,
+        49152,
+        32768,
+        32768
+      ],
+      "rgba_sha256": "5613a80fa186ddcf4872c32cc543a85add0d8c32a5e7b712eac7b62ba6c9a274"
     }
   ],
   "targets": [
@@ -10792,6 +10864,75 @@
           ],
           "reference_id": "modern-emerald:253",
           "rgba_sha256": "26886b8f4d1d1ad8daa12bb2c56f8aa67212293336fd070c8197cfc20c7de5cc"
+        },
+        {
+          "id": 572,
+          "rows": [
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            15391,
+            50119,
+            3,
+            3,
+            1,
+            1
+          ],
+          "reference_id": "emerald-hedge-edge:23c",
+          "rgba_sha256": "413de04dd66c0cbf101551cfdbfcb4714bfcffbf6d2ccbfef17174ff0e746443"
+        },
+        {
+          "id": 573,
+          "rows": [
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            15420,
+            50115,
+            0,
+            0,
+            0,
+            0
+          ],
+          "reference_id": "emerald-hedge-edge:23d",
+          "rgba_sha256": "98f5b643cfcf8333be1dd94c70c234434b8164505fdad5de48c7dabb5b37ce6f"
+        },
+        {
+          "id": 574,
+          "rows": [
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            63548,
+            58307,
+            49152,
+            49152,
+            32768,
+            32768
+          ],
+          "reference_id": "emerald-hedge-edge:23e",
+          "rgba_sha256": "5613a80fa186ddcf4872c32cc543a85add0d8c32a5e7b712eac7b62ba6c9a274"
         }
       ]
     },
@@ -63620,6 +63761,21 @@
         "c3228786f1a3c95ff9a4ac1bbffe5582fe3cf82d836436f8ac929ce3a7e01acf"
       ],
       "scope": "Reviewed duplicate grass palette31, grass/path transitions and paving around statue; stone, roofs, statue and cliff faces excluded."
+    },
+    {
+      "game": "modern-emerald",
+      "reviewed_ids": [
+        572,
+        573,
+        574
+      ],
+      "source_ground_palette_indices": [
+        44,
+        45,
+        46
+      ],
+      "private_atlas_sha256": "275615a2d966bb8c7eea37bdced02dff334bbda825d84bff17f63b3ea8aa30e7",
+      "scope": "Grass above hedge tiles only; source-RGBA identity required for transfer. Hedge surfaces and actors excluded."
     }
   ]
 }

@@ -827,3 +827,13 @@ ambiguous roof details remain excluded. Tests separate cliff/grass and
 statue/paving pixels. Candidate44 remains blocked; retest the corrected full-size
 scene before a fresh exact-build suite. Do not hide source-material gaps with
 weather particles, zoom changes or smaller gallery images.
+
+Patch45 passed all twenty targeted Fakemon/Rocket cold starts with zero audio
+underruns and corrected the reviewed Unbound winter edges. A full-size Modern
+Emerald review exposed grass above three hedge cells in the night palette, so
+that exact APK remains blocked. Patch46 registers source-reviewed ground masks
+for 0x23c/0x23d/0x23e only in the matching Petalburg tileset. Hedge pixels remain
+untouched. RGBA-identity checks found no eligible Lazarus or Seaglass transfers;
+no masks were guessed for them. The registry now contains 2,372 mixed masks.
+Tests protect hedge surfaces; a new exact-APK full-size Modern Emerald pilot
+and fresh startup, scenery, gameplay and restoration gates remain required.

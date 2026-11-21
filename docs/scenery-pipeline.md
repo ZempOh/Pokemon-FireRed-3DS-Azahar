@@ -772,3 +772,14 @@ look-behind and short-read semantics. A host allocation-budget regression scans
 a shared scanner fix, not a game-specific timing exception. Keep the failed
 device evidence, test cold starts on the exact new APK, then rerun qualification;
 do not reset counters, increase allowed underruns or inherit patch40 passes.
+
+Patch41 passed ten Fakemon cold starts, but Rocket's third retained start still
+reported one audio underrun without the earlier allocation-GC stalls. Patch42
+gives the native 1x audio-producing emulation worker the same Android audio-thread
+priority already used by `FfMusicPlayer`, restoring default priority outside that
+mode. Optional ROM-feature, level-cap and player-look scans use background
+priority. See [Android thread priority definitions](https://developer.android.com/reference/android/os/Process).
+No buffer enlargement, frame skipping, clock change or relaxed audio gate is
+used. Verify the actual worker priority in cold-start logs, repeat startup tests
+and retain presentation/UI checks to catch scheduling regressions. Patch41 stays
+blocked; its ten clean Fakemon starts do not qualify another game or build.

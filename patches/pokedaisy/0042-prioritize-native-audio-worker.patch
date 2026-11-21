@@ -1,0 +1,72 @@
+--- a/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt
++++ b/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt
+@@ -1289,6 +1289,7 @@
+         // The same after a flush (FF with a STEADY clip, sleep): a stopped track only plays again once its buffer is as
+         // full as its start threshold - all of it - so until its head moves again it's held to half too.
+         var trackStarted = false
++        private var requestedWorkerPriority: Int? = null
+         // Audio queued after this frame's write (vsync pacing only): picks how the next frame is paced. Null on a
+         // frame that wrote none (the game's audio paused for a STEADY clip, say): it paces on the tick alone - a
+         // stale "low" once ran SMART's 1x menus at up to 3x while the clip played.
+@@ -1838,6 +1839,19 @@
+         /** 1x's pacing (vsync or the timer), FF's groups and the track's buffer / volume / pause. */
+         fun pacingMode() {
+             val track = track   // a local: smart casts inside the lambdas below
++            // This worker also produces the native PCM. At 1x it must not lose
++            // its audio deadline to startup ROM scans/UI compilation. The FF
++            // music player already uses this Android audio-thread priority;
++            // return to the normal priority outside native-speed audio mode.
++            val priority = if (nativeClockAudio && track != null) android.os.Process.THREAD_PRIORITY_AUDIO
++                else android.os.Process.THREAD_PRIORITY_DEFAULT
++            if (requestedWorkerPriority != priority) {
++                requestedWorkerPriority = priority
++                runCatching {
++                    android.os.Process.setThreadPriority(priority)
++                    Log.i("pokedaisy", "native worker priority=${android.os.Process.getThreadPriority(android.os.Process.myTid())} requested=$priority")
++                }.onFailure { Log.w("pokedaisy", "native worker priority unchanged", it) }
++            }
+             // Refreshes per frame when the display paces 1x; 0 = the timer and blocking audio.
+             // A screen whose ticks don't follow its refresh (VsyncCheck, GitHub #350): the timer and blocking writes,
+             // like the audio's own fallback - vsync pacing on its made-up rate flipped on and off, 25-60 fps at 1x.
+--- a/app/src/main/kotlin/com/pokedaisy/app/PokeDaisyActivity.kt
++++ b/app/src/main/kotlin/com/pokedaisy/app/PokeDaisyActivity.kt
+@@ -205,7 +205,12 @@
+     @Volatile private var levelCapBosses: Boolean? = null
+     @Volatile private var levelCapAt = 0L
+     private val levelCapBusy = java.util.concurrent.atomic.AtomicBoolean(false)
+-    private val levelCapThread by lazy { java.util.concurrent.Executors.newSingleThreadExecutor { Thread(it, "level-cap") } }
++    private val levelCapThread by lazy { java.util.concurrent.Executors.newSingleThreadExecutor { task ->
++        Thread({
++            android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND)
++            task.run()
++        }, "level-cap")
++    } }
+ 
+     /** LEVEL CAP on the engine: the cap now while it's on and known, else none. */
+     private fun syncLevelCap() {
+@@ -3064,6 +3069,7 @@
+         gbFieldCache = null
+         if (::engine.isInitialized) engine.gbField = null
+         if (gba && romBlocked == null) Thread({
++            android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND)
+             val flag = com.pokedaisy.app.companion.data.WildEncounters.find(r.toOkioPath())
+             Log.i("pokedaisy", "wild encounters: switch %08X".format(flag))
+             // REUSABLE TMS: the spots that use a TM up, by their code (none = the row shows N/A).
+--- a/app/src/main/kotlin/com/pokedaisy/app/PlayerLookRunner.kt
++++ b/app/src/main/kotlin/com/pokedaisy/app/PlayerLookRunner.kt
+@@ -98,6 +98,7 @@
+             // Pokémon, and the library's) are kept all the same.
+             Thread({
+                 try {
++                    android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND)
+                     val filesDir = context.filesDir.toOkioPath()
+                     MonArt.keep(filesDir, rom.readBytes())
+                     if (MonArt.sources(filesDir).size < MonArt.Source.entries.size) scanLibrary(rom)
+@@ -112,6 +113,7 @@
+         }
+         Thread({
+             try {
++                android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND)
+                 val t0 = System.nanoTime()
+                 val bytes = rom.readBytes()
+                 val scan = PlayerLook.scan(bytes, TextBlob.entries)

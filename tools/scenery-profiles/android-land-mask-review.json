@@ -5746,6 +5746,94 @@
         65535
       ],
       "rgba_sha256": "6a27da82cf3ac3c9a515cde355f2113b91a4c5415f1017bb7eeba92092697a68"
+    },
+    {
+      "id": "classic-fence-sign-ground:0x3",
+      "rows": [
+        65151,
+        49155,
+        32769,
+        32769,
+        32769,
+        32769,
+        32769,
+        32769,
+        32769,
+        32769,
+        32769,
+        49155,
+        61455,
+        57351,
+        57351,
+        61455
+      ],
+      "rgba_sha256": "ec8a55a3954daa0c043aa901786ce87cd8dca7f52a57e3886aba6270b7e8f54f"
+    },
+    {
+      "id": "classic-fence-sign-ground:0x284",
+      "rows": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        33153,
+        33153,
+        33153,
+        257,
+        1799,
+        7967
+      ],
+      "rgba_sha256": "c7d12870ececb0e30deffbbbad7858426e13f706c201dbf6d8cb2004dcd05b26"
+    },
+    {
+      "id": "classic-fence-sign-ground:0x287",
+      "rows": [
+        65535,
+        63487,
+        33475,
+        33153,
+        33153,
+        33153,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "rgba_sha256": "09b20163778889fa410238ed49731d77d30b4eb6ed69e9b846c61bdfcf3979ef"
+    },
+    {
+      "id": "classic-fence-sign-ground:0x2ad",
+      "rows": [
+        49155,
+        49155,
+        49155,
+        49155,
+        49155,
+        49155,
+        49155,
+        49155,
+        49155,
+        49155,
+        49155,
+        49155,
+        49159,
+        49159,
+        49159,
+        57359
+      ],
+      "rgba_sha256": "3d3e859664877d96657aa36172824a69c2f25cc116522dbd1f0bc53da3c19cd5"
     }
   ],
   "targets": [
@@ -64812,6 +64900,108 @@
           ]
         }
       ]
+    },
+    {
+      "game": "classic",
+      "rom_crc32": "e4deb9be",
+      "rom_sha256": "4ab7b1f7fb246490d798f49db1511d197d7c72376b6347d08e7c557122c6d722",
+      "primary": "0x84ad600",
+      "secondary": "0x84add10",
+      "reviewed": true,
+      "cells": [
+        {
+          "id": 3,
+          "reference_id": "classic-fence-sign-ground:0x3",
+          "rows": [
+            65151,
+            49155,
+            32769,
+            32769,
+            32769,
+            32769,
+            32769,
+            32769,
+            32769,
+            32769,
+            32769,
+            49155,
+            61455,
+            57351,
+            57351,
+            61455
+          ],
+          "rgba_sha256": "ec8a55a3954daa0c043aa901786ce87cd8dca7f52a57e3886aba6270b7e8f54f"
+        },
+        {
+          "id": 644,
+          "reference_id": "classic-fence-sign-ground:0x284",
+          "rows": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            33153,
+            33153,
+            33153,
+            257,
+            1799,
+            7967
+          ],
+          "rgba_sha256": "c7d12870ececb0e30deffbbbad7858426e13f706c201dbf6d8cb2004dcd05b26"
+        },
+        {
+          "id": 647,
+          "reference_id": "classic-fence-sign-ground:0x287",
+          "rows": [
+            65535,
+            63487,
+            33475,
+            33153,
+            33153,
+            33153,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "rgba_sha256": "09b20163778889fa410238ed49731d77d30b4eb6ed69e9b846c61bdfcf3979ef"
+        },
+        {
+          "id": 685,
+          "reference_id": "classic-fence-sign-ground:0x2ad",
+          "rows": [
+            49155,
+            49155,
+            49155,
+            49155,
+            49155,
+            49155,
+            49155,
+            49155,
+            49155,
+            49155,
+            49155,
+            49155,
+            49159,
+            49159,
+            49159,
+            57359
+          ],
+          "rgba_sha256": "3d3e859664877d96657aa36172824a69c2f25cc116522dbd1f0bc53da3c19cd5"
+        }
+      ]
     }
   ],
   "primary_full_land": [
@@ -65999,6 +66189,21 @@
       ],
       "private_atlas_sha256": "275615a2d966bb8c7eea37bdced02dff334bbda825d84bff17f63b3ea8aa30e7",
       "scope": "Grass above hedge tiles only; source-RGBA identity required for transfer. Hedge surfaces and actors excluded."
+    },
+    {
+      "game": "classic",
+      "reviewed_ids": [
+        3,
+        644,
+        647,
+        685
+      ],
+      "source_ground_palette_indices": [
+        13,
+        14
+      ],
+      "private_atlas_sha256": "c9cae576c4d7e0ff790e95d45948cdaa41400dd945f4df1602eaeeed00ca6981",
+      "scope": "Own Pallet fence/sign background only. Source palette13/14 mask preserves every wooden/stone fence and sign pixel. Full-size exact62 winter exposed fence strips; replacement still requires Thor review."
     }
   ]
 }

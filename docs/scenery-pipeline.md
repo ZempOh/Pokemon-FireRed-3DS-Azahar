@@ -29,6 +29,13 @@ expansion manifest. Actors and battle Pokémon are a separate pass.
 
 ## Shared geometry rules
 
+Classic's Android Pallet retest exposed thin ground strips in fence/sign cells
+after its pure path corners were corrected. Mixed-material cells need reviewed
+pixel masks, not whole-cell land registration. Four own-source masks (3, 0x284,
+0x287, 0x2ad; palette 13/14) preserve fence/sign pixels. The map-wide ground
+inventory and source preview supply repeatable evidence; the frozen exact62
+APK remains rejected until a replacement passes full-size Thor review.
+
 Archived Better Emerald 2's exact52 Thor pilot corrected Route 212 and rendered
 the reviewed town houses, but full-size winter review exposed colored earth
 pixels at the edges of pale paths. That APK is rejected. Four source-reviewed

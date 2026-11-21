@@ -90,5 +90,540 @@
     },
     "qualified": false,
     "evidence": "Four fixture live objects match graphics table; template copy and GF header verify save offsets; instruction-context address mapping; Celadon Thor state matches all 1800 BG entries with 24-byte metatiles and 640 split; live palettes verify seven primary palettes; ROM templates verify kind byte +1 and u16 graphicsId +2 (different from Modern +3/+1)"
+  },
+  {
+    "game": "classic",
+    "rom_crc32": "e4deb9be",
+    "rom_sha256": "4ab7b1f7fb246490d798f49db1511d197d7c72376b6347d08e7c557122c6d722",
+    "family": "EM640_40",
+    "slots": {
+      "VMAP": "03005dd0",
+      "MAP_HEADER": "02035ca0",
+      "MAP_GROUPS": "085a3534",
+      "SAVE_BLOCK1_PTR": "03005d8c",
+      "CAMERA_OFFSET": "03000e20",
+      "OBJECT_EVENTS": "02035d58",
+      "SPRITES": "02020630",
+      "COORD_OFFSET": "02021bbc",
+      "COORD_OFFSET_Y": "02021bbe",
+      "SPRITE_ORDER": "020217f4",
+      "GMAIN": "030022c0",
+      "CONTROLS_LOCKED": "03000f2c",
+      "OBJ_GFX_INFO": "0885daf0",
+      "OBJ_PALETTES": "088723fc",
+      "OBJ_FACING": "0885da9e",
+      "SPRITE_PAL_TAGS": "03000cf0",
+      "ELEVATION_PRIO": "088756d0",
+      "MAP_GROUPS_XOR": "00000000",
+      "NORMAL_BG3": "00003014",
+      "METATILE_SIZE": "00000018",
+      "METATILE_MASK": "000003ff",
+      "PRIMARY_OVERRIDE": "00000000",
+      "PAN_OFF": "00000008",
+      "OBJ_GFX_TABLES": "00000000",
+      "OBJ_GFX_TABLE_MAX": "00000000",
+      "OBJ_GFX_VAR_FROM": "000001ad",
+      "OBJ_GFX_FF_VAR": "00000000",
+      "SB1_OFFSETS": "00000000",
+      "SB1_POS": "00000000",
+      "LAYOUT_VERSIONED": "00000000",
+      "OBJ_GFX_COUNT": "000001ac",
+      "TEMPLATE_KIND_AT": "00000000",
+      "SB1_FLAGS_AT": "00000000",
+      "TRANSITION_PTR": "02039610",
+      "QUEST_LOG": "00000000",
+      "EXPANDED_FLAGS": "00000000"
+    },
+    "qualified": false,
+    "evidence": "Exact rebuilt symbols and save-layout instruction checks; device validation pending",
+    "diagnostic_only": true
+  },
+  {
+    "game": "frlgplus",
+    "rom_crc32": "964763c0",
+    "rom_sha256": "41b51f4f1d0a894dbb27572d6580821c6a192231f930d85c2805af664c13bbb6",
+    "family": "FR",
+    "slots": {
+      "VMAP": "03005040",
+      "MAP_HEADER": "02036f18",
+      "MAP_GROUPS": "083a716c",
+      "SAVE_BLOCK1_PTR": "0300500c",
+      "CAMERA_OFFSET": "03000e90",
+      "OBJECT_EVENTS": "02036f58",
+      "SPRITES": "0202063c",
+      "COORD_OFFSET": "02021b48",
+      "COORD_OFFSET_Y": "02021b4a",
+      "SPRITE_ORDER": "02021780",
+      "GMAIN": "030030f0",
+      "CONTROLS_LOCKED": "03000f9c",
+      "OBJ_GFX_INFO": "08415f54",
+      "OBJ_PALETTES": "0841ca44",
+      "OBJ_FACING": "08415f01",
+      "SPRITE_PAL_TAGS": "03000de8",
+      "ELEVATION_PRIO": "0841ea48",
+      "TRANSITION_PTR": "02039814",
+      "QUEST_LOG": "0203abea",
+      "NORMAL_BG3": "00003014",
+      "METATILE_SIZE": "00000010",
+      "METATILE_MASK": "000003ff",
+      "PAN_OFF": "00000008",
+      "OBJ_GFX_VAR_FROM": "000000f0",
+      "OBJ_GFX_COUNT": "000000cb"
+    },
+    "proofs": {
+      "VMAP": {
+        "symbol": "VMap",
+        "address": "0x3005040",
+        "symbol_size": 12,
+        "exact_function_literal_references": [
+          {
+            "function": "FillConnection",
+            "function_sha256": "4bb71d283a730f73ccfe1839b82c7d5d0902629ce37c31014165319d081fdabb",
+            "instruction": "0x805befc",
+            "literal": "0x805bf40"
+          },
+          {
+            "function": "FillConnection",
+            "function_sha256": "4bb71d283a730f73ccfe1839b82c7d5d0902629ce37c31014165319d081fdabb",
+            "instruction": "0x805bf24",
+            "literal": "0x805bf40"
+          },
+          {
+            "function": "FillEastConnection",
+            "function_sha256": "f581dc124a188d5ffcdf7b42a4e52fe7f9892555d64ef5c42d217ebe3a9c1c27",
+            "instruction": "0x805c090",
+            "literal": "0x805c0a0"
+          }
+        ]
+      },
+      "MAP_HEADER": {
+        "symbol": "gMapHeader",
+        "address": "0x2036f18",
+        "symbol_size": 32,
+        "exact_function_literal_references": [
+          {
+            "function": "BattleSetup_GetTerrainId",
+            "function_sha256": "42e6daa211b73326538ced1edd6920cfb57fe2cab5991d00fe5eba9c224b778d",
+            "instruction": "0x8085486",
+            "literal": "0x808549c"
+          },
+          {
+            "function": "BuyMenuDrawMapBg",
+            "function_sha256": "33c657cce580ce4e163256ba012cec2b8bb22b4d2316569eee0b1ed38d250082",
+            "instruction": "0x80a2b44",
+            "literal": "0x80a2bc4"
+          },
+          {
+            "function": "CanUseEscapeRopeOnCurrMap",
+            "function_sha256": "d8d7056a64d7e134c440ca87735ea70cec9cf0227abc38a51aac38f8a334696e",
+            "instruction": "0x80a938a",
+            "literal": "0x80a939c"
+          }
+        ]
+      },
+      "MAP_GROUPS": {
+        "symbol": "gMapGroups",
+        "address": "0x83a716c",
+        "symbol_size": null,
+        "exact_function_literal_references": [
+          {
+            "function": "Overworld_GetMapHeaderByGroupAndId",
+            "function_sha256": "3cb70f59d07bc032c3589ce7e65837eac8cbb428ba37781a799785456a4de25c",
+            "instruction": "0x805849c",
+            "literal": "0x80584ac"
+          }
+        ]
+      },
+      "SAVE_BLOCK1_PTR": {
+        "symbol": "gSaveBlock1Ptr",
+        "address": "0x300500c",
+        "symbol_size": 4,
+        "exact_function_literal_references": [
+          {
+            "function": "AddHatchedMonToParty",
+            "function_sha256": "eca25fa0e22a9edd58dc6e38dac08c88a74d4fba1b016323a40e377d480a9149",
+            "instruction": "0x8049746",
+            "literal": "0x8049894"
+          },
+          {
+            "function": "AddHatchedMonToParty",
+            "function_sha256": "eca25fa0e22a9edd58dc6e38dac08c88a74d4fba1b016323a40e377d480a9149",
+            "instruction": "0x80497fe",
+            "literal": "0x8049894"
+          },
+          {
+            "function": "AddPCItem",
+            "function_sha256": "c7fe5c2abc58d6aec578b5f1e1fc27824ac7490c74aeccb9a69ecc0072131efa",
+            "instruction": "0x80a1668",
+            "literal": "0x80a1698"
+          }
+        ]
+      },
+      "CAMERA_OFFSET": {
+        "symbol": "sFieldCameraOffset",
+        "address": "0x3000e90",
+        "symbol_size": 8,
+        "exact_function_literal_references": [
+          {
+            "function": "CameraUpdate",
+            "function_sha256": "cf6fd60bfdee0d85678e52dc596be5a7a6262f28088c50c1c6fa917eb232250f",
+            "instruction": "0x805e030",
+            "literal": "0x805e074"
+          },
+          {
+            "function": "CameraUpdate",
+            "function_sha256": "cf6fd60bfdee0d85678e52dc596be5a7a6262f28088c50c1c6fa917eb232250f",
+            "instruction": "0x805e04a",
+            "literal": "0x805e074"
+          },
+          {
+            "function": "CameraUpdateNoObjectRefresh",
+            "function_sha256": "a3171be6ff8c6d67a395d83a9abbe82912b01d14542ec40f46b8c4bdbd98c593",
+            "instruction": "0x805e168",
+            "literal": "0x805e19c"
+          }
+        ]
+      },
+      "OBJECT_EVENTS": {
+        "symbol": "gObjectEvents",
+        "address": "0x2036f58",
+        "symbol_size": 576,
+        "exact_function_literal_references": [
+          {
+            "function": "AlignFishingAnimationFrames",
+            "function_sha256": "c7a16e79cb23b4fd779c5ef4f9e8ef9f8a26164a043828a7ef7ec449603de24b",
+            "instruction": "0x8061018",
+            "literal": "0x8061040"
+          },
+          {
+            "function": "BikeInputHandler_Normal",
+            "function_sha256": "431310c42eea03f605490a199ae1f7befa53fc9f9120e41423cffa26966c88ba",
+            "instruction": "0x80c498a",
+            "literal": "0x80c49c8"
+          },
+          {
+            "function": "BikeInputHandler_Slope",
+            "function_sha256": "115fda6fb6ce9b5a95fa7471e0fc8109796cc3a421cb3ffb913d5b37b9e1d77c",
+            "instruction": "0x80c4a7a",
+            "literal": "0x80c4aac"
+          }
+        ]
+      },
+      "SPRITES": {
+        "symbol": "gSprites",
+        "address": "0x202063c",
+        "symbol_size": 4420,
+        "exact_function_literal_references": [
+          {
+            "function": "AddCameraObject",
+            "function_sha256": "4971970a0a8e030edf816eb26190806bec4c8c6f7d3ac4903083bacf40508bdd",
+            "instruction": "0x8062ea8",
+            "literal": "0x8062ed0"
+          },
+          {
+            "function": "AddScrollIndicatorArrowObject",
+            "function_sha256": "29ecf08f4fa82b81a05c9f7e94663bbdd6b40beee6e2af87457517c6221ac905",
+            "instruction": "0x813e270",
+            "literal": "0x813e2b8"
+          },
+          {
+            "function": "AirCutterProjectile_Step1",
+            "function_sha256": "f4ed64160bfa5ccab33fb25a4609bef95789b2e5e3cf015d9294beda2d63b6a0",
+            "instruction": "0x80aee34",
+            "literal": "0x80aee50"
+          }
+        ]
+      },
+      "COORD_OFFSET": {
+        "symbol": "gSpriteCoordOffsetX",
+        "address": "0x2021b48",
+        "symbol_size": 2,
+        "exact_function_literal_references": [
+          {
+            "function": "AnimShakeMonOrBattleTerrain",
+            "function_sha256": "4cee38cf35756f1d57750f1ea974b92f61a29d679f3b168921caaf13d9498f57",
+            "instruction": "0x80c1a20",
+            "literal": "0x80c1a2c"
+          },
+          {
+            "function": "Ash_Main",
+            "function_sha256": "cd2e314379e9a82999b79b88a20295246c602180ea6b25a3d8468f437df79bf3",
+            "instruction": "0x808226e",
+            "literal": "0x80822b4"
+          },
+          {
+            "function": "BuildOamBuffer",
+            "function_sha256": "183e5d9f4ddce9bb3c698976364638bec9a3d45555cb809291a7786d1eda4482",
+            "instruction": "0x8006cf2",
+            "literal": "0x8006d20"
+          }
+        ]
+      },
+      "COORD_OFFSET_Y": {
+        "symbol": "gSpriteCoordOffsetY",
+        "address": "0x2021b4a",
+        "symbol_size": 2,
+        "exact_function_literal_references": [
+          {
+            "function": "AnimShakeMonOrBattleTerrain",
+            "function_sha256": "4cee38cf35756f1d57750f1ea974b92f61a29d679f3b168921caaf13d9498f57",
+            "instruction": "0x80c1a30",
+            "literal": "0x80c1a68"
+          },
+          {
+            "function": "BuildOamBuffer",
+            "function_sha256": "183e5d9f4ddce9bb3c698976364638bec9a3d45555cb809291a7786d1eda4482",
+            "instruction": "0x8006d16",
+            "literal": "0x8006d28"
+          },
+          {
+            "function": "CalcWhetherObjectIsOffscreen",
+            "function_sha256": "66eb9a2e2a50515de54e7d04d47598322b3e65f63afcce52d71be34bd714b220",
+            "instruction": "0x806aff2",
+            "literal": "0x806b000"
+          }
+        ]
+      },
+      "SPRITE_ORDER": {
+        "symbol": "sSpriteOrder",
+        "address": "0x2021780",
+        "symbol_size": 64,
+        "exact_function_literal_references": [
+          {
+            "function": "BuildOamBuffer",
+            "function_sha256": "183e5d9f4ddce9bb3c698976364638bec9a3d45555cb809291a7786d1eda4482",
+            "instruction": "0x8006c78",
+            "literal": "0x8006cb0"
+          },
+          {
+            "function": "ResetAllSprites",
+            "function_sha256": "d51e7e4efcdd0a5d89dd67b5a604fc9796eee90c89a4645ea70c8e8898ca9687",
+            "instruction": "0x8007706",
+            "literal": "0x8007734"
+          }
+        ]
+      },
+      "GMAIN": {
+        "symbol": "gMain",
+        "address": "0x30030f0",
+        "symbol_size": 1084,
+        "exact_function_literal_references": [
+          {
+            "function": "AddSpriteToOamBuffer",
+            "function_sha256": "c48dc7719849a22e8ba065ea662d8b0630fb1d70f89923eafc690a29d0b39c3c",
+            "instruction": "0x80089e4",
+            "literal": "0x8008a00"
+          },
+          {
+            "function": "AdjustFriendship",
+            "function_sha256": "ca3609231fd9aabf13b89a2b7722268aa399815be5018ea6769f1af4a3e00c70",
+            "instruction": "0x804524a",
+            "literal": "0x8045268"
+          },
+          {
+            "function": "AdjustQuantityAccordingToDPadInput",
+            "function_sha256": "23067b70abed6cc4e69cbe60e167079f758b2de322ddb755a6172e7f06e3c47c",
+            "instruction": "0x80c7072",
+            "literal": "0x80c7098"
+          }
+        ]
+      },
+      "CONTROLS_LOCKED": {
+        "symbol": "sLockFieldControls",
+        "address": "0x3000f9c",
+        "symbol_size": 1,
+        "exact_function_literal_references": [
+          {
+            "function": "ArePlayerFieldControlsLocked",
+            "function_sha256": "69983c0e4626892f8ea6d0dca38a91e776274eef34bae9fb327f44c139008718",
+            "instruction": "0x806cf38",
+            "literal": "0x806cf40"
+          },
+          {
+            "function": "LockPlayerFieldControls",
+            "function_sha256": "536a42c710916a8b6d3ba1ac9b9b28e211f117278a1393dc7128098729d1cb1e",
+            "instruction": "0x806cf20",
+            "literal": "0x806cf28"
+          },
+          {
+            "function": "UnlockPlayerFieldControls",
+            "function_sha256": "b60e8b119efe360981a12ce7be5188ca96d177fb5a4472b1597b1e9a5e2c7c54",
+            "instruction": "0x806cf2c",
+            "literal": "0x806cf34"
+          }
+        ]
+      },
+      "OBJ_GFX_INFO": {
+        "symbol": "gObjectEventGraphicsInfoPointers",
+        "address": "0x8415f54",
+        "symbol_size": 812,
+        "exact_function_literal_references": [
+          {
+            "function": "GetObjectEventGraphicsInfo",
+            "function_sha256": "0cadf93e6809314823aa7a768265ae2b3f9ff9777bd7857fa9d6058e5b5f2ddd",
+            "instruction": "0x806285e",
+            "literal": "0x806286c"
+          }
+        ]
+      },
+      "OBJ_PALETTES": {
+        "symbol": "sObjectEventSpritePalettes",
+        "address": "0x841ca44",
+        "symbol_size": 192,
+        "exact_function_literal_references": [
+          {
+            "function": "FindObjectEventPaletteIndexByTag",
+            "function_sha256": "5a06b05ff288e5b71ba13a96a20040aee7927a87f0098ba4fed4ca22f7e12a7c",
+            "instruction": "0x8062b14",
+            "literal": "0x8062b30"
+          },
+          {
+            "function": "LoadObjectEventPalette",
+            "function_sha256": "e796977fecf6b1a7a532e2070b7a16db08e3ea01a9cda73d0956c9c736165296",
+            "instruction": "0x8062a3e",
+            "literal": "0x8062a50"
+          },
+          {
+            "function": "PatchObjectPalette",
+            "function_sha256": "61d72232cfc9658e9f29e04825cb0c8ba488abba4dcfa734c166f81342d684a2",
+            "instruction": "0x8062ab6",
+            "literal": "0x8062adc"
+          }
+        ]
+      },
+      "OBJ_FACING": {
+        "symbol": "gInitialMovementTypeFacingDirections",
+        "address": "0x8415f01",
+        "symbol_size": 81,
+        "exact_function_literal_references": [
+          {
+            "function": "CopyablePlayerMovement_FaceDirection",
+            "function_sha256": "a6a9b71c76109aa12da9902d56ff63292f07adaf7e8c2b5e7e5b4638f18f7678",
+            "instruction": "0x8065eae",
+            "literal": "0x8065ee8"
+          },
+          {
+            "function": "CopyablePlayerMovement_GoSpeed1",
+            "function_sha256": "d7cf22f72137a414ccab63398e0e0ac0e0c07307aa034494a7ed121b5c01da60",
+            "instruction": "0x806600e",
+            "literal": "0x80660b0"
+          },
+          {
+            "function": "CopyablePlayerMovement_GoSpeed2",
+            "function_sha256": "5a1110407882bdf0d0e973925b268e2e6d5a2b970f070124934fc668f366002f",
+            "instruction": "0x80660c6",
+            "literal": "0x8066168"
+          }
+        ]
+      },
+      "SPRITE_PAL_TAGS": {
+        "symbol": "sSpritePaletteTags",
+        "address": "0x3000de8",
+        "symbol_size": 32,
+        "exact_function_literal_references": [
+          {
+            "function": "AllocSpritePalette",
+            "function_sha256": "d9e0315b7fb76c056873af95535fb67b15b4b65b3b72ca72d249b287b2211ef2",
+            "instruction": "0x8008920",
+            "literal": "0x8008930"
+          },
+          {
+            "function": "FreeAllSpritePalettes",
+            "function_sha256": "7aa50d1e6a7169013f9a63810fbd1bf874e73c849f6a7b3bb11b736b65bd37f4",
+            "instruction": "0x8008862",
+            "literal": "0x8008880"
+          },
+          {
+            "function": "FreeSpritePaletteByTag",
+            "function_sha256": "a800fe19a569529dce782f2dbbda28b3d7357a825bde1b3727bf703b4f9bf8c0",
+            "instruction": "0x8008996",
+            "literal": "0x80089a4"
+          }
+        ]
+      },
+      "ELEVATION_PRIO": {
+        "symbol": "sElevationToPriority",
+        "address": "0x841ea48",
+        "symbol_size": 16,
+        "exact_function_literal_references": [
+          {
+            "function": "ElevationToPriority",
+            "function_sha256": "58c24b2ce02b20c08bc6ac8c65c9935fad2aff695950daa40031d7479c823876",
+            "instruction": "0x806b810",
+            "literal": "0x806b818"
+          },
+          {
+            "function": "InitObjectPriorityByElevation",
+            "function_sha256": "367d928b8b82dc13e08141495aed9d3d616509b1ba206d54edb8b9e7cb0f4b86",
+            "instruction": "0x806b7e6",
+            "literal": "0x806b808"
+          },
+          {
+            "function": "UpdateObjectEventElevationAndPriority",
+            "function_sha256": "1d3bd6b62c6b378bef598f8e18eb388aeca58290ef1c32dd6799eb97167755db",
+            "instruction": "0x806b798",
+            "literal": "0x806b7bc"
+          }
+        ]
+      },
+      "TRANSITION_PTR": {
+        "symbol": "sTransitionData",
+        "address": "0x2039814",
+        "symbol_size": 4,
+        "exact_function_literal_references": [
+          {
+            "function": "AngledWipes_DoWipe",
+            "function_sha256": "a6135800a09621ffbfcab2e59c6b32cc25ee1a86b9bb77a44a6a8257ca961729",
+            "instruction": "0x80dbce8",
+            "literal": "0x80dbd30"
+          },
+          {
+            "function": "AngledWipes_DoWipe",
+            "function_sha256": "a6135800a09621ffbfcab2e59c6b32cc25ee1a86b9bb77a44a6a8257ca961729",
+            "instruction": "0x80dbcfc",
+            "literal": "0x80dbd30"
+          },
+          {
+            "function": "AngledWipes_DoWipe",
+            "function_sha256": "a6135800a09621ffbfcab2e59c6b32cc25ee1a86b9bb77a44a6a8257ca961729",
+            "instruction": "0x80dbd50",
+            "literal": "0x80dbd78"
+          }
+        ]
+      },
+      "QUEST_LOG": {
+        "symbol": "gQuestLogState",
+        "address": "0x203abea",
+        "symbol_size": 1,
+        "exact_function_literal_references": [
+          {
+            "function": "BrailleCursorToggle",
+            "function_sha256": "cf98abfa027a0d647c6aaf2dd5943c9d48c5a56b87b38e65ab6163a956bf6b7e",
+            "instruction": "0x80d4f74",
+            "literal": "0x80d4fa4"
+          },
+          {
+            "function": "CB1_Overworld",
+            "function_sha256": "55ae850001ad2c07a77f4fda318c82cc274c7031c07d9b6024c4a3c72fa350a6",
+            "instruction": "0x8059878",
+            "literal": "0x8059890"
+          },
+          {
+            "function": "ClearDialogWindowAndFrame",
+            "function_sha256": "bef6efe913cf25c5e23b94ba0cfb8566a89c1ecf3cf2fe5904641163664e4d1e",
+            "instruction": "0x80ff8b2",
+            "literal": "0x80ff8c8"
+          }
+        ]
+      }
+    },
+    "source_whole_rom_match": false,
+    "thor_qualified": false,
+    "remaining": [
+      "Independently review save offsets/field layouts and any address without a direct matched reference",
+      "Own source-art scenery/climate profiles",
+      "Compilation and fresh device tests"
+    ],
+    "diagnostic_only": true
   }
 ]

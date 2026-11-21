@@ -2,7 +2,7 @@ name: Build PokéDaisy voxel preview
 
 on:
   push:
-    branches: [pokedaisy-voxel-field, graphics/pokedaisy-upgrade]
+    branches: [pokedaisy-voxel-field, graphics/pokedaisy-upgrade, graphics/native-android-adapters]
     paths: ['patches/pokedaisy/**', 'tools/scenery-profiles/**', 'tools/scenery-geometry/**', 'tools/scenery_buildings.py', 'tools/gen_scenery_registry.py', 'tools/test_voxel_*.c', '.github/workflows/pokedaisy-profiles.yml']
 
 permissions:
@@ -61,6 +61,7 @@ jobs:
           python3 scripts/test_binary_hack_overlay.py
       - name: Test projected sprite depth
         run: |
+          python3 tools/test_native_adapter_layout.py --runtime pokedaisy
           python3 tools/test_scenery_secondary_land.py
           python3 tools/test_scenery_buildings.py
           python3 tools/gen_scenery_registry.py --output /tmp/scenery-registry

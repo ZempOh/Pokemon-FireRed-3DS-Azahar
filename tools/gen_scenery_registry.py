@@ -85,7 +85,7 @@ def generate_tall_trees(profiles,output):
 def generate_engines(profiles,output):
     lines=['// Generated candidate engine rows. Device qualification is separate.']
     for p in profiles:
-        assert p['family'] in {'EX','EX640','EM','FR'}
+        assert p['family'] in {'EX','EX640','EM','FR','EM640_40'}
         lines.append('    { 0x%s, PK_WIDE_FAMILY_%s, { %s } }, // %s'%(p['rom_crc32'],p['family'],', '.join('[PK_WIDE_%s]=0x%s'%(k,v) for k,v in p['slots'].items()),p['game']))
     (output/'pk_scenery_engine_rows.h').write_text('\n'.join(lines)+'\n')
 

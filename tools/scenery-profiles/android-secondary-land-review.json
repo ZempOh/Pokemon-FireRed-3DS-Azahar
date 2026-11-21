@@ -52,7 +52,62 @@
     "better-plaza:0x2f0",
     "better-plaza:0x2f1",
     "better-plaza:0x2f2",
-    "lazarus-acrisia:0x26c"
+    "lazarus-acrisia:0x26c",
+    "classic-own-ground:0x296",
+    "classic-own-ground:0x28e",
+    "classic-own-ground:0x29e",
+    "classic-own-ground:0x295",
+    "classic-own-ground:0x297",
+    "classic-own-ground:0x2c6",
+    "classic-own-ground:0x2c7",
+    "classic-own-ground:0x2be",
+    "classic-own-ground:0x2bf",
+    "classic-own-ground:0x2ce",
+    "classic-own-ground:0x2ae",
+    "frlgplus-own-ground:0x285",
+    "frlgplus-own-ground:0x286",
+    "frlgplus-own-ground:0x288",
+    "frlgplus-own-ground:0x28c",
+    "frlgplus-own-ground:0x28e",
+    "frlgplus-own-ground:0x28f",
+    "frlgplus-own-ground:0x290",
+    "frlgplus-own-ground:0x295",
+    "frlgplus-own-ground:0x296",
+    "frlgplus-own-ground:0x297",
+    "frlgplus-own-ground:0x29e",
+    "frlgplus-own-ground:0x29f",
+    "frlgplus-own-ground:0x2a6",
+    "frlgplus-own-ground:0x2a7",
+    "frlgplus-own-ground:0x2ae",
+    "frlgplus-own-ground:0x2af",
+    "frlgplus-own-ground:0x2b6",
+    "frlgplus-own-ground:0x2be",
+    "frlgplus-own-ground:0x2bf",
+    "frlgplus-own-ground:0x2c6",
+    "frlgplus-own-ground:0x2c7",
+    "frlgplus-own-ground:0x2ce",
+    "firered-own-ground:0x285",
+    "firered-own-ground:0x286",
+    "firered-own-ground:0x288",
+    "firered-own-ground:0x28c",
+    "firered-own-ground:0x28e",
+    "firered-own-ground:0x28f",
+    "firered-own-ground:0x290",
+    "firered-own-ground:0x295",
+    "firered-own-ground:0x296",
+    "firered-own-ground:0x297",
+    "firered-own-ground:0x29e",
+    "firered-own-ground:0x29f",
+    "firered-own-ground:0x2a6",
+    "firered-own-ground:0x2a7",
+    "firered-own-ground:0x2ae",
+    "firered-own-ground:0x2af",
+    "firered-own-ground:0x2b6",
+    "firered-own-ground:0x2be",
+    "firered-own-ground:0x2bf",
+    "firered-own-ground:0x2c6",
+    "firered-own-ground:0x2c7",
+    "firered-own-ground:0x2ce"
   ],
   "targets": [
     {
@@ -832,6 +887,311 @@
           "id": 620,
           "reference_id": "lazarus-acrisia:0x26c",
           "rgba_sha256": "60b28e2a5d7a6f2d24fa77a6ddb1d08d928d374ada5a8defc5d7f4b017f6c742"
+        }
+      ]
+    },
+    {
+      "game": "classic",
+      "rom_crc32": "e4deb9be",
+      "rom_sha256": "4ab7b1f7fb246490d798f49db1511d197d7c72376b6347d08e7c557122c6d722",
+      "primary": "0x84ad600",
+      "secondary": "0x84add10",
+      "reviewed": true,
+      "cells": [
+        {
+          "id": 662,
+          "reference_id": "classic-own-ground:0x296",
+          "rgba_sha256": "4eedf024013a1acc6cd76894ed29fb0d41e9c50c917ff183a73df19be7943400"
+        },
+        {
+          "id": 654,
+          "reference_id": "classic-own-ground:0x28e",
+          "rgba_sha256": "def583c24a8a92c2cd56b8feea9914c14886ccd059f27c5bb8ee74f3da0d0656"
+        },
+        {
+          "id": 670,
+          "reference_id": "classic-own-ground:0x29e",
+          "rgba_sha256": "78b8b59806e16b1387f26b12e3209027bde44e13a21ded4721176ae8af3bd957"
+        },
+        {
+          "id": 661,
+          "reference_id": "classic-own-ground:0x295",
+          "rgba_sha256": "6cec05cd4ffa855a7e54907466a83fb34c6cc03b36c022f674ad293aeb89ddb7"
+        },
+        {
+          "id": 663,
+          "reference_id": "classic-own-ground:0x297",
+          "rgba_sha256": "89150a4898997c5420c68b8c1d77287a5b05a8bf710ae1c774514c360c62765e"
+        },
+        {
+          "id": 710,
+          "reference_id": "classic-own-ground:0x2c6",
+          "rgba_sha256": "419ba1be96b34f2f5aae6839a06b3f4fe2364da03909433b4c2c405d53ed5a28"
+        },
+        {
+          "id": 711,
+          "reference_id": "classic-own-ground:0x2c7",
+          "rgba_sha256": "b03bb918581d166058ca41c25eba6143e0ee245163021f4fa15fdb70ff3b05ad"
+        },
+        {
+          "id": 702,
+          "reference_id": "classic-own-ground:0x2be",
+          "rgba_sha256": "35a3072cfd796eca9d2b3ade624cb6eb6cc2b1968be5aa4e6b30a62b38da1d16"
+        },
+        {
+          "id": 703,
+          "reference_id": "classic-own-ground:0x2bf",
+          "rgba_sha256": "e9ea28e368145e87433103f04a15c742117db74eecb988c505d1ea6fbc7b0a53"
+        },
+        {
+          "id": 718,
+          "reference_id": "classic-own-ground:0x2ce",
+          "rgba_sha256": "d07c0653687d7a586648f0308c174e47db2c5a1d80b97c89f2ca5d5325514a37"
+        },
+        {
+          "id": 686,
+          "reference_id": "classic-own-ground:0x2ae",
+          "rgba_sha256": "566dc6963baa597edf5fef3575564a6ca7d0c717d43dfe57071b2ae1d7785131"
+        }
+      ]
+    },
+    {
+      "game": "frlgplus",
+      "rom_crc32": "964763c0",
+      "rom_sha256": "41b51f4f1d0a894dbb27572d6580821c6a192231f930d85c2805af664c13bbb6",
+      "primary": "0x8316a4c",
+      "secondary": "0x8316a64",
+      "reviewed": true,
+      "cells": [
+        {
+          "id": 645,
+          "reference_id": "frlgplus-own-ground:0x285",
+          "rgba_sha256": "3a05e2a68cc650dd8fb77be21abeae9c7794d73920438472cd8104d1e9f5b50b"
+        },
+        {
+          "id": 646,
+          "reference_id": "frlgplus-own-ground:0x286",
+          "rgba_sha256": "be71383fa3d6aeffd37d449fd2e4853f612f39923c92d60c95800d59df56c9be"
+        },
+        {
+          "id": 648,
+          "reference_id": "frlgplus-own-ground:0x288",
+          "rgba_sha256": "0f634ea914f18d38f354f29c89d04c8ec0d4dcba0aa11373a3c6874f013d2d4b"
+        },
+        {
+          "id": 652,
+          "reference_id": "frlgplus-own-ground:0x28c",
+          "rgba_sha256": "4922775cdee3a32f5443ca2aab11560760b9ccfe654b40b71fdfc39252804c64"
+        },
+        {
+          "id": 654,
+          "reference_id": "frlgplus-own-ground:0x28e",
+          "rgba_sha256": "def583c24a8a92c2cd56b8feea9914c14886ccd059f27c5bb8ee74f3da0d0656"
+        },
+        {
+          "id": 655,
+          "reference_id": "frlgplus-own-ground:0x28f",
+          "rgba_sha256": "5547802fc4f51f31019c3f805f84caa542f6dbe5db267ecddf38e36d1fbba1ec"
+        },
+        {
+          "id": 656,
+          "reference_id": "frlgplus-own-ground:0x290",
+          "rgba_sha256": "c2841d2d5714affb1b80f0c6d959a9f7f90d1b0b29126998d361ce83de1d0752"
+        },
+        {
+          "id": 661,
+          "reference_id": "frlgplus-own-ground:0x295",
+          "rgba_sha256": "6cec05cd4ffa855a7e54907466a83fb34c6cc03b36c022f674ad293aeb89ddb7"
+        },
+        {
+          "id": 662,
+          "reference_id": "frlgplus-own-ground:0x296",
+          "rgba_sha256": "4eedf024013a1acc6cd76894ed29fb0d41e9c50c917ff183a73df19be7943400"
+        },
+        {
+          "id": 663,
+          "reference_id": "frlgplus-own-ground:0x297",
+          "rgba_sha256": "89150a4898997c5420c68b8c1d77287a5b05a8bf710ae1c774514c360c62765e"
+        },
+        {
+          "id": 670,
+          "reference_id": "frlgplus-own-ground:0x29e",
+          "rgba_sha256": "78b8b59806e16b1387f26b12e3209027bde44e13a21ded4721176ae8af3bd957"
+        },
+        {
+          "id": 671,
+          "reference_id": "frlgplus-own-ground:0x29f",
+          "rgba_sha256": "72ab63482d176e2eb02809724c4dabebc79820fd94cedc209c7a5f2d244359ad"
+        },
+        {
+          "id": 678,
+          "reference_id": "frlgplus-own-ground:0x2a6",
+          "rgba_sha256": "fc2f6e7b3579d3be7bce76959b86dff9da449aa153a8d32ad9b3b64e0882af84"
+        },
+        {
+          "id": 679,
+          "reference_id": "frlgplus-own-ground:0x2a7",
+          "rgba_sha256": "687838bf1b6a4a0e5c4ec5e0edf74e59502bc33cdf0388676a17b12befa3a6f7"
+        },
+        {
+          "id": 686,
+          "reference_id": "frlgplus-own-ground:0x2ae",
+          "rgba_sha256": "566dc6963baa597edf5fef3575564a6ca7d0c717d43dfe57071b2ae1d7785131"
+        },
+        {
+          "id": 687,
+          "reference_id": "frlgplus-own-ground:0x2af",
+          "rgba_sha256": "e627b553f4b2fe312671fb75ef2201f317f735513354084f4cbb49351e73937d"
+        },
+        {
+          "id": 694,
+          "reference_id": "frlgplus-own-ground:0x2b6",
+          "rgba_sha256": "9346c93fac977e601999cb6e013f880549b8c7251a2f67031b5c044ff299d039"
+        },
+        {
+          "id": 702,
+          "reference_id": "frlgplus-own-ground:0x2be",
+          "rgba_sha256": "35a3072cfd796eca9d2b3ade624cb6eb6cc2b1968be5aa4e6b30a62b38da1d16"
+        },
+        {
+          "id": 703,
+          "reference_id": "frlgplus-own-ground:0x2bf",
+          "rgba_sha256": "e9ea28e368145e87433103f04a15c742117db74eecb988c505d1ea6fbc7b0a53"
+        },
+        {
+          "id": 710,
+          "reference_id": "frlgplus-own-ground:0x2c6",
+          "rgba_sha256": "419ba1be96b34f2f5aae6839a06b3f4fe2364da03909433b4c2c405d53ed5a28"
+        },
+        {
+          "id": 711,
+          "reference_id": "frlgplus-own-ground:0x2c7",
+          "rgba_sha256": "b03bb918581d166058ca41c25eba6143e0ee245163021f4fa15fdb70ff3b05ad"
+        },
+        {
+          "id": 718,
+          "reference_id": "frlgplus-own-ground:0x2ce",
+          "rgba_sha256": "d07c0653687d7a586648f0308c174e47db2c5a1d80b97c89f2ca5d5325514a37"
+        }
+      ]
+    },
+    {
+      "game": "firered",
+      "rom_crc32": "dd88761c",
+      "rom_sha256": "3d0c79f1627022e18765766f6cb5ea067f6b5bf7dca115552189ad65a5c3a8ac",
+      "primary": "0x82d4a94",
+      "secondary": "0x82d4aac",
+      "reviewed": true,
+      "cells": [
+        {
+          "id": 645,
+          "reference_id": "firered-own-ground:0x285",
+          "rgba_sha256": "3a05e2a68cc650dd8fb77be21abeae9c7794d73920438472cd8104d1e9f5b50b"
+        },
+        {
+          "id": 646,
+          "reference_id": "firered-own-ground:0x286",
+          "rgba_sha256": "be71383fa3d6aeffd37d449fd2e4853f612f39923c92d60c95800d59df56c9be"
+        },
+        {
+          "id": 648,
+          "reference_id": "firered-own-ground:0x288",
+          "rgba_sha256": "0f634ea914f18d38f354f29c89d04c8ec0d4dcba0aa11373a3c6874f013d2d4b"
+        },
+        {
+          "id": 652,
+          "reference_id": "firered-own-ground:0x28c",
+          "rgba_sha256": "4922775cdee3a32f5443ca2aab11560760b9ccfe654b40b71fdfc39252804c64"
+        },
+        {
+          "id": 654,
+          "reference_id": "firered-own-ground:0x28e",
+          "rgba_sha256": "def583c24a8a92c2cd56b8feea9914c14886ccd059f27c5bb8ee74f3da0d0656"
+        },
+        {
+          "id": 655,
+          "reference_id": "firered-own-ground:0x28f",
+          "rgba_sha256": "5547802fc4f51f31019c3f805f84caa542f6dbe5db267ecddf38e36d1fbba1ec"
+        },
+        {
+          "id": 656,
+          "reference_id": "firered-own-ground:0x290",
+          "rgba_sha256": "c2841d2d5714affb1b80f0c6d959a9f7f90d1b0b29126998d361ce83de1d0752"
+        },
+        {
+          "id": 661,
+          "reference_id": "firered-own-ground:0x295",
+          "rgba_sha256": "6cec05cd4ffa855a7e54907466a83fb34c6cc03b36c022f674ad293aeb89ddb7"
+        },
+        {
+          "id": 662,
+          "reference_id": "firered-own-ground:0x296",
+          "rgba_sha256": "4eedf024013a1acc6cd76894ed29fb0d41e9c50c917ff183a73df19be7943400"
+        },
+        {
+          "id": 663,
+          "reference_id": "firered-own-ground:0x297",
+          "rgba_sha256": "89150a4898997c5420c68b8c1d77287a5b05a8bf710ae1c774514c360c62765e"
+        },
+        {
+          "id": 670,
+          "reference_id": "firered-own-ground:0x29e",
+          "rgba_sha256": "78b8b59806e16b1387f26b12e3209027bde44e13a21ded4721176ae8af3bd957"
+        },
+        {
+          "id": 671,
+          "reference_id": "firered-own-ground:0x29f",
+          "rgba_sha256": "72ab63482d176e2eb02809724c4dabebc79820fd94cedc209c7a5f2d244359ad"
+        },
+        {
+          "id": 678,
+          "reference_id": "firered-own-ground:0x2a6",
+          "rgba_sha256": "fc2f6e7b3579d3be7bce76959b86dff9da449aa153a8d32ad9b3b64e0882af84"
+        },
+        {
+          "id": 679,
+          "reference_id": "firered-own-ground:0x2a7",
+          "rgba_sha256": "687838bf1b6a4a0e5c4ec5e0edf74e59502bc33cdf0388676a17b12befa3a6f7"
+        },
+        {
+          "id": 686,
+          "reference_id": "firered-own-ground:0x2ae",
+          "rgba_sha256": "566dc6963baa597edf5fef3575564a6ca7d0c717d43dfe57071b2ae1d7785131"
+        },
+        {
+          "id": 687,
+          "reference_id": "firered-own-ground:0x2af",
+          "rgba_sha256": "e627b553f4b2fe312671fb75ef2201f317f735513354084f4cbb49351e73937d"
+        },
+        {
+          "id": 694,
+          "reference_id": "firered-own-ground:0x2b6",
+          "rgba_sha256": "9346c93fac977e601999cb6e013f880549b8c7251a2f67031b5c044ff299d039"
+        },
+        {
+          "id": 702,
+          "reference_id": "firered-own-ground:0x2be",
+          "rgba_sha256": "35a3072cfd796eca9d2b3ade624cb6eb6cc2b1968be5aa4e6b30a62b38da1d16"
+        },
+        {
+          "id": 703,
+          "reference_id": "firered-own-ground:0x2bf",
+          "rgba_sha256": "e9ea28e368145e87433103f04a15c742117db74eecb988c505d1ea6fbc7b0a53"
+        },
+        {
+          "id": 710,
+          "reference_id": "firered-own-ground:0x2c6",
+          "rgba_sha256": "419ba1be96b34f2f5aae6839a06b3f4fe2364da03909433b4c2c405d53ed5a28"
+        },
+        {
+          "id": 711,
+          "reference_id": "firered-own-ground:0x2c7",
+          "rgba_sha256": "b03bb918581d166058ca41c25eba6143e0ee245163021f4fa15fdb70ff3b05ad"
+        },
+        {
+          "id": 718,
+          "reference_id": "firered-own-ground:0x2ce",
+          "rgba_sha256": "d07c0653687d7a586648f0308c174e47db2c5a1d80b97c89f2ca5d5325514a37"
         }
       ]
     }

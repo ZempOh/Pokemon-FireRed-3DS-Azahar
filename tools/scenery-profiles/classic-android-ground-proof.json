@@ -1,0 +1,157 @@
+{
+  "game": "classic",
+  "rom_crc32": "e4deb9be",
+  "rom_sha256": "4ab7b1f7fb246490d798f49db1511d197d7c72376b6347d08e7c557122c6d722",
+  "primary": "0x84ad600",
+  "secondary": "0x84add10",
+  "cells": [
+    {
+      "id": 17,
+      "rgba_sha256": "2ac691155451152075f28c01bfd7997effbc71c367732afd39cdb35e786c9275",
+      "palette_indices": [
+        8,
+        13
+      ]
+    },
+    {
+      "id": 9,
+      "rgba_sha256": "5fe0edd3056760956c10c62b4df0f786d246f51fa93c9311b918a383836e0898",
+      "palette_indices": [
+        13,
+        14
+      ]
+    },
+    {
+      "id": 662,
+      "rgba_sha256": "4eedf024013a1acc6cd76894ed29fb0d41e9c50c917ff183a73df19be7943400",
+      "palette_indices": [
+        181,
+        183,
+        184,
+        188
+      ]
+    },
+    {
+      "id": 654,
+      "rgba_sha256": "def583c24a8a92c2cd56b8feea9914c14886ccd059f27c5bb8ee74f3da0d0656",
+      "palette_indices": [
+        181,
+        182,
+        183,
+        184,
+        188,
+        189
+      ]
+    },
+    {
+      "id": 670,
+      "rgba_sha256": "78b8b59806e16b1387f26b12e3209027bde44e13a21ded4721176ae8af3bd957",
+      "palette_indices": [
+        13,
+        14,
+        182,
+        184,
+        188,
+        189
+      ]
+    },
+    {
+      "id": 661,
+      "rgba_sha256": "6cec05cd4ffa855a7e54907466a83fb34c6cc03b36c022f674ad293aeb89ddb7",
+      "palette_indices": [
+        13,
+        14,
+        182,
+        184,
+        188,
+        189
+      ]
+    },
+    {
+      "id": 663,
+      "rgba_sha256": "89150a4898997c5420c68b8c1d77287a5b05a8bf710ae1c774514c360c62765e",
+      "palette_indices": [
+        13,
+        14,
+        182,
+        184,
+        188,
+        189
+      ]
+    },
+    {
+      "id": 710,
+      "rgba_sha256": "419ba1be96b34f2f5aae6839a06b3f4fe2364da03909433b4c2c405d53ed5a28",
+      "palette_indices": [
+        13,
+        182,
+        184,
+        188,
+        189
+      ]
+    },
+    {
+      "id": 711,
+      "rgba_sha256": "b03bb918581d166058ca41c25eba6143e0ee245163021f4fa15fdb70ff3b05ad",
+      "palette_indices": [
+        13,
+        182,
+        184,
+        188,
+        189
+      ]
+    },
+    {
+      "id": 702,
+      "rgba_sha256": "35a3072cfd796eca9d2b3ade624cb6eb6cc2b1968be5aa4e6b30a62b38da1d16",
+      "palette_indices": [
+        181,
+        182,
+        183,
+        184,
+        188,
+        189
+      ]
+    },
+    {
+      "id": 703,
+      "rgba_sha256": "e9ea28e368145e87433103f04a15c742117db74eecb988c505d1ea6fbc7b0a53",
+      "palette_indices": [
+        181,
+        182,
+        183,
+        184,
+        188,
+        189
+      ]
+    },
+    {
+      "id": 718,
+      "rgba_sha256": "d07c0653687d7a586648f0308c174e47db2c5a1d80b97c89f2ca5d5325514a37",
+      "palette_indices": [
+        181,
+        182,
+        183,
+        184,
+        188,
+        189
+      ]
+    },
+    {
+      "id": 686,
+      "rgba_sha256": "566dc6963baa597edf5fef3575564a6ca7d0c717d43dfe57071b2ae1d7785131",
+      "palette_indices": [
+        181,
+        182,
+        183,
+        184,
+        188,
+        189
+      ]
+    }
+  ],
+  "reviewed": true,
+  "thor_qualified": false,
+  "source_review_sha256": "a2e2bde1f829deeb0ef9a0d4364c540462c091c20289f2c67b82eda1e7db2a0a",
+  "note": "Full-size own-source review confirms all13 cells are ground. Earlier decimal296 proposal is unrelated water and remains unapproved. Native PATH is hexadecimal0x296."
+}

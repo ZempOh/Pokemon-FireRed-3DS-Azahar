@@ -334,5 +334,359 @@
     "ground": 1,
     "instances": 7,
     "reviewed": true
+  },
+  {
+    "game": "classic",
+    "rom_crc32": "e4deb9be",
+    "rom_sha256": "4ab7b1f7fb246490d798f49db1511d197d7c72376b6347d08e7c557122c6d722",
+    "primary": "0x84ad600",
+    "cells": [
+      20,
+      21,
+      28,
+      29,
+      36,
+      37
+    ],
+    "ground": 17,
+    "source_art_sha256": "c237cfbf015bc15d52865d8e11abaa57943871ff56293e34d07dbbeb24c6a066",
+    "instances": 213,
+    "examples": [
+      {
+        "group": 6,
+        "map": 30,
+        "x": 20,
+        "y": 7
+      },
+      {
+        "group": 6,
+        "map": 30,
+        "x": 22,
+        "y": 7
+      },
+      {
+        "group": 6,
+        "map": 30,
+        "x": 0,
+        "y": 11
+      }
+    ],
+    "reviewed": true,
+    "thor_qualified": false,
+    "review_note": "Complete own-source pattern and map instances reviewed; geometry uses shared tall-tree renderer. Diagnostic device review pending."
+  },
+  {
+    "game": "classic",
+    "rom_crc32": "e4deb9be",
+    "rom_sha256": "4ab7b1f7fb246490d798f49db1511d197d7c72376b6347d08e7c557122c6d722",
+    "primary": "0x84ad600",
+    "cells": [
+      22,
+      23,
+      30,
+      31,
+      38,
+      39
+    ],
+    "ground": 17,
+    "source_art_sha256": "1b74593a350336d93f47f3a3092489784798825dbc181019b1e4360e2e1d0f14",
+    "instances": 13,
+    "examples": [
+      {
+        "group": 6,
+        "map": 10,
+        "x": 8,
+        "y": 9
+      },
+      {
+        "group": 6,
+        "map": 11,
+        "x": 14,
+        "y": 59
+      },
+      {
+        "group": 6,
+        "map": 32,
+        "x": 48,
+        "y": 11
+      }
+    ],
+    "reviewed": true,
+    "thor_qualified": false,
+    "review_note": "Complete own-source pattern and map instances reviewed; geometry uses shared tall-tree renderer. Diagnostic device review pending."
+  },
+  {
+    "game": "classic",
+    "rom_crc32": "e4deb9be",
+    "rom_sha256": "4ab7b1f7fb246490d798f49db1511d197d7c72376b6347d08e7c557122c6d722",
+    "primary": "0x84ad600",
+    "cells": [
+      14,
+      15,
+      30,
+      31,
+      38,
+      39
+    ],
+    "ground": 17,
+    "source_art_sha256": "e9f72d4909212dea2f638a3a8dac856ad2ae0319cd25fbe3c9ec81b7910c9100",
+    "instances": 2,
+    "examples": [
+      {
+        "group": 6,
+        "map": 10,
+        "x": 2,
+        "y": 14
+      },
+      {
+        "group": 6,
+        "map": 1,
+        "x": 12,
+        "y": 31
+      }
+    ],
+    "reviewed": true,
+    "thor_qualified": false,
+    "review_note": "Complete own-source pattern and map instances reviewed; geometry uses shared tall-tree renderer. Diagnostic device review pending."
+  },
+  {
+    "game": "frlgplus",
+    "rom_crc32": "964763c0",
+    "rom_sha256": "41b51f4f1d0a894dbb27572d6580821c6a192231f930d85c2805af664c13bbb6",
+    "primary": "0x8316a4c",
+    "cells": [
+      20,
+      21,
+      28,
+      29,
+      36,
+      37
+    ],
+    "ground": 17,
+    "source_art_sha256": "c237cfbf015bc15d52865d8e11abaa57943871ff56293e34d07dbbeb24c6a066",
+    "instances": 210,
+    "examples": [
+      {
+        "group": 3,
+        "map": 5,
+        "x": 32,
+        "y": 3
+      },
+      {
+        "group": 3,
+        "map": 5,
+        "x": 34,
+        "y": 3
+      },
+      {
+        "group": 3,
+        "map": 5,
+        "x": 36,
+        "y": 3
+      }
+    ],
+    "reviewed": true,
+    "thor_qualified": false,
+    "review_note": "Complete own-source pattern and map instances reviewed; geometry uses shared tall-tree renderer. Diagnostic device review pending."
+  },
+  {
+    "game": "frlgplus",
+    "rom_crc32": "964763c0",
+    "rom_sha256": "41b51f4f1d0a894dbb27572d6580821c6a192231f930d85c2805af664c13bbb6",
+    "primary": "0x8316a4c",
+    "cells": [
+      22,
+      23,
+      30,
+      31,
+      38,
+      39
+    ],
+    "ground": 17,
+    "source_art_sha256": "1b74593a350336d93f47f3a3092489784798825dbc181019b1e4360e2e1d0f14",
+    "instances": 16,
+    "examples": [
+      {
+        "group": 3,
+        "map": 29,
+        "x": 10,
+        "y": 5
+      },
+      {
+        "group": 3,
+        "map": 12,
+        "x": 18,
+        "y": 3
+      },
+      {
+        "group": 3,
+        "map": 12,
+        "x": 5,
+        "y": 12
+      }
+    ],
+    "reviewed": true,
+    "thor_qualified": false,
+    "review_note": "Complete own-source pattern and map instances reviewed; geometry uses shared tall-tree renderer. Diagnostic device review pending."
+  },
+  {
+    "game": "frlgplus",
+    "rom_crc32": "964763c0",
+    "rom_sha256": "41b51f4f1d0a894dbb27572d6580821c6a192231f930d85c2805af664c13bbb6",
+    "primary": "0x8316a4c",
+    "cells": [
+      14,
+      15,
+      30,
+      31,
+      38,
+      39
+    ],
+    "ground": 17,
+    "source_art_sha256": "e9f72d4909212dea2f638a3a8dac856ad2ae0319cd25fbe3c9ec81b7910c9100",
+    "instances": 6,
+    "examples": [
+      {
+        "group": 2,
+        "map": 56,
+        "x": 8,
+        "y": 14
+      },
+      {
+        "group": 2,
+        "map": 56,
+        "x": 21,
+        "y": 14
+      },
+      {
+        "group": 3,
+        "map": 19,
+        "x": 2,
+        "y": 14
+      }
+    ],
+    "reviewed": true,
+    "thor_qualified": false,
+    "review_note": "Complete own-source pattern and map instances reviewed; geometry uses shared tall-tree renderer. Diagnostic device review pending."
+  },
+  {
+    "game": "firered",
+    "rom_crc32": "dd88761c",
+    "rom_sha256": "3d0c79f1627022e18765766f6cb5ea067f6b5bf7dca115552189ad65a5c3a8ac",
+    "primary": "0x82d4a94",
+    "cells": [
+      20,
+      21,
+      28,
+      29,
+      36,
+      37
+    ],
+    "ground": 17,
+    "source_art_sha256": "c237cfbf015bc15d52865d8e11abaa57943871ff56293e34d07dbbeb24c6a066",
+    "instances": 240,
+    "examples": [
+      {
+        "group": 3,
+        "map": 5,
+        "x": 32,
+        "y": 3
+      },
+      {
+        "group": 3,
+        "map": 5,
+        "x": 34,
+        "y": 3
+      },
+      {
+        "group": 3,
+        "map": 5,
+        "x": 36,
+        "y": 3
+      }
+    ],
+    "reviewed": true,
+    "thor_qualified": false,
+    "review_note": "Complete own-source pattern and map instances reviewed; geometry uses shared tall-tree renderer. Diagnostic device review pending."
+  },
+  {
+    "game": "firered",
+    "rom_crc32": "dd88761c",
+    "rom_sha256": "3d0c79f1627022e18765766f6cb5ea067f6b5bf7dca115552189ad65a5c3a8ac",
+    "primary": "0x82d4a94",
+    "cells": [
+      22,
+      23,
+      30,
+      31,
+      38,
+      39
+    ],
+    "ground": 17,
+    "source_art_sha256": "1b74593a350336d93f47f3a3092489784798825dbc181019b1e4360e2e1d0f14",
+    "instances": 18,
+    "examples": [
+      {
+        "group": 3,
+        "map": 29,
+        "x": 10,
+        "y": 5
+      },
+      {
+        "group": 3,
+        "map": 12,
+        "x": 18,
+        "y": 3
+      },
+      {
+        "group": 3,
+        "map": 12,
+        "x": 5,
+        "y": 12
+      }
+    ],
+    "reviewed": true,
+    "thor_qualified": false,
+    "review_note": "Complete own-source pattern and map instances reviewed; geometry uses shared tall-tree renderer. Diagnostic device review pending."
+  },
+  {
+    "game": "firered",
+    "rom_crc32": "dd88761c",
+    "rom_sha256": "3d0c79f1627022e18765766f6cb5ea067f6b5bf7dca115552189ad65a5c3a8ac",
+    "primary": "0x82d4a94",
+    "cells": [
+      14,
+      15,
+      30,
+      31,
+      38,
+      39
+    ],
+    "ground": 17,
+    "source_art_sha256": "e9f72d4909212dea2f638a3a8dac856ad2ae0319cd25fbe3c9ec81b7910c9100",
+    "instances": 13,
+    "examples": [
+      {
+        "group": 2,
+        "map": 56,
+        "x": 8,
+        "y": 14
+      },
+      {
+        "group": 2,
+        "map": 56,
+        "x": 21,
+        "y": 14
+      },
+      {
+        "group": 3,
+        "map": 18,
+        "x": 13,
+        "y": 14
+      }
+    ],
+    "reviewed": true,
+    "thor_qualified": false,
+    "review_note": "Complete own-source pattern and map instances reviewed; geometry uses shared tall-tree renderer. Diagnostic device review pending."
   }
 ]

@@ -706,5 +706,131 @@
     "reviewed": true,
     "behavior": 2,
     "review_note": "Own-ROM behavior2 and full grass tuft source art reviewed in starting region; explicit profile, Thor retest required."
+  },
+  {
+    "game": "classic",
+    "rom_crc32": "e4deb9be",
+    "rom_sha256": "4ab7b1f7fb246490d798f49db1511d197d7c72376b6347d08e7c557122c6d722",
+    "primary": "0x84ad600",
+    "id": 4,
+    "kind": 13,
+    "ground": 17,
+    "ink": [
+      3,
+      10,
+      5,
+      1,
+      4,
+      4
+    ],
+    "source_sha256": "198afb1386a9e7f14f9374dd0855e4a3c69e689efcef2e939fbb3b165a23ea59",
+    "reviewed": true,
+    "enabled": false,
+    "thor_qualified": false
+  },
+  {
+    "game": "classic",
+    "rom_crc32": "e4deb9be",
+    "rom_sha256": "4ab7b1f7fb246490d798f49db1511d197d7c72376b6347d08e7c557122c6d722",
+    "primary": "0x84ad600",
+    "id": 5,
+    "kind": 4,
+    "ground": 17,
+    "ink": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "source_sha256": "f875198be745cf24c8999f5d8c1acf706ae23ce1a1526da64b3dec9c73f91c31",
+    "reviewed": true,
+    "enabled": false,
+    "thor_qualified": false
+  },
+  {
+    "game": "frlgplus",
+    "rom_crc32": "964763c0",
+    "rom_sha256": "41b51f4f1d0a894dbb27572d6580821c6a192231f930d85c2805af664c13bbb6",
+    "primary": "0x8316a4c",
+    "id": 4,
+    "kind": 13,
+    "ground": 17,
+    "ink": [
+      3,
+      10,
+      5,
+      1,
+      4,
+      4
+    ],
+    "source_sha256": "198afb1386a9e7f14f9374dd0855e4a3c69e689efcef2e939fbb3b165a23ea59",
+    "reviewed": true,
+    "enabled": false,
+    "thor_qualified": false
+  },
+  {
+    "game": "frlgplus",
+    "rom_crc32": "964763c0",
+    "rom_sha256": "41b51f4f1d0a894dbb27572d6580821c6a192231f930d85c2805af664c13bbb6",
+    "primary": "0x8316a4c",
+    "id": 5,
+    "kind": 4,
+    "ground": 17,
+    "ink": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "source_sha256": "f875198be745cf24c8999f5d8c1acf706ae23ce1a1526da64b3dec9c73f91c31",
+    "reviewed": true,
+    "enabled": false,
+    "thor_qualified": false
+  },
+  {
+    "game": "firered",
+    "rom_crc32": "dd88761c",
+    "rom_sha256": "3d0c79f1627022e18765766f6cb5ea067f6b5bf7dca115552189ad65a5c3a8ac",
+    "primary": "0x82d4a94",
+    "id": 4,
+    "kind": 13,
+    "ground": 17,
+    "ink": [
+      3,
+      10,
+      5,
+      1,
+      4,
+      4
+    ],
+    "source_sha256": "198afb1386a9e7f14f9374dd0855e4a3c69e689efcef2e939fbb3b165a23ea59",
+    "reviewed": true,
+    "enabled": false,
+    "thor_qualified": false
+  },
+  {
+    "game": "firered",
+    "rom_crc32": "dd88761c",
+    "rom_sha256": "3d0c79f1627022e18765766f6cb5ea067f6b5bf7dca115552189ad65a5c3a8ac",
+    "primary": "0x82d4a94",
+    "id": 5,
+    "kind": 4,
+    "ground": 17,
+    "ink": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "source_sha256": "f875198be745cf24c8999f5d8c1acf706ae23ce1a1526da64b3dec9c73f91c31",
+    "reviewed": true,
+    "enabled": false,
+    "thor_qualified": false
   }
 ]

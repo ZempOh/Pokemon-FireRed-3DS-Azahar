@@ -998,3 +998,13 @@ These drafts have no Android device qualification and remain outside release
 scope. Reuse the shared input resolver, map/cell/building review tools and
 recorded proofs instead of repeating source discovery. Runtime source stays
 frozen during device capture; later fixes are prepared in isolated staging.
+
+The graphics/native-android-adapters branch assembles an initial diagnostic
+Android adapter for Classic, FRLG+ and retail FireRed. It adds own-source Pallet
+ground/buildings, flowers/shrubs, complete tree patterns and interactive-object
+art identities. Classic uses its distinct40-byte object layout and clone marker.
+FRLG+ addresses are bound to independently matched code ranges, not blanket
+trust in a nonmatching source rebuild. Shared season/weather rendering is enabled
+for these diagnostic profiles. This is partial environmental recognition, not
+whole-game coverage or a Thor pass. Interiors, wider terrain, authentic HM script
+tests and per-game UI persistence still require qualification before publication.

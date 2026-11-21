@@ -53450,5 +53450,143 @@
         ]
       }
     ]
+  },
+  {
+    "game": "classic",
+    "rom_crc32": "e4deb9be",
+    "climate": true,
+    "kanto": false,
+    "radical_props": false,
+    "engine": "diagnostic adapter; not Thor-qualified",
+    "land": [
+      {
+        "primary": "0x84ad600",
+        "ids": [
+          17,
+          9
+        ]
+      }
+    ],
+    "secondary_land": [
+      {
+        "primary": "0x84ad600",
+        "secondary": "0x84add10",
+        "ids": [
+          662,
+          654,
+          670,
+          661,
+          663,
+          710,
+          711,
+          702,
+          703,
+          718,
+          686
+        ],
+        "reviewed": true
+      }
+    ],
+    "secondary_land_masks": []
+  },
+  {
+    "game": "frlgplus",
+    "rom_crc32": "964763c0",
+    "climate": true,
+    "kanto": false,
+    "radical_props": false,
+    "engine": "diagnostic adapter; not Thor-qualified",
+    "land": [
+      {
+        "primary": "0x8316a4c",
+        "ids": [
+          8,
+          9,
+          17
+        ]
+      }
+    ],
+    "secondary_land": [
+      {
+        "primary": "0x8316a4c",
+        "secondary": "0x8316a64",
+        "ids": [
+          645,
+          646,
+          648,
+          652,
+          654,
+          655,
+          656,
+          661,
+          662,
+          663,
+          670,
+          671,
+          678,
+          679,
+          686,
+          687,
+          694,
+          702,
+          703,
+          710,
+          711,
+          718
+        ],
+        "reviewed": true
+      }
+    ],
+    "secondary_land_masks": []
+  },
+  {
+    "game": "firered",
+    "rom_crc32": "dd88761c",
+    "climate": true,
+    "kanto": false,
+    "radical_props": false,
+    "engine": "diagnostic adapter; not Thor-qualified",
+    "land": [
+      {
+        "primary": "0x82d4a94",
+        "ids": [
+          8,
+          9,
+          17
+        ]
+      }
+    ],
+    "secondary_land": [
+      {
+        "primary": "0x82d4a94",
+        "secondary": "0x82d4aac",
+        "ids": [
+          645,
+          646,
+          648,
+          652,
+          654,
+          655,
+          656,
+          661,
+          662,
+          663,
+          670,
+          671,
+          678,
+          679,
+          686,
+          687,
+          694,
+          702,
+          703,
+          710,
+          711,
+          718
+        ],
+        "reviewed": true
+      }
+    ],
+    "secondary_land_masks": []
   }
 ]

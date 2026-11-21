@@ -19,7 +19,7 @@ def validate(rows):
   else:assert shape['ridge_height']>shape['wall_height']
   if kind==2:
    assert .1<=shape['gable_x']<=.9
-   assert shape['roof_top']<=shape['gable_row']<shape['wall_row']
+   assert shape['roof_top']<shape['gable_row']<shape['wall_row']
    assert shape['wall_height']<shape.get('ridge_back_height',shape['ridge_height'])<=128
   key=(row['rom_crc32'],row['primary'],row['secondary'],tuple(row['cells']))
   assert key not in seen;seen.add(key)

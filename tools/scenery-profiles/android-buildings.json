@@ -651,7 +651,7 @@
       "back": 8,
       "wall_height": 16,
       "ridge_height": 48,
-      "roof_top": 0,
+      "roof_top": 16,
       "wall_row": 64,
       "roof_kind": 2,
       "hip_inset": 8,
@@ -770,12 +770,12 @@
       "back": 8,
       "wall_height": 16,
       "ridge_height": 30,
-      "roof_top": 0,
+      "roof_top": 8,
       "wall_row": 48,
       "roof_kind": 2,
       "hip_inset": 8,
       "gable_x": 0.65,
-      "gable_row": 38,
+      "gable_row": 36,
       "ridge_back_height": 30
     },
     "scope": "Reviewed source rectangle and geometry family; exact APK device qualification remains separate."
@@ -836,7 +836,7 @@
   },
   {
     "game": "modern-emerald",
-    "name": "littleroot-house",
+    "name": "petalburg-house",
     "reference": {
       "group": 0,
       "map": 0,
@@ -938,7 +938,7 @@
       "back": 0,
       "wall_height": 32,
       "ridge_height": 56,
-      "roof_top": 0,
+      "roof_top": 4,
       "wall_row": 48,
       "roof_kind": 0,
       "hip_inset": 8,
@@ -1071,7 +1071,7 @@
       "back": 8,
       "wall_height": 16,
       "ridge_height": 40,
-      "roof_top": 0,
+      "roof_top": 16,
       "wall_row": 64,
       "roof_kind": 2,
       "hip_inset": 8,
@@ -1130,7 +1130,7 @@
       "back": 8,
       "wall_height": 32,
       "ridge_height": 48,
-      "roof_top": 8,
+      "roof_top": 16,
       "wall_row": 48,
       "roof_kind": 0,
       "hip_inset": 8,
@@ -1139,5 +1139,53 @@
       "ridge_back_height": 48
     },
     "scope": "Reviewed source rectangle and geometry family; exact APK device qualification remains separate."
+  },
+  {
+    "game": "modern-emerald",
+    "name": "petalburg-center",
+    "reference": {
+      "group": 0,
+      "map": 0,
+      "x": 19,
+      "y": 13
+    },
+    "width": 4,
+    "height": 4,
+    "cells": [
+      72,
+      73,
+      74,
+      75,
+      80,
+      81,
+      82,
+      83,
+      88,
+      89,
+      90,
+      91,
+      96,
+      97,
+      98,
+      99
+    ],
+    "primary": "0x8bb3ac8",
+    "secondary": "0x8bb3ae0",
+    "rom_sha256": "bc7286dca750cf735480fece3ff68c7d86ecbf8391031b5ca2964da78fc945a1",
+    "source_art_sha256": "698ecf05f392dff4131fe7df15c55a39f2d1574e9a389e900876723749fe49d9",
+    "rom_crc32": "263a1187",
+    "ground": 1,
+    "reviewed": true,
+    "shape": {
+      "back": 8,
+      "wall_height": 32,
+      "ridge_height": 48,
+      "roof_top": 12,
+      "wall_row": 32,
+      "roof_kind": 0,
+      "hip_inset": 8,
+      "gable_x": 0.5,
+      "gable_row": 0
+    }
   }
 ]

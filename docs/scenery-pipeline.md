@@ -746,3 +746,18 @@ Keep flat-roof machinery, roof trim and unrecognized architecture limitations
 explicit. Test doors, camera edges, actors, winter and battle returns before
 publication. The private extraction pipeline retains source rectangles and
 hashes; the public registry contains geometry, IDs and hashes, never ROM pixels.
+
+Patch39's first all-game visual preflight exposed gable-face pixels stretched
+onto Let's Go's roof slopes. Patch40 separates roof-only UV rows from the vertical
+gable triangle and source-reviews the corresponding roof bands in Let's Go,
+Unbound and Odyssey. Geometry tests reject facade-row UVs on either slope.
+Modern Emerald's Petalburg Center is an additional reviewed pattern, bringing
+the building registry to nineteen patterns. None inherits patch37's timing pass.
+
+The latest user preference is matching 2D/3D screenshots and full-size 3D views,
+not new GIF deliverables. Preserve timing, audio, battle, weather and interaction
+checks. The private publication gate requires reviewed, hash-bound building
+screenshots and current-process mesh telemetry for every eligible game. Device
+videos can remain test evidence; public galleries and builder cards emphasize
+paired stills. Use shared profile registration and reversible patch export tools
+instead of repeatedly hand-editing generated headers for another game.

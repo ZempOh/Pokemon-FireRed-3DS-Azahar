@@ -37,8 +37,12 @@ static void SceneryBuilding_Emit(void* ctx,SceneryBuildingTriangle emit,const Sc
         float peak=w*s->gableX;
         SceneryBuildingVertex front={peak,s->ridgeHeight,f,peak,s->gableRow+.5f};
         SceneryBuildingVertex back={peak,s->ridgeBackHeight,b,peak,s->roofTop+.5f};
-        SceneryBuilding_Quad(ctx,emit,rl,tl,front,back,216);
-        SceneryBuilding_Quad(ctx,emit,tr,rr,back,front,248);
+        /* Roof planes sample only roof rows. The vertical gable keeps its own
+         * facade triangle; its windows must never stretch onto either slope. */
+        SceneryBuildingVertex roofLeft=tl,roofRight=tr,roofFront=front;
+        roofLeft.v=roofRight.v=roofFront.v=s->gableRow-.5f;
+        SceneryBuilding_Quad(ctx,emit,rl,roofLeft,roofFront,back,216);
+        SceneryBuilding_Quad(ctx,emit,roofRight,rr,back,roofFront,248);
         emit(ctx,&tl,&tr,&front,250);
         SceneryBuildingVertex rb=rr,lb=rl,rear=back;
         rb.v=lb.v=s->wallRow-.5f;rear.v=s->gableRow+.5f;

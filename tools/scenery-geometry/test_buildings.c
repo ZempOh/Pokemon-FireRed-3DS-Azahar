@@ -17,6 +17,7 @@ static void check(int kind,float peak) {
     if(kind==2 && peak>.6f)s.ridgeHeight=48; /* Sloping ridge on compound entry roofs. */
     count=0;SceneryBuilding_Emit(0,collect,&s);
     assert(count==(unsigned)(flat?36:48));
+    if(kind==2)for(unsigned i=30;i<42;i++)assert(vertices[i].v<s.gableRow);
     float highest=0;
     for(unsigned i=0;i<count;i++) {
         SceneryBuildingVertex a=vertices[i],b=vertices[i/3*3+(i+1)%3];unsigned matches=0;

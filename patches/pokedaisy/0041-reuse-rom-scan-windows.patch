@@ -1,0 +1,70 @@
+--- a/app/src/main/kotlin/com/pokedaisy/app/companion/data/RomFiles.kt
++++ b/app/src/main/kotlin/com/pokedaisy/app/companion/data/RomFiles.kt
+@@ -61,9 +61,19 @@
+         if (i < 0 || i > size - n) throw IndexOutOfBoundsException("$n bytes at $i, limit $size")
+         if (i < start || i + n > end) {
+             start = maxOf(0, i - BACK)
+-            val got = f.readUpTo(start.toLong(), minOf(WINDOW, size - start))
+-            got.copyInto(window)
+-            end = start + got.size
++            // Several startup signature scans walk the whole cart. Allocating
++            // a temporary 64 KiB array for every window produced hundreds of
++            // MiB of garbage while the emulator's audio was already playing.
++            // Read into this reader's own window, retaining short-read/EOF
++            // behavior and the look-behind bytes used by signature matchers.
++            val wanted = minOf(WINDOW, size - start)
++            var got = 0
++            while (got < wanted) {
++                val read = f.read(start.toLong() + got, window, got, wanted - got)
++                if (read <= 0) break
++                got += read
++            }
++            end = start + got
+             if (i + n > end) throw IndexOutOfBoundsException("$n bytes at $i: the file ended at $end")
+         }
+         return i - start
+--- a/app/src/test/kotlin/com/pokedaisy/app/companion/data/RomFilesTest.kt
++++ b/app/src/test/kotlin/com/pokedaisy/app/companion/data/RomFilesTest.kt
+@@ -6,6 +6,7 @@
+ import org.junit.Assert.assertEquals
+ import org.junit.Assert.assertNull
+ import org.junit.Assert.assertThrows
++import org.junit.Assert.assertTrue
+ import org.junit.Test
+ import java.io.File
+ import kotlin.random.Random
+@@ -51,4 +52,34 @@
+         }
+         assertArrayEquals(bytes, readRomFile(f.toOkioPath()))
+     }
++
++    @Test fun `whole cart scans do not allocate another cart per pass`() = withFile { f ->
++        val allocation = java.lang.management.ManagementFactory.getThreadMXBean() as? com.sun.management.ThreadMXBean
++        org.junit.Assume.assumeTrue(allocation?.isThreadAllocatedMemorySupported == true)
++        val counter = allocation!!
++        counter.isThreadAllocatedMemoryEnabled = true
++        f.writeBytes(ByteArray(4 * 1024 * 1024) { (it xor (it ushr 8)).toByte() })
++        withRomFile(f.toOkioPath()) { h ->
++            val reader = FileLittleEndian(h)
++            fun scan(): Long {
++                var sum = 0L
++                var offset = 0
++                while (offset <= reader.limit() - 4) {
++                    sum += reader.getInt(offset)
++                    offset += 4
++                }
++                return sum
++            }
++            val expected = scan() // Warm file/JVM paths outside the allocation budget.
++            val thread = Thread.currentThread().id
++            val before = counter.getThreadAllocatedBytes(thread)
++            var total = 0L
++            repeat(4) { total += scan() }
++            val allocated = counter.getThreadAllocatedBytes(thread) - before
++            assertEquals(expected * 4, total)
++            // Old window copying allocates over 16 MiB; allow ample bookkeeping
++            // without making this a machine-speed-dependent timing assertion.
++            assertTrue("Scanner allocated $allocated bytes", allocated < 4 * 1024 * 1024)
++        }
++    }
+ }

@@ -104,5 +104,5 @@ jobs:
           retention-days: 7
       - name: Verify Classic partner and egg display
         working-directory: pokedaisy
-        run: ./gradlew :shared:testDebugUnitTest --tests com.pokedaisy.app.companion.data.PokeClassicPartyTest --stacktrace
+        run: ./gradlew :shared:testDebugUnitTest --tests com.pokedaisy.app.companion.data.PokeClassicPartyTest --tests com.pokedaisy.app.companion.data.RomFilesTest --stacktrace
 

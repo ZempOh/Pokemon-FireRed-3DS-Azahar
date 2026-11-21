@@ -761,3 +761,14 @@ screenshots and current-process mesh telemetry for every eligible game. Device
 videos can remain test evidence; public galleries and builder cards emphasize
 paired stills. Use shared profile registration and reversible patch export tools
 instead of repeatedly hand-editing generated headers for another game.
+
+Patch40's Fakemon building-scene probe held 59.7 FPS after startup but retained
+three audio underruns from its first two seconds. The process log also recorded
+allocation GC blocking the emulation thread while parallel ROM scanners ran.
+`FileLittleEndian` was allocating and copying a fresh 64 KiB temporary array on
+every window refill. Patch41 reads directly into its existing window, preserving
+look-behind and short-read semantics. A host allocation-budget regression scans
+16 MiB after warmup and rejects the former cart-sized allocation churn. This is
+a shared scanner fix, not a game-specific timing exception. Keep the failed
+device evidence, test cold starts on the exact new APK, then rerun qualification;
+do not reset counters, increase allowed underruns or inherit patch40 passes.

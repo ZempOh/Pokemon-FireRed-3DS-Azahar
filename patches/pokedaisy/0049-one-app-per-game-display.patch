@@ -1,0 +1,68 @@
+diff --git a/app/src/dev/res/values/strings.xml b/app/src/dev/res/values/strings.xml
+--- a/app/src/dev/res/values/strings.xml
++++ b/app/src/dev/res/values/strings.xml
+@@ -1,5 +1,5 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <!-- The dev build (beside the release app): its own name in the launcher. -->
+ <resources>
+-    <string name="app_name">PokeDaisy Voxel Preview</string>
++    <string name="app_name">PokéDaisy</string>
+ </resources>
+diff --git a/app/src/main/kotlin/com/pokedaisy/app/Prefs.kt b/app/src/main/kotlin/com/pokedaisy/app/Prefs.kt
+--- a/app/src/main/kotlin/com/pokedaisy/app/Prefs.kt
++++ b/app/src/main/kotlin/com/pokedaisy/app/Prefs.kt
+@@ -653,6 +653,15 @@
+         p.edit().putBoolean("voxel_field_$crc", enabled).apply()
+     }
+ 
++    /** Keep each game's display choice independent; retain existing 3D opt-ins. */
++    fun gameAspectFor(crc: String): GameAspect =
++        GameAspect.entries.firstOrNull { it.name == p.getString("game_aspect_$crc", null) }
++            ?: if (voxelFieldFor(crc)) GameAspect.WIDE else gameAspect
++
++    fun setGameAspectFor(crc: String, aspect: GameAspect) {
++        p.edit().putString("game_aspect_$crc", aspect.name).apply()
++    }
++
+     /** How the game sits on the top screen: the GBA's 3:2, stretched to fill it, or WIDE (more of the
+      * map at the sides). Before WIDE this was a boolean, "stretch_game", which still picks STRETCH. */
+     var gameAspect: GameAspect
+diff --git a/app/src/main/kotlin/com/pokedaisy/app/PokeDaisyActivity.kt b/app/src/main/kotlin/com/pokedaisy/app/PokeDaisyActivity.kt
+--- a/app/src/main/kotlin/com/pokedaisy/app/PokeDaisyActivity.kt
++++ b/app/src/main/kotlin/com/pokedaisy/app/PokeDaisyActivity.kt
+@@ -2422,10 +2422,10 @@
+             Prefs(this@PokeDaisyActivity).statusBarOnCompanion = on
+             runOnUiThread { syncGameScreen() }
+         }
+-        override val gameAspect get() = Prefs(this@PokeDaisyActivity).gameAspect
++        override val gameAspect get() = Prefs(this@PokeDaisyActivity).gameAspectFor(romKey)
+         override fun setGameAspect(aspect: com.pokedaisy.app.companion.GameAspect) {
+             if (aspect == com.pokedaisy.app.companion.GameAspect.WIDE) com.pokedaisy.app.companion.FeatureTips.used(TipId.EXPAND)
+-            Prefs(this@PokeDaisyActivity).gameAspect = aspect
++            Prefs(this@PokeDaisyActivity).setGameAspectFor(romKey, aspect)
+             runOnUiThread { syncGameScreen() }
+         }
+         override val wideSupported get() = wideGame != WideScreen.OFF
+@@ -4508,7 +4508,7 @@
+         val stageLayout = statusBar.parent as? GameStageLayout
+         // WIDE on a game it doesn't know is ORIGINAL; otherwise the game takes the whole area and
+         // the core draws the overworld into the room beside it.
+-        val aspect = prefs.gameAspect.let { if (it == GameAspect.WIDE && wideGame == WideScreen.OFF) GameAspect.ORIGINAL else it }
++        val aspect = prefs.gameAspectFor(romKey).let { if (it == GameAspect.WIDE && wideGame == WideScreen.OFF) GameAspect.ORIGINAL else it }
+         // SCREEN > OVERLAY: not on a phone held upright, where the game is its own shape across the top, nor with
+         // EXPAND, whose map fills the screen.
+         // Nor on a DS game's layouts (DS LAYOUT), which put the game's own backdrop round it.
+diff --git a/app/src/main/kotlin/com/pokedaisy/app/companion/ui/CompanionSettingsScreen.kt b/app/src/main/kotlin/com/pokedaisy/app/companion/ui/CompanionSettingsScreen.kt
+--- a/app/src/main/kotlin/com/pokedaisy/app/companion/ui/CompanionSettingsScreen.kt
++++ b/app/src/main/kotlin/com/pokedaisy/app/companion/ui/CompanionSettingsScreen.kt
+@@ -789,8 +789,8 @@
+             }
+         },
+         if (s.voxelFieldSupported) SettingRow(
+-            "VOXEL 3D", onOff(s.voxelField),
+-            subtitle = "Experimental 3D overworld using Expand",
++            "GRAPHICS", if (s.voxelField) "3D" else "2D",
++            subtitle = "Saved separately for this game; battles keep their original graphics",
+         ) { s.setVoxelField(!s.voxelField); changed() } else null,
+         if (s.voxelFieldSupported) SettingRow(
+             "VISUAL CLIMATE", listOf("Original", "Automatic", "Manual").getOrElse(s.voxelClimate and 3) { "Original" },

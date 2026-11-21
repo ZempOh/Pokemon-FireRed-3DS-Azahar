@@ -76,6 +76,24 @@ shared shape. These profiles establish recognition, not complete scenery coverag
 
 ## Findings that must not be rediscovered
 
+- Ash Gray's retail party Strength entry at `0x081be16e` branches to
+  `0x081be179`, where this verified ROM contains erased `FF` bytes instead of
+  FireRed's `setflag 0x805` script. Both inventoried graphics-97 boulders also
+  have cartridge-header talk pointers. The synthetic party-move fixture cannot
+  qualify Strength; do not patch RAM to manufacture a gameplay pass. Local
+  `all16-thor/ash-strength-script-audit50.json` records the ROM identity and bytes.
+- Reapplying Better Emerald 2's creator patch to the newly supplied clean Emerald
+  with validation deliberately disabled produces exactly the previously held
+  SHA-256 `2503ed1832224d280d73c2e7e6ffc4b3dc90b58b1df2cfce70d587bed3b5dca3`.
+  A fresh host single-attack replay again reset to the Game Freak intro. This
+  diagnostic exception does not relax publication checksum validation. The
+  first game's checksum has not been established.
+- The consolidated Android app retains the existing package/signing identity
+  so preview saves remain available. Graphics and aspect choices are keyed by
+  ROM identity. Before hiding duplicate launchers, back up all readable data;
+  retain inaccessible regular-app private data in place. Never uninstall it
+  merely because external saves were copied.
+
 - Run `tools/scenery_transfer.py --manifest LOCAL/manifest.json --reference
   LOCAL/radical.gba --runtime POKEDAISY/app/src/main/cpp/pk_wide_games.h --output
   report.json` before investigating additional FireRed games. It verifies each

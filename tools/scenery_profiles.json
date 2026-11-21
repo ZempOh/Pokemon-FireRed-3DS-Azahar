@@ -31,7 +31,8 @@
         "3ds_port/scripts/gen_voxel_trees.py"
       ],
       "active_models": "3ds_port/scripts/classic_building_specs.py",
-      "notes": "The imported Emerald voxel_building_specs is not the active Classic model list. The tree renderer has no FireRed room-renderer path."
+      "notes": "The imported Emerald voxel_building_specs is not the active Classic model list. The tree renderer has no FireRed room-renderer path.",
+      "android_adapter_status": "Isolated source-reviewed draft; not enabled or Thor-qualified. See scenery-pipeline.md and private native-three-android proofs."
     },
     "firered": {
       "repo": "firered",
@@ -46,7 +47,8 @@
       ],
       "active_models": "3ds_port/scripts/fr_building_specs.py",
       "room_models": "3ds_port/scripts/fr_gen_rooms.py",
-      "notes": "Room shapes and their packed texture must be generated together. Keep original row fields and UVs unless rebuilding the matching recipe."
+      "notes": "Room shapes and their packed texture must be generated together. Keep original row fields and UVs unless rebuilding the matching recipe.",
+      "android_adapter_status": "Isolated source-reviewed draft; not enabled or Thor-qualified. See scenery-pipeline.md and private native-three-android proofs."
     },
     "frlg": {
       "repo": "frlg",
@@ -61,7 +63,8 @@
       ],
       "active_models": "3ds_port/scripts/fr_building_specs.py",
       "room_models": "3ds_port/scripts/fr_gen_rooms.py",
-      "notes": "Shares FireRed renderer structure, but rebuilding from the FRLG+ ROM produces different room rows and texture slots. Never copy generated tables by game-name similarity."
+      "notes": "Shares FireRed renderer structure, but rebuilding from the FRLG+ ROM produces different room rows and texture slots. Never copy generated tables by game-name similarity.",
+      "android_adapter_status": "Isolated source-reviewed draft; not enabled or Thor-qualified. See scenery-pipeline.md and private native-three-android proofs."
     },
     "letsgo": {
       "repo": "pokedaisy",

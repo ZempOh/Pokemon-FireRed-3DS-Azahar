@@ -975,3 +975,26 @@ pass. It subtracts already registered full ground and masks, then produces
 unapproved source/preview pairs with exact ROM and map hashes. It deliberately
 does not treat shared palette colors as semantic proof. Review structures and
 foliage separately, preserve exclusions, and still check the final Thor image.
+
+
+Exact57 passed the Lazarus post-ground and Let Go corner pilots, but a full-size
+Odyssey review exposed an olive ground-shadow ring around tree bases0x40/0x41.
+Patch57 masks source ground palette52/53/5e/5f while preserving trunk54/58/59.
+The mask transfers to11 tileset pairs only after both rendered artwork and mask
+rows match the reviewed source. Ordinary green-ground heuristics missed the
+gray outer shadow; include shaded ground materials in winter audits. Exact57
+is rejected, all captures remain retained, and new device review is required.
+
+Missing Android adapters remain isolated under the private native-three-android
+work area. Classic needs40-byte objects and connected-template marker255; the
+nine existing families retain36-byte records and marker1. FRLG+ has19 addresses
+bound to literal references inside exact-matching local-ROM functions; its
+rebuilt whole ROM differs, so unmatched symbols are not authoritative. Save
+offsets8e0/ee0/1000 are independently instruction-checked. Own-map extraction,
+source-cell review and facade audits now prepare Classic/FRLG+ building drafts.
+Own-material flower/shrub profiles are separate from failed exact-art transfers.
+FireRed's verified local base has425 map headers and60 tileset pairs inventoried.
+These drafts have no Android device qualification and remain outside release
+scope. Reuse the shared input resolver, map/cell/building review tools and
+recorded proofs instead of repeating source discovery. Runtime source stays
+frozen during device capture; later fixes are prepared in isolated staging.

@@ -9,6 +9,16 @@ PROOF=json.loads((ROOT/'android-secondary-land-review.json').read_text())
 MASKS=json.loads((ROOT/'android-land-mask-review.json').read_text())
 
 class SecondaryLandTests(unittest.TestCase):
+ def test_odyssey_tree_shadow_ground_preserves_trunk(self):
+  cap=next(p for p in CAPS if p['game']=='odyssey')
+  groups=[g for g in cap['secondary_land_masks'] if any(c['id'] in (64,65) for c in g['cells'])]
+  self.assertEqual(len(groups),11)
+  for group in groups:
+   for cell in group['cells']:
+    if cell['id'] not in (64,65):continue
+    self.assertEqual(cell['rows'][0],0x7ff if cell['id']==64 else 0xffe0)
+    self.assertEqual(cell['rows'][8],0x1ff if cell['id']==64 else 0xff80)
+    self.assertEqual(cell['rows'][15],0xffff)
  def test_lazarus_acrisia_ground_preserves_posts_and_facade(self):
   cap=next(p for p in CAPS if p['game']=='lazarus')
   group=next(g for g in cap['secondary_land_masks'] if int(g['secondary'],16)==0x8e3e92c)

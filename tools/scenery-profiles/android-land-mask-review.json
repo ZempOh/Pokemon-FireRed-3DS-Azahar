@@ -5702,6 +5702,50 @@
         7
       ],
       "rgba_sha256": "9ad45a740c4aa144dde7bd806587a9d786e299055ace13d1ed9b0de1d611a599"
+    },
+    {
+      "id": "odyssey-shadow-ground:0x40",
+      "rows": [
+        2047,
+        4095,
+        4095,
+        4095,
+        1023,
+        511,
+        511,
+        1023,
+        511,
+        511,
+        1023,
+        4095,
+        40959,
+        65535,
+        65535,
+        65535
+      ],
+      "rgba_sha256": "85f1f70efb23741126e860cd3490599d2edb66cb83cf4311e28c47af2884f8c3"
+    },
+    {
+      "id": "odyssey-shadow-ground:0x41",
+      "rows": [
+        65504,
+        65520,
+        65520,
+        65520,
+        65472,
+        65408,
+        65408,
+        65472,
+        65408,
+        65408,
+        65472,
+        65520,
+        65529,
+        65535,
+        65535,
+        65535
+      ],
+      "rgba_sha256": "6a27da82cf3ac3c9a515cde355f2113b91a4c5415f1017bb7eeba92092697a68"
     }
   ],
   "targets": [
@@ -64149,6 +64193,622 @@
             5,
             3,
             7
+          ]
+        }
+      ]
+    },
+    {
+      "game": "odyssey",
+      "rom_crc32": "6c5ee1b2",
+      "rom_sha256": "44c7e3eafab19c39df7c39d54bafb78a1d9caf7c371244b6f5efb12cfd98d0d0",
+      "primary": "0x82d4a94",
+      "secondary": "0x82d4b24",
+      "reviewed": true,
+      "cells": [
+        {
+          "id": 64,
+          "reference_id": "odyssey-shadow-ground:0x40",
+          "rgba_sha256": "85f1f70efb23741126e860cd3490599d2edb66cb83cf4311e28c47af2884f8c3",
+          "rows": [
+            2047,
+            4095,
+            4095,
+            4095,
+            1023,
+            511,
+            511,
+            1023,
+            511,
+            511,
+            1023,
+            4095,
+            40959,
+            65535,
+            65535,
+            65535
+          ]
+        },
+        {
+          "id": 65,
+          "reference_id": "odyssey-shadow-ground:0x41",
+          "rgba_sha256": "6a27da82cf3ac3c9a515cde355f2113b91a4c5415f1017bb7eeba92092697a68",
+          "rows": [
+            65504,
+            65520,
+            65520,
+            65520,
+            65472,
+            65408,
+            65408,
+            65472,
+            65408,
+            65408,
+            65472,
+            65520,
+            65529,
+            65535,
+            65535,
+            65535
+          ]
+        }
+      ]
+    },
+    {
+      "game": "odyssey",
+      "rom_crc32": "6c5ee1b2",
+      "rom_sha256": "44c7e3eafab19c39df7c39d54bafb78a1d9caf7c371244b6f5efb12cfd98d0d0",
+      "primary": "0x82d4a94",
+      "secondary": "0x82d4b54",
+      "reviewed": true,
+      "cells": [
+        {
+          "id": 64,
+          "reference_id": "odyssey-shadow-ground:0x40",
+          "rgba_sha256": "85f1f70efb23741126e860cd3490599d2edb66cb83cf4311e28c47af2884f8c3",
+          "rows": [
+            2047,
+            4095,
+            4095,
+            4095,
+            1023,
+            511,
+            511,
+            1023,
+            511,
+            511,
+            1023,
+            4095,
+            40959,
+            65535,
+            65535,
+            65535
+          ]
+        },
+        {
+          "id": 65,
+          "reference_id": "odyssey-shadow-ground:0x41",
+          "rgba_sha256": "6a27da82cf3ac3c9a515cde355f2113b91a4c5415f1017bb7eeba92092697a68",
+          "rows": [
+            65504,
+            65520,
+            65520,
+            65520,
+            65472,
+            65408,
+            65408,
+            65472,
+            65408,
+            65408,
+            65472,
+            65520,
+            65529,
+            65535,
+            65535,
+            65535
+          ]
+        }
+      ]
+    },
+    {
+      "game": "odyssey",
+      "rom_crc32": "6c5ee1b2",
+      "rom_sha256": "44c7e3eafab19c39df7c39d54bafb78a1d9caf7c371244b6f5efb12cfd98d0d0",
+      "primary": "0x82d4a94",
+      "secondary": "0x82d4e24",
+      "reviewed": true,
+      "cells": [
+        {
+          "id": 64,
+          "reference_id": "odyssey-shadow-ground:0x40",
+          "rgba_sha256": "85f1f70efb23741126e860cd3490599d2edb66cb83cf4311e28c47af2884f8c3",
+          "rows": [
+            2047,
+            4095,
+            4095,
+            4095,
+            1023,
+            511,
+            511,
+            1023,
+            511,
+            511,
+            1023,
+            4095,
+            40959,
+            65535,
+            65535,
+            65535
+          ]
+        },
+        {
+          "id": 65,
+          "reference_id": "odyssey-shadow-ground:0x41",
+          "rgba_sha256": "6a27da82cf3ac3c9a515cde355f2113b91a4c5415f1017bb7eeba92092697a68",
+          "rows": [
+            65504,
+            65520,
+            65520,
+            65520,
+            65472,
+            65408,
+            65408,
+            65472,
+            65408,
+            65408,
+            65472,
+            65520,
+            65529,
+            65535,
+            65535,
+            65535
+          ]
+        }
+      ]
+    },
+    {
+      "game": "odyssey",
+      "rom_crc32": "6c5ee1b2",
+      "rom_sha256": "44c7e3eafab19c39df7c39d54bafb78a1d9caf7c371244b6f5efb12cfd98d0d0",
+      "primary": "0x82d4a94",
+      "secondary": "0x82d4adc",
+      "reviewed": true,
+      "cells": [
+        {
+          "id": 64,
+          "reference_id": "odyssey-shadow-ground:0x40",
+          "rgba_sha256": "85f1f70efb23741126e860cd3490599d2edb66cb83cf4311e28c47af2884f8c3",
+          "rows": [
+            2047,
+            4095,
+            4095,
+            4095,
+            1023,
+            511,
+            511,
+            1023,
+            511,
+            511,
+            1023,
+            4095,
+            40959,
+            65535,
+            65535,
+            65535
+          ]
+        },
+        {
+          "id": 65,
+          "reference_id": "odyssey-shadow-ground:0x41",
+          "rgba_sha256": "6a27da82cf3ac3c9a515cde355f2113b91a4c5415f1017bb7eeba92092697a68",
+          "rows": [
+            65504,
+            65520,
+            65520,
+            65520,
+            65472,
+            65408,
+            65408,
+            65472,
+            65408,
+            65408,
+            65472,
+            65520,
+            65529,
+            65535,
+            65535,
+            65535
+          ]
+        }
+      ]
+    },
+    {
+      "game": "odyssey",
+      "rom_crc32": "6c5ee1b2",
+      "rom_sha256": "44c7e3eafab19c39df7c39d54bafb78a1d9caf7c371244b6f5efb12cfd98d0d0",
+      "primary": "0x82d4a94",
+      "secondary": "0x82d4af4",
+      "reviewed": true,
+      "cells": [
+        {
+          "id": 64,
+          "reference_id": "odyssey-shadow-ground:0x40",
+          "rgba_sha256": "85f1f70efb23741126e860cd3490599d2edb66cb83cf4311e28c47af2884f8c3",
+          "rows": [
+            2047,
+            4095,
+            4095,
+            4095,
+            1023,
+            511,
+            511,
+            1023,
+            511,
+            511,
+            1023,
+            4095,
+            40959,
+            65535,
+            65535,
+            65535
+          ]
+        },
+        {
+          "id": 65,
+          "reference_id": "odyssey-shadow-ground:0x41",
+          "rgba_sha256": "6a27da82cf3ac3c9a515cde355f2113b91a4c5415f1017bb7eeba92092697a68",
+          "rows": [
+            65504,
+            65520,
+            65520,
+            65520,
+            65472,
+            65408,
+            65408,
+            65472,
+            65408,
+            65408,
+            65472,
+            65520,
+            65529,
+            65535,
+            65535,
+            65535
+          ]
+        }
+      ]
+    },
+    {
+      "game": "odyssey",
+      "rom_crc32": "6c5ee1b2",
+      "rom_sha256": "44c7e3eafab19c39df7c39d54bafb78a1d9caf7c371244b6f5efb12cfd98d0d0",
+      "primary": "0x82d4a94",
+      "secondary": "0x82d4aac",
+      "reviewed": true,
+      "cells": [
+        {
+          "id": 64,
+          "reference_id": "odyssey-shadow-ground:0x40",
+          "rgba_sha256": "85f1f70efb23741126e860cd3490599d2edb66cb83cf4311e28c47af2884f8c3",
+          "rows": [
+            2047,
+            4095,
+            4095,
+            4095,
+            1023,
+            511,
+            511,
+            1023,
+            511,
+            511,
+            1023,
+            4095,
+            40959,
+            65535,
+            65535,
+            65535
+          ]
+        },
+        {
+          "id": 65,
+          "reference_id": "odyssey-shadow-ground:0x41",
+          "rgba_sha256": "6a27da82cf3ac3c9a515cde355f2113b91a4c5415f1017bb7eeba92092697a68",
+          "rows": [
+            65504,
+            65520,
+            65520,
+            65520,
+            65472,
+            65408,
+            65408,
+            65472,
+            65408,
+            65408,
+            65472,
+            65520,
+            65529,
+            65535,
+            65535,
+            65535
+          ]
+        }
+      ]
+    },
+    {
+      "game": "odyssey",
+      "rom_crc32": "6c5ee1b2",
+      "rom_sha256": "44c7e3eafab19c39df7c39d54bafb78a1d9caf7c371244b6f5efb12cfd98d0d0",
+      "primary": "0x82d4a94",
+      "secondary": "0x82d4b9c",
+      "reviewed": true,
+      "cells": [
+        {
+          "id": 64,
+          "reference_id": "odyssey-shadow-ground:0x40",
+          "rgba_sha256": "85f1f70efb23741126e860cd3490599d2edb66cb83cf4311e28c47af2884f8c3",
+          "rows": [
+            2047,
+            4095,
+            4095,
+            4095,
+            1023,
+            511,
+            511,
+            1023,
+            511,
+            511,
+            1023,
+            4095,
+            40959,
+            65535,
+            65535,
+            65535
+          ]
+        },
+        {
+          "id": 65,
+          "reference_id": "odyssey-shadow-ground:0x41",
+          "rgba_sha256": "6a27da82cf3ac3c9a515cde355f2113b91a4c5415f1017bb7eeba92092697a68",
+          "rows": [
+            65504,
+            65520,
+            65520,
+            65520,
+            65472,
+            65408,
+            65408,
+            65472,
+            65408,
+            65408,
+            65472,
+            65520,
+            65529,
+            65535,
+            65535,
+            65535
+          ]
+        }
+      ]
+    },
+    {
+      "game": "odyssey",
+      "rom_crc32": "6c5ee1b2",
+      "rom_sha256": "44c7e3eafab19c39df7c39d54bafb78a1d9caf7c371244b6f5efb12cfd98d0d0",
+      "primary": "0x82d4a94",
+      "secondary": "0x82d504c",
+      "reviewed": true,
+      "cells": [
+        {
+          "id": 64,
+          "reference_id": "odyssey-shadow-ground:0x40",
+          "rgba_sha256": "85f1f70efb23741126e860cd3490599d2edb66cb83cf4311e28c47af2884f8c3",
+          "rows": [
+            2047,
+            4095,
+            4095,
+            4095,
+            1023,
+            511,
+            511,
+            1023,
+            511,
+            511,
+            1023,
+            4095,
+            40959,
+            65535,
+            65535,
+            65535
+          ]
+        },
+        {
+          "id": 65,
+          "reference_id": "odyssey-shadow-ground:0x41",
+          "rgba_sha256": "6a27da82cf3ac3c9a515cde355f2113b91a4c5415f1017bb7eeba92092697a68",
+          "rows": [
+            65504,
+            65520,
+            65520,
+            65520,
+            65472,
+            65408,
+            65408,
+            65472,
+            65408,
+            65408,
+            65472,
+            65520,
+            65529,
+            65535,
+            65535,
+            65535
+          ]
+        }
+      ]
+    },
+    {
+      "game": "odyssey",
+      "rom_crc32": "6c5ee1b2",
+      "rom_sha256": "44c7e3eafab19c39df7c39d54bafb78a1d9caf7c371244b6f5efb12cfd98d0d0",
+      "primary": "0x82d4a94",
+      "secondary": "0x82d5064",
+      "reviewed": true,
+      "cells": [
+        {
+          "id": 64,
+          "reference_id": "odyssey-shadow-ground:0x40",
+          "rgba_sha256": "85f1f70efb23741126e860cd3490599d2edb66cb83cf4311e28c47af2884f8c3",
+          "rows": [
+            2047,
+            4095,
+            4095,
+            4095,
+            1023,
+            511,
+            511,
+            1023,
+            511,
+            511,
+            1023,
+            4095,
+            40959,
+            65535,
+            65535,
+            65535
+          ]
+        },
+        {
+          "id": 65,
+          "reference_id": "odyssey-shadow-ground:0x41",
+          "rgba_sha256": "6a27da82cf3ac3c9a515cde355f2113b91a4c5415f1017bb7eeba92092697a68",
+          "rows": [
+            65504,
+            65520,
+            65520,
+            65520,
+            65472,
+            65408,
+            65408,
+            65472,
+            65408,
+            65408,
+            65472,
+            65520,
+            65529,
+            65535,
+            65535,
+            65535
+          ]
+        }
+      ]
+    },
+    {
+      "game": "odyssey",
+      "rom_crc32": "6c5ee1b2",
+      "rom_sha256": "44c7e3eafab19c39df7c39d54bafb78a1d9caf7c371244b6f5efb12cfd98d0d0",
+      "primary": "0x82d4a94",
+      "secondary": "0x82d507c",
+      "reviewed": true,
+      "cells": [
+        {
+          "id": 64,
+          "reference_id": "odyssey-shadow-ground:0x40",
+          "rgba_sha256": "85f1f70efb23741126e860cd3490599d2edb66cb83cf4311e28c47af2884f8c3",
+          "rows": [
+            2047,
+            4095,
+            4095,
+            4095,
+            1023,
+            511,
+            511,
+            1023,
+            511,
+            511,
+            1023,
+            4095,
+            40959,
+            65535,
+            65535,
+            65535
+          ]
+        },
+        {
+          "id": 65,
+          "reference_id": "odyssey-shadow-ground:0x41",
+          "rgba_sha256": "6a27da82cf3ac3c9a515cde355f2113b91a4c5415f1017bb7eeba92092697a68",
+          "rows": [
+            65504,
+            65520,
+            65520,
+            65520,
+            65472,
+            65408,
+            65408,
+            65472,
+            65408,
+            65408,
+            65472,
+            65520,
+            65529,
+            65535,
+            65535,
+            65535
+          ]
+        }
+      ]
+    },
+    {
+      "game": "odyssey",
+      "rom_crc32": "6c5ee1b2",
+      "rom_sha256": "44c7e3eafab19c39df7c39d54bafb78a1d9caf7c371244b6f5efb12cfd98d0d0",
+      "primary": "0x82d4a94",
+      "secondary": "0x82d4b0c",
+      "reviewed": true,
+      "cells": [
+        {
+          "id": 64,
+          "reference_id": "odyssey-shadow-ground:0x40",
+          "rgba_sha256": "85f1f70efb23741126e860cd3490599d2edb66cb83cf4311e28c47af2884f8c3",
+          "rows": [
+            2047,
+            4095,
+            4095,
+            4095,
+            1023,
+            511,
+            511,
+            1023,
+            511,
+            511,
+            1023,
+            4095,
+            40959,
+            65535,
+            65535,
+            65535
+          ]
+        },
+        {
+          "id": 65,
+          "reference_id": "odyssey-shadow-ground:0x41",
+          "rgba_sha256": "6a27da82cf3ac3c9a515cde355f2113b91a4c5415f1017bb7eeba92092697a68",
+          "rows": [
+            65504,
+            65520,
+            65520,
+            65520,
+            65472,
+            65408,
+            65408,
+            65472,
+            65408,
+            65408,
+            65472,
+            65520,
+            65529,
+            65535,
+            65535,
+            65535
           ]
         }
       ]

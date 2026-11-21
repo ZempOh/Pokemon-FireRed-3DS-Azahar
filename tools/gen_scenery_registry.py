@@ -21,6 +21,34 @@ def validate_secondary_land(capabilities, review):
             proven.add(key)
     assert declared==proven, 'Secondary land requires exact reviewed source evidence'
 
+def validate_land_masks(capabilities, review):
+    declared=set();proven=set()
+    for p in capabilities:
+        for group in p.get('secondary_land_masks',[]):
+            assert group['reviewed']
+            for cell in group['cells']:
+                rows=tuple(cell['rows'])
+                assert len(rows)==16 and any(rows) and not all(x==65535 for x in rows)
+                assert all(0<=x<=65535 for x in rows)
+                key=(p['game'],p['rom_crc32'],int(group['primary'],16),int(group['secondary'],16),cell['id'],rows)
+                assert key not in declared
+                declared.add(key)
+    reference={x['id']:x for x in review['reference_masks']}
+    for p in review['targets']:
+        assert p['reviewed'] and len(p['rom_sha256'])==64
+        for cell in p['cells']:
+            source=reference[cell['reference_id']]
+            assert cell['rows']==source['rows'] and cell['rgba_sha256']==source['rgba_sha256']
+            key=(p['game'],p['rom_crc32'],int(p['primary'],16),int(p['secondary'],16),cell['id'],tuple(cell['rows']))
+            assert key not in proven
+            proven.add(key)
+    assert declared==proven, 'Visible-ground masks require exact reviewed source evidence'
+    for proof in review['primary_full_land']:
+        assert proof['reviewed'] and len(proof['rgba_sha256'])==64
+        p=next(x for x in capabilities if x['game']==proof['game'])
+        assert p['rom_crc32']==proof['rom_crc32']
+        assert any(int(x['primary'],16)==int(proof['primary'],16) and proof['id'] in x['ids'] for x in p['land'])
+
 def generate_trees(profiles,output):
     lines=['// Generated exact complete 2x2 tree patterns.','#pragma once',
         'struct SceneryTreeQuad { uint32_t rom,primary; uint16_t cells[4],ground; };',
@@ -127,6 +155,19 @@ def generate(profiles, plants, output):
             assert land['primary'] and land['secondary']
             lines.append('    if(crc==0x%s && primary==%s && secondary==%s && (%s))return 1;'%(p['rom_crc32'],land['primary'],land['secondary'],' || '.join('id==%d'%n for n in land['ids'])))
     lines+=['    return 0;','}']
+    lines+=['static const uint16_t *scenerySecondaryLandMask(uint32_t crc,uint32_t primary,uint32_t secondary,int id) {']
+    for p in profiles:
+        for group in p.get('secondary_land_masks',[]):
+            assert group['reviewed'] and group['cells']
+            lines.append('    if(crc==0x%s && primary==%s && secondary==%s) {'%(p['rom_crc32'],group['primary'],group['secondary']))
+            lines.append('        static const uint16_t rows[][16] = {')
+            for cell in group['cells']:
+                assert len(cell['rows'])==16 and 512<=cell['id']<1024
+                lines.append('            {%s},'%','.join(hex(x) for x in cell['rows']))
+            lines+=['        };','        switch(id) {']
+            for i,cell in enumerate(group['cells']):lines.append('        case %d:return rows[%d];'%(cell['id'],i))
+            lines+=['        default:return 0;','        }','    }']
+    lines+=['    return 0;','}']
     lines+=['static int sceneryLandCapRows(uint32_t crc,uint32_t primary,int id) {']
     for p in profiles:
         for cap in p.get('land_caps',[]):
@@ -184,6 +225,7 @@ if __name__=='__main__':
     root=Path(__file__).with_name('scenery-profiles')
     capabilities=json.loads((root/'android-capabilities.json').read_text())
     validate_secondary_land(capabilities,json.loads((root/'android-secondary-land-review.json').read_text()))
+    validate_land_masks(capabilities,json.loads((root/'android-land-mask-review.json').read_text()))
     outdoor_review=json.loads((root/'android-outdoor-review.json').read_text())
     keys=set()
     for row in outdoor_review:

@@ -3,16 +3,18 @@
   "reference_rom_sha256": "05572f4dfbb96a1161a284292971d50c37e521d340bcecf48b574cca3dd8b4c6",
   "reference_primary": "0x082d4a94",
   "reference_secondary": "0x082d4aac",
+  "private_atlas_sha256": "94b0fdbaaee4bfe5b04340ea28dff28a712d7a56994078c7fb70051a1230cfc6",
   "reference_ids": [
+    645,
+    646,
     648,
     652,
-    653,
     654,
     655,
     656,
+    661,
     662,
     663,
-    669,
     670,
     671,
     678,
@@ -20,16 +22,12 @@
     686,
     687,
     694,
-    695,
-    701,
     702,
     703,
     710,
     711,
     718
   ],
-  "private_atlas_sha256": "bf6cac975dcdee056479de58d167bc9adab55bb05eb88da5f912479add94d737",
-  "scope": "Exact RGBA and native behavior matches of visually reviewed full land cells. Mixed roofs/walls/fences/mailboxes and water excluded. Runtime also requires exact ROM and both tilesets; active outdoor climate only.",
   "targets": [
     {
       "game": "radical",
@@ -37,7 +35,20 @@
       "rom_sha256": "679d112cdfe699c2793d82c7e7999ac9dfca9e222ad5a85d4f8f1e457cd0283f",
       "primary": "0x82d4a94",
       "secondary": "0x82d4aac",
+      "reviewed": true,
       "cells": [
+        {
+          "id": 645,
+          "rgba_sha256": "3a05e2a68cc650dd8fb77be21abeae9c7794d73920438472cd8104d1e9f5b50b",
+          "behavior": 0,
+          "reference_id": 645
+        },
+        {
+          "id": 646,
+          "rgba_sha256": "be71383fa3d6aeffd37d449fd2e4853f612f39923c92d60c95800d59df56c9be",
+          "behavior": 0,
+          "reference_id": 646
+        },
         {
           "id": 648,
           "rgba_sha256": "0f634ea914f18d38f354f29c89d04c8ec0d4dcba0aa11373a3c6874f013d2d4b",
@@ -67,6 +78,12 @@
           "rgba_sha256": "c2841d2d5714affb1b80f0c6d959a9f7f90d1b0b29126998d361ce83de1d0752",
           "behavior": 0,
           "reference_id": 656
+        },
+        {
+          "id": 661,
+          "rgba_sha256": "6cec05cd4ffa855a7e54907466a83fb34c6cc03b36c022f674ad293aeb89ddb7",
+          "behavior": 0,
+          "reference_id": 661
         },
         {
           "id": 662,
@@ -123,12 +140,6 @@
           "reference_id": 694
         },
         {
-          "id": 701,
-          "rgba_sha256": "d9628b0e7e9a64cecab803defc0ab04659211f16e25972f5067d8178d7236bf5",
-          "behavior": 0,
-          "reference_id": 701
-        },
-        {
           "id": 702,
           "rgba_sha256": "35a3072cfd796eca9d2b3ade624cb6eb6cc2b1968be5aa4e6b30a62b38da1d16",
           "behavior": 0,
@@ -158,8 +169,7 @@
           "behavior": 0,
           "reference_id": 718
         }
-      ],
-      "reviewed": true
+      ]
     },
     {
       "game": "fakemon",
@@ -167,7 +177,20 @@
       "rom_sha256": "05572f4dfbb96a1161a284292971d50c37e521d340bcecf48b574cca3dd8b4c6",
       "primary": "0x82d4a94",
       "secondary": "0x82d4aac",
+      "reviewed": true,
       "cells": [
+        {
+          "id": 645,
+          "rgba_sha256": "3a05e2a68cc650dd8fb77be21abeae9c7794d73920438472cd8104d1e9f5b50b",
+          "behavior": 0,
+          "reference_id": 645
+        },
+        {
+          "id": 646,
+          "rgba_sha256": "be71383fa3d6aeffd37d449fd2e4853f612f39923c92d60c95800d59df56c9be",
+          "behavior": 0,
+          "reference_id": 646
+        },
         {
           "id": 648,
           "rgba_sha256": "0f634ea914f18d38f354f29c89d04c8ec0d4dcba0aa11373a3c6874f013d2d4b",
@@ -197,6 +220,12 @@
           "rgba_sha256": "c2841d2d5714affb1b80f0c6d959a9f7f90d1b0b29126998d361ce83de1d0752",
           "behavior": 0,
           "reference_id": 656
+        },
+        {
+          "id": 661,
+          "rgba_sha256": "6cec05cd4ffa855a7e54907466a83fb34c6cc03b36c022f674ad293aeb89ddb7",
+          "behavior": 0,
+          "reference_id": 661
         },
         {
           "id": 662,
@@ -253,12 +282,6 @@
           "reference_id": 694
         },
         {
-          "id": 701,
-          "rgba_sha256": "d9628b0e7e9a64cecab803defc0ab04659211f16e25972f5067d8178d7236bf5",
-          "behavior": 0,
-          "reference_id": 701
-        },
-        {
           "id": 702,
           "rgba_sha256": "35a3072cfd796eca9d2b3ade624cb6eb6cc2b1968be5aa4e6b30a62b38da1d16",
           "behavior": 0,
@@ -288,8 +311,7 @@
           "behavior": 0,
           "reference_id": 718
         }
-      ],
-      "reviewed": true
+      ]
     },
     {
       "game": "dragonsden",
@@ -297,7 +319,20 @@
       "rom_sha256": "6ca88c3ecd54c78bf8a8cbb80f2b9ab049d66d4b070e97849cf4073ee8d2f15c",
       "primary": "0x87c0e10",
       "secondary": "0x87c0e28",
+      "reviewed": true,
       "cells": [
+        {
+          "id": 645,
+          "rgba_sha256": "3a05e2a68cc650dd8fb77be21abeae9c7794d73920438472cd8104d1e9f5b50b",
+          "behavior": 0,
+          "reference_id": 645
+        },
+        {
+          "id": 646,
+          "rgba_sha256": "be71383fa3d6aeffd37d449fd2e4853f612f39923c92d60c95800d59df56c9be",
+          "behavior": 0,
+          "reference_id": 646
+        },
         {
           "id": 648,
           "rgba_sha256": "0f634ea914f18d38f354f29c89d04c8ec0d4dcba0aa11373a3c6874f013d2d4b",
@@ -309,12 +344,6 @@
           "rgba_sha256": "4922775cdee3a32f5443ca2aab11560760b9ccfe654b40b71fdfc39252804c64",
           "behavior": 0,
           "reference_id": 652
-        },
-        {
-          "id": 653,
-          "rgba_sha256": "c02145879c0cacd493a871c79a0a0d562df97ef2f02788de8dbf66fd02875b51",
-          "behavior": 0,
-          "reference_id": 653
         },
         {
           "id": 654,
@@ -335,6 +364,12 @@
           "reference_id": 656
         },
         {
+          "id": 661,
+          "rgba_sha256": "6cec05cd4ffa855a7e54907466a83fb34c6cc03b36c022f674ad293aeb89ddb7",
+          "behavior": 0,
+          "reference_id": 661
+        },
+        {
           "id": 662,
           "rgba_sha256": "4eedf024013a1acc6cd76894ed29fb0d41e9c50c917ff183a73df19be7943400",
           "behavior": 0,
@@ -345,12 +380,6 @@
           "rgba_sha256": "89150a4898997c5420c68b8c1d77287a5b05a8bf710ae1c774514c360c62765e",
           "behavior": 0,
           "reference_id": 663
-        },
-        {
-          "id": 669,
-          "rgba_sha256": "af81aa39b73037708d98508bb12be4954cf90e0a854dd7b7bac1a97352ca1527",
-          "behavior": 0,
-          "reference_id": 669
         },
         {
           "id": 670,
@@ -395,12 +424,6 @@
           "reference_id": 694
         },
         {
-          "id": 701,
-          "rgba_sha256": "d9628b0e7e9a64cecab803defc0ab04659211f16e25972f5067d8178d7236bf5",
-          "behavior": 0,
-          "reference_id": 701
-        },
-        {
           "id": 702,
           "rgba_sha256": "35a3072cfd796eca9d2b3ade624cb6eb6cc2b1968be5aa4e6b30a62b38da1d16",
           "behavior": 0,
@@ -430,8 +453,7 @@
           "behavior": 0,
           "reference_id": 718
         }
-      ],
-      "reviewed": true
+      ]
     },
     {
       "game": "ash-gray",
@@ -439,15 +461,21 @@
       "rom_sha256": "a08055484c8366768d3e98e2dbed0998641abd2899ffbfc8d7f132925875f7a1",
       "primary": "0x82d4a94",
       "secondary": "0x82d4aac",
+      "reviewed": true,
       "cells": [
+        {
+          "id": 646,
+          "rgba_sha256": "be71383fa3d6aeffd37d449fd2e4853f612f39923c92d60c95800d59df56c9be",
+          "behavior": 0,
+          "reference_id": 646
+        },
         {
           "id": 662,
           "rgba_sha256": "4eedf024013a1acc6cd76894ed29fb0d41e9c50c917ff183a73df19be7943400",
           "behavior": 0,
           "reference_id": 662
         }
-      ],
-      "reviewed": true
+      ]
     },
     {
       "game": "rocket",
@@ -455,7 +483,20 @@
       "rom_sha256": "e6f232d0df265323c995e6025fe0ebcc532dfaf7634548a13ee9fb5673152442",
       "primary": "0x82d4a94",
       "secondary": "0x82d4aac",
+      "reviewed": true,
       "cells": [
+        {
+          "id": 645,
+          "rgba_sha256": "3a05e2a68cc650dd8fb77be21abeae9c7794d73920438472cd8104d1e9f5b50b",
+          "behavior": 0,
+          "reference_id": 645
+        },
+        {
+          "id": 646,
+          "rgba_sha256": "be71383fa3d6aeffd37d449fd2e4853f612f39923c92d60c95800d59df56c9be",
+          "behavior": 0,
+          "reference_id": 646
+        },
         {
           "id": 648,
           "rgba_sha256": "0f634ea914f18d38f354f29c89d04c8ec0d4dcba0aa11373a3c6874f013d2d4b",
@@ -485,6 +526,12 @@
           "rgba_sha256": "c2841d2d5714affb1b80f0c6d959a9f7f90d1b0b29126998d361ce83de1d0752",
           "behavior": 0,
           "reference_id": 656
+        },
+        {
+          "id": 661,
+          "rgba_sha256": "6cec05cd4ffa855a7e54907466a83fb34c6cc03b36c022f674ad293aeb89ddb7",
+          "behavior": 0,
+          "reference_id": 661
         },
         {
           "id": 662,
@@ -541,12 +588,6 @@
           "reference_id": 694
         },
         {
-          "id": 701,
-          "rgba_sha256": "d9628b0e7e9a64cecab803defc0ab04659211f16e25972f5067d8178d7236bf5",
-          "behavior": 0,
-          "reference_id": 701
-        },
-        {
           "id": 702,
           "rgba_sha256": "35a3072cfd796eca9d2b3ade624cb6eb6cc2b1968be5aa4e6b30a62b38da1d16",
           "behavior": 0,
@@ -576,8 +617,8 @@
           "behavior": 0,
           "reference_id": 718
         }
-      ],
-      "reviewed": true
+      ]
     }
-  ]
+  ],
+  "scope": "Full visible-ground cells only, verified against source palette-index masks. Supersedes the coarse patch33 list; mixed structures are masked separately."
 }

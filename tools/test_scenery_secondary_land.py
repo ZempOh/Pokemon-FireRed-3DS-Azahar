@@ -1,13 +1,32 @@
 """Secondary tile IDs must never recolor another tileset's roofs or furniture."""
-import copy,json,shutil,subprocess,tempfile,unittest
+import copy,json,shutil,struct,subprocess,tempfile,unittest
 from pathlib import Path
-from gen_scenery_registry import generate,validate_secondary_land
+from gen_scenery_registry import generate,validate_secondary_land,validate_land_masks
+from scenery_material_masks import visible_palette_indices,material_rows
 ROOT=Path(__file__).parent/'scenery-profiles'
 CAPS=json.loads((ROOT/'android-capabilities.json').read_text())
 PROOF=json.loads((ROOT/'android-secondary-land-review.json').read_text())
+MASKS=json.loads((ROOT/'android-land-mask-review.json').read_text())
 
 class SecondaryLandTests(unittest.TestCase):
- def test_provenance(self):validate_secondary_land(CAPS,PROOF)
+ def test_provenance(self):
+  validate_secondary_land(CAPS,PROOF);validate_land_masks(CAPS,MASKS)
+ def test_mask_cannot_expand_into_structure(self):
+  caps=copy.deepcopy(CAPS)
+  group=next(p for p in caps if p['game']=='fakemon')['secondary_land_masks'][0]
+  cell=next(x for x in group['cells'] if x['id']==0x282)
+  cell['rows'][15]=65535
+  with self.assertRaises(AssertionError):validate_land_masks(caps,MASKS)
+ def test_source_mask_respects_overlay_transparency_and_flips(self):
+  class Art:
+   primary=0;secondary=24;numbers=dict(metatiles=640,size=16)
+   tiledata=bytes(32)+bytes([1])+bytes(31)+bytes([2])+bytes(31)
+   def word(self,_):return 0
+   def read(self,_,size):return struct.pack('<8H',1,0,0,0,2|1024|2048|0x3000,0,0,0)
+  indices=visible_palette_indices(Art(),0)
+  self.assertEqual(indices[0],1);self.assertEqual(indices[7*16+7],50);self.assertEqual(indices[1],0)
+  rows=material_rows(indices,{1})
+  self.assertEqual(rows[0],1);self.assertEqual(rows[7],0)
  def test_missing_evidence_rejected(self):
   proof=copy.deepcopy(PROOF);proof['targets'][0]['cells'].pop()
   with self.assertRaises(AssertionError):validate_secondary_land(CAPS,proof)
@@ -33,6 +52,18 @@ class SecondaryLandTests(unittest.TestCase):
    # Explicit Fakemon roof, fence, mailbox, water and unallocated cells.
    for mid in (0x281,0x282,0x284,0x2a5,0x2d2,0x2ff):
     checks.append(f'assert(!scenerySecondaryLand(0x5e704d77,0x082d4a94,0x082d4aac,{mid}));')
+   for p in CAPS:
+    for group in p.get('secondary_land_masks',[]):
+     crc=int(p['rom_crc32'],16);primary=int(group['primary'],16);secondary=int(group['secondary'],16)
+     for cell in group['cells']:
+      mid=cell['id']
+      for y,bits in enumerate(cell['rows']):checks.append(f'assert(scenerySecondaryLandMask({crc}u,{primary}u,{secondary}u,{mid})[{y}]=={bits});')
+      checks.append(f'assert(!scenerySecondaryLandMask({crc}u,{primary}u,{secondary+4}u,{mid}));')
+   checks+=['assert(scenerySecondaryLandMask(0x5e704d77,0x082d4a94,0x082d4aac,0x282)[0]==65535);',
+            'assert(scenerySecondaryLandMask(0x5e704d77,0x082d4a94,0x082d4aac,0x282)[15]==0);',
+            'assert(!(scenerySecondaryLandMask(0x5e704d77,0x082d4a94,0x082d4aac,0x284)[4]&(1<<4)));',
+            'assert(!(scenerySecondaryLandMask(0x5e704d77,0x082d4a94,0x082d4aac,0x2a5)[15]&(1<<8)));',
+            'assert(!scenerySecondaryLand(0x5e704d77,0x082d4a94,0x082d4aac,0x2b7));']
    source=root/'check.c';source.write_text('#include <assert.h>\n#include "pk_scenery_candidates.h"\nint main(void){'+''.join(checks)+'return 0;}')
    exe=root/'check';subprocess.run([shutil.which('cc') or shutil.which('gcc'),'-std=c99','-Wall','-Werror','-Wno-unused-function',str(source),'-o',str(exe)],check=True)
    subprocess.run([str(exe)],check=True)

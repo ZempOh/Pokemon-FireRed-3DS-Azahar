@@ -646,13 +646,28 @@ Pallet Town boundary exposed secondary grass/path cells that stayed dark while
 the primary terrain became snowy. Patch 0033 adds full-land recognition scoped
 to ROM CRC, primary tileset, secondary tileset and metatile ID. The reviewed
 source atlas excludes mixed roofs, walls, fences, mailboxes and water. Exact
-RGBA plus native-behavior matches transfer 83 used cells across Radical Red,
-Fakemon, Dragon's Den, Ash Gray and Rocket Edition; this is source recognition,
-not device qualification. Evidence is in `android-secondary-land-review.json`.
+RGBA plus native-behavior matches transfer only explicitly reviewed art across
+Radical Red, Fakemon, Dragon's Den, Ash Gray and Rocket Edition; this is source
+recognition, not device qualification. Evidence is in
+`android-secondary-land-review.json`.
 The registry generator rejects missing or mismatched proof, and the compiled
 lookup test rejects another ROM/tileset and explicit roof/water IDs. Current
 and connected-map tilesets both participate. Every resulting APK still needs
 fresh Thor timing, night-boundary and media checks.
+
+The patch33 pilot fixed the broad gap but exposed rectangular remnants in mixed
+roof/fence cells. Patch34 supersedes its coarse list: 90 full secondary cells,
+70 visible-ground masks and five matching primary-ground registrations. Derive
+mask candidates from the visible source palette indices of unambiguous ground,
+including tile flips and overlay transparency; then review the masked pixels
+against the original artwork. Matching RGB colors alone can confuse structural
+highlights with land. Store only reviewed row bitmasks and source hashes, scoped
+to both tilesets. Preserve roof faces, fence posts, mailbox pixels and water.
+The source helper is `tools/scenery_material_masks.py`; provenance lives in
+`android-land-mask-review.json`. Tests reject a mask expanded into a roof and
+check compiled lookups against explicit roof/fence/mailbox pixels. Do a targeted
+night-boundary pilot before another full device suite; neither pilot APK is
+qualified by its successful compilation or timing results on an earlier build.
 
 Never infer a movable-rock pass from a menu accepting Strength. The retained
 Ash Gray fixture left the target at (13,31), rather than (13,30), in both 3D and

@@ -837,3 +837,13 @@ untouched. RGBA-identity checks found no eligible Lazarus or Seaglass transfers;
 no masks were guessed for them. The registry now contains 2,372 mixed masks.
 Tests protect hedge surfaces; a new exact-APK full-size Modern Emerald pilot
 and fresh startup, scenery, gameplay and restoration gates remain required.
+
+Before testing patch46, diagnostic stills on blocked45 exposed source grass
+padding stretched onto Let Go house side walls and bases, with narrower edges
+in other profiles. Patch47 adds reusable, validated facade texture bounds and
+source-hash-bound crop reviews for nine building profiles. Roof UVs keep their
+independently reviewed span; geometry, collision and actor artwork are unchanged.
+The closed-mesh C test now rejects any wall UV entering synthetic grass padding.
+This is a source-texture correction, not a climate repaint of building walls.
+Patch46 is superseded without device qualification. Review full-size summer
+and winter facade edges on patch47 before all exact-build timing/media checks.

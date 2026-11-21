@@ -51,7 +51,10 @@
       "hip_inset": 12,
       "roof_top": 8,
       "wall_row": 48,
-      "flat_roof": false
+      "flat_roof": false,
+      "wall_left": 1,
+      "wall_right": 80,
+      "wall_bottom": 80
     },
     "reference_copies": [
       {
@@ -60,7 +63,11 @@
         "x": 14,
         "y": 3
       }
-    ]
+    ],
+    "wall_crop_review": {
+      "source_art_sha256": "902bd007762519ab863c5949c77010f66dc834f3130e9d91668039597e0cb3c0",
+      "scope": "Reviewed original facade: exclude source grass border from wall/side UV sampling; roof UVs retain their own span. Decorative facade remains source artwork."
+    }
   },
   {
     "game": "fakemon",
@@ -401,9 +408,16 @@
       "hip_inset": 12,
       "gable_x": 0.5,
       "gable_row": 0,
-      "ridge_back_height": 56
+      "ridge_back_height": 56,
+      "wall_left": 1,
+      "wall_right": 80,
+      "wall_bottom": 80
     },
-    "scope": "Reviewed source rectangle and geometry family; exact APK device qualification remains separate."
+    "scope": "Reviewed source rectangle and geometry family; exact APK device qualification remains separate.",
+    "wall_crop_review": {
+      "source_art_sha256": "902bd007762519ab863c5949c77010f66dc834f3130e9d91668039597e0cb3c0",
+      "scope": "Reviewed original facade: exclude source grass border from wall/side UV sampling; roof UVs retain their own span. Decorative facade remains source artwork."
+    }
   },
   {
     "game": "radical",
@@ -529,9 +543,16 @@
       "hip_inset": 12,
       "gable_x": 0.5,
       "gable_row": 0,
-      "ridge_back_height": 56
+      "ridge_back_height": 56,
+      "wall_left": 1,
+      "wall_right": 80,
+      "wall_bottom": 80
     },
-    "scope": "Reviewed source rectangle and geometry family; exact APK device qualification remains separate."
+    "scope": "Reviewed source rectangle and geometry family; exact APK device qualification remains separate.",
+    "wall_crop_review": {
+      "source_art_sha256": "902bd007762519ab863c5949c77010f66dc834f3130e9d91668039597e0cb3c0",
+      "scope": "Reviewed original facade: exclude source grass border from wall/side UV sampling; roof UVs retain their own span. Decorative facade remains source artwork."
+    }
   },
   {
     "game": "rocket",
@@ -657,9 +678,16 @@
       "hip_inset": 8,
       "gable_x": 0.5,
       "gable_row": 32,
-      "ridge_back_height": 48
+      "ridge_back_height": 48,
+      "wall_left": 5,
+      "wall_right": 75,
+      "wall_bottom": 78
     },
-    "scope": "Reviewed source rectangle and geometry family; exact APK device qualification remains separate."
+    "scope": "Reviewed source rectangle and geometry family; exact APK device qualification remains separate.",
+    "wall_crop_review": {
+      "source_art_sha256": "bb7fc641d1c98815c5604becb5855d57f544fc5091c16b3605336393526bedb2",
+      "scope": "Reviewed original facade: exclude source grass border from wall/side UV sampling; roof UVs retain their own span. Decorative facade remains source artwork."
+    }
   },
   {
     "game": "letsgo",
@@ -726,9 +754,16 @@
       "hip_inset": 8,
       "gable_x": 0.5,
       "gable_row": 0,
-      "ridge_back_height": 32
+      "ridge_back_height": 32,
+      "wall_left": 3,
+      "wall_right": 109,
+      "wall_bottom": 80
     },
-    "scope": "Reviewed source rectangle and geometry family; exact APK device qualification remains separate."
+    "scope": "Reviewed source rectangle and geometry family; exact APK device qualification remains separate.",
+    "wall_crop_review": {
+      "source_art_sha256": "e269fca9d3b252d6d258a944a67f494714eabc11064cf1346fed3490f3b81546",
+      "scope": "Reviewed original facade: exclude source grass border from wall/side UV sampling; roof UVs retain their own span. Decorative facade remains source artwork."
+    }
   },
   {
     "game": "unbound",
@@ -776,9 +811,16 @@
       "hip_inset": 8,
       "gable_x": 0.65,
       "gable_row": 36,
-      "ridge_back_height": 30
+      "ridge_back_height": 30,
+      "wall_left": 2,
+      "wall_right": 62,
+      "wall_bottom": 63
     },
-    "scope": "Reviewed source rectangle and geometry family; exact APK device qualification remains separate."
+    "scope": "Reviewed source rectangle and geometry family; exact APK device qualification remains separate.",
+    "wall_crop_review": {
+      "source_art_sha256": "a755c87cc802ae4b44a3060badc555a814f6060a6835f9add47879c8bbace463",
+      "scope": "Reviewed original facade: exclude source grass border from wall/side UV sampling; roof UVs retain their own span. Decorative facade remains source artwork."
+    }
   },
   {
     "game": "gaia",
@@ -830,9 +872,16 @@
       "hip_inset": 8,
       "gable_x": 0.5,
       "gable_row": 0,
-      "ridge_back_height": 40
+      "ridge_back_height": 40,
+      "wall_left": 1,
+      "wall_right": 79,
+      "wall_bottom": 63
     },
-    "scope": "Reviewed source rectangle and geometry family; exact APK device qualification remains separate."
+    "scope": "Reviewed source rectangle and geometry family; exact APK device qualification remains separate.",
+    "wall_crop_review": {
+      "source_art_sha256": "63a32e41a302f837baf23c2d5487d977977b302ccb0ebb9ccb292166e9617e85",
+      "scope": "Reviewed original facade: exclude source grass border from wall/side UV sampling; roof UVs retain their own span. Decorative facade remains source artwork."
+    }
   },
   {
     "game": "modern-emerald",
@@ -880,9 +929,16 @@
       "hip_inset": 8,
       "gable_x": 0.5,
       "gable_row": 0,
-      "ridge_back_height": 56
+      "ridge_back_height": 56,
+      "wall_left": 2,
+      "wall_right": 63,
+      "wall_bottom": 64
     },
-    "scope": "Reviewed source rectangle and geometry family; exact APK device qualification remains separate."
+    "scope": "Reviewed source rectangle and geometry family; exact APK device qualification remains separate.",
+    "wall_crop_review": {
+      "source_art_sha256": "f806d267a3a9657e492938d0e2267fadb4c2cc5c99ddc7e4fe7ce6204919229f",
+      "scope": "Reviewed original facade: exclude source grass border from wall/side UV sampling; roof UVs retain their own span. Decorative facade remains source artwork."
+    }
   },
   {
     "game": "seaglass",
@@ -1185,7 +1241,14 @@
       "roof_kind": 0,
       "hip_inset": 8,
       "gable_x": 0.5,
-      "gable_row": 0
+      "gable_row": 0,
+      "wall_left": 6,
+      "wall_right": 58,
+      "wall_bottom": 64
+    },
+    "wall_crop_review": {
+      "source_art_sha256": "698ecf05f392dff4131fe7df15c55a39f2d1574e9a389e900876723749fe49d9",
+      "scope": "Reviewed original facade: exclude source grass border from wall/side UV sampling; roof UVs retain their own span. Decorative facade remains source artwork."
     }
   }
 ]

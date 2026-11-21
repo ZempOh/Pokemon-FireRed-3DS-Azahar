@@ -13,6 +13,11 @@ def validate(rows):
   assert 0<=shape['roof_top']<shape['wall_row']<h*16
   assert 0<=shape['back']<h*16 and 0<shape['wall_height']<=shape['ridge_height']<=128
   assert 0<=shape['hip_inset']<w*8 and 0<=row['ground']<1024
+  assert 0<=shape.get('wall_left',0)<shape.get('wall_right',w*16)<=w*16
+  assert shape.get('wall_right',w*16)-shape.get('wall_left',0)>=16
+  assert shape['wall_row']<shape.get('wall_bottom',h*16)<=h*16
+  if any(k in shape for k in ('wall_left','wall_right','wall_bottom')):
+   assert row['wall_crop_review']['source_art_sha256']==row['source_art_sha256']
   kind=shape.get('roof_kind',int(shape.get('flat_roof',False)))
   assert kind in (0,1,2)
   if kind==1:assert shape['ridge_height']==shape['wall_height']
@@ -31,6 +36,7 @@ def generate(rows,output):
   'static const struct SceneryBuildingProfile sceneryBuildings[] = {']
  for row in rows:
   s=row['shape'];shape=[row['width']*16,row['height']*16,s['back'],s['wall_height'],s['ridge_height'],s['hip_inset'],s['roof_top'],s['wall_row'],row['height']*16,s.get('roof_kind',int(s.get('flat_roof',False))),s.get('gable_x',.5),s.get('gable_row',s['roof_top']),s.get('ridge_back_height',s['ridge_height'])]
+  shape += [s.get('wall_left',0),s.get('wall_right',row['width']*16),s.get('wall_bottom',row['height']*16)]
   lines.append(' {0x%s,%s,%s,%d,%d,%d,{%s},{%s}},'%(row['rom_crc32'],row['primary'],row['secondary'],row['width'],row['height'],row['ground'],','.join(map(str,shape)),','.join(map(str,row['cells']))))
  lines+=['};']
  output.write_text('\n'.join(lines)+'\n')

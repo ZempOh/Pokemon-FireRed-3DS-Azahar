@@ -15,6 +15,10 @@ class BuildingsTest(unittest.TestCase):
   with self.assertRaises(AssertionError):validate(rows)
  def test_duplicate_identity_rejected(self):
   with self.assertRaises(AssertionError):validate(ROWS+copy.deepcopy(ROWS))
+ def test_wall_crops_cannot_leave_source_or_erase_facade(self):
+  for key,value in [('wall_left',-1),('wall_right',999),('wall_bottom',999),('wall_bottom',0),('wall_left',79)]:
+   rows=copy.deepcopy(ROWS);rows[0]['shape'][key]=value
+   with self.assertRaises(AssertionError):validate(rows)
  def test_gable_and_flat_roofs_reject_invalid_shapes(self):
   for key,value in [('gable_x',0),('gable_row',999),('ridge_back_height',0),('ridge_back_height',float('nan'))]:
    rows=copy.deepcopy(ROWS);row=next(r for r in rows if r['shape'].get('roof_kind')==2)

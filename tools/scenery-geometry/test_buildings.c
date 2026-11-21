@@ -13,10 +13,15 @@ static void collect(void* ctx,const SceneryBuildingVertex* a,const SceneryBuildi
 static int same(SceneryBuildingVertex a,SceneryBuildingVertex b) {return a.x==b.x&&a.y==b.y&&a.z==b.z;}
 static void check(int kind,float peak) {
     int flat=kind==1;
-    SceneryBuildingShape s={80,80,16,32,flat?32:56,12,8,48,80,kind,peak,24,56};
+    SceneryBuildingShape s={80,80,16,32,flat?32:56,12,8,48,80,kind,peak,24,56,5,75,78};
     if(kind==2 && peak>.6f)s.ridgeHeight=48; /* Sloping ridge on compound entry roofs. */
     count=0;SceneryBuilding_Emit(0,collect,&s);
     assert(count==(unsigned)(flat?36:48));
+    /* Synthetic source grass at x<5, x>=75, y>=78 must never reach walls. */
+    for(unsigned i=0;i<30;i++) {
+        assert(vertices[i].u>=5&&vertices[i].u<75);
+        assert(vertices[i].v>=48&&vertices[i].v<78);
+    }
     if(kind==2)for(unsigned i=30;i<42;i++)assert(vertices[i].v<s.gableRow);
     float highest=0;
     for(unsigned i=0;i<count;i++) {

@@ -8,6 +8,7 @@ typedef struct {
     float roofTop,wallRow,artHeight;
     int roofKind; /* 0 hip, 1 flat, 2 front gable. */
     float gableX,gableRow,ridgeBackHeight;
+    float wallLeft,wallRight,wallBottom; /* Reviewed facade crop, exclusive right/bottom. */
 } SceneryBuildingShape;
 static void SceneryBuilding_Quad(void* ctx,SceneryBuildingTriangle emit,
     SceneryBuildingVertex a,SceneryBuildingVertex b,SceneryBuildingVertex c,SceneryBuildingVertex d,unsigned shade) {
@@ -15,19 +16,23 @@ static void SceneryBuilding_Quad(void* ctx,SceneryBuildingTriangle emit,
 }
 static void SceneryBuilding_Emit(void* ctx,SceneryBuildingTriangle emit,const SceneryBuildingShape* s) {
     float w=s->width,f=s->depth,b=s->back,h=s->wallHeight;
-    float u0=.5f,u1=w-.5f,vt=s->wallRow+.5f,vb=s->artHeight-.5f;
+    float left=s->wallLeft,right=s->wallRight>left?s->wallRight:w;
+    float bottom=s->wallBottom>s->wallRow?s->wallBottom:s->artHeight;
+    float u0=left+.5f,u1=right-.5f,vt=s->wallRow+.5f,vb=bottom-.5f;
     SceneryBuildingVertex fl={0,0,f,u0,vb},fr={w,0,f,u1,vb},br={w,0,b,u1,vb},bl={0,0,b,u0,vb};
     SceneryBuildingVertex tl={0,h,f,u0,vt},tr={w,h,f,u1,vt},rr={w,h,b,u1,vt},rl={0,h,b,u0,vt};
     SceneryBuilding_Quad(ctx,emit,fl,fr,tr,tl,248);
     /* Side wall material uses the original facade's blank corner posts. */
     SceneryBuildingVertex l0=bl,l1=fl,l2=tl,l3=rl;
-    l0.u=l3.u=1.5f;l1.u=l2.u=6.5f;
+    l0.u=l3.u=left+1.5f;l1.u=l2.u=left+6.5f;
     SceneryBuilding_Quad(ctx,emit,l0,l1,l2,l3,194);
     SceneryBuildingVertex r0=fr,r1=br,r2=rr,r3=tr;
-    r0.u=r3.u=w-7.5f;r1.u=r2.u=w-2.5f;
+    r0.u=r3.u=right-7.5f;r1.u=r2.u=right-2.5f;
     SceneryBuilding_Quad(ctx,emit,r0,r1,r2,r3,216);
     SceneryBuilding_Quad(ctx,emit,br,bl,rl,rr,184);
     SceneryBuilding_Quad(ctx,emit,bl,br,fr,fl,160);
+    /* Roofs retain their independently reviewed original source span. */
+    tl.u=rl.u=.5f;tr.u=rr.u=w-.5f;
     tl.v=tr.v=s->wallRow-.5f;rl.v=rr.v=s->roofTop+.5f;
     if(s->roofKind==1) {
         SceneryBuilding_Quad(ctx,emit,tl,tr,rr,rl,244);
@@ -43,7 +48,9 @@ static void SceneryBuilding_Emit(void* ctx,SceneryBuildingTriangle emit,const Sc
         roofLeft.v=roofRight.v=roofFront.v=s->gableRow-.5f;
         SceneryBuilding_Quad(ctx,emit,rl,roofLeft,roofFront,back,216);
         SceneryBuilding_Quad(ctx,emit,roofRight,rr,back,roofFront,248);
-        emit(ctx,&tl,&tr,&front,250);
+        SceneryBuildingVertex gableLeft=tl,gableRight=tr;
+        gableLeft.u=u0;gableRight.u=u1;
+        emit(ctx,&gableLeft,&gableRight,&front,250);
         SceneryBuildingVertex rb=rr,lb=rl,rear=back;
         rb.v=lb.v=s->wallRow-.5f;rear.v=s->gableRow+.5f;
         emit(ctx,&rb,&lb,&rear,184);

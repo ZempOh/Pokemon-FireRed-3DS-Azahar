@@ -25,6 +25,12 @@ jobs:
           run('git','init','build/source')
           run('git','-C','build/source','fetch','--depth','1',row['repository'],row['commit'])
           run('git','-C','build/source','checkout','--detach','FETCH_HEAD')
+          # The tag references this directory with Windows casing. Resolve only
+          # the proven case alias; retain every source file and exact ROM gate.
+          tiles=pathlib.Path('build/source/data/tilesets/secondary')
+          assert (tiles/'seviiislands5/anim/mossdeep_tree_base/0.png').is_file()
+          assert not (tiles/'SeviiIslands5').exists()
+          (tiles/'SeviiIslands5').symlink_to('seviiislands5',target_is_directory=True)
           run('git','init','build/agbcc')
           run('git','-C','build/agbcc','fetch','--depth','1','https://github.com/pret/agbcc.git','da598c1d918402c42c0c0d7128ba14567f3175e9')
           run('git','-C','build/agbcc','checkout','--detach','FETCH_HEAD')

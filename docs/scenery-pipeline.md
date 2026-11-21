@@ -696,3 +696,19 @@ tileset identities. Coverage is now 91 full secondary cells, 89 mixed masks and
 hashes and row masks in the registry. The earlier candidate's timing passes do
 not qualify these changes. Review targeted Modern/Lazarus winter captures and
 the water-edge mask before starting another complete device suite.
+
+Patch36 extends the reviewed source-material lookup to Kanto primary ground
+behind signs and fence ends. The boundary pilot alone missed these in Fakemon's
+central town scene at night. Exact artwork/native-behavior matching adds 42
+full-primary registrations and 671 mixed-primary masks, for 77 primary proofs
+and 760 mixed masks overall. Vegetation candidates in the private atlas are
+excluded from this transfer; modeled plants keep their own rendering path.
+Merge cells into an existing tileset mask group: its default case returns null,
+so a second group with the same identity would otherwise be unreachable.
+
+Before long exact-build timing runs, capture 2D, 3D and winter views of every
+eligible game's reviewed scene, plus targeted boundary/interior regressions.
+Review those actual device images first. A successful boundary or host atlas
+does not qualify the rest of a town; the 2a6 candidate's central Fakemon and
+Modern/Lazarus winter gaps remain rejected despite clean timing. This visual
+preflight prevents repeated full timing suites for a known asset defect.

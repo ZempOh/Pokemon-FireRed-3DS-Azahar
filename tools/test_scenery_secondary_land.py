@@ -77,6 +77,11 @@ class SecondaryLandTests(unittest.TestCase):
             'assert(!(scenerySecondaryLandMask(0x5e704d77,0x082d4a94,0x082d4aac,0x284)[4]&(1<<4)));',
             'assert(!(scenerySecondaryLandMask(0x5e704d77,0x082d4a94,0x082d4aac,0x2a5)[15]&(1<<8)));',
             'assert(!scenerySecondaryLand(0x5e704d77,0x082d4a94,0x082d4aac,0x2b7));']
+   checks+=['assert(sceneryLand(0x5e704d77,0x082d4a94,8));',
+            'assert(sceneryLand(0x5e704d77,0x082d4a94,9));',
+            'assert(!sceneryLand(0x5e704d77,0x082d4a94,3));',
+            'assert(!(scenerySecondaryLandMask(0x5e704d77,0x082d4a94,0x082d4aac,3)[5]&(1<<8)));',
+            'assert(scenerySecondaryLandMask(0x5e704d77,0x082d4a94,0x082d4aac,3)[15]&1);']
    source=root/'check.c';source.write_text('#include <assert.h>\n#include "pk_scenery_candidates.h"\nint main(void){'+''.join(checks)+'return 0;}')
    exe=root/'check';subprocess.run([shutil.which('cc') or shutil.which('gcc'),'-std=c99','-Wall','-Werror','-Wno-unused-function',str(source),'-o',str(exe)],check=True)
    subprocess.run([str(exe)],check=True)

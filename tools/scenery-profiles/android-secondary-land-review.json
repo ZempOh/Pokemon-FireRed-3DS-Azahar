@@ -1,0 +1,583 @@
+{
+  "reference_game": "fakemon",
+  "reference_rom_sha256": "05572f4dfbb96a1161a284292971d50c37e521d340bcecf48b574cca3dd8b4c6",
+  "reference_primary": "0x082d4a94",
+  "reference_secondary": "0x082d4aac",
+  "reference_ids": [
+    648,
+    652,
+    653,
+    654,
+    655,
+    656,
+    662,
+    663,
+    669,
+    670,
+    671,
+    678,
+    679,
+    686,
+    687,
+    694,
+    695,
+    701,
+    702,
+    703,
+    710,
+    711,
+    718
+  ],
+  "private_atlas_sha256": "bf6cac975dcdee056479de58d167bc9adab55bb05eb88da5f912479add94d737",
+  "scope": "Exact RGBA and native behavior matches of visually reviewed full land cells. Mixed roofs/walls/fences/mailboxes and water excluded. Runtime also requires exact ROM and both tilesets; active outdoor climate only.",
+  "targets": [
+    {
+      "game": "radical",
+      "rom_crc32": "fba55dd8",
+      "rom_sha256": "679d112cdfe699c2793d82c7e7999ac9dfca9e222ad5a85d4f8f1e457cd0283f",
+      "primary": "0x82d4a94",
+      "secondary": "0x82d4aac",
+      "cells": [
+        {
+          "id": 648,
+          "rgba_sha256": "0f634ea914f18d38f354f29c89d04c8ec0d4dcba0aa11373a3c6874f013d2d4b",
+          "behavior": 0,
+          "reference_id": 648
+        },
+        {
+          "id": 652,
+          "rgba_sha256": "4922775cdee3a32f5443ca2aab11560760b9ccfe654b40b71fdfc39252804c64",
+          "behavior": 0,
+          "reference_id": 652
+        },
+        {
+          "id": 654,
+          "rgba_sha256": "def583c24a8a92c2cd56b8feea9914c14886ccd059f27c5bb8ee74f3da0d0656",
+          "behavior": 0,
+          "reference_id": 654
+        },
+        {
+          "id": 655,
+          "rgba_sha256": "5547802fc4f51f31019c3f805f84caa542f6dbe5db267ecddf38e36d1fbba1ec",
+          "behavior": 0,
+          "reference_id": 655
+        },
+        {
+          "id": 656,
+          "rgba_sha256": "c2841d2d5714affb1b80f0c6d959a9f7f90d1b0b29126998d361ce83de1d0752",
+          "behavior": 0,
+          "reference_id": 656
+        },
+        {
+          "id": 662,
+          "rgba_sha256": "4eedf024013a1acc6cd76894ed29fb0d41e9c50c917ff183a73df19be7943400",
+          "behavior": 0,
+          "reference_id": 662
+        },
+        {
+          "id": 663,
+          "rgba_sha256": "89150a4898997c5420c68b8c1d77287a5b05a8bf710ae1c774514c360c62765e",
+          "behavior": 0,
+          "reference_id": 663
+        },
+        {
+          "id": 670,
+          "rgba_sha256": "78b8b59806e16b1387f26b12e3209027bde44e13a21ded4721176ae8af3bd957",
+          "behavior": 0,
+          "reference_id": 670
+        },
+        {
+          "id": 671,
+          "rgba_sha256": "72ab63482d176e2eb02809724c4dabebc79820fd94cedc209c7a5f2d244359ad",
+          "behavior": 0,
+          "reference_id": 671
+        },
+        {
+          "id": 678,
+          "rgba_sha256": "fc2f6e7b3579d3be7bce76959b86dff9da449aa153a8d32ad9b3b64e0882af84",
+          "behavior": 0,
+          "reference_id": 678
+        },
+        {
+          "id": 679,
+          "rgba_sha256": "687838bf1b6a4a0e5c4ec5e0edf74e59502bc33cdf0388676a17b12befa3a6f7",
+          "behavior": 0,
+          "reference_id": 679
+        },
+        {
+          "id": 686,
+          "rgba_sha256": "566dc6963baa597edf5fef3575564a6ca7d0c717d43dfe57071b2ae1d7785131",
+          "behavior": 0,
+          "reference_id": 686
+        },
+        {
+          "id": 687,
+          "rgba_sha256": "e627b553f4b2fe312671fb75ef2201f317f735513354084f4cbb49351e73937d",
+          "behavior": 0,
+          "reference_id": 687
+        },
+        {
+          "id": 694,
+          "rgba_sha256": "9346c93fac977e601999cb6e013f880549b8c7251a2f67031b5c044ff299d039",
+          "behavior": 0,
+          "reference_id": 694
+        },
+        {
+          "id": 701,
+          "rgba_sha256": "d9628b0e7e9a64cecab803defc0ab04659211f16e25972f5067d8178d7236bf5",
+          "behavior": 0,
+          "reference_id": 701
+        },
+        {
+          "id": 702,
+          "rgba_sha256": "35a3072cfd796eca9d2b3ade624cb6eb6cc2b1968be5aa4e6b30a62b38da1d16",
+          "behavior": 0,
+          "reference_id": 702
+        },
+        {
+          "id": 703,
+          "rgba_sha256": "e9ea28e368145e87433103f04a15c742117db74eecb988c505d1ea6fbc7b0a53",
+          "behavior": 0,
+          "reference_id": 703
+        },
+        {
+          "id": 710,
+          "rgba_sha256": "419ba1be96b34f2f5aae6839a06b3f4fe2364da03909433b4c2c405d53ed5a28",
+          "behavior": 0,
+          "reference_id": 710
+        },
+        {
+          "id": 711,
+          "rgba_sha256": "b03bb918581d166058ca41c25eba6143e0ee245163021f4fa15fdb70ff3b05ad",
+          "behavior": 0,
+          "reference_id": 711
+        },
+        {
+          "id": 718,
+          "rgba_sha256": "d07c0653687d7a586648f0308c174e47db2c5a1d80b97c89f2ca5d5325514a37",
+          "behavior": 0,
+          "reference_id": 718
+        }
+      ],
+      "reviewed": true
+    },
+    {
+      "game": "fakemon",
+      "rom_crc32": "5e704d77",
+      "rom_sha256": "05572f4dfbb96a1161a284292971d50c37e521d340bcecf48b574cca3dd8b4c6",
+      "primary": "0x82d4a94",
+      "secondary": "0x82d4aac",
+      "cells": [
+        {
+          "id": 648,
+          "rgba_sha256": "0f634ea914f18d38f354f29c89d04c8ec0d4dcba0aa11373a3c6874f013d2d4b",
+          "behavior": 0,
+          "reference_id": 648
+        },
+        {
+          "id": 652,
+          "rgba_sha256": "4922775cdee3a32f5443ca2aab11560760b9ccfe654b40b71fdfc39252804c64",
+          "behavior": 0,
+          "reference_id": 652
+        },
+        {
+          "id": 654,
+          "rgba_sha256": "def583c24a8a92c2cd56b8feea9914c14886ccd059f27c5bb8ee74f3da0d0656",
+          "behavior": 0,
+          "reference_id": 654
+        },
+        {
+          "id": 655,
+          "rgba_sha256": "5547802fc4f51f31019c3f805f84caa542f6dbe5db267ecddf38e36d1fbba1ec",
+          "behavior": 0,
+          "reference_id": 655
+        },
+        {
+          "id": 656,
+          "rgba_sha256": "c2841d2d5714affb1b80f0c6d959a9f7f90d1b0b29126998d361ce83de1d0752",
+          "behavior": 0,
+          "reference_id": 656
+        },
+        {
+          "id": 662,
+          "rgba_sha256": "4eedf024013a1acc6cd76894ed29fb0d41e9c50c917ff183a73df19be7943400",
+          "behavior": 0,
+          "reference_id": 662
+        },
+        {
+          "id": 663,
+          "rgba_sha256": "89150a4898997c5420c68b8c1d77287a5b05a8bf710ae1c774514c360c62765e",
+          "behavior": 0,
+          "reference_id": 663
+        },
+        {
+          "id": 670,
+          "rgba_sha256": "78b8b59806e16b1387f26b12e3209027bde44e13a21ded4721176ae8af3bd957",
+          "behavior": 0,
+          "reference_id": 670
+        },
+        {
+          "id": 671,
+          "rgba_sha256": "72ab63482d176e2eb02809724c4dabebc79820fd94cedc209c7a5f2d244359ad",
+          "behavior": 0,
+          "reference_id": 671
+        },
+        {
+          "id": 678,
+          "rgba_sha256": "fc2f6e7b3579d3be7bce76959b86dff9da449aa153a8d32ad9b3b64e0882af84",
+          "behavior": 0,
+          "reference_id": 678
+        },
+        {
+          "id": 679,
+          "rgba_sha256": "687838bf1b6a4a0e5c4ec5e0edf74e59502bc33cdf0388676a17b12befa3a6f7",
+          "behavior": 0,
+          "reference_id": 679
+        },
+        {
+          "id": 686,
+          "rgba_sha256": "566dc6963baa597edf5fef3575564a6ca7d0c717d43dfe57071b2ae1d7785131",
+          "behavior": 0,
+          "reference_id": 686
+        },
+        {
+          "id": 687,
+          "rgba_sha256": "e627b553f4b2fe312671fb75ef2201f317f735513354084f4cbb49351e73937d",
+          "behavior": 0,
+          "reference_id": 687
+        },
+        {
+          "id": 694,
+          "rgba_sha256": "9346c93fac977e601999cb6e013f880549b8c7251a2f67031b5c044ff299d039",
+          "behavior": 0,
+          "reference_id": 694
+        },
+        {
+          "id": 701,
+          "rgba_sha256": "d9628b0e7e9a64cecab803defc0ab04659211f16e25972f5067d8178d7236bf5",
+          "behavior": 0,
+          "reference_id": 701
+        },
+        {
+          "id": 702,
+          "rgba_sha256": "35a3072cfd796eca9d2b3ade624cb6eb6cc2b1968be5aa4e6b30a62b38da1d16",
+          "behavior": 0,
+          "reference_id": 702
+        },
+        {
+          "id": 703,
+          "rgba_sha256": "e9ea28e368145e87433103f04a15c742117db74eecb988c505d1ea6fbc7b0a53",
+          "behavior": 0,
+          "reference_id": 703
+        },
+        {
+          "id": 710,
+          "rgba_sha256": "419ba1be96b34f2f5aae6839a06b3f4fe2364da03909433b4c2c405d53ed5a28",
+          "behavior": 0,
+          "reference_id": 710
+        },
+        {
+          "id": 711,
+          "rgba_sha256": "b03bb918581d166058ca41c25eba6143e0ee245163021f4fa15fdb70ff3b05ad",
+          "behavior": 0,
+          "reference_id": 711
+        },
+        {
+          "id": 718,
+          "rgba_sha256": "d07c0653687d7a586648f0308c174e47db2c5a1d80b97c89f2ca5d5325514a37",
+          "behavior": 0,
+          "reference_id": 718
+        }
+      ],
+      "reviewed": true
+    },
+    {
+      "game": "dragonsden",
+      "rom_crc32": "cec21496",
+      "rom_sha256": "6ca88c3ecd54c78bf8a8cbb80f2b9ab049d66d4b070e97849cf4073ee8d2f15c",
+      "primary": "0x87c0e10",
+      "secondary": "0x87c0e28",
+      "cells": [
+        {
+          "id": 648,
+          "rgba_sha256": "0f634ea914f18d38f354f29c89d04c8ec0d4dcba0aa11373a3c6874f013d2d4b",
+          "behavior": 0,
+          "reference_id": 648
+        },
+        {
+          "id": 652,
+          "rgba_sha256": "4922775cdee3a32f5443ca2aab11560760b9ccfe654b40b71fdfc39252804c64",
+          "behavior": 0,
+          "reference_id": 652
+        },
+        {
+          "id": 653,
+          "rgba_sha256": "c02145879c0cacd493a871c79a0a0d562df97ef2f02788de8dbf66fd02875b51",
+          "behavior": 0,
+          "reference_id": 653
+        },
+        {
+          "id": 654,
+          "rgba_sha256": "def583c24a8a92c2cd56b8feea9914c14886ccd059f27c5bb8ee74f3da0d0656",
+          "behavior": 0,
+          "reference_id": 654
+        },
+        {
+          "id": 655,
+          "rgba_sha256": "5547802fc4f51f31019c3f805f84caa542f6dbe5db267ecddf38e36d1fbba1ec",
+          "behavior": 0,
+          "reference_id": 655
+        },
+        {
+          "id": 656,
+          "rgba_sha256": "c2841d2d5714affb1b80f0c6d959a9f7f90d1b0b29126998d361ce83de1d0752",
+          "behavior": 0,
+          "reference_id": 656
+        },
+        {
+          "id": 662,
+          "rgba_sha256": "4eedf024013a1acc6cd76894ed29fb0d41e9c50c917ff183a73df19be7943400",
+          "behavior": 0,
+          "reference_id": 662
+        },
+        {
+          "id": 663,
+          "rgba_sha256": "89150a4898997c5420c68b8c1d77287a5b05a8bf710ae1c774514c360c62765e",
+          "behavior": 0,
+          "reference_id": 663
+        },
+        {
+          "id": 669,
+          "rgba_sha256": "af81aa39b73037708d98508bb12be4954cf90e0a854dd7b7bac1a97352ca1527",
+          "behavior": 0,
+          "reference_id": 669
+        },
+        {
+          "id": 670,
+          "rgba_sha256": "78b8b59806e16b1387f26b12e3209027bde44e13a21ded4721176ae8af3bd957",
+          "behavior": 0,
+          "reference_id": 670
+        },
+        {
+          "id": 671,
+          "rgba_sha256": "72ab63482d176e2eb02809724c4dabebc79820fd94cedc209c7a5f2d244359ad",
+          "behavior": 0,
+          "reference_id": 671
+        },
+        {
+          "id": 678,
+          "rgba_sha256": "fc2f6e7b3579d3be7bce76959b86dff9da449aa153a8d32ad9b3b64e0882af84",
+          "behavior": 0,
+          "reference_id": 678
+        },
+        {
+          "id": 679,
+          "rgba_sha256": "687838bf1b6a4a0e5c4ec5e0edf74e59502bc33cdf0388676a17b12befa3a6f7",
+          "behavior": 0,
+          "reference_id": 679
+        },
+        {
+          "id": 686,
+          "rgba_sha256": "566dc6963baa597edf5fef3575564a6ca7d0c717d43dfe57071b2ae1d7785131",
+          "behavior": 0,
+          "reference_id": 686
+        },
+        {
+          "id": 687,
+          "rgba_sha256": "e627b553f4b2fe312671fb75ef2201f317f735513354084f4cbb49351e73937d",
+          "behavior": 0,
+          "reference_id": 687
+        },
+        {
+          "id": 694,
+          "rgba_sha256": "9346c93fac977e601999cb6e013f880549b8c7251a2f67031b5c044ff299d039",
+          "behavior": 0,
+          "reference_id": 694
+        },
+        {
+          "id": 701,
+          "rgba_sha256": "d9628b0e7e9a64cecab803defc0ab04659211f16e25972f5067d8178d7236bf5",
+          "behavior": 0,
+          "reference_id": 701
+        },
+        {
+          "id": 702,
+          "rgba_sha256": "35a3072cfd796eca9d2b3ade624cb6eb6cc2b1968be5aa4e6b30a62b38da1d16",
+          "behavior": 0,
+          "reference_id": 702
+        },
+        {
+          "id": 703,
+          "rgba_sha256": "e9ea28e368145e87433103f04a15c742117db74eecb988c505d1ea6fbc7b0a53",
+          "behavior": 0,
+          "reference_id": 703
+        },
+        {
+          "id": 710,
+          "rgba_sha256": "419ba1be96b34f2f5aae6839a06b3f4fe2364da03909433b4c2c405d53ed5a28",
+          "behavior": 0,
+          "reference_id": 710
+        },
+        {
+          "id": 711,
+          "rgba_sha256": "b03bb918581d166058ca41c25eba6143e0ee245163021f4fa15fdb70ff3b05ad",
+          "behavior": 0,
+          "reference_id": 711
+        },
+        {
+          "id": 718,
+          "rgba_sha256": "d07c0653687d7a586648f0308c174e47db2c5a1d80b97c89f2ca5d5325514a37",
+          "behavior": 0,
+          "reference_id": 718
+        }
+      ],
+      "reviewed": true
+    },
+    {
+      "game": "ash-gray",
+      "rom_crc32": "63478921",
+      "rom_sha256": "a08055484c8366768d3e98e2dbed0998641abd2899ffbfc8d7f132925875f7a1",
+      "primary": "0x82d4a94",
+      "secondary": "0x82d4aac",
+      "cells": [
+        {
+          "id": 662,
+          "rgba_sha256": "4eedf024013a1acc6cd76894ed29fb0d41e9c50c917ff183a73df19be7943400",
+          "behavior": 0,
+          "reference_id": 662
+        }
+      ],
+      "reviewed": true
+    },
+    {
+      "game": "rocket",
+      "rom_crc32": "f2d16ebd",
+      "rom_sha256": "e6f232d0df265323c995e6025fe0ebcc532dfaf7634548a13ee9fb5673152442",
+      "primary": "0x82d4a94",
+      "secondary": "0x82d4aac",
+      "cells": [
+        {
+          "id": 648,
+          "rgba_sha256": "0f634ea914f18d38f354f29c89d04c8ec0d4dcba0aa11373a3c6874f013d2d4b",
+          "behavior": 0,
+          "reference_id": 648
+        },
+        {
+          "id": 652,
+          "rgba_sha256": "4922775cdee3a32f5443ca2aab11560760b9ccfe654b40b71fdfc39252804c64",
+          "behavior": 0,
+          "reference_id": 652
+        },
+        {
+          "id": 654,
+          "rgba_sha256": "def583c24a8a92c2cd56b8feea9914c14886ccd059f27c5bb8ee74f3da0d0656",
+          "behavior": 0,
+          "reference_id": 654
+        },
+        {
+          "id": 655,
+          "rgba_sha256": "5547802fc4f51f31019c3f805f84caa542f6dbe5db267ecddf38e36d1fbba1ec",
+          "behavior": 0,
+          "reference_id": 655
+        },
+        {
+          "id": 656,
+          "rgba_sha256": "c2841d2d5714affb1b80f0c6d959a9f7f90d1b0b29126998d361ce83de1d0752",
+          "behavior": 0,
+          "reference_id": 656
+        },
+        {
+          "id": 662,
+          "rgba_sha256": "4eedf024013a1acc6cd76894ed29fb0d41e9c50c917ff183a73df19be7943400",
+          "behavior": 0,
+          "reference_id": 662
+        },
+        {
+          "id": 663,
+          "rgba_sha256": "89150a4898997c5420c68b8c1d77287a5b05a8bf710ae1c774514c360c62765e",
+          "behavior": 0,
+          "reference_id": 663
+        },
+        {
+          "id": 670,
+          "rgba_sha256": "78b8b59806e16b1387f26b12e3209027bde44e13a21ded4721176ae8af3bd957",
+          "behavior": 0,
+          "reference_id": 670
+        },
+        {
+          "id": 671,
+          "rgba_sha256": "72ab63482d176e2eb02809724c4dabebc79820fd94cedc209c7a5f2d244359ad",
+          "behavior": 0,
+          "reference_id": 671
+        },
+        {
+          "id": 678,
+          "rgba_sha256": "fc2f6e7b3579d3be7bce76959b86dff9da449aa153a8d32ad9b3b64e0882af84",
+          "behavior": 0,
+          "reference_id": 678
+        },
+        {
+          "id": 679,
+          "rgba_sha256": "687838bf1b6a4a0e5c4ec5e0edf74e59502bc33cdf0388676a17b12befa3a6f7",
+          "behavior": 0,
+          "reference_id": 679
+        },
+        {
+          "id": 686,
+          "rgba_sha256": "566dc6963baa597edf5fef3575564a6ca7d0c717d43dfe57071b2ae1d7785131",
+          "behavior": 0,
+          "reference_id": 686
+        },
+        {
+          "id": 687,
+          "rgba_sha256": "e627b553f4b2fe312671fb75ef2201f317f735513354084f4cbb49351e73937d",
+          "behavior": 0,
+          "reference_id": 687
+        },
+        {
+          "id": 694,
+          "rgba_sha256": "9346c93fac977e601999cb6e013f880549b8c7251a2f67031b5c044ff299d039",
+          "behavior": 0,
+          "reference_id": 694
+        },
+        {
+          "id": 701,
+          "rgba_sha256": "d9628b0e7e9a64cecab803defc0ab04659211f16e25972f5067d8178d7236bf5",
+          "behavior": 0,
+          "reference_id": 701
+        },
+        {
+          "id": 702,
+          "rgba_sha256": "35a3072cfd796eca9d2b3ade624cb6eb6cc2b1968be5aa4e6b30a62b38da1d16",
+          "behavior": 0,
+          "reference_id": 702
+        },
+        {
+          "id": 703,
+          "rgba_sha256": "e9ea28e368145e87433103f04a15c742117db74eecb988c505d1ea6fbc7b0a53",
+          "behavior": 0,
+          "reference_id": 703
+        },
+        {
+          "id": 710,
+          "rgba_sha256": "419ba1be96b34f2f5aae6839a06b3f4fe2364da03909433b4c2c405d53ed5a28",
+          "behavior": 0,
+          "reference_id": 710
+        },
+        {
+          "id": 711,
+          "rgba_sha256": "b03bb918581d166058ca41c25eba6143e0ee245163021f4fa15fdb70ff3b05ad",
+          "behavior": 0,
+          "reference_id": 711
+        },
+        {
+          "id": 718,
+          "rgba_sha256": "d07c0653687d7a586648f0308c174e47db2c5a1d80b97c89f2ca5d5325514a37",
+          "behavior": 0,
+          "reference_id": 718
+        }
+      ],
+      "reviewed": true
+    }
+  ]
+}

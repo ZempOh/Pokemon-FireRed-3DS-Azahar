@@ -1,0 +1,30 @@
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -5327,8 +5327,9 @@
+             /* Primary basic ground cells only: secondary IDs can be furniture,
+              * walls or roofs in another tileset. Blue water stays unchanged. */
+             uint32_t primary=conn>=0?s->conn[conn].primary:s->primary;
++            uint32_t secondary=conn>=0?s->conn[conn].secondary:s->secondary;
+             int kanto=sceneryKanto(solidRom,primary);
+-            int path=sceneryLand(solidRom,primary,id)?2:(kanto && id>=0 && (id<=0x0d || climateKantoPath(id)));
++            int path=(sceneryLand(solidRom,primary,id)||scenerySecondaryLand(solidRom,primary,secondary,id))?2:(kanto && id>=0 && (id<=0x0d || climateKantoPath(id)));
+             int capRows=sceneryLandCapRows(solidRom,primary,id);
+             for(int y=0;y<16;y++)for(int x=0;x<16;x++) {
+                 size_t at=(size_t)(row*16+y)*w+col*16+x;
+--- a/app/src/main/cpp/pk_scenery_candidates.h
++++ b/app/src/main/cpp/pk_scenery_candidates.h
+@@ -51,6 +51,14 @@
+     if(crc==0xf2d16ebd && primary==0x082d4a94 && (id==1 || id==208 || id==209 || id==210 || id==211 || id==212 || id==213 || id==216 || id==217 || id==218 || id==219 || id==220 || id==221 || id==224 || id==225 || id==226 || id==227 || id==228 || id==229 || id==254 || id==255 || id==258 || id==259 || id==260 || id==261 || id==262 || id==263))return 1;
+     if(crc==0x14465a33 && primary==0x08a2e6ac && (id==1 || id==280 || id==281 || id==282 || id==284 || id==288 || id==289 || id==290 || id==292 || id==296 || id==297 || id==298))return 1;
+     if(crc==0x6c5ee1b2 && primary==0x082d4a94 && (id==1 || id==208 || id==209 || id==210 || id==211 || id==212 || id==213 || id==216 || id==217 || id==218 || id==219 || id==220 || id==221 || id==224 || id==225 || id==226 || id==227 || id==228 || id==229 || id==254 || id==255 || id==258 || id==259 || id==260 || id==261 || id==262 || id==263))return 1;
++    return 0;
++}
++static int scenerySecondaryLand(uint32_t crc,uint32_t primary,uint32_t secondary,int id) {
++    if(crc==0xfba55dd8 && primary==0x82d4a94 && secondary==0x82d4aac && (id==648 || id==652 || id==654 || id==655 || id==656 || id==662 || id==663 || id==670 || id==671 || id==678 || id==679 || id==686 || id==687 || id==694 || id==701 || id==702 || id==703 || id==710 || id==711 || id==718))return 1;
++    if(crc==0x5e704d77 && primary==0x82d4a94 && secondary==0x82d4aac && (id==648 || id==652 || id==654 || id==655 || id==656 || id==662 || id==663 || id==670 || id==671 || id==678 || id==679 || id==686 || id==687 || id==694 || id==701 || id==702 || id==703 || id==710 || id==711 || id==718))return 1;
++    if(crc==0xcec21496 && primary==0x87c0e10 && secondary==0x87c0e28 && (id==648 || id==652 || id==653 || id==654 || id==655 || id==656 || id==662 || id==663 || id==669 || id==670 || id==671 || id==678 || id==679 || id==686 || id==687 || id==694 || id==701 || id==702 || id==703 || id==710 || id==711 || id==718))return 1;
++    if(crc==0x63478921 && primary==0x82d4a94 && secondary==0x82d4aac && (id==662))return 1;
++    if(crc==0xf2d16ebd && primary==0x82d4a94 && secondary==0x82d4aac && (id==648 || id==652 || id==654 || id==655 || id==656 || id==662 || id==663 || id==670 || id==671 || id==678 || id==679 || id==686 || id==687 || id==694 || id==701 || id==702 || id==703 || id==710 || id==711 || id==718))return 1;
+     return 0;
+ }
+ static int sceneryLandCapRows(uint32_t crc,uint32_t primary,int id) {

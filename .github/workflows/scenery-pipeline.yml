@@ -21,6 +21,7 @@ jobs:
       - run: python tools/test_scenery_push_routes.py
       - run: python tools/test_scenery_battle_observation.py
       - run: python tools/test_scenery_patch_audit.py
+      - run: python tools/test_scenery_secondary_land.py
       - run: python tools/thor_renderer_evidence.py
       - name: Closed botanical geometry
         run: |

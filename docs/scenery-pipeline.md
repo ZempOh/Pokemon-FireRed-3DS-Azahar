@@ -640,3 +640,23 @@ not fabricated or discarded. The existing half-buffer restart threshold still
 applies once playback advances. Steady-state pacing and buffer capacity are
 unchanged. Recheck repeated cold starts and every exact-APK gate; earlier APK
 results cannot qualify this change.
+
+Do not rely on the live green-hue mask for town ground at sunset. Fakemon's
+Pallet Town boundary exposed secondary grass/path cells that stayed dark while
+the primary terrain became snowy. Patch 0033 adds full-land recognition scoped
+to ROM CRC, primary tileset, secondary tileset and metatile ID. The reviewed
+source atlas excludes mixed roofs, walls, fences, mailboxes and water. Exact
+RGBA plus native-behavior matches transfer 83 used cells across Radical Red,
+Fakemon, Dragon's Den, Ash Gray and Rocket Edition; this is source recognition,
+not device qualification. Evidence is in `android-secondary-land-review.json`.
+The registry generator rejects missing or mismatched proof, and the compiled
+lookup test rejects another ROM/tileset and explicit roof/water IDs. Current
+and connected-map tilesets both participate. Every resulting APK still needs
+fresh Thor timing, night-boundary and media checks.
+
+Never infer a movable-rock pass from a menu accepting Strength. The retained
+Ash Gray fixture left the target at (13,31), rather than (13,30), in both 3D and
+native 2D on the Thor. Its injected move produced the same stuck field pose.
+That fixture cannot qualify the interaction; keep the game explicitly held
+until a legitimate working fixture is established. This observation does not
+establish a renderer defect or a bug in the author's normal game progression.

@@ -61,6 +61,7 @@ jobs:
           python3 scripts/test_binary_hack_overlay.py
       - name: Test projected sprite depth
         run: |
+          python3 tools/test_scenery_secondary_land.py
           python3 tools/gen_scenery_registry.py --output /tmp/scenery-registry
           diff /tmp/scenery-registry/pk_scenery_candidates.h pokedaisy/app/src/main/cpp/pk_scenery_candidates.h
           diff /tmp/scenery-registry/pk_scenery_plant_profiles.h pokedaisy/app/src/main/cpp/pk_scenery_plant_profiles.h

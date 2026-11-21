@@ -2,6 +2,25 @@
 import argparse,json
 from pathlib import Path
 
+def validate_secondary_land(capabilities, review):
+    declared=set()
+    for p in capabilities:
+        for land in p.get('secondary_land',[]):
+            assert land['reviewed'] and land['primary'] and land['secondary']
+            for mid in land['ids']:
+                key=(p['game'],p['rom_crc32'],int(land['primary'],16),int(land['secondary'],16),mid)
+                assert key not in declared and 512<=mid<1024
+                declared.add(key)
+    proven=set()
+    for row in review['targets']:
+        assert row['reviewed'] and len(row['rom_sha256'])==64
+        for cell in row['cells']:
+            assert len(cell['rgba_sha256'])==64 and cell['reference_id'] in review['reference_ids']
+            key=(row['game'],row['rom_crc32'],int(row['primary'],16),int(row['secondary'],16),cell['id'])
+            assert key not in proven
+            proven.add(key)
+    assert declared==proven, 'Secondary land requires exact reviewed source evidence'
+
 def generate_trees(profiles,output):
     lines=['// Generated exact complete 2x2 tree patterns.','#pragma once',
         'struct SceneryTreeQuad { uint32_t rom,primary; uint16_t cells[4],ground; };',
@@ -101,6 +120,13 @@ def generate(profiles, plants, output):
             assert land['ids'] and all(0<=n<1024 for n in land['ids'])
             lines.append('    if(crc==0x%s && primary==%s && (%s))return 1;'%(p['rom_crc32'],land['primary'],' || '.join('id==%d'%n for n in land['ids'])))
     lines+=['    return 0;','}']
+    lines+=['static int scenerySecondaryLand(uint32_t crc,uint32_t primary,uint32_t secondary,int id) {']
+    for p in profiles:
+        for land in p.get('secondary_land',[]):
+            assert land['reviewed'] and land['ids'] and all(512<=n<1024 for n in land['ids'])
+            assert land['primary'] and land['secondary']
+            lines.append('    if(crc==0x%s && primary==%s && secondary==%s && (%s))return 1;'%(p['rom_crc32'],land['primary'],land['secondary'],' || '.join('id==%d'%n for n in land['ids'])))
+    lines+=['    return 0;','}']
     lines+=['static int sceneryLandCapRows(uint32_t crc,uint32_t primary,int id) {']
     for p in profiles:
         for cap in p.get('land_caps',[]):
@@ -157,6 +183,7 @@ if __name__=='__main__':
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--output',type=Path,required=True);args=p.parse_args()
     root=Path(__file__).with_name('scenery-profiles')
     capabilities=json.loads((root/'android-capabilities.json').read_text())
+    validate_secondary_land(capabilities,json.loads((root/'android-secondary-land-review.json').read_text()))
     outdoor_review=json.loads((root/'android-outdoor-review.json').read_text())
     keys=set()
     for row in outdoor_review:

@@ -29,6 +29,9 @@ cartridge dump.
 
 One-app PokéDaisy consolidation with a persistent per-game 2D/3D toggle is still in testing. Classic, FireRed and FRLG+ remain native-build passes; their Android scenery support and the additional GB/DS adapters are not yet qualified. No pending build replaces the published downloads.
 
+
+Later full-size reviews found additional winter ground gaps in Let’s Go, Lazarus and Odyssey. Corrections are under exact-APK retesting; the currently published Android build retains those known gaps. No new candidate has been released.
+
 <!-- CURRENT SCENERY STATUS END -->
 
 ## 14-game graphics preview
@@ -500,7 +503,7 @@ Winter ground recognition now uses exact ROM and tileset identities plus source-
 
 
 
-**Held from this release:** **better-emerald-2** — The earlier incorrectly patched input remains rejected. An accepted archived Better Than Better Emerald 2 revision is now under separate testing; it is not the current creator-patch target. Its own game data, map labels and source-art profiles are integrated. Wider Thor checks exposed additional winter plaza gaps, so the corrected candidate still requires a full exact-build retest before publication. **ash-gray** — The current disposable movable-rock fixture does not produce a push in either 3D or native 2D on the Thor. The required interaction remains unverified, so Ash Gray is excluded pending a legitimate working fixture; no renderer defect or author-game bug is inferred.
+**Held from this release:** **better-emerald-2** — The accepted archived Better Than Better Emerald 2 revision passed a targeted Thor battle/return test and five pacing phases after its map-label and winter-plaza fixes. Full exact-build qualification is still pending; it is not the current creator-patch target. The earlier incorrectly patched input remains rejected. **ash-gray** — The current disposable movable-rock fixture does not produce a push in either 3D or native 2D on the Thor. The required interaction remains unverified, so Ash Gray is excluded pending a legitimate working fixture; no renderer defect or author-game bug is inferred.
 
 <!-- ANDROID CLIMATE END -->
 

@@ -32,6 +32,8 @@ One-app PokéDaisy consolidation with a persistent per-game 2D/3D toggle is stil
 
 Later full-size reviews found additional winter ground gaps in Let’s Go, Lazarus and Odyssey. Corrections are under exact-APK retesting; the currently published Android build retains those known gaps. No new candidate has been released.
 
+Android pilots now render Classic, FireRed and FRLG+ scenery in paired 2D/3D views, including indoor plants. Classic winter path corners failed full-size review, so that APK was rejected and a correction awaits Thor retesting. These pilots do not qualify the three Android profiles or the one-app migration; existing published native builds retain their own recorded passes.
+
 <!-- CURRENT SCENERY STATUS END -->
 
 ## 14-game graphics preview
@@ -503,7 +505,7 @@ Winter ground recognition now uses exact ROM and tileset identities plus source-
 
 
 
-**Held from this release:** **better-emerald-2** — The accepted archived Better Than Better Emerald 2 revision passed a targeted Thor battle/return test and five pacing phases after its map-label and winter-plaza fixes. Full exact-build qualification is still pending; it is not the current creator-patch target. The earlier incorrectly patched input remains rejected. **ash-gray** — The current disposable movable-rock fixture does not produce a push in either 3D or native 2D on the Thor. The required interaction remains unverified, so Ash Gray is excluded pending a legitimate working fixture; no renderer defect or author-game bug is inferred.
+**Held from this release:** **better-emerald-2** — Better Than Better Emerald 2 remains held. Its accepted archived revision passed an earlier targeted battle/return test, but a later exact-build active-battle run did not return to the field. Follow-up probes showed confusion, self-damage and unresolved move-selection observations; stable frame timing alone is not a pass. The earlier incorrectly patched input remains rejected. **ash-gray** — The current disposable movable-rock fixture does not produce a push in either 3D or native 2D on the Thor. The required interaction remains unverified, so Ash Gray is excluded pending a legitimate working fixture; no renderer defect or author-game bug is inferred.
 
 <!-- ANDROID CLIMATE END -->
 
@@ -528,5 +530,3 @@ The v5 updates add closed botanical plant geometry and reviewed winter path/ledg
 ![classic actual Thor 3D scenery](docs/screenshots/graphics-gallery/classic-3d.png?v=c8ecef7b2362)
 
 <!-- FLORA CLIMATE END -->
-
-

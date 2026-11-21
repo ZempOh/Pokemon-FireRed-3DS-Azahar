@@ -26,6 +26,9 @@ cartridge dump.
 | All 11 Android games | v4 shared scenery APK | Exact APK passed recorded checks for all 11 profiles |
 
 [Native tests and screenshots](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/climate-3d.html) · [Android tests and screenshots](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/android-climate.html). Coverage remains limited to reviewed environmental families and tested scenes.
+
+One-app PokéDaisy consolidation with a persistent per-game 2D/3D toggle is still in testing. Classic, FireRed and FRLG+ remain native-build passes; their Android scenery support and the additional GB/DS adapters are not yet qualified. No pending build replaces the published downloads.
+
 <!-- CURRENT SCENERY STATUS END -->
 
 ## 14-game graphics preview
@@ -497,7 +500,7 @@ Winter ground recognition now uses exact ROM and tileset identities plus source-
 
 
 
-**Held from this release:** **better-emerald-2** — The local Better Emerald 2 ROM was produced from a base that fails the official BPS input checksum, and its output checksum also differs. Attack probes reset. No compatibility, scenery or performance pass is claimed for this invalid input; a correct patch/base and full retest are required. **ash-gray** — The current disposable movable-rock fixture does not produce a push in either 3D or native 2D on the Thor. The required interaction remains unverified, so Ash Gray is excluded pending a legitimate working fixture; no renderer defect or author-game bug is inferred.
+**Held from this release:** **better-emerald-2** — The earlier incorrectly patched input remains rejected. An accepted archived Better Than Better Emerald 2 revision is now under separate testing; it is not the current creator-patch target. Its own game data, map labels and source-art profiles are integrated. Wider Thor checks exposed additional winter plaza gaps, so the corrected candidate still requires a full exact-build retest before publication. **ash-gray** — The current disposable movable-rock fixture does not produce a push in either 3D or native 2D on the Thor. The required interaction remains unverified, so Ash Gray is excluded pending a legitimate working fixture; no renderer defect or author-game bug is inferred.
 
 <!-- ANDROID CLIMATE END -->
 

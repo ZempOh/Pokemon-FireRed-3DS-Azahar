@@ -22,38 +22,23 @@ cartridge dump.
 
 | Games | Published version | Latest retest status |
 | --- | --- | --- |
-| Classic, FireRed, FRLG+ | v5 botanical scenery and winter coverage | Exact builds passed all recorded Thor checks |
-| Let’s Go, Radical Red, Unbound | v3 winter scenery | Previous passing shared APK; expanded update under test |
-| Ten additional Android hacks | Unpublished scenery candidates | Device qualification pending |
+| Classic, FireRed, FRLG+ | v5 botanical scenery and winter coverage | Exact native builds passed recorded Thor checks |
+| All 11 Android games | v4 shared scenery APK | Exact APK passed recorded checks for all 11 profiles |
 
-[Native scenery screenshots](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/climate-3d.html) · [Published Android scenery screenshots](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/android-climate.html). Coverage is limited to reviewed environmental families and tested scenes; trainers and battle Pokémon retain their original sprites.
+[Native tests and screenshots](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/climate-3d.html) · [Android tests and screenshots](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/android-climate.html). Coverage remains limited to reviewed environmental families and tested scenes.
 <!-- CURRENT SCENERY STATUS END -->
 
-## Six-game graphics preview
+## 14-game graphics preview
 
-The [shared builder](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/voxel.html)
-provides FireRed 3DS, FireRed & LeafGreen+ v1.5.1, and Pokémon Classic v1.5.1
-for Azahar. The same page links the PokéDaisy Android preview for Let's Go
-Pikachu (English translation), Radical Red 4.10, and Unbound 2.1.1.1.
-You supply each matching ROM; ROMs and saves are not included in releases.
+The [shared builder](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/voxel.html) provides the passing v5 builds for Classic, FireRed and FRLG+ in Azahar, plus the passing v4 PokéDaisy APK for 11 Android profiles. Supply each matching ROM; ROMs and saves are not included.
 
-The November 18 graphics preview adds optional per-game seasons and weather,
-with **Original**, **Automatic**, and **Manual** controls. Climate defaults to
-Original, and effect detail starts at Reduced. PokéDaisy also improves
-projected sprite depth and terrain-contact shading; FireRed and FRLG+ use
-stable camera framing across connected maps.
+Use **Visual Climate → Automatic** for calendar seasons and season-weighted weather fronts, or choose a season and weather manually. The updates cover reviewed environmental geometry and winter ground coverage. Original character and battle Pokémon artwork is retained. [Native scope](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/climate-3d.html) · [Android scope](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/android-climate.html).
 
-The initial preview passed the documented early-game Thor checks. See the
-[per-game results, measured performance, and known limitations](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/graphics-upgrade.html)
-for the tested routes and exact artifact hashes. This is not full-playthrough
-certification. The [release page](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/tag/graphics-upgrade-2026-11-18)
-contains the APK, clean source snapshots, patches, and ROM-free build kits.
+## Thor captures and pacing
 
-## Android pacing follow-up and graphics gallery
+[Download the passing 11-profile APK](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/PokeDaisy-3D-Scenery-11-Games-v4-2026-11-21.apk). The recorded exact-build checks use native GBA timing and Reduced detail. [Measurements and limits](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/android-climate.html).
 
-Let’s Go Pikachu, Radical Red and Unbound passed the targeted AYN Thor field and battle retests. The shared APK uses native GBA timing (about 59.7275 FPS) instead of following the Thor’s fluctuating display ticks, and Let’s Go’s settings header now shows its own title. [Measured results and limits](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/android-pacing.html) · [Download the passing APK](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/PokeDaisy-3D-Scenery-Winter-v3-2026-11-19.apk).
-
-All six games now have [2D/3D comparisons, four seasons and battle screenshots](docs/screenshots/graphics-gallery/README.md), also on the [website gallery](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/gallery.html). The screenshots below show actual 3D scenery on the Thor; measured pacing is documented separately.
+All 14 games have [2D/3D, seasonal and battle screenshots](docs/screenshots/graphics-gallery/README.md), also in the [website gallery](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/gallery.html).
 
 | FireRed 3DS | FireRed & LeafGreen+ |
 | --- | --- |
@@ -427,50 +412,92 @@ unofficial fan project, not affiliated with or endorsed by Nintendo, Game
 Freak, Creatures or The Pokémon Company.
 
 
-<!-- EXPANDED PROPS PREVIEW -->
-### Expanded 3D scenery
-
-Passing builds: firered, frlg, classic. These builds passed Thor field, idle battle, active battle through return, multiple-rock visibility, Strength and Rock Smash checks. [Builds, scope and fresh media](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/scenery-3d.html). Other expanded candidates remain unpublished until qualification; coverage of every asset and tileset is not complete.
-
-**firered** — [matching ROM-free bundle](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/FireRed-3D-Scenery-2026-11-19.zip)
-
-![firered actual Thor 3D scenery](docs/screenshots/graphics-gallery/firered-3d.png?v=81503168000b)
-
-**frlg** — [matching ROM-free bundle](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/FRLG-Plus-3D-Scenery-2026-11-19.zip)
-
-![frlg actual Thor 3D scenery](docs/screenshots/graphics-gallery/frlg-3d.png?v=efbfc37c370e)
-
-**classic** — [matching ROM-free bundle](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/Classic-3D-Scenery-2026-11-19.zip)
-
-![classic actual Thor 3D scenery](docs/screenshots/graphics-gallery/classic-3d.png?v=c8ecef7b2362)
-
-[All six games: 2D/3D, seasonal, battle screenshots](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/gallery.html). Measured pacing is in the verification report. The initial [offline asset prototype](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/props-preview.html) is separate from these Thor captures.
-
-<!-- ANDROID SCENERY VERIFIED -->
-### Android scenery update
-
-Let’s Go, Radical Red and Unbound passed the same November 19 APK on the Thor. [Download APK](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/PokeDaisy-3D-Scenery-Winter-v3-2026-11-19.apk). [Test scope and fresh 2D/3D, seasonal and battle media](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/android-scenery.html). Selected scenery now uses solid geometry; coverage is incomplete, including Android moving and breakable rock objects.
-
-![letsgo actual Thor 3D scenery](docs/screenshots/graphics-gallery/letsgo-3d.png?v=0170139bff59)
-
-![radical actual Thor 3D scenery](docs/screenshots/graphics-gallery/radical-3d.png?v=c92c31a963a9)
-
-![unbound actual Thor 3D scenery](docs/screenshots/graphics-gallery/unbound-3d.png?v=9d6aa7b19818)
-
-
-
-
-
 <!-- ANDROID CLIMATE START -->
-### Android 3D rocks and natural weather
+### Android scenery, seasons and natural weather
 
-Let’s Go, Radical Red and Unbound passed the same APK on the Thor. [Download APK](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/PokeDaisy-3D-Scenery-Winter-v3-2026-11-19.apk). [Tests, seasons, weather and fresh media](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/android-climate.html). Select **Visual Climate → Automatic** for calendar seasons and season-weighted randomized weather every 15 minutes. Repeated selections can last longer; weather fades gradually. Native scripted weather takes priority, and cosmetic weather stays outdoors. Gameplay RNG and battle weather are unchanged. Manual presets remain available. Live movable and breakable rocks and cuttable trees use solid geometry in tested scenes. Winter covers grass and verified dirt paths; green Unbound areas include raised environmental scenery. Full asset coverage remains incomplete.
+[Download the 11-game Thor-tested APK](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/PokeDaisy-3D-Scenery-11-Games-v4-2026-11-21.apk). [Tests and exact scope](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/android-climate.html). Select **Visual Climate → Automatic** for calendar seasons and season-weighted weather every fifteen minutes, with gradual fades. Native scripted weather takes priority; gameplay RNG and battle weather are unchanged. Coverage is limited to reviewed environmental assets and scenes.
 
-![letsgo actual Thor 3D scenery](docs/screenshots/graphics-gallery/letsgo-3d.png?v=0170139bff59)
+The shared plant registry now recognizes 103 indoor plant profiles and ten framed bamboo-screen profiles, including Lazarus town interiors. Source-colored foliage retains the original floor beneath each model. Camera reset/frame synchronization fixes a reproduced invalid-coordinate race.
 
-![radical actual Thor 3D scenery](docs/screenshots/graphics-gallery/radical-3d.png?v=c92c31a963a9)
+Rocket tree clearing was verified through its own Leto NPC sequence; the unused retail HM route is not certified. Its Rock Tunnel probe uses a disposable Flash-lit setup; normal darkness remains preserved. Odyssey boulder testing uses its Magna Vis key item. Its cut-object check is a legacy-map/script compatibility probe, not proof of normal story access or Cut acquisition; the original ROM names that move slot Memento.
 
-![unbound actual Thor 3D scenery](docs/screenshots/graphics-gallery/unbound-3d.png?v=9d6aa7b19818)
+Native-speed frame publication follows cartridge-clock deadlines, keeping battle-to-field transitions steady as rendering cost changes. The linked test scope documents the bounded presentation wait.
+
+Native audio fills its real-audio buffer before playback to withstand initial UI work. Native-speed audio production uses Android’s audio-thread priority; optional ROM scans use background priority. 10 additional Rocket Edition cold starts passed with zero underruns. The shared ROM scanner now reuses its read window to reduce startup allocation pauses; 10 additional Fakemon building-scene cold starts passed with zero underruns. After priming the existing buffer, startup holds the core and queued sound for at least three seconds and waits for one continuous second of responsive UI frames. The eight-second timeout is bounded and disqualifies a test run. This adds a short loading pause; steady-state pacing and audio counters are unchanged.
+
+Seasonal shading includes 48 reviewed live grass effects across the ten additional hacks. Dragon’s Den also has explicit outdoor-map classification to keep climate active across the reviewed route boundary while preserving indoor exclusions.
+
+**Let’s Go Pikachu**
+
+| 2D | 3D |
+| --- | --- |
+| ![Let’s Go Pikachu 2D](docs/screenshots/graphics-gallery/letsgo-building-2d.png?v=7c771390f98f) | ![Let’s Go Pikachu 3D](docs/screenshots/graphics-gallery/letsgo-building-3d.png?v=690b1333425c) |
+
+**Radical Red**
+
+| 2D | 3D |
+| --- | --- |
+| ![Radical Red 2D](docs/screenshots/graphics-gallery/radical-building-2d.png?v=f543a10665ea) | ![Radical Red 3D](docs/screenshots/graphics-gallery/radical-building-3d.png?v=8cbbe45cfe7b) |
+
+**Unbound**
+
+| 2D | 3D |
+| --- | --- |
+| ![Unbound 2D](docs/screenshots/graphics-gallery/unbound-building-2d.png?v=9678caed64e9) | ![Unbound 3D](docs/screenshots/graphics-gallery/unbound-building-3d.png?v=15580ebc2d78) |
+
+**Modern Emerald**
+
+| 2D | 3D |
+| --- | --- |
+| ![Modern Emerald 2D](docs/screenshots/graphics-gallery/modern-emerald-building-2d.png?v=b54a84e309fe) | ![Modern Emerald 3D](docs/screenshots/graphics-gallery/modern-emerald-building-3d.png?v=c50462ec28dc) |
+
+**Fakemon FireRed**
+
+| 2D | 3D |
+| --- | --- |
+| ![Fakemon FireRed 2D](docs/screenshots/graphics-gallery/fakemon-building-2d.png?v=1c22ec374fc1) | ![Fakemon FireRed 3D](docs/screenshots/graphics-gallery/fakemon-building-3d.png?v=2df84d57c269) |
+
+**Lazarus**
+
+| 2D | 3D |
+| --- | --- |
+| ![Lazarus 2D](docs/screenshots/graphics-gallery/lazarus-building-2d.png?v=278d85ed295d) | ![Lazarus 3D](docs/screenshots/graphics-gallery/lazarus-building-3d.png?v=f012e07077ae) |
+
+**Dragonsden**
+
+| 2D | 3D |
+| --- | --- |
+| ![Dragonsden 2D](docs/screenshots/graphics-gallery/dragonsden-building-2d.png?v=9ab1363d099c) | ![Dragonsden 3D](docs/screenshots/graphics-gallery/dragonsden-building-3d.png?v=36352896812c) |
+
+**Gaia**
+
+| 2D | 3D |
+| --- | --- |
+| ![Gaia 2D](docs/screenshots/graphics-gallery/gaia-building-2d.png?v=93f385dd6cb5) | ![Gaia 3D](docs/screenshots/graphics-gallery/gaia-building-3d.png?v=33326898b274) |
+
+**FireRed Rocket Edition**
+
+| 2D | 3D |
+| --- | --- |
+| ![FireRed Rocket Edition 2D](docs/screenshots/graphics-gallery/rocket-building-2d.png?v=c8f18ba85503) | ![FireRed Rocket Edition 3D](docs/screenshots/graphics-gallery/rocket-building-3d.png?v=4f8633f88fcd) |
+
+**Emerald Seaglass**
+
+| 2D | 3D |
+| --- | --- |
+| ![Emerald Seaglass 2D](docs/screenshots/graphics-gallery/seaglass-building-2d.png?v=46bf209407f7) | ![Emerald Seaglass 3D](docs/screenshots/graphics-gallery/seaglass-building-3d.png?v=a76850181178) |
+
+**Odyssey**
+
+| 2D | 3D |
+| --- | --- |
+| ![Odyssey 2D](docs/screenshots/graphics-gallery/odyssey-building-2d.png?v=61ff0317e603) | ![Odyssey 3D](docs/screenshots/graphics-gallery/odyssey-building-3d.png?v=c5e645dac943) |
+
+Winter ground recognition now uses exact ROM and tileset identities plus source-reviewed pixel masks. This fixes the reproduced sunset-colored town-ground gaps, Modern Emerald’s hedge edges and Unbound’s ground around conifers and the statue, including ground beside roofs, fences and mailboxes, while preserving those structures. The exact qualified source includes 97 full secondary cells and 2372 mixed-cell masks; only the games listed as passing are device-qualified. Buildings now use solid walls and shaped roofs from 19 reviewed source patterns across 11 passing games. Hip, flat and front-gabled roof families retain each game’s original textures, with shaded sides and contact shadows. The linked gallery includes matching 2D, 3D and winter screenshots. Coverage is limited to recognized patterns; unrecognized buildings and small roof details retain their source art. Source-reviewed facade bounds on 9 patterns keep original grass padding off walls and bases, with roof texture bounds handled separately. Wider showcase camera views received separate 65-second pacing and audio checks for: lazarus.
+
+
+
+**Held from this release:** **better-emerald-2** — The local Better Emerald 2 ROM was produced from a base that fails the official BPS input checksum, and its output checksum also differs. Attack probes reset. No compatibility, scenery or performance pass is claimed for this invalid input; a correct patch/base and full retest are required. **ash-gray** — The current disposable movable-rock fixture does not produce a push in either 3D or native 2D on the Thor. The required interaction remains unverified, so Ash Gray is excluded pending a legitimate working fixture; no renderer defect or author-game bug is inferred.
 
 <!-- ANDROID CLIMATE END -->
 

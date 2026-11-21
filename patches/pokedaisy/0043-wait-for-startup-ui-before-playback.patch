@@ -1,0 +1,112 @@
+--- a/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt
++++ b/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt
+@@ -299,6 +299,8 @@
+ 
+     /** Fired on the emu thread after every frame, while the frame buffer holds that whole frame. */
+     var onFrame: (() -> Unit)? = null
++    /** Called once on the worker with real PCM primed; must be bounded/cancellable. */
++    var awaitNativeStartup: (() -> Unit)? = null
+ 
+     /** False for a Game Boy / Color ROM: the GBA-only watchers (region map, menus, m4a songs) stay off. */
+     @Volatile var gba = true
+@@ -1289,6 +1291,7 @@
+         // The same after a flush (FF with a STEADY clip, sleep): a stopped track only plays again once its buffer is as
+         // full as its start threshold - all of it - so until its head moves again it's held to half too.
+         var trackStarted = false
++        private var nativeStartupPending = true
+         private var requestedWorkerPriority: Int? = null
+         // Audio queued after this frame's write (vsync pacing only): picks how the next frame is paced. Null on a
+         // frame that wrote none (the game's audio paused for a STEADY clip, say): it paces on the tick alone - a
+@@ -1946,6 +1949,18 @@
+                 accepted
+             }
+             if (starting && written >= 0 && framesWritten + written / 2 >= primeFrames) {
++                if (nativeStartupPending) {
++                    nativeStartupPending = false
++                    val loadingStarted = System.nanoTime()
++                    awaitNativeStartup?.invoke()
++                    val loadingNanos = System.nanoTime() - loadingStarted
++                    // Hold the core and all its PCM during loading. Resume its
++                    // existing timeline, never run a burst to catch up wall time.
++                    next += loadingNanos
++                    frameStart += loadingNanos
++                    fpsSince += loadingNanos
++                    Log.i("pokedaisy", "audio: startup loading held ${loadingNanos / 1_000_000L}ms; queued PCM retained")
++                }
+                 track.play()
+                 Log.i("pokedaisy", "audio: native playback starts with ${framesWritten + written / 2}/$primeFrames real frames queued (capacity $bufferFrames)")
+             }
+--- a/app/src/main/kotlin/com/pokedaisy/app/PokeDaisyActivity.kt
++++ b/app/src/main/kotlin/com/pokedaisy/app/PokeDaisyActivity.kt
+@@ -3204,6 +3204,29 @@
+             onFrame = {
+                 view.publishFrame()
+                 if (romIsNds) NdsBottomFrame.publish()
++            }
++            awaitNativeStartup = {
++                val finished = java.util.concurrent.CountDownLatch(1)
++                val cancelled = java.util.concurrent.atomic.AtomicBoolean(false)
++                val readiness = VoxelFrameClock.StartupReadiness(System.nanoTime())
++                val handler = android.os.Handler(android.os.Looper.getMainLooper())
++                val callback = object : android.view.Choreographer.FrameCallback {
++                    override fun doFrame(frameTimeNanos: Long) {
++                        if (cancelled.get()) return
++                        if (readiness.frame(System.nanoTime())) finished.countDown()
++                        else android.view.Choreographer.getInstance().postFrameCallback(this)
++                    }
++                }
++                handler.post {
++                    if (!cancelled.get()) android.view.Choreographer.getInstance().postFrameCallback(callback)
++                }
++                try {
++                    if (!finished.await(8, java.util.concurrent.TimeUnit.SECONDS))
++                        Log.w("pokedaisy", "audio: startup UI readiness timed out")
++                } finally {
++                    cancelled.set(true)
++                    handler.post { android.view.Choreographer.getInstance().removeFrameCallback(callback) }
++                }
+             }
+             onStateResult = { action, slot, ok ->
+                 val msg = when (action) {
+--- a/app/src/main/kotlin/com/pokedaisy/app/VoxelFrameClock.kt
++++ b/app/src/main/kotlin/com/pokedaisy/app/VoxelFrameClock.kt
+@@ -3,6 +3,19 @@
+ /** A GBA frame is 280896 cycles of its 16777216 Hz clock, independent of Android's refresh. */
+ internal object VoxelFrameClock {
+     const val FRAME_NANOS = 280896L * 1_000_000_000L / 16777216L
++
++    /** Initial UI/scanner loading is not gameplay. Require a quiet UI interval
++     * after the initial loading reserve; a stalled callback never counts as quiet.
++     * The Android caller bounds the wait and cancels callbacks when it exits. */
++    class StartupReadiness(private val started: Long) {
++        private var last = started
++        private var quietSince = started
++        fun frame(now: Long): Boolean {
++            if (now - last > 40_000_000L || now < last) quietSince = now
++            last = now
++            return now - started >= 3_000_000_000L && now - quietSince >= 1_000_000_000L
++        }
++    }
+ 
+     /** Publish on the cartridge deadline, not at a scene-dependent render finish.
+      * The clock and sleeper are injectable so work transitions and early wakes can
+--- a/app/src/test/kotlin/com/pokedaisy/app/VoxelFrameClockTest.kt
++++ b/app/src/test/kotlin/com/pokedaisy/app/VoxelFrameClockTest.kt
+@@ -7,6 +7,17 @@
+ import java.util.concurrent.TimeUnit
+ 
+ class VoxelFrameClockTest {
++    @Test fun startupRequiresLoadingReserveAndContinuousUiFrames() {
++        val ready = VoxelFrameClock.StartupReadiness(0)
++        for (ms in 10L..2990L step 10L) assertTrue(!ready.frame(ms * 1_000_000L))
++        assertTrue(ready.frame(3_000_000_000L))
++        // A late initial callback must not mistake elapsed time for UI readiness.
++        val stalled = VoxelFrameClock.StartupReadiness(0)
++        assertTrue(!stalled.frame(4_000_000_000L))
++        for (ms in 4010L..4990L step 10L) assertTrue(!stalled.frame(ms * 1_000_000L))
++        assertTrue(stalled.frame(5_000_000_000L))
++    }
++
+     @Test fun battleToFieldWorkDoesNotStretchPresentationIntervals() {
+         val period = VoxelFrameClock.FRAME_NANOS
+         var clock = 0L

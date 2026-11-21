@@ -783,3 +783,16 @@ No buffer enlargement, frame skipping, clock change or relaxed audio gate is
 used. Verify the actual worker priority in cold-start logs, repeat startup tests
 and retain presentation/UI checks to catch scheduling regressions. Patch41 stays
 blocked; its ten clean Fakemon starts do not qualify another game or build.
+
+Patch42 passed ten Rocket starts but Fakemon's seventh start still underrran
+during initial UI/JIT loading. Patch43 holds the core once the existing audio
+buffer is primed, preserving every queued PCM sample, while the UI settles.
+It requires a three-second loading reserve and a continuous second of UI
+callbacks without a gap above 40 ms. The wait is cancellable and bounded at
+eight seconds; a timeout remains visible and does not qualify a release.
+The game timeline resumes after this explicitly logged loading pause without
+catch-up frames. Audio counters are never reset, buffers are not enlarged and
+steady-gameplay thresholds remain unchanged. Unit tests cover a late first UI
+callback and the reserve/quiet-window boundaries. This is a startup latency
+tradeoff requiring fresh cold-start, input, UI and sustained Thor checks, not
+an inherited pass or a fix for an unrelated gameplay pacing failure.

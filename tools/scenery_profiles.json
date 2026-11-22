@@ -107,7 +107,15 @@
         "app/src/main/cpp/pk_wide.c"
       ],
       "rom_crc32": "4b3d4957",
-      "notes": "Green and snow tilesets are separate profiles. Preserve water and cliff backgrounds under replacement foliage."
+      "notes": "Green and snow tilesets are separate profiles. Preserve water and cliff backgrounds under replacement foliage. Exact73 rejected: full-land winter whitening turned native Frozen Heights snow bright white beneath trees. Native-snow material preserves source lighting; exact74 Thor review pending.",
+      "native_snow_ground": {
+        "primary": "08725ab4",
+        "metatile": 0,
+        "recognizer": "solidTreesPrepare exact-ROM snow tree profile",
+        "climate_material": "CLIMATE_GROUND_NATIVE_SNOW",
+        "regression": "tools/test_voxel_climate.c",
+        "thor_fixture": "native-snow74"
+      }
     },
     "better-emerald-2": {
       "repo": "pokedaisy",

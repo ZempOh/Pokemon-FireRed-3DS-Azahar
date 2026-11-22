@@ -29,6 +29,16 @@ expansion manifest. Actors and battle Pokémon are a separate pass.
 
 ## Shared geometry rules
 
+Exact73 exposed a native-snow material mismatch in Unbound's Frozen Heights:
+tree footprint reconstruction applied full-land winter whitening to existing
+blue, night-lit snow. Preserve the original ground for verified native-snow
+profiles using `CLIMATE_GROUND_NATIVE_SNOW`; ordinary reviewed land must still
+receive winter coverage. Do not infer native snow from color. Unbound's existing
+exact-ROM/primary-tileset tree recognizer identifies this material. Regression
+checks preserve its color and alpha across seasons and fade levels. Keep both
+field and winter full-size captures; passing timing does not erase this failure.
+Run this scene before the long all-game timing queue on the next exact APK.
+
 Exact72 exposed a shared wide-camera failure: Lazarus at zoom step2 uses a
 480x271 output, but its tall building needs a padded source window wider than
 800 pixels. The old viewport-sized scratch buffers silently forced flat rendering

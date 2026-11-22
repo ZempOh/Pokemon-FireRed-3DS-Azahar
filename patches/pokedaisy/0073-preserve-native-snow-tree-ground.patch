@@ -1,0 +1,24 @@
+--- a/app/src/main/cpp/pk_voxel_climate.h
++++ b/app/src/main/cpp/pk_voxel_climate.h
+@@ -107,7 +107,10 @@
+     return id==0xc1 || (id>=0xd0 && id<=0xd5) || (id>=0xd8 && id<=0xdd)
+         || (id>=0xe0 && id<=0xe5) || id==0xfe || id==0xff || (id>=0x102 && id<=0x107);
+ }
++// Verified native snow already carries the map lighting and snow texture.
++enum { CLIMATE_GROUND_NATIVE_SNOW = 3 };
+ static uint32_t climateGround(uint32_t c,int path) {
++    if(path==CLIMATE_GROUND_NATIVE_SNOW)return c;
+     if(voxelClimate.season!=3 || !voxelClimate.seasonBlend)return climateTerrain(c);
+     unsigned r=c&255,g=(c>>8)&255,b=(c>>16)&255;
+     int grass=g>r+8 && g>b+8;
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -5108,7 +5108,7 @@
+             if(ci){rgb=P[(e>>12)*16+ci];break;}
+         }
+         ground[y*16+x]=color(rgb,alpha);
+-        if(voxelClimate.seasonBlend)ground[y*16+x]=climateGround(ground[y*16+x],2);
++        if(voxelClimate.seasonBlend)ground[y*16+x]=climateGround(ground[y*16+x],snow?CLIMATE_GROUND_NATIVE_SNOW:2);
+     }
+     for(int i=0;i<n;i++)for(int y=snow?16:0;y<48;y++)for(int x=0;x<32;x++)
+         texture[(trees[i].y-v->top+y)*v->stride+trees[i].x-v->left+x]=ground[(y&15)*16+(x&15)];

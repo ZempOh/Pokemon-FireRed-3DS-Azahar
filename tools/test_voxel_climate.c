@@ -92,6 +92,20 @@ int main(void) {
     assert(climateGround(0xffcc7733u,1)==0xffcc7733u); /* water */
     assert(climateGround(0xff4488bbu,1)!=0xff4488bbu); /* earth */
     assert(climateGround(0xff4488bbu,0)==0xff4488bbu); /* wall */
+    /* Frozen Heights: never whiten already snowy, night-lit tree ground a
+     * second time. The same colors must still whiten on reviewed bare land. */
+    const uint32_t nativeSnow[]={0xffb09592u,0xffd0a8a0u,0xffeeddddu,0x7f887760u};
+    for(unsigned i=0;i<sizeof(nativeSnow)/sizeof(nativeSnow[0]);i++) {
+        assert(climateGround(nativeSnow[i],2)!=nativeSnow[i]);
+        for(int season=0;season<4;season++) {
+            voxelClimate.season=season;
+            for(unsigned blend=0;blend<=256;blend+=32) {
+                voxelClimate.seasonBlend=blend;
+                assert(climateGround(nativeSnow[i],CLIMATE_GROUND_NATIVE_SNOW)==nativeSnow[i]);
+            }
+        }
+        voxelClimate.season=3;voxelClimate.seasonBlend=256;
+    }
     for(unsigned a=0;a<256;a++)assert((climateGround((a<<24)|0x409040,1)>>24)==a);
     voxelClimate.seasonBlend=0;assert(climateGround(foliage,1)==foliage);
     voxelClimate.config=2|(3<<2)|(3<<4);

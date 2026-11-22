@@ -38,6 +38,15 @@ distinguish a ground pixel from a leaf pixel with the same palette index and
 preserve the trunk. This source correction is not a Thor pass; exact68 remains
 rejected despite its clean showcase timing.
 
+Exact69 showed that this nearby 0x0f correction did not resolve the wider
+scene's round trees. Bind the failure to the map layout before choosing cells:
+Acrisia map 0,57 trees at 24,4 and 25,6 use the complete 0x1d6/0x1d7/
+0x1de/0x1df pattern. Its reviewed exterior-ground masks flood only edge-connected
+ground pixels in the complete 32x32 source pattern; enclosed same-color leaf
+highlights, trunk and shadow remain untouched. The overlapping alternate tree
+proposal was not selected. Preserve exact68 and exact69 failures; the new four
+cell correction still requires full-size Thor review at the wider camera.
+
 Frame full structures before approving building captures. Keep camera framing
 as per-game data, retain clipped captures, and separately measure wider zoom
 settings. Verify ground fixture coordinates: Classic's full 4x2 berry plot needs

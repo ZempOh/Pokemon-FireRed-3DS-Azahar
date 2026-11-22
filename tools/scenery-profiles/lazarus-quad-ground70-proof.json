@@ -1,0 +1,221 @@
+{
+  "game": "lazarus",
+  "rom_crc32": "558ae42f",
+  "rom_sha256": "d756b2783dede0bb2c534d1f07713bef733cf53500388e3912f14220a7e16e97",
+  "primary": "0x08e3e21c",
+  "secondary": "0x08e3e92c",
+  "palette_indices": [
+    33,
+    34
+  ],
+  "patterns": [
+    {
+      "cells": [
+        468,
+        469,
+        476,
+        477
+      ],
+      "rgba_sha256": "31ee8d2a070f52faf769b223e774b197a7ea5e1f0e71528acbf8d565e82fb740",
+      "ground_pixels": 154
+    },
+    {
+      "cells": [
+        470,
+        471,
+        478,
+        479
+      ],
+      "rgba_sha256": "c38ed2d4dcf6edc8e4e9100020894e8981eaf3e296e1920a36673726a87d661c",
+      "ground_pixels": 418
+    }
+  ],
+  "cells": [
+    {
+      "id": 468,
+      "rows": [
+        6,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "rgba_sha256": "af8e1bce55411e97a53dbb310961f4ac1a0789e0abf347e5f9ad248ef8c32fcf"
+    },
+    {
+      "id": 469,
+      "rows": [
+        21532,
+        53248,
+        61440,
+        24576,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "rgba_sha256": "d9f2280b8d5e97f76e0b3a1d2a33416bd42822ac66d5a641394c570da1f06ecc"
+    },
+    {
+      "id": 476,
+      "rows": [
+        0,
+        0,
+        0,
+        1,
+        1,
+        3,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0,
+        8,
+        13,
+        31,
+        2062
+      ],
+      "rgba_sha256": "d9f2280b8d5e97f76e0b3a1d2a33416bd42822ac66d5a641394c570da1f06ecc"
+    },
+    {
+      "id": 477,
+      "rows": [
+        0,
+        57344,
+        64512,
+        65024,
+        65280,
+        65408,
+        65280,
+        7936,
+        53120,
+        65408,
+        56800,
+        19440,
+        4080,
+        36848,
+        65504,
+        65472
+      ],
+      "rgba_sha256": "af8e1bce55411e97a53dbb310961f4ac1a0789e0abf347e5f9ad248ef8c32fcf"
+    },
+    {
+      "id": 470,
+      "rows": [
+        2047,
+        1023,
+        511,
+        255,
+        127,
+        63,
+        63,
+        63,
+        63,
+        31,
+        15,
+        7,
+        7,
+        7,
+        7,
+        15
+      ],
+      "rgba_sha256": "ae8ce6121ac81058f158367feece54dc79e5c6b64976c8c0f476993f9637ca89"
+    },
+    {
+      "id": 471,
+      "rows": [
+        65532,
+        65504,
+        65472,
+        65280,
+        64512,
+        63488,
+        63488,
+        63488,
+        61440,
+        61440,
+        57344,
+        57344,
+        57344,
+        57344,
+        61440,
+        63488
+      ],
+      "rgba_sha256": "ee895809d1a0cafbad306b70a729d091b635187aa7b72fa3c003bd6e1e05c9a4"
+    },
+    {
+      "id": 478,
+      "rows": [
+        31,
+        31,
+        15,
+        15,
+        15,
+        31,
+        63,
+        255,
+        1023,
+        4095,
+        4095,
+        1023,
+        511,
+        511,
+        1023,
+        4095
+      ],
+      "rgba_sha256": "047fa8361406097278e2b2048b786fdcf5a6c5eee7665326813d433d7ae556da"
+    },
+    {
+      "id": 479,
+      "rows": [
+        61440,
+        57344,
+        57344,
+        57344,
+        57344,
+        61440,
+        63488,
+        64512,
+        65280,
+        65504,
+        65504,
+        65408,
+        65280,
+        65280,
+        65408,
+        65504
+      ],
+      "rgba_sha256": "057c9dedf240289b6e9a2444345485000eed06cdef173ec4c4342b56e439c84a"
+    }
+  ],
+  "reviewed": true,
+  "thor_qualified": false,
+  "source_review_sha256": "4d827dc6bd2fd58d0c298fac326c6405d2306b91a4c374944d083009badfb6cd",
+  "selected_ids": [
+    470,
+    471,
+    478,
+    479
+  ],
+  "review_note": "Exact map0,57 round trees at24,4 and25,6 use complete1d6/1d7/1de/1df quads, not nearby0x0f cells. Full32x32 source preview reviewed: edge-connected ground palette only, enclosed same-color leaf highlights and trunk/shadow preserved. Other overlapping quad proposal explicitly not selected. Exact69 failed narrower hypothesis; Thor retest mandatory."
+}

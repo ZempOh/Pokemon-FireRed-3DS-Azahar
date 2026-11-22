@@ -1,52 +1,38 @@
-<p align="center">
-  <img src="3ds_port/assets/artwork/FireRed%203DS.png" alt="FireRed 3DS" width="560">
-</p>
+# Pokémon in 2D and 3D
 
-# Pokémon FireRed 3DS for Azahar
+Play with 3D scenery, seasons and changing weather using your own ROM.
 
-**Proudly vibe coded.** This fork brings FireRed 3DS to Azahar on Android, with
-the AYN Thor as the target handheld. Choose your game and matching local
-ROM in the shared builder, then download and install the result.
+**[Choose a game and get started](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/voxel.html)** · **[Compare 2D and 3D](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/gallery.html)**
 
-The game is a native Nintendo 3DS port with a dual-screen interface and a
-voxel-styled 3D world. The builder uses this fork's cartridge engine and a
-matching data recipe based on upstream v0.5.1. You supply your own FireRed
-cartridge dump.
+## Start playing
 
-**[Project website](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/)**
-· **[Shared voxel builder](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/voxel.html)**
-· **[Graphics preview release](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/tag/graphics-upgrade-2026-11-18)**
+| Your device | What to do |
+| --- | --- |
+| Android / AYN Thor | [Install the tested PokéDaisy APK](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/PokeDaisy-3D-Scenery-11-Games-v4-2026-11-21.apk), then import your matching GBA ROM. |
+| Azahar | [Open the builder](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/voxel.html#azahar-builder), choose Classic, FireRed or FRLG+, select the requested ROM version, then build and download. |
+
+The website builds locally in your browser. Your ROM is not uploaded. ROMs and saves are not included.
+
+## Graphics and weather
+
+In PokéDaisy, open **Settings → Screen → Voxel 3D** to change the graphics.
+Choose **Visual Climate → Automatic** for calendar seasons and naturally changing weather, or choose them manually.
+Weather is cosmetic and does not change battle rules. Character and battle Pokémon artwork stays original.
 
 <!-- CURRENT SCENERY STATUS -->
-### Current scenery downloads
+## Available now
 
-| Games | Published version | Latest retest status |
-| --- | --- | --- |
-| Classic, FireRed, FRLG+ | v5 botanical scenery and winter coverage | Exact native builds passed recorded Thor checks |
-| All 11 Android games | v4 shared scenery APK | Exact APK passed recorded checks for all 11 profiles |
+- **Android:** the published APK supports 11 tested game profiles. [See games and ROM versions](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/android-climate.html).
+- **Azahar:** Classic, FireRed and FRLG+ have tested native builds. [See screenshots and results](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/climate-3d.html).
 
-[Native tests and screenshots](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/climate-3d.html) · [Android tests and screenshots](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/android-climate.html). Coverage remains limited to reviewed environmental families and tested scenes.
+The unified 16-game Android app and per-game graphics toggle are still being tested. New downloads will appear only after their exact builds pass Thor checks. The published Android build has known winter-ground gaps; fixes are awaiting retest.
 
-One-app PokéDaisy consolidation with a persistent per-game 2D/3D toggle is still in testing. Classic, FireRed and FRLG+ remain native-build passes; their Android scenery support and the additional GB/DS adapters are not yet qualified. No pending build replaces the published downloads.
-
-
-Later full-size reviews found additional winter ground gaps in Let’s Go, Lazarus and Odyssey. Corrections are under exact-APK retesting; the currently published Android build retains those known gaps. No new candidate has been released.
-
-The latest Android candidate passed Classic's selected full berry-plot winter, summer-restoration and map-boundary checks on the Thor. Better Emerald 2 passed a 90-second active battle test at 59.7 FPS with no audio underruns and returned to the field. Ash Gray's actual Dark City scripted scene completed in both 2D and 3D; this is not a retail Strength test. Full game qualification, remaining visual checks and the one-app migration are still pending. Earlier failures remain rejected; published downloads and screenshots are unchanged.
-
+Scenery support covers reviewed environmental patterns and tested scenes, not every asset on every map.
 <!-- CURRENT SCENERY STATUS END -->
 
-## 14-game graphics preview
+## Screenshots
 
-The [shared builder](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/voxel.html) provides the passing v5 builds for Classic, FireRed and FRLG+ in Azahar, plus the passing v4 PokéDaisy APK for 11 Android profiles. Supply each matching ROM; ROMs and saves are not included.
-
-Use **Visual Climate → Automatic** for calendar seasons and season-weighted weather fronts, or choose a season and weather manually. The updates cover reviewed environmental geometry and winter ground coverage. Original character and battle Pokémon artwork is retained. [Native scope](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/climate-3d.html) · [Android scope](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/android-climate.html).
-
-## Thor captures and pacing
-
-[Download the passing 11-profile APK](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/download/graphics-upgrade-2026-11-18/PokeDaisy-3D-Scenery-11-Games-v4-2026-11-21.apk). The recorded exact-build checks use native GBA timing and Reduced detail. [Measurements and limits](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/android-climate.html).
-
-All 14 games have [2D/3D, seasonal and battle screenshots](docs/screenshots/graphics-gallery/README.md), also in the [website gallery](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/gallery.html).
+The [gallery](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/gallery.html) has matching 2D/3D screenshots, seasons and battles. Coverage describes the recorded scenes, not every map.
 
 | FireRed 3DS | FireRed & LeafGreen+ |
 | --- | --- |
@@ -59,6 +45,19 @@ All 14 games have [2D/3D, seasonal and battle screenshots](docs/screenshots/grap
 | Pokémon Radical Red | Pokémon Unbound |
 | --- | --- |
 | ![radical actual Thor 3D scenery](docs/screenshots/graphics-gallery/radical-3d.png?v=c92c31a963a9) | ![unbound actual Thor 3D scenery](docs/screenshots/graphics-gallery/unbound-3d.png?v=9d6aa7b19818) |
+
+## Updates and help
+
+- [Release notes and downloads](https://github.com/ZempOh/Pokemon-FireRed-3DS-Azahar/releases/tag/graphics-upgrade-2026-11-18)
+- [Android test results and supported versions](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/android-climate.html)
+- [Azahar test results](https://zempoh.github.io/Pokemon-FireRed-3DS-Azahar/climate-3d.html)
+
+Keep a backup of your saves before changing apps. If Android reports a signing mismatch, keep the existing app installed until your saves are safely exported.
+
+## Detailed project history
+
+<details>
+<summary>Earlier builds, technical measurements, developer instructions and credits</summary>
 
 ## Ground animation and native battle pacing
 
@@ -530,3 +529,6 @@ The v5 updates add closed botanical plant geometry and reviewed winter path/ledg
 ![classic actual Thor 3D scenery](docs/screenshots/graphics-gallery/classic-3d.png?v=c8ecef7b2362)
 
 <!-- FLORA CLIMATE END -->
+
+
+</details>

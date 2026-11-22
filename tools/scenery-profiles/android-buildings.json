@@ -1004,9 +1004,16 @@
       "hip_inset": 8,
       "gable_x": 0.5,
       "gable_row": 0,
-      "ridge_back_height": 56
+      "ridge_back_height": 56,
+      "wall_left": 1,
+      "wall_right": 95,
+      "wall_bottom": 80
     },
-    "scope": "Reviewed source rectangle and geometry family; exact APK device qualification remains separate."
+    "scope": "Reviewed source rectangle and geometry family; exact APK device qualification remains separate.",
+    "wall_crop_review": {
+      "source_art_sha256": "6e9becac2e4605f55d1406bbf62115d47e52fdc0ed0c27ef528dff798e46214d",
+      "scope": "Full-size source review excludes one-column exterior ground borders; retains brick, banners, windows, door and bottom trim. Roof UVs unchanged. Exact Thor retest required."
+    }
   },
   {
     "game": "dragonsden",

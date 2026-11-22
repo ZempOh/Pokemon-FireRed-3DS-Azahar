@@ -245,7 +245,7 @@
       ],
       "rom_crc32": "14465a33",
       "rom_sha256": "6098296dca53655bb51493658d74ba206abe6bacbbe60db8d4f497367926809f",
-      "notes": "Expansion candidate; no Thor qualification. Consult tools/scenery-profiles/expansion-transfer.json; no automatic asset inheritance."
+      "notes": "Expansion candidate; no Thor qualification. Consult tools/scenery-profiles/expansion-transfer.json; no automatic asset inheritance. All-building material audit found town-house exterior ground columns; patch71 crops reviewed x1..95 facade span while preserving roof UVs. Thor retest required."
     },
     "odyssey": {
       "repo": "pokedaisy",

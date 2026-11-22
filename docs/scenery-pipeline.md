@@ -1211,3 +1211,10 @@ roof UVs are unchanged. Run the facade material audit after each new crop.
 A successful earlier audit covers only profiles with wall_crop_review, not every
 registered building. Review full-size winter captures for all remaining profiles
 before timing. No exact70 qualification or publication is inherited.
+
+Use audit_building_wall_materials.py --include-uncropped to inspect default
+facade bounds too. This found Seaglass town-house exterior ground columns
+missed by the cropped-only audit. Patch71 trims one source column per side
+after full-size source review, retaining interior facade and roof UVs.
+All27 registered patterns now pass source-material audit; Thor checks remain
+mandatory and source palette overlap alone must never choose crop bounds.

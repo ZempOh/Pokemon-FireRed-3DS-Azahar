@@ -9,6 +9,17 @@ PROOF=json.loads((ROOT/'android-secondary-land-review.json').read_text())
 MASKS=json.loads((ROOT/'android-land-mask-review.json').read_text())
 
 class SecondaryLandTests(unittest.TestCase):
+ def test_lazarus_tree_border_does_not_recolor_same_color_leaf_highlights(self):
+  cap=next(p for p in CAPS if p['game']=='lazarus')
+  group=next(g for g in cap['secondary_land_masks'] if int(g['secondary'],16)==0x8e3e92c)
+  rows=next(c['rows'] for c in group['cells'] if c['id']==15)
+  self.assertTrue(rows[12]&(1<<3)) # Ground uses palette index 0x22.
+  self.assertFalse(rows[2]&(1<<3)) # Leaf highlight uses the SAME index.
+  self.assertFalse(rows[13]&(1<<7)) # Trunk remains original.
+  self.assertTrue(rows[15]&(1<<15)) # Lower outer ground border.
+  proof=json.loads((ROOT/'lazarus-tree-border69-proof.json').read_text())['cells'][0]
+  for y,(lo,hi) in enumerate(proof['protected_spans']):
+   self.assertFalse(rows[y]&sum(1<<x for x in range(lo,hi+1)))
  def test_rocket_forest_path_below_wall_is_ground_not_facade(self):
   cap=next(p for p in CAPS if p['game']=='rocket')
   group=next(g for g in cap['secondary_land_masks'] if int(g['secondary'],16)==0x82d4dc4)

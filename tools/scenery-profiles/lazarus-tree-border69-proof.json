@@ -1,0 +1,108 @@
+{
+  "game": "lazarus",
+  "rom_crc32": "558ae42f",
+  "rom_sha256": "d756b2783dede0bb2c534d1f07713bef733cf53500388e3912f14220a7e16e97",
+  "primary": "0x08e3e21c",
+  "secondary": "0x08e3e92c",
+  "palette_indices": [
+    33,
+    34
+  ],
+  "cells": [
+    {
+      "id": 15,
+      "rows": [
+        32769,
+        32769,
+        49155,
+        32769,
+        0,
+        0,
+        32769,
+        0,
+        0,
+        32769,
+        49155,
+        57351,
+        63519,
+        61455,
+        61471,
+        65407
+      ],
+      "protected_spans": [
+        [
+          1,
+          14
+        ],
+        [
+          1,
+          14
+        ],
+        [
+          2,
+          13
+        ],
+        [
+          1,
+          14
+        ],
+        [
+          0,
+          15
+        ],
+        [
+          0,
+          15
+        ],
+        [
+          1,
+          14
+        ],
+        [
+          0,
+          15
+        ],
+        [
+          0,
+          15
+        ],
+        [
+          1,
+          14
+        ],
+        [
+          2,
+          13
+        ],
+        [
+          3,
+          12
+        ],
+        [
+          5,
+          10
+        ],
+        [
+          4,
+          11
+        ],
+        [
+          5,
+          11
+        ],
+        [
+          7,
+          7
+        ]
+      ],
+      "rgba_sha256": "317b30e2781a157d0fa29a629c4841026a1777479ce57f594e966c1cd8c71ebc"
+    }
+  ],
+  "reviewed": true,
+  "thor_qualified": false,
+  "source_review_sha256": "36e931fb7e6a05420b95b771f31baab5567eff4a1f9eaf18c6776632d3f9ba51",
+  "selected_ids": [
+    15
+  ],
+  "review_note": "Source pixel review protects the full round-tree silhouette, trunk and shadow. Only palette 0x21/0x22 pixels outside explicit per-row bounds become winter ground; same-color leaf highlights remain protected. Exact68 wider Thor view revealed this omitted border. Requires a new Thor test."
+}

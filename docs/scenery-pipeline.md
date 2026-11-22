@@ -29,6 +29,24 @@ expansion manifest. Actors and battle Pokémon are a separate pass.
 
 ## Shared geometry rules
 
+Exact68's wider Lazarus Acrisia review exposed ground around the round-tree
+base that the earlier color-only review deliberately excluded. Ground and leaf
+highlights both use palette index 0x22. The source-reviewed 0x0f mask now uses
+explicit per-row protected silhouette spans; recolor only ground outside those
+spans. Keep the proof's ROM, tileset pair and RGBA identity. Regression checks
+distinguish a ground pixel from a leaf pixel with the same palette index and
+preserve the trunk. This source correction is not a Thor pass; exact68 remains
+rejected despite its clean showcase timing.
+
+Frame full structures before approving building captures. Keep camera framing
+as per-game data, retain clipped captures, and separately measure wider zoom
+settings. Verify ground fixture coordinates: Classic's full 4x2 berry plot needs
+the centered Route 1 fixture at map 6,10 position 7,9. The earlier boundary
+fixture at 12,1 did not show the whole plot and cannot establish full coverage.
+The private preflight gate requires explicit exact-build building and required
+ground reviews before the performance queue can begin; captured files alone
+never grant approval.
+
 Strength probes must distinguish boulder displacement from player follow-through.
 Classic exact66's short upward input moved the rock from 7,18 to 7,17 while
 the player stayed at 7,19; native 2D reproduced the same result. A separate

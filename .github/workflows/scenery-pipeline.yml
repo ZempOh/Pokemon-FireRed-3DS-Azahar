@@ -32,3 +32,5 @@ jobs:
           /tmp/botanical-test
           gcc -std=c99 -O2 -Wall -Wextra -Werror tools/scenery-geometry/test_buildings.c -lm -o /tmp/building-test
           /tmp/building-test
+          gcc -std=c99 -O2 -Wall -Wextra -Werror tools/scenery-geometry/test_material_cache.c -o /tmp/material-test
+          /tmp/material-test

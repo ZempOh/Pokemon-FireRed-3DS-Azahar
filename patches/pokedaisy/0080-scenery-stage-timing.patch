@@ -1,0 +1,101 @@
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -39,6 +39,7 @@
+ #include "pk_scenery_tall_tree_profiles.h"
+ #include "pk_scenery_ui.h"
+ #include "pk_scenery_material_cache.h"
++#include "pk_scenery_frame_profile.h"
+ 
+ #include <stdbool.h>
+ #include <stdio.h>
+@@ -5374,6 +5375,7 @@
+ 
+     struct VoxelView voxel = { out, depth, texture, v.w, v.h, v.x + v.w / 2, v.y + v.h / 2,
+                                left, top, cols, rows, w, rises };
++    SCENERY_FRAME_MARK(cost0);
+     drawRegion(s, cx, cy, href, vref, left, top, right, bottom, false, texture, w, alpha, true);
+     rawView = v;
+     for (int y = 0; y < v.h; y++) {
+@@ -5387,11 +5389,15 @@
+     for (int i=0; i<npieces[shown]; i++)
+         if (!pieces[shown][i].world) nativeWeather = 1;
+     climateUpdate(sceneryOutdoor(solidRom,s->group,s->num,(int)mapType), nativeWeather);
++    SCENERY_FRAME_MARK(cost1);
++    SCENERY_FRAME_ADD(0,cost0,cost1);
+     static struct SolidBuilding buildings[SOLID_BUILDING_CAP];
+     int buildingCount=0;
+     if(buildingMargin && sceneryOutdoor(solidRom,s->group,s->num,(int)mapType))
+         buildingCount=solidBuildingsPrepare(s,&voxel,cx,cy,texture,buildings,alpha);
+     voxelProbeBuildings=buildingCount;
++    SCENERY_FRAME_MARK(cost2);
++    SCENERY_FRAME_ADD(1,cost1,cost2);
+     if (voxelClimate.seasonBlend) {
+         for(int row=0;row<rows;row++)for(int col=0;col<cols;col++) {
+             int conn,id=blockIn(s,cellX+col,cellY+row,&conn,false);
+@@ -5411,16 +5417,26 @@
+             }
+         }
+     }
++    SCENERY_FRAME_MARK(cost3);
++    SCENERY_FRAME_ADD(2,cost2,cost3);
+     static struct SolidTree trees[256];
+     int treeCount=solidTreesPrepare(s,&voxel,cx,cy,texture,trees,256,alpha);
+     static struct SolidProp props[384];
+     int propCount=solidPropsPrepare(s,&voxel,cx,cy,texture,props,384,alpha);
++    SCENERY_FRAME_MARK(cost4);
++    SCENERY_FRAME_ADD(3,cost3,cost4);
+     voxelTerrain(&voxel);
++    SCENERY_FRAME_MARK(cost5);
++    SCENERY_FRAME_ADD(4,cost4,cost5);
+     for(int i=0;i<buildingCount;i++)solidBuildingDraw(&voxel,&buildings[i]);
+     for(int i=0;i<treeCount;i++)solidTreeDraw(&voxel,&trees[i]);
+     for(int i=0;i<propCount;i++)solidPropDraw(&voxel,&props[i]);
++    SCENERY_FRAME_MARK(cost6);
++    SCENERY_FRAME_ADD(5,cost5,cost6);
+     drawObjects(s, cx, cy, left, top, right, bottom, texture, w, alpha, &voxel);
+ 
++    SCENERY_FRAME_MARK(cost7);
++    SCENERY_FRAME_ADD(6,cost6,cost7);
+     climateAtmosphere(out, depth, v.w, v.h);
+     voxelProbePixel=out[(v.h/2)*v.w+v.w/2];voxelProbeCx=cx;voxelProbeCy=cy;
+ 
+@@ -5435,6 +5451,9 @@
+                 out[(y - v.y) * v.w + x - v.x] = realFrame[y * PK_WIDE_W + x];
+     }
+     useLive();
++    SCENERY_FRAME_MARK(cost8);
++    SCENERY_FRAME_ADD(7,cost7,cost8);
++    sceneryFrameReport(v.w,v.h,treeCount,propCount,buildingCount);
+     return true;
+ }
+ 
+--- /dev/null
++++ b/app/src/main/cpp/pk_scenery_frame_profile.h
+@@ -0,0 +1,27 @@
++#pragma once
++#ifdef __ANDROID__
++#include <time.h>
++#include <android/log.h>
++static double sceneryFrameNow(void) {
++    struct timespec t;clock_gettime(CLOCK_MONOTONIC,&t);
++    return t.tv_sec*1000.0+t.tv_nsec/1000000.0;
++}
++static double sceneryFrameTimes[8];
++static unsigned sceneryFrameCount;
++#define SCENERY_FRAME_MARK(name) double name=sceneryFrameNow()
++#define SCENERY_FRAME_ADD(stage,start,end) (sceneryFrameTimes[stage]+=(end)-(start))
++static void sceneryFrameReport(int w,int h,int trees,int props,int buildings) {
++    if(++sceneryFrameCount<300)return;
++    __android_log_print(ANDROID_LOG_INFO,"pokedaisy",
++        "scenery cost ms source=%.3f buildings=%.3f climate=%.3f prepare=%.3f terrain=%.3f geometry=%.3f objects=%.3f atmosphere=%.3f view=%dx%d models=%d/%d/%d",
++        sceneryFrameTimes[0]/300,sceneryFrameTimes[1]/300,sceneryFrameTimes[2]/300,sceneryFrameTimes[3]/300,
++        sceneryFrameTimes[4]/300,sceneryFrameTimes[5]/300,sceneryFrameTimes[6]/300,sceneryFrameTimes[7]/300,
++        w,h,trees,props,buildings);
++    for(int i=0;i<8;i++)sceneryFrameTimes[i]=0;
++    sceneryFrameCount=0;
++}
++#else
++#define SCENERY_FRAME_MARK(name) ((void)0)
++#define SCENERY_FRAME_ADD(stage,start,end) ((void)0)
++#define sceneryFrameReport(w,h,trees,props,buildings) ((void)0)
++#endif

@@ -29,6 +29,18 @@ expansion manifest. Actors and battle Pokémon are a separate pass.
 
 ## Shared geometry rules
 
+Exact79 passed Classic settled winter and all five pacing phases, but its wide
+LetsGo Pallet showcase failed pacing (59.1 then60.3FPS; work peak26.5ms).
+Retain that failure; do not average away the dip or rerun to cherry-pick.
+Patch79 reuses decoded16x16 material tiles within a single source snapshot,
+reducing repeated grass/ground decoding while preserving exact pixels. Reset
+cache metadata every frame so native animation, palette, map and alpha changes
+cannot reuse stale art. The bounded-cache test checks eviction, next-frame
+refresh and100 repeated cells requiring only256 source samples. Patch80 logs
+renderer stage costs every300 frames for targeted follow-up, avoiding repeated
+line-by-line investigation. Actual pacing benefit and all visuals require a new
+exact APK and Thor tests, starting with the failed wide LetsGo showcase.
+
 Exact78 fixed Classic's mailbox and tree edges, but its settled winter endpoint
 exposed secondary-palette grass between fence posts. A single metatile can mix
 primary and secondary ground palettes. Use `tools/audit_map_ground_masks.py`

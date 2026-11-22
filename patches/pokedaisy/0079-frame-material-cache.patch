@@ -1,0 +1,98 @@
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -38,6 +38,7 @@
+ #include "pk_scenery_tree_profiles.h"
+ #include "pk_scenery_tall_tree_profiles.h"
+ #include "pk_scenery_ui.h"
++#include "pk_scenery_material_cache.h"
+ 
+ #include <stdbool.h>
+ #include <stdio.h>
+@@ -5171,6 +5172,12 @@
+     return color(ci?P[(e>>12)*16+ci]:P[0],alpha);
+ }
+ 
++struct SolidMaterialContext { const struct Snap* snapshot; uint32_t alpha; };
++static uint32_t solidCachedMaterialSample(void* raw,int id,int x,int y) {
++    const struct SolidMaterialContext* context=raw;
++    return solidMaterialPixel(context->snapshot,id,x,y,context->alpha);
++}
++
+ static int solidPropsPrepare(const struct Snap* s,struct VoxelView* v,int cx,int cy,
+                              uint32_t* texture,struct SolidProp* props,int cap,uint32_t alpha) {
+     int letsgo=solidRom==0x25c3d89f && s->primary==0x082d4a94;
+@@ -5180,6 +5187,11 @@
+     int indoor=solidPlantTileset(solidRom,s->primary);
+     int profiled=sceneryGroundPropsTileset(solidRom,s->primary);
+     if(!letsgo&&!radical&&!snow&&!unboundGreen&&!indoor&&!profiled)return 0;
++    /* Only metadata resets: cached pixels are rebuilt on each snapshot's first
++     * use, so palette animation, season switches and maps cannot retain old art. */
++    struct SceneryMaterialCache materials;
++    materials.count=0;materials.next=0;
++    struct SolidMaterialContext materialContext={s,alpha};
+     int count=0,cellX=(cx+v->left)/16,cellY=(cy+v->top)/16;
+     for(int row=0;row<v->rows;row++)for(int col=0;col<v->cols;col++) {
+         int conn,id=blockIn(s,cellX+col,cellY+row,&conn,false),kind=0,ground=8;
+@@ -5249,9 +5261,11 @@
+         struct SolidProp* p=&props[count++];p->kind=kind;
+         struct SolidTree* t=&p->surface;
+         t->x=v->left+col*16;t->y=v->top+row*16;t->rise=voxelRise(v,col,row);
++        const uint32_t* plantMaterial=(groundProp&&(kind==1||kind==4))
++            ?sceneryMaterialTile(&materials,id,solidCachedMaterialSample,&materialContext):NULL;
+         for(int y=0;y<48;y++)for(int x=0;x<32;x++)
+-            t->art[y*32+x]=(groundProp&&(kind==1||kind==4))
+-                ?climateLeafColor(solidMaterialPixel(s,id,x&15,y/3,alpha))
++            t->art[y*32+x]=plantMaterial
++                ?climateLeafColor(plantMaterial[(y/3)*16+(x&15)])
+                 :texture[(row*16+(y/3))*v->stride+col*16+(x&15)];
+         if(groundProp&&kind==13)for(int ink=0;ink<3;ink++) {
+             uint32_t c=solidMaterialPixel(s,id,groundProp->ink[ink*2],groundProp->ink[ink*2+1],alpha);
+@@ -5259,18 +5273,11 @@
+         }
+         // Replace the original flat drawing with its matching ground material.
+         int groundClimate=sceneryLand(solidRom,s->primary,ground)?2:1;
+-        const uint8_t* vram=(const uint8_t*)G->video.vram;
+-        for(int y=0;y<16;y++)for(int x=0;x<16;x++) {
+-            uint16_t rgb=P[0];
+-            for(int i=0;i<3;i++) {
+-                int b=order3[i];uint16_t e=metatile(s,ground,b)[(y/8)*2+x/8];
+-                int px=x&7,py=y&7;if(e&0x400)px=7-px;if(e&0x800)py=7-py;
+-                unsigned off=bgChar[b]+(e&1023)*32+py*4+px/2;if(off>=0x10000)continue;
+-                int ci=(vram[off]>>(px&1?4:0))&15;
+-                if(ci){rgb=P[(e>>12)*16+ci];break;}
+-            }
+-            uint32_t c=color(rgb,alpha);if(voxelClimate.seasonBlend)c=climateGround(c,groundClimate);
+-            texture[(row*16+y)*v->stride+col*16+x]=c;
++        const uint32_t* groundMaterial=sceneryMaterialTile(&materials,ground,solidCachedMaterialSample,&materialContext);
++        for(int y=0;y<16;y++) {
++            uint32_t* dst=texture+(row*16+y)*v->stride+col*16;
++            if(!voxelClimate.seasonBlend)memcpy(dst,groundMaterial+y*16,16*sizeof(uint32_t));
++            else for(int x=0;x<16;x++)dst[x]=climateGround(groundMaterial[y*16+x],groundClimate);
+         }
+     }
+     return count;
+--- /dev/null
++++ b/app/src/main/cpp/pk_scenery_material_cache.h
+@@ -0,0 +1,22 @@
++#pragma once
++#include <stdint.h>
++
++/* Reset for every source snapshot. Never reuse across palette, VRAM, map,
++ * layer-order or alpha changes. Returned tiles survive until their slot evicts. */
++#define SCENERY_MATERIAL_SLOTS 8
++struct SceneryMaterialCache {
++    unsigned count, next;
++    int ids[SCENERY_MATERIAL_SLOTS];
++    uint32_t pixels[SCENERY_MATERIAL_SLOTS][256];
++};
++typedef uint32_t (*SceneryMaterialSample)(void*, int, int, int);
++static const uint32_t* sceneryMaterialTile(struct SceneryMaterialCache* cache,
++        int id, SceneryMaterialSample sample, void* context) {
++    for(unsigned i=0;i<cache->count;i++)
++        if(cache->ids[i]==id)return cache->pixels[i];
++    unsigned slot=cache->count<SCENERY_MATERIAL_SLOTS?cache->count++:cache->next;
++    cache->next=(slot+1)%SCENERY_MATERIAL_SLOTS;cache->ids[slot]=id;
++    for(int y=0;y<16;y++)for(int x=0;x<16;x++)
++        cache->pixels[slot][y*16+x]=sample(context,id,x,y);
++    return cache->pixels[slot];
++}

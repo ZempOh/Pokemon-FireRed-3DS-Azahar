@@ -74,7 +74,7 @@ jobs:
           /tmp/test-buildings
           diff /tmp/scenery-registry/pk_scenery_candidates.h pokedaisy/app/src/main/cpp/pk_scenery_candidates.h
           diff /tmp/scenery-registry/pk_scenery_plant_profiles.h pokedaisy/app/src/main/cpp/pk_scenery_plant_profiles.h
-          for header in pk_scenery_engine_rows.h pk_scenery_object_profiles.h pk_scenery_tree_profiles.h pk_scenery_tall_tree_profiles.h pk_scenery_ground_props.h pk_scenery_grass_effects.h; do
+          for header in pk_scenery_engine_rows.h pk_scenery_object_profiles.h pk_scenery_tree_profiles.h pk_scenery_tall_tree_profiles.h pk_scenery_ground_props.h pk_scenery_grass_effects.h pk_scenery_ground_patterns.h; do
             diff /tmp/scenery-registry/$header pokedaisy/app/src/main/cpp/$header
           done
           cc -std=c11 -Wall -Wextra -Werror -Wno-unused-function -I pokedaisy/app/src/main/cpp tools/test_voxel_projection.c -o /tmp/test-voxel

@@ -1,0 +1,11 @@
+--- a/app/src/main/cpp/pk_scenery_ground_patterns.h
++++ b/app/src/main/cpp/pk_scenery_ground_patterns.h
+@@ -3,7 +3,7 @@
+ #include <stdint.h>
+ struct SceneryGroundPattern { uint32_t rom,primary,secondary; uint8_t width,height; uint16_t cells[16]; };
+ static const struct SceneryGroundPattern sceneryGroundPatterns[] = {
+-    {0xe4deb9be,0x84ad600,0x84add10,3,2,{165,166,725,173,174,726}},
++    {0xe4deb9be,0x84ad600,0x84add10,4,2,{165,166,725,127,173,174,726,126}},
+ };
+ typedef int (*SceneryGroundRead)(const void*,int,int,uint32_t*,uint32_t*);
+ static int sceneryPatternLand(uint32_t rom,uint32_t primary,uint32_t secondary,int id,int x,int y,const void *context,SceneryGroundRead read) {

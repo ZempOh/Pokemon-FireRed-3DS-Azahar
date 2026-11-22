@@ -5,7 +5,7 @@
     "rom_sha256": "4ab7b1f7fb246490d798f49db1511d197d7c72376b6347d08e7c557122c6d722",
     "primary": "0x84ad600",
     "secondary": "0x84add10",
-    "width": 3,
+    "width": 4,
     "height": 2,
     "cells": [
       {
@@ -37,6 +37,20 @@
         "id": 725,
         "rgba_sha256": "c46c596563cfd3a2f12a0ee0e8009d821c0c2db931699de72b3721d9319c7523",
         "palette_indices": [
+          27,
+          28,
+          29,
+          30,
+          31
+        ]
+      },
+      {
+        "id": 127,
+        "rgba_sha256": "f24ecae5d92a4a41ec76ea41e13483b404ac09363fcc2c19393cf8b35c1072f9",
+        "palette_indices": [
+          8,
+          13,
+          14,
           27,
           28,
           29,
@@ -81,6 +95,20 @@
           30,
           31
         ]
+      },
+      {
+        "id": 126,
+        "rgba_sha256": "29d7f43ac274ea8ca90154583d1ec711d41ac1c85d68dbb07760006d0ce00f59",
+        "palette_indices": [
+          8,
+          13,
+          14,
+          27,
+          28,
+          29,
+          30,
+          31
+        ]
       }
     ],
     "reviewed": true,
@@ -92,6 +120,6 @@
       "y": 7
     },
     "thor_qualified": false,
-    "review_note": "Full source pattern is bare berry soil and surrounding grass. Its individual edge cells resemble cliff faces; match all six cells and both tilesets before winter coverage. Actor berry plants remain separate."
+    "review_note": "Entire4x2 berry-soil footprint and a one-cell source neighborhood reviewed. Exact65 six-cell pattern omitted right-edge0x7f/0x7e and remains rejected. Require all eight cells with both tilesets; actors and unrelated cliff cells remain separate."
   }
 ]

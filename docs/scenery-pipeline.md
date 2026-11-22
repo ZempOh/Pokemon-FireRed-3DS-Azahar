@@ -34,9 +34,12 @@ Pallet and southern Route 1 winter views, but the full-size boundary view expose
 brown soil beneath the berry plants. Keep that build rejected. Reused material
 needs a complete source-reviewed neighborhood, not a global cell/color rule.
 `android-ground-patterns.json` and `gen_scenery_ground_patterns.py` recognize
-all six plot cells with both tileset identities; partial patterns and neighboring
+all eight plot cells with both tileset identities; partial patterns and neighboring
 cliff uses stay unchanged. Actor berry plants are separate from this ground fix.
 Review boundary footage as well as stationary scenes before long timing runs.
+Exact65's initial 3x2 pattern missed the right-edge 0x7f/0x7e cells: the full
+plot is 4x2. Keep the partial-coverage failure, review a source neighborhood
+with a one-cell margin, and bind fixture coordinates to every pattern cell.
 
 Classic's Android Pallet retest exposed thin ground strips in fence/sign cells
 after its pure path corners were corrected. Mixed-material cells need reviewed

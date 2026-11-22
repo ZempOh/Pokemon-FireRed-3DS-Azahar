@@ -1169,3 +1169,10 @@ The reusable cell review supports several ground references because alternate
 path palettes can differ even when their colors look similar. Review masks at
 full size; never treat a palette coincidence as proof that an object is ground.
 Tests now pin the preserved sign face, ledge face and Rocket wall/ground split.
+
+The all16 coverage audit also found Ash Gray had no registered building model.
+Patch67 adds its own Route12 gatehouse (map3,38; source rectangle24,6,4,3)
+through the existing hip-roof geometry. Explicit facade bounds exclude source
+ground corners; the private source audit passes. Use the disposable viewpoint
+26,10 to review the whole model and winter footprint. This is one recognized
+building pattern, not all-map building coverage, and needs exact-build Thor QA.

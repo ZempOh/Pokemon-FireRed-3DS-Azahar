@@ -1714,5 +1714,59 @@
       "source_art_sha256": "1f77d475b1994f898175d638e7ea365d6d67420142ea3fe7eeaf3ab23d034cff",
       "scope": "Own full-size source reviewed; wall begins below roof at48, left ground border excluded. Geometry remains unqualified on Android."
     }
+  },
+  {
+    "game": "ash-gray",
+    "rom_sha256": "a08055484c8366768d3e98e2dbed0998641abd2899ffbfc8d7f132925875f7a1",
+    "map_sha256": "01392ec2895f6d9c61e6153bb886908e14a30d8a71b5a5ba1dc4087666792d8f",
+    "primary": "0x82d4a94",
+    "secondary": "0x82d4b6c",
+    "name": "route12-gatehouse",
+    "family": "hip",
+    "x": 24,
+    "y": 6,
+    "width": 4,
+    "height": 3,
+    "reference": {
+      "group": 3,
+      "map": 38,
+      "x": 24,
+      "y": 6
+    },
+    "cells": [
+      44,
+      45,
+      45,
+      47,
+      52,
+      53,
+      54,
+      55,
+      60,
+      61,
+      62,
+      63
+    ],
+    "source_art_sha256": "b336f125d5ebacb8deff0a4434a743a76f9104c926b16054258f402ae5299336",
+    "reviewed": true,
+    "thor_qualified": false,
+    "rom_crc32": "63478921",
+    "ground": 1,
+    "shape": {
+      "back": 8,
+      "wall_height": 20,
+      "ridge_height": 40,
+      "hip_inset": 8,
+      "roof_top": 1,
+      "wall_row": 28,
+      "flat_roof": false,
+      "wall_left": 1,
+      "wall_right": 63,
+      "wall_bottom": 48
+    },
+    "wall_crop_review": {
+      "source_art_sha256": "b336f125d5ebacb8deff0a4434a743a76f9104c926b16054258f402ae5299336",
+      "scope": "Own Route12 source reviewed at full size: wall below roof, outer ground corners excluded. Exact Thor geometry review pending."
+    }
   }
 ]

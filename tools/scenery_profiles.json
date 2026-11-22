@@ -32,7 +32,7 @@
       ],
       "active_models": "3ds_port/scripts/classic_building_specs.py",
       "notes": "The imported Emerald voxel_building_specs is not the active Classic model list. The tree renderer has no FireRed room-renderer path.",
-      "android_adapter_status": "Exact77 rejected: native night palette exposes winter ground above mailbox caps and at partial tree borders. Patch77 adds source-reviewed ground masks with exact-art transfers; protected mailbox/trunk/foliage pixels are tested. New APK day/night Thor preflight and full qualification required. No Android publication pass."
+      "android_adapter_status": "Exact78 rejected: mixed primary/secondary ground between fence posts remained dark at night. Patch78 adds reviewed Pallet ground masks and complete ground cells; new whole-map source gap audit and protected-structure tests. Exact replacement APK needs all Thor tests; no inherited pass."
     },
     "firered": {
       "repo": "firered",

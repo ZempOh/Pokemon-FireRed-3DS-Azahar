@@ -112,7 +112,12 @@
     "classic-own-ground:0x28f",
     "classic-own-ground:0x290",
     "classic-own-ground:0x29f",
-    "classic-own-ground:0x2b6"
+    "classic-own-ground:0x2b6",
+    "classic-pallet79:0x285",
+    "classic-pallet79:0x286",
+    "classic-pallet79:0x28c",
+    "classic-pallet79:0x2a6",
+    "classic-pallet79:0x2af"
   ],
   "targets": [
     {
@@ -1223,6 +1228,81 @@
           "id": 718,
           "reference_id": "firered-own-ground:0x2ce",
           "rgba_sha256": "d07c0653687d7a586648f0308c174e47db2c5a1d80b97c89f2ca5d5325514a37"
+        }
+      ]
+    },
+    {
+      "game": "classic",
+      "rom_crc32": "e4deb9be",
+      "rom_sha256": "4ab7b1f7fb246490d798f49db1511d197d7c72376b6347d08e7c557122c6d722",
+      "primary": "0x84ad600",
+      "secondary": "0x84add10",
+      "reviewed": true,
+      "cells": [
+        {
+          "id": 645,
+          "reference_id": "classic-pallet79:0x285",
+          "rgba_sha256": "3a05e2a68cc650dd8fb77be21abeae9c7794d73920438472cd8104d1e9f5b50b"
+        }
+      ]
+    },
+    {
+      "game": "classic",
+      "rom_crc32": "e4deb9be",
+      "rom_sha256": "4ab7b1f7fb246490d798f49db1511d197d7c72376b6347d08e7c557122c6d722",
+      "primary": "0x84ad600",
+      "secondary": "0x84add10",
+      "reviewed": true,
+      "cells": [
+        {
+          "id": 646,
+          "reference_id": "classic-pallet79:0x286",
+          "rgba_sha256": "be71383fa3d6aeffd37d449fd2e4853f612f39923c92d60c95800d59df56c9be"
+        }
+      ]
+    },
+    {
+      "game": "classic",
+      "rom_crc32": "e4deb9be",
+      "rom_sha256": "4ab7b1f7fb246490d798f49db1511d197d7c72376b6347d08e7c557122c6d722",
+      "primary": "0x84ad600",
+      "secondary": "0x84add10",
+      "reviewed": true,
+      "cells": [
+        {
+          "id": 652,
+          "reference_id": "classic-pallet79:0x28c",
+          "rgba_sha256": "4922775cdee3a32f5443ca2aab11560760b9ccfe654b40b71fdfc39252804c64"
+        }
+      ]
+    },
+    {
+      "game": "classic",
+      "rom_crc32": "e4deb9be",
+      "rom_sha256": "4ab7b1f7fb246490d798f49db1511d197d7c72376b6347d08e7c557122c6d722",
+      "primary": "0x84ad600",
+      "secondary": "0x84add10",
+      "reviewed": true,
+      "cells": [
+        {
+          "id": 678,
+          "reference_id": "classic-pallet79:0x2a6",
+          "rgba_sha256": "fc2f6e7b3579d3be7bce76959b86dff9da449aa153a8d32ad9b3b64e0882af84"
+        }
+      ]
+    },
+    {
+      "game": "classic",
+      "rom_crc32": "e4deb9be",
+      "rom_sha256": "4ab7b1f7fb246490d798f49db1511d197d7c72376b6347d08e7c557122c6d722",
+      "primary": "0x84ad600",
+      "secondary": "0x84add10",
+      "reviewed": true,
+      "cells": [
+        {
+          "id": 687,
+          "reference_id": "classic-pallet79:0x2af",
+          "rgba_sha256": "e627b553f4b2fe312671fb75ef2201f317f735513354084f4cbb49351e73937d"
         }
       ]
     }

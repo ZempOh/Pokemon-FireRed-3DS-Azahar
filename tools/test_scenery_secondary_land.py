@@ -137,6 +137,18 @@ class SecondaryLandTests(unittest.TestCase):
   ids=set(land['ids'])
   self.assertTrue({0x2f8+x+y*8 for x in range(3) for y in range(3)}<=ids)
   self.assertFalse(ids&{0x2fb,0x2fc,0x303,0x304,0x305,0x30b,0x30c}) # Pillars/walls beside the path atlas.
+ def test_classic_fence_covers_both_ground_palettes(self):
+  cap=next(p for p in CAPS if p['game']=='classic')
+  group=next(g for g in cap['secondary_land_masks'] if int(g['secondary'],16)==0x84add10)
+  cells={c['id']:c['rows'] for c in group['cells']}
+  self.assertEqual(cells[0x284][0],65535) # Secondary grass above the posts.
+  self.assertTrue(cells[0x287][15]&1) # Secondary path below the fence.
+  self.assertFalse(cells[0x284][4]&(1<<4)) # Post face remains metal.
+  self.assertFalse(cells[0x287][7]&(1<<7)) # Horizontal rail is not ground.
+  self.assertEqual(cells[0x282][0],65535) # Ground behind a roof edge.
+  self.assertEqual(cells[0x282][15],0) # Roof remains unmodified.
+  land=next(g for g in cap['secondary_land'] if int(g['secondary'],16)==0x84add10)
+  self.assertTrue({0x285,0x286,0x28c,0x2a6,0x2af}<=set(land['ids']))
  def test_provenance(self):
   validate_secondary_land(CAPS,PROOF);validate_land_masks(CAPS,MASKS)
  def test_emerald_water_edge_is_never_full_land(self):

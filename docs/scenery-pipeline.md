@@ -29,6 +29,19 @@ expansion manifest. Actors and battle Pokémon are a separate pass.
 
 ## Shared geometry rules
 
+Exact78 fixed Classic's mailbox and tree edges, but its settled winter endpoint
+exposed secondary-palette grass between fence posts. A single metatile can mix
+primary and secondary ground palettes. Use `tools/audit_map_ground_masks.py`
+with explicit ground-reference cells to compare all map cells against registered
+coverage before building. Its private atlas marks missing pixels; palette matches
+are proposals and require source review, never automatic approval. Classic's
+reviewed Pallet references are 1,16,17,9,0x296,0x28e,0x29e (map6,0).
+`classic-pallet-ground79-proof.json` covers reviewed ground behind roof edges,
+facades and fences, preserving metal posts, rails, building faces and shadows.
+The existing botanical flower model remains separate. Check both fence rows at
+full size after a75-second native palette settle before longer Thor queues.
+Exact78 is rejected despite passing startup and timing; no passes are inherited.
+
 Exact77's Classic winter timing run exposed palette-dependent ground gaps only
 after the native day-to-night update: mailbox cap cell 0x2a5 and partial tree
 border cells retained dark teal ground. Review both initial and settled palettes

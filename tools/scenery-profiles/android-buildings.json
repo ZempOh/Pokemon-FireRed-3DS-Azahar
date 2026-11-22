@@ -757,12 +757,18 @@
       "ridge_back_height": 32,
       "wall_left": 3,
       "wall_right": 109,
-      "wall_bottom": 80
+      "wall_bottom": 80,
+      "roof_left": 1,
+      "roof_right": 111
     },
     "scope": "Reviewed source rectangle and geometry family; exact APK device qualification remains separate.",
     "wall_crop_review": {
       "source_art_sha256": "e269fca9d3b252d6d258a944a67f494714eabc11064cf1346fed3490f3b81546",
       "scope": "Reviewed original facade: exclude source grass border from wall/side UV sampling; roof UVs retain their own span. Decorative facade remains source artwork."
+    },
+    "roof_crop_review": {
+      "source_art_sha256": "e269fca9d3b252d6d258a944a67f494714eabc11064cf1346fed3490f3b81546",
+      "scope": "Exact75 full-size winter review: source columns0/111 rows32..47 contain exterior grass. Exclude one column at each roof side; retain grey roof rim, chimney and full geometry. Independent of facade crop."
     }
   },
   {
@@ -1079,7 +1085,7 @@
       "back": 8,
       "wall_height": 48,
       "ridge_height": 48,
-      "roof_top": 8,
+      "roof_top": 9,
       "wall_row": 32,
       "roof_kind": 1,
       "hip_inset": 8,
@@ -1087,7 +1093,11 @@
       "gable_row": 0,
       "ridge_back_height": 48
     },
-    "scope": "Reviewed source rectangle and geometry family; exact APK device qualification remains separate."
+    "scope": "Reviewed source rectangle and geometry family; exact APK device qualification remains separate.",
+    "roof_crop_review": {
+      "source_art_sha256": "9366de3521217f38236c44f6dd4d29ef21d987e8594fc091454f960b8a6e17c6",
+      "scope": "Full-size source review confirms four exterior ground corner pixels in row8 at x0,63,64,127. Begin roof sampling at row9, retaining white rim, chimney and roof geometry."
+    }
   },
   {
     "game": "odyssey",

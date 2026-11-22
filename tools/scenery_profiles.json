@@ -81,7 +81,7 @@
         "app/src/main/cpp/pk_wide.c"
       ],
       "rom_crc32": "25c3d89f",
-      "notes": "Export changes as patches to pokedaisy-build; do not push the modified upstream checkout. Exact74 winter Pallet-house review exposed exterior grass on rear gable edges. Both vertical gables must honor the reviewed facade crop; roof-plane UVs remain separate. Patch74 corrects the shared geometry and adds a rear/front gable UV regression. Run the whole-house winter fixture before long timing tests."
+      "notes": "Export changes as patches to pokedaisy-build; do not push the modified upstream checkout. Exact74 winter Pallet-house review exposed exterior grass on rear gable edges. Both vertical gables must honor the reviewed facade crop; roof-plane UVs remain separate. Patch74 corrects the shared geometry and adds a rear/front gable UV regression. Run the whole-house winter fixture before long timing tests. Exact75 rejected for laboratory flat-roof exterior grass despite wall audit passing. Patch75 adds independent reviewed roof bounds. Review house and laboratory before timing; flat roofs now included in source-material audit."
     },
     "radical": {
       "repo": "pokedaisy",

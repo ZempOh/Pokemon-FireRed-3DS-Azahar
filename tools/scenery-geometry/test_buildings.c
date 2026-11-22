@@ -13,7 +13,7 @@ static void collect(void* ctx,const SceneryBuildingVertex* a,const SceneryBuildi
 static int same(SceneryBuildingVertex a,SceneryBuildingVertex b) {return a.x==b.x&&a.y==b.y&&a.z==b.z;}
 static void check(int kind,float peak) {
     int flat=kind==1;
-    SceneryBuildingShape s={80,80,16,32,flat?32:56,12,8,48,80,kind,peak,24,56,5,75,78};
+    SceneryBuildingShape s={80,80,16,32,flat?32:56,12,8,48,80,kind,peak,24,56,5,75,78,1,79};
     if(kind==2 && peak>.6f)s.ridgeHeight=48; /* Sloping ridge on compound entry roofs. */
     count=0;SceneryBuilding_Emit(0,collect,&s);
     assert(count==(unsigned)(flat?36:48));
@@ -23,6 +23,11 @@ static void check(int kind,float peak) {
         assert(vertices[i].v>=48&&vertices[i].v<78);
     }
     if(kind==2)for(unsigned i=30;i<42;i++)assert(vertices[i].v<s.gableRow);
+    /* Flat roof excludes exterior ground columns independently of walls. */
+    if(flat)for(unsigned i=30;i<count;i++) {
+        assert(vertices[i].u>=1&&vertices[i].u<79);
+        assert(vertices[i].v>=8&&vertices[i].v<48);
+    }
     /* Both vertical gables must exclude synthetic exterior grass columns.
      * Exact74 exposed the rear triangle retaining the uncropped roof UVs. */
     if(kind==2)for(unsigned i=42;i<48;i++) {

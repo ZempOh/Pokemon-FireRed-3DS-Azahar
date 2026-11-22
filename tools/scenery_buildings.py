@@ -16,6 +16,11 @@ def validate(rows):
   assert 0<=shape.get('wall_left',0)<shape.get('wall_right',w*16)<=w*16
   assert shape.get('wall_right',w*16)-shape.get('wall_left',0)>=16
   assert shape['wall_row']<shape.get('wall_bottom',h*16)<=h*16
+  assert 0<=shape.get('roof_left',0)<shape.get('roof_right',w*16)<=w*16
+  assert shape.get('roof_right',w*16)-shape.get('roof_left',0)>=16
+  if any(k in shape for k in ('roof_left','roof_right')):
+   assert row['roof_crop_review']['source_art_sha256']==row['source_art_sha256']
+  if 'roof_crop_review' in row:assert row['roof_crop_review']['source_art_sha256']==row['source_art_sha256']
   if any(k in shape for k in ('wall_left','wall_right','wall_bottom')):
    assert row['wall_crop_review']['source_art_sha256']==row['source_art_sha256']
   kind=shape.get('roof_kind',int(shape.get('flat_roof',False)))
@@ -37,6 +42,7 @@ def generate(rows,output):
  for row in rows:
   s=row['shape'];shape=[row['width']*16,row['height']*16,s['back'],s['wall_height'],s['ridge_height'],s['hip_inset'],s['roof_top'],s['wall_row'],row['height']*16,s.get('roof_kind',int(s.get('flat_roof',False))),s.get('gable_x',.5),s.get('gable_row',s['roof_top']),s.get('ridge_back_height',s['ridge_height'])]
   shape += [s.get('wall_left',0),s.get('wall_right',row['width']*16),s.get('wall_bottom',row['height']*16)]
+  shape += [s.get('roof_left',0),s.get('roof_right',row['width']*16)]
   lines.append(' {0x%s,%s,%s,%d,%d,%d,{%s},{%s}},'%(row['rom_crc32'],row['primary'],row['secondary'],row['width'],row['height'],row['ground'],','.join(map(str,shape)),','.join(map(str,row['cells']))))
  lines+=['};']
  output.write_text('\n'.join(lines)+'\n')

@@ -9,6 +9,7 @@ typedef struct {
     int roofKind; /* 0 hip, 1 flat, 2 front gable. */
     float gableX,gableRow,ridgeBackHeight;
     float wallLeft,wallRight,wallBottom; /* Reviewed facade crop, exclusive right/bottom. */
+    float roofLeft,roofRight; /* Independent reviewed roof crop; zero pair means full width. */
 } SceneryBuildingShape;
 static void SceneryBuilding_Quad(void* ctx,SceneryBuildingTriangle emit,
     SceneryBuildingVertex a,SceneryBuildingVertex b,SceneryBuildingVertex c,SceneryBuildingVertex d,unsigned shade) {
@@ -32,7 +33,8 @@ static void SceneryBuilding_Emit(void* ctx,SceneryBuildingTriangle emit,const Sc
     SceneryBuilding_Quad(ctx,emit,br,bl,rl,rr,184);
     SceneryBuilding_Quad(ctx,emit,bl,br,fr,fl,160);
     /* Roofs retain their independently reviewed original source span. */
-    tl.u=rl.u=.5f;tr.u=rr.u=w-.5f;
+    float roofLeft=s->roofLeft,roofRight=s->roofRight>roofLeft?s->roofRight:w;
+    tl.u=rl.u=roofLeft+.5f;tr.u=rr.u=roofRight-.5f;
     tl.v=tr.v=s->wallRow-.5f;rl.v=rr.v=s->roofTop+.5f;
     if(s->roofKind==1) {
         SceneryBuilding_Quad(ctx,emit,tl,tr,rr,rl,244);

@@ -27,4 +27,12 @@ class BuildingsTest(unittest.TestCase):
   rows=copy.deepcopy(ROWS);row=next(r for r in rows if r['shape'].get('flat_roof') or r['shape'].get('roof_kind')==1)
   row['shape']['ridge_height']+=1
   with self.assertRaises(AssertionError):validate(rows)
+ def test_roof_crop_requires_review_and_valid_bounds(self):
+  for key,value in [('roof_left',-1),('roof_right',999),('roof_right',1)]:
+   rows=copy.deepcopy(ROWS);row=next(r for r in rows if r.get('roof_crop_review'))
+   row['shape'][key]=value
+   with self.assertRaises(AssertionError):validate(rows)
+  rows=copy.deepcopy(ROWS);row=next(r for r in rows if r.get('roof_crop_review'))
+  row['roof_crop_review']['source_art_sha256']='0'*64
+  with self.assertRaises(AssertionError):validate(rows)
 if __name__=='__main__':unittest.main()

@@ -33,9 +33,20 @@ def audit(workspace,profiles,include_uncropped=False):
     mid=profile['cells'][y//16*profile['width']+x//16]
     if cells[mid][y%16*16+x%16] in ground:unexpected.append((x,y))
   assert not unexpected,(game,profile['name'],'Source ground inside facade crop',unexpected)
+  roof_bounds=None
+  if shape.get('roof_kind',int(shape.get('flat_roof',False)))==1:
+   roof_left=shape.get('roof_left',0);roof_right=shape.get('roof_right',profile['width']*16)
+   roof_bounds=[roof_left,roof_right,shape['roof_top'],shape['wall_row']]
+   roof_ground=[]
+   for y in range(shape['roof_top'],shape['wall_row']):
+    for x in range(roof_left,roof_right):
+     mid=profile['cells'][y//16*profile['width']+x//16]
+     if cells[mid][y%16*16+x%16] in ground:roof_ground.append((x,y))
+   assert not roof_ground,(game,profile['name'],'Source ground inside flat roof crop',roof_ground)
   results.append(dict(game=game,name=profile['name'],rom_sha256=profile['rom_sha256'],
    source_art_sha256=profile['source_art_sha256'],ground_palette_indices=sorted(ground),
-   wall_bounds=[left,right,bottom],crop_reviewed='wall_crop_review' in profile,unexpected_ground_pixels=0))
+   wall_bounds=[left,right,bottom],crop_reviewed='wall_crop_review' in profile,unexpected_ground_pixels=0,
+   flat_roof_bounds=roof_bounds,flat_roof_ground_pixels=0 if roof_bounds else None))
  return results
 
 if __name__=='__main__':

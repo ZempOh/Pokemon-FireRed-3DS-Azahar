@@ -1246,3 +1246,17 @@ missed by the cropped-only audit. Patch71 trims one source column per side
 after full-size source review, retaining interior facade and roof UVs.
 All27 registered patterns now pass source-material audit; Thor checks remain
 mandatory and source palette overlap alone must never choose crop bounds.
+
+Exact75 passed all16 building preflights and audio20, but its later Let’s Go
+winter field capture exposed grass on the laboratory flat-roof edge. Wall
+audits cannot certify roofs: the lab source has exterior ground at columns
+0/111, rows32..47. Patch75 adds independent roof_left/roof_right profile bounds
+and clips that roof to columns1..111. The expanded flat-roof material audit
+also found four ground corners in Dragon’s Den apartment row8; reviewed roof
+sampling now starts at row9, retaining its rim and chimney. Both source-art
+identities are pinned in roof_crop_review. Never automatically choose crops
+from palette overlap. Run the audit with --include-uncropped, and inspect both
+Let’s Go house AND laboratory plus Dragon’s Den roof at full size before long
+timing. Flat-roof audits do not certify sloped roof/gable UV interiors.
+Exact75 is rejected despite passing Radical/Unbound pacing; no new build
+inherits those tests. The original Thor APK and data were hash-restored.

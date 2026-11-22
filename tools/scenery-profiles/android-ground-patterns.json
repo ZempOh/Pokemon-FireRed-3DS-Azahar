@@ -1,0 +1,97 @@
+[
+  {
+    "game": "classic",
+    "rom_crc32": "e4deb9be",
+    "rom_sha256": "4ab7b1f7fb246490d798f49db1511d197d7c72376b6347d08e7c557122c6d722",
+    "primary": "0x84ad600",
+    "secondary": "0x84add10",
+    "width": 3,
+    "height": 2,
+    "cells": [
+      {
+        "id": 165,
+        "rgba_sha256": "a6b999aa4d06b118db9cfc091cf92134a2b3e2c84f4dedfa7749bfd44e171ed9",
+        "palette_indices": [
+          8,
+          13,
+          14,
+          27,
+          28,
+          29,
+          30,
+          31
+        ]
+      },
+      {
+        "id": 166,
+        "rgba_sha256": "c46c596563cfd3a2f12a0ee0e8009d821c0c2db931699de72b3721d9319c7523",
+        "palette_indices": [
+          27,
+          28,
+          29,
+          30,
+          31
+        ]
+      },
+      {
+        "id": 725,
+        "rgba_sha256": "c46c596563cfd3a2f12a0ee0e8009d821c0c2db931699de72b3721d9319c7523",
+        "palette_indices": [
+          27,
+          28,
+          29,
+          30,
+          31
+        ]
+      },
+      {
+        "id": 173,
+        "rgba_sha256": "231444addf185913e6ce08994815bb77e36a443e41fd7d19e7c6f4a89d88a4bd",
+        "palette_indices": [
+          8,
+          13,
+          14,
+          27,
+          28,
+          29,
+          30,
+          31
+        ]
+      },
+      {
+        "id": 174,
+        "rgba_sha256": "1d4804dfd985da5f859ccafa416c47726e67c0f666a252790913f2200469d36a",
+        "palette_indices": [
+          13,
+          14,
+          28,
+          29,
+          30,
+          31
+        ]
+      },
+      {
+        "id": 726,
+        "rgba_sha256": "1d4804dfd985da5f859ccafa416c47726e67c0f666a252790913f2200469d36a",
+        "palette_indices": [
+          13,
+          14,
+          28,
+          29,
+          30,
+          31
+        ]
+      }
+    ],
+    "reviewed": true,
+    "scope": "complete_ground_pattern",
+    "source_map": {
+      "group": 6,
+      "map": 10,
+      "x": 3,
+      "y": 7
+    },
+    "thor_qualified": false,
+    "review_note": "Full source pattern is bare berry soil and surrounding grass. Its individual edge cells resemble cliff faces; match all six cells and both tilesets before winter coverage. Actor berry plants remain separate."
+  }
+]

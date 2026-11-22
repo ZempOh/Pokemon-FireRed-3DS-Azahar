@@ -248,3 +248,5 @@ if __name__=='__main__':
     generate_tall_trees(json.loads((root/'android-tall-trees.json').read_text()),args.output)
     generate_ground_props(json.loads((root/'android-ground-props.json').read_text()),args.output)
     generate_grass_effects(json.loads((root/'android-grass-effects.json').read_text()),args.output)
+    from gen_scenery_ground_patterns import generate_ground_patterns
+    generate_ground_patterns(json.loads((root/'android-ground-patterns.json').read_text()),args.output)

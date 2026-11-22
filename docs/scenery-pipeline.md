@@ -29,6 +29,15 @@ expansion manifest. Actors and battle Pokémon are a separate pass.
 
 ## Shared geometry rules
 
+Classic's Route 1 berry plot reuses rocky edge cells. Exact64 passed selected
+Pallet and southern Route 1 winter views, but the full-size boundary view exposed
+brown soil beneath the berry plants. Keep that build rejected. Reused material
+needs a complete source-reviewed neighborhood, not a global cell/color rule.
+`android-ground-patterns.json` and `gen_scenery_ground_patterns.py` recognize
+all six plot cells with both tileset identities; partial patterns and neighboring
+cliff uses stay unchanged. Actor berry plants are separate from this ground fix.
+Review boundary footage as well as stationary scenes before long timing runs.
+
 Classic's Android Pallet retest exposed thin ground strips in fence/sign cells
 after its pure path corners were corrected. Mixed-material cells need reviewed
 pixel masks, not whole-cell land registration. Four own-source masks (3, 0x284,

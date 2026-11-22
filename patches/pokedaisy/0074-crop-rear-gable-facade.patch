@@ -1,0 +1,11 @@
+--- a/app/src/main/cpp/scenery_building_geometry.h
++++ b/app/src/main/cpp/scenery_building_geometry.h
+@@ -52,6 +52,8 @@
+         gableLeft.u=u0;gableRight.u=u1;
+         emit(ctx,&gableLeft,&gableRight,&front,250);
+         SceneryBuildingVertex rb=rr,lb=rl,rear=back;
++        /* Rear gable is facade material too; roof UVs can include exterior grass. */
++        rb.u=u1;lb.u=u0;
+         rb.v=lb.v=s->wallRow-.5f;rear.v=s->gableRow+.5f;
+         emit(ctx,&rb,&lb,&rear,184);
+         return;

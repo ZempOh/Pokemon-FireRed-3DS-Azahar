@@ -23,6 +23,12 @@ static void check(int kind,float peak) {
         assert(vertices[i].v>=48&&vertices[i].v<78);
     }
     if(kind==2)for(unsigned i=30;i<42;i++)assert(vertices[i].v<s.gableRow);
+    /* Both vertical gables must exclude synthetic exterior grass columns.
+     * Exact74 exposed the rear triangle retaining the uncropped roof UVs. */
+    if(kind==2)for(unsigned i=42;i<48;i++) {
+        assert(vertices[i].u>=s.wallLeft&&vertices[i].u<s.wallRight);
+        assert(vertices[i].v>=s.gableRow&&vertices[i].v<s.wallRow);
+    }
     float highest=0;
     for(unsigned i=0;i<count;i++) {
         SceneryBuildingVertex a=vertices[i],b=vertices[i/3*3+(i+1)%3];unsigned matches=0;

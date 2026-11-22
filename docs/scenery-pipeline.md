@@ -29,6 +29,14 @@ expansion manifest. Actors and battle Pokémon are a separate pass.
 
 ## Shared geometry rules
 
+Exact74's full-size Let's Go winter capture exposed green pixels at the rear
+gable edges. Both vertical gables must use the reviewed facade crop; copying
+roof vertices also copies their uncropped UVs and can project exterior grass.
+Keep roof-plane UVs separate. The shared geometry regression checks both gable
+triangles against synthetic exterior grass columns. Repeat the whole Pallet
+house winter preflight before long timing runs; facade-rectangle audits alone
+cannot prove every emitted triangle uses the crop.
+
 Exact73 exposed a native-snow material mismatch in Unbound's Frozen Heights:
 tree footprint reconstruction applied full-land winter whitening to existing
 blue, night-lit snow. Preserve the original ground for verified native-snow

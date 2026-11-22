@@ -29,6 +29,16 @@ expansion manifest. Actors and battle Pokémon are a separate pass.
 
 ## Shared geometry rules
 
+Exact72 exposed a shared wide-camera failure: Lazarus at zoom step2 uses a
+480x271 output, but its tall building needs a padded source window wider than
+800 pixels. The old viewport-sized scratch buffers silently forced flat rendering
+(enabled=1, buildings=0, blocked=1000). Preserve both centered and over-panned
+diagnostic captures; their timing passes are not 3D passes. Source scratch buffers
+now allow1024 pixels independently of the unchanged output limits. The runtime
+source-window helper is checked across all tile alignments at the largest output
+size. Retest wider zoom, timing and full-size scenery on the exact new APK.
+Use single-view camera probes before committing to complete gallery captures.
+
 Exact68's wider Lazarus Acrisia review exposed ground around the round-tree
 base that the earlier color-only review deliberately excluded. Ground and leaf
 highlights both use palette index 0x22. The source-reviewed 0x0f mask now uses

@@ -1,0 +1,62 @@
+--- a/app/src/main/cpp/pk_wide_voxel.h
++++ b/app/src/main/cpp/pk_wide_voxel.h
+@@ -7,6 +7,8 @@
+ #define VOXEL_MAX_RISE 20
+ #define VOXEL_MAX_W 480
+ #define VOXEL_MAX_H 400
++// Padded source art is larger than the output viewport.
++#define VOXEL_SOURCE_MAX 1024
+ 
+ struct VoxelView {
+     uint32_t* out;
+@@ -20,6 +22,21 @@
+ 
+ static int voxelFloor(int n, int d) {
+     return n >= 0 ? n / d : (n + 1) / d - 1;
++}
++
++struct VoxelSourceWindow { int left, top, right, bottom; };
++
++static struct VoxelSourceWindow voxelSourceWindow(int cx, int cy, int x, int y,
++                                                 int width, int height, int buildingMargin) {
++    int margin = (height + 5) / 6 + buildingMargin;
++    int mx = margin + VOXEL_MAX_RISE / 3 + 4;
++    struct VoxelSourceWindow s = {
++        voxelFloor(cx + x - mx, VOXEL_TILE) * VOXEL_TILE - cx,
++        voxelFloor(cy + y - margin - VOXEL_TILE, VOXEL_TILE) * VOXEL_TILE - cy,
++        voxelFloor(cx + x + width + mx + VOXEL_TILE - 1, VOXEL_TILE) * VOXEL_TILE - cx,
++        voxelFloor(cy + y + height + margin + 2 * VOXEL_MAX_RISE + 48 + VOXEL_TILE - 1, VOXEL_TILE) * VOXEL_TILE - cy
++    };
++    return s;
+ }
+ 
+ static int voxelX(const struct VoxelView* v, int x, int y) {
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -1625,8 +1625,8 @@
+ 
+ // The rebuild of the screen rectangle [x0, x1) x [y0, y1) (screen coordinates, past the frame's edges allowed) into
+ // dst (stride `stride`, (x0, y0) at dst[0]). With `skipFrame`, pixels on the real frame are left alone: it's shown there.
+-#define BUF_W PK_WIDE_MAX_VIEW_W
+-#define BUF_H PK_WIDE_MAX_VIEW_H
++#define BUF_W (PK_WIDE_MAX_VIEW_W > VOXEL_SOURCE_MAX ? PK_WIDE_MAX_VIEW_W : VOXEL_SOURCE_MAX)
++#define BUF_H (PK_WIDE_MAX_VIEW_H > VOXEL_SOURCE_MAX ? PK_WIDE_MAX_VIEW_H : VOXEL_SOURCE_MAX)
+ static uint8_t prioBuf[BUF_H][BUF_W];
+ static uint8_t layerBuf[BUF_H][BUF_W];
+ static uint32_t below[BUF_H][BUF_W];   // the BG pixel's colour, for blending
+@@ -5335,13 +5335,8 @@
+     // Include the extra rows and columns the projected view can see. Align the
+     // source window to the live map grid so cell boundaries follow camera motion.
+     int buildingMargin=solidBuildingMargin(s);
+-    int margin = (v.h + 5) / 6 + buildingMargin;
+-    int mx = margin + VOXEL_MAX_RISE / 3 + 4;
+-    int left = voxelFloor(cx + v.x - mx, VOXEL_TILE) * VOXEL_TILE - cx;
+-    int right = voxelFloor(cx + v.x + v.w + mx + VOXEL_TILE - 1, VOXEL_TILE) * VOXEL_TILE - cx;
+-    int top = voxelFloor(cy + v.y - margin - VOXEL_TILE, VOXEL_TILE) * VOXEL_TILE - cy;
+-    int bottom = voxelFloor(cy + v.y + v.h + margin + 2 * VOXEL_MAX_RISE + 48 + VOXEL_TILE - 1, VOXEL_TILE)
+-        * VOXEL_TILE - cy;
++    struct VoxelSourceWindow source = voxelSourceWindow(cx, cy, v.x, v.y, v.w, v.h, buildingMargin);
++    int left = source.left, top = source.top, right = source.right, bottom = source.bottom;
+     int w = right - left, h = bottom - top;
+     if (w > BUF_W || h > BUF_H) return false;
+ 

@@ -273,5 +273,18 @@
     "thor_audio_pacing",
     "media_review",
     "device_restored"
-  ]
+  ],
+  "projected_source_bounds": {
+    "output_max": [
+      480,
+      400
+    ],
+    "scratch_max": [
+      1024,
+      1024
+    ],
+    "regression": "tools/test_voxel_projection.c",
+    "thor_fixture": "Lazarus Acrisia reviewed-field, zoom2, centered camera",
+    "finding": "Exact72 flat fallback from padded building source window exceeding800px; new candidate must retest, no inherited passes"
+  }
 }

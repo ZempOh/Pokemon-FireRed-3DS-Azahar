@@ -2,6 +2,20 @@
 #include <stdio.h>
 #include "pk_wide_voxel.h"
 int main(void) {
+    // Exact72 Thor: the 480x271 Lazarus view needs more than 800 source pixels.
+    struct VoxelSourceWindow wide = voxelSourceWindow(0,0,0,0,480,271,144);
+    assert(wide.right-wide.left > 800);
+    assert(wide.right-wide.left <= VOXEL_SOURCE_MAX);
+    // Exercise the actual runtime window calculation over every tile alignment,
+    // both camera directions, and the largest supported projected viewport.
+    for(int x=-16;x<16;x++) for(int y=-16;y<16;y++) {
+        struct VoxelSourceWindow s=voxelSourceWindow(13,7,x,y,VOXEL_MAX_W,VOXEL_MAX_H,144);
+        assert(s.right-s.left <= VOXEL_SOURCE_MAX && s.bottom-s.top <= VOXEL_SOURCE_MAX);
+        assert(s.left<=x-144 && s.top<=y-144);
+        assert(s.right>=x+VOXEL_MAX_W+144 && s.bottom>=y+VOXEL_MAX_H+144);
+        assert((s.left+13)%16==0 && (s.top+7)%16==0);
+        assert((s.right-s.left)%16==0 && (s.bottom-s.top)%16==0);
+    }
     uint32_t out[4]={0}, depth[4]={0};
     struct VoxelView v={.out=out,.depth=depth,.width=2,.height=2,.top=-16};
     assert(voxelFloor(-1,16)==-1 && voxelFloor(-16,16)==-1 && voxelFloor(-17,16)==-2);

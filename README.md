@@ -32,7 +32,7 @@ One-app PokéDaisy consolidation with a persistent per-game 2D/3D toggle is stil
 
 Later full-size reviews found additional winter ground gaps in Let’s Go, Lazarus and Odyssey. Corrections are under exact-APK retesting; the currently published Android build retains those known gaps. No new candidate has been released.
 
-Android pilots for Classic, FireRed and FRLG+ passed selected Pallet winter and indoor climate-exclusion checks on the latest candidate. Classic path corners and fence/sign ground gaps are corrected in those reviewed scenes. Full game qualification and the one-app migration remain pending; existing published builds retain their own recorded passes.
+Android pilots for Classic, FireRed and FRLG+ corrected the selected Pallet and Route 1 winter scenes. A wider Classic boundary view exposed uncovered berry-plot soil, so that exact APK was rejected. A complete-pattern correction passed host and CI regression checks and awaits Thor retesting. Earlier indoor checks remain tied to their own builds. Full game qualification and the one-app migration remain pending; published downloads and screenshots are unchanged.
 
 <!-- CURRENT SCENERY STATUS END -->
 

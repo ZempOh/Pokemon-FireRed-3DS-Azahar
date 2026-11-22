@@ -40,11 +40,11 @@ function setBusy(busy) {
 function choose(port, button) {
   selected = port;
   games.querySelectorAll("button").forEach((game) => game.setAttribute("aria-pressed", String(game === button)));
-  $("#build-title").textContent = "Build " + port.name;
+  $("#build-title").textContent = "2. Choose your ROM — " + port.name;
   $("[data-rom-help]").textContent = "Required ROM: " + port.input;
   build.textContent = port.format === "homebrew" ? "Build Azahar ZIP" : "Build .3ds cartridge";
   $("[data-install]").textContent = port.format === "homebrew"
-    ? "Unzip the download and copy its 3ds folder into Azahar’s sdmc folder. Open PokeClassicVoxel.3dsx from Azahar."
+    ? "Unzip the download and copy its 3ds folder into Azaharâ€™s sdmc folder. Open PokeClassicVoxel.3dsx from Azahar."
     : "Copy the finished file into your Azahar 3DS games folder and launch it from the library.";
   chooseFile(undefined);
 }
@@ -77,8 +77,8 @@ function receive(event) {
     progress.value = Math.max(progress.value, value);
     if (message.message) announce(message.message);
   } else if (message.type === "phase") {
-    const phases = { runtime: "Loading builder…", payload: "Downloading build files…",
-                     data: "Checking and extracting the ROM…", zip: "Assembling the download…" };
+    const phases = { runtime: "Loading builderâ€¦", payload: "Downloading build filesâ€¦",
+                     data: "Checking and extracting the ROMâ€¦", zip: "Assembling the downloadâ€¦" };
     if (phases[message.phase]) announce(phases[message.phase]);
   } else if (message.type === "error") {
     stop();
@@ -93,7 +93,7 @@ function receive(event) {
     download.download = selected.output;
     download.textContent = "Download " + selected.output;
     download.hidden = false;
-    announce("Download ready.");
+    announce("Your game is ready. Download it, then follow the installation steps below.");
     download.focus();
   }
 }
@@ -108,7 +108,7 @@ $("[data-form]").addEventListener("submit", async (event) => {
   clearDownload();
   setBusy(true);
   progress.value = 0;
-  announce("Reading the ROM on this device…");
+  announce("Reading the ROM on this deviceâ€¦");
   const id = ++buildId;
   try {
     const bytes = await rom.arrayBuffer();

@@ -9,6 +9,16 @@ PROOF=json.loads((ROOT/'android-secondary-land-review.json').read_text())
 MASKS=json.loads((ROOT/'android-land-mask-review.json').read_text())
 
 class SecondaryLandTests(unittest.TestCase):
+ def test_classic_night_ground_preserves_mailbox_and_tree_art(self):
+  cap=next(p for p in CAPS if p['game']=='classic')
+  group=next(g for g in cap['secondary_land_masks'] if int(g['secondary'],16)==0x84add10)
+  cells={c['id']:c['rows'] for c in group['cells']}
+  self.assertEqual(cells[0x2a5][:10],[65535]*10) # Ground above mailbox cap.
+  self.assertFalse(cells[0x2a5][15]&(1<<8)) # Mailbox metal stays original.
+  self.assertTrue(cells[0x1f][15]&(1<<15)) # Exposed right tree-border ground.
+  self.assertFalse(cells[0x1f][8]&(1<<7)) # Tree crown stays foliage.
+  self.assertTrue(cells[0x17][13]&(1<<15))
+  self.assertFalse(cells[0x24][10]&(1<<8)) # Lower trunk is not ground.
  def test_lazarus_complete_round_tree_ground_preserves_enclosed_leaf_color(self):
   cap=next(p for p in CAPS if p['game']=='lazarus')
   group=next(g for g in cap['secondary_land_masks'] if int(g['secondary'],16)==0x8e3e92c)

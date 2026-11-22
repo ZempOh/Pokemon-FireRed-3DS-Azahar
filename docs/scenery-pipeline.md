@@ -29,6 +29,22 @@ expansion manifest. Actors and battle Pokémon are a separate pass.
 
 ## Shared geometry rules
 
+Exact77's Classic winter timing run exposed palette-dependent ground gaps only
+after the native day-to-night update: mailbox cap cell 0x2a5 and partial tree
+border cells retained dark teal ground. Review both initial and settled palettes
+before long queues. Exact-ROM palette-index masks cover only source-reviewed
+ground; mailbox metal, trunks and foliage stay excluded. The reusable cell-review
+pipeline transfers masks only when complete own-source RGBA and mask identities
+match. `classic-night-ground78-proof.json` records the reviewed selections and
+transfers. Host tests check ground coverage and protected structure pixels;
+the replacement APK still needs full-size Thor day/night review and qualification.
+
+For suspicious battle-return sprites, compare an identical saved field state in
+2D and 3D before changing scenery. Exact77 Odyssey's hidden player in encounter
+grass also appears in native 2D. The private `capture_battle_return_control.py`
+replays retained inputs and preserves the shared state and both captures; it
+never grants a game pass.
+
 Exact76's horizontal camera pan exposed a viewport rounding boundary: a
 480-pixel zoom becomes 481 pixels after floor/ceil coverage of a fractional
 origin. The 3D guard must allow this extra pixel in both dimensions. The C

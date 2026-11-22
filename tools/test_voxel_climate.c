@@ -51,6 +51,18 @@ int main(void) {
     assert(!climateGrassEffect(0,0x083a5420,0x083a53dc));
     uint32_t tealLeaf=0xff606800u;
     voxelClimate.season=3;voxelClimate.seasonBlend=256;
+    /* Exact77: Classic day-colored ground passed, then native night colors
+     * escaped hue recognition above mailboxes and beside partial trees. */
+    const uint16_t *classicMailbox=scenerySecondaryLandMask(0xe4deb9be,0x084ad600,0x084add10,0x2a5);
+    assert(classicMailbox && (classicMailbox[0]&1) && !(classicMailbox[15]&(1u<<8)));
+    assert(!scenerySecondaryLandMask(0xe4deb9bf,0x084ad600,0x084add10,0x2a5));
+    assert(!scenerySecondaryLandMask(0xe4deb9be,0x084ad600,0x084add14,0x2a5));
+    const uint32_t classicGroundColors[]={0xff88c478u,0xff554c34u,0xff604028u};
+    for(unsigned i=0;i<sizeof(classicGroundColors)/sizeof(classicGroundColors[0]);i++) {
+        uint32_t ink=classicGroundColors[i];
+        assert(climateGround(ink,2)!=ink);
+        assert((climateGround(ink,2)&0xff000000u)==(ink&0xff000000u));
+    }
     assert(climateTerrain(tealLeaf)==tealLeaf); // Generic terrain keeps its water protection.
     assert(climateLeafColor(tealLeaf)!=tealLeaf); // Known conifer foliage includes dark teal.
     assert((climateLeafColor(tealLeaf)&0xff000000u)==(tealLeaf&0xff000000u));

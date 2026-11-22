@@ -1850,5 +1850,560 @@
     "reviewed": true,
     "climate_foliage": true,
     "review": "Indexed source-frame contact sheets reviewed; own field-effect table and five semantic grass slots validated structurally"
+  },
+  {
+    "game": "classic",
+    "rom_crc32": "e4deb9be",
+    "rom_sha256": "4ab7b1f7fb246490d798f49db1511d197d7c72376b6347d08e7c557122c6d722",
+    "field_table": "0x885e1bc",
+    "index": 4,
+    "template": "0x8873920",
+    "images": "0x88738dc",
+    "palette_tag": "0x1005",
+    "template_sha256": "0a1a360de92ccf62d4eaa7f3562ee0d31e1d3d11e42c034e4b9c44128fa53f22",
+    "frames": [
+      {
+        "pointer": "0x86fc8e4",
+        "bytes": 128,
+        "sha256": "7f11635e095fe524064d873e1159d7cf0bf13705fa0529e5eeef06a71aa6d633"
+      },
+      {
+        "pointer": "0x86fc964",
+        "bytes": 128,
+        "sha256": "ac690d34e2ee6d6650c932c21bda556956308edff9794ade258747fad3195e49"
+      },
+      {
+        "pointer": "0x86fc9e4",
+        "bytes": 128,
+        "sha256": "8cbd438db90ebd212f53a4059dcfb100758ea35656cf6d07f3cf736f834786c3"
+      },
+      {
+        "pointer": "0x86fca64",
+        "bytes": 128,
+        "sha256": "68c73bcc7dc9db507b4cbb761eed3c38746a5a82335f72189b6405187dbe909b"
+      },
+      {
+        "pointer": "0x86fcae4",
+        "bytes": 128,
+        "sha256": "32f6e0f3a9064e6a63f6e834ffaf3ad885eaa5b8734ef69719b181cb59a553f8"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Own-ROM field table and all indexed frames reviewed: tall/long grass foliage and movement rustles. Exact template/image identities only; Thor winter walking still required."
+  },
+  {
+    "game": "classic",
+    "rom_crc32": "e4deb9be",
+    "rom_sha256": "4ab7b1f7fb246490d798f49db1511d197d7c72376b6347d08e7c557122c6d722",
+    "field_table": "0x885e1bc",
+    "index": 10,
+    "template": "0x8873b70",
+    "images": "0x8873b38",
+    "palette_tag": "0x1005",
+    "template_sha256": "a08ad6c4f3ce21ab43311a5f28d7a92dee911469fa130633d1b0bf2cb0183655",
+    "frames": [
+      {
+        "pointer": "0x87011a4",
+        "bytes": 64,
+        "sha256": "701d2ff11d7dcfef2d22877421ba0a6bbe08f027a2b1953db1356c78a9713c68"
+      },
+      {
+        "pointer": "0x87011e4",
+        "bytes": 64,
+        "sha256": "55f6003ad4fbbe405e724ba31a18a199c9a6bfc2db59bc48b2a150520f7b057b"
+      },
+      {
+        "pointer": "0x8701224",
+        "bytes": 64,
+        "sha256": "3195a6f074889c8b1368e26d7e6a3b4e636a81103b3c9deded62c353f7d74279"
+      },
+      {
+        "pointer": "0x8701264",
+        "bytes": 64,
+        "sha256": "b8d661ad45a1a3f5d58dae8b25a1b8ca46ab85633b15870297075dd02e5b2243"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Own-ROM field table and all indexed frames reviewed: tall/long grass foliage and movement rustles. Exact template/image identities only; Thor winter walking still required."
+  },
+  {
+    "game": "classic",
+    "rom_crc32": "e4deb9be",
+    "rom_sha256": "4ab7b1f7fb246490d798f49db1511d197d7c72376b6347d08e7c557122c6d722",
+    "field_table": "0x885e1bc",
+    "index": 15,
+    "template": "0x8873e14",
+    "images": "0x8873dd0",
+    "palette_tag": "0x1005",
+    "template_sha256": "dac28e136ee020b6e0edfef2f829b1fe6402b1c9a3024b6a36ebeb1b1db5a823",
+    "frames": [
+      {
+        "pointer": "0x86fc6e4",
+        "bytes": 128,
+        "sha256": "75146b7dbca803e85f139bb9fa9b7e17a92369d5785c6ba301d947d10273481f"
+      },
+      {
+        "pointer": "0x86fc764",
+        "bytes": 128,
+        "sha256": "95b41af9904957a4ac9b19212fc6855796f8e6ba90aabf86a6b0cc9d7b1e2247"
+      },
+      {
+        "pointer": "0x86fc7e4",
+        "bytes": 128,
+        "sha256": "791665dd614bd6a76435fafcc5ca37cd8abf661abb078b90bcaeacb0f100f865"
+      },
+      {
+        "pointer": "0x86fc864",
+        "bytes": 128,
+        "sha256": "2caf8906c1be35348e023c0230d420ccf322f52aedb83c2110cefd09bc9083e1"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Own-ROM field table and all indexed frames reviewed: tall/long grass foliage and movement rustles. Exact template/image identities only; Thor winter walking still required."
+  },
+  {
+    "game": "classic",
+    "rom_crc32": "e4deb9be",
+    "rom_sha256": "4ab7b1f7fb246490d798f49db1511d197d7c72376b6347d08e7c557122c6d722",
+    "field_table": "0x885e1bc",
+    "index": 16,
+    "template": "0x8873e7c",
+    "images": "0x8873e2c",
+    "palette_tag": "0x1005",
+    "template_sha256": "de33a326ed88eb5567171cb275b05232bce1deb1a96331b2b88d0a2f57f2d82c",
+    "frames": [
+      {
+        "pointer": "0x86fbd64",
+        "bytes": 128,
+        "sha256": "151aa542662b5eca787d3e1be21d988c3c62b3d47dee427aeeb97916e9f253e3"
+      },
+      {
+        "pointer": "0x86fbde4",
+        "bytes": 128,
+        "sha256": "f8754f163791c1c143f0c35ac625d430676cb53211ec844b110ac23209160c9c"
+      },
+      {
+        "pointer": "0x86fbe64",
+        "bytes": 128,
+        "sha256": "2b3daf1f70e89ef1ae5a1949ca4ef62b7d096c3c06cd569d4188b6cf163d99d7"
+      },
+      {
+        "pointer": "0x86fbee4",
+        "bytes": 128,
+        "sha256": "13a36a8bf36540af57ddf16e8e07de7c18e26910a7f9d3246d9a5b767e79d1aa"
+      },
+      {
+        "pointer": "0x86fbf64",
+        "bytes": 128,
+        "sha256": "0738781e9b9a0e3b480473eb9e0f981ae211692f1ded24d70a3c09dc6279cddf"
+      },
+      {
+        "pointer": "0x86fc064",
+        "bytes": 128,
+        "sha256": "5f973565acb4a9e4e596a8f587d596eff84054bc967bfe0a34340e886eec5b7a"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Own-ROM field table and all indexed frames reviewed: tall/long grass foliage and movement rustles. Exact template/image identities only; Thor winter walking still required."
+  },
+  {
+    "game": "classic",
+    "rom_crc32": "e4deb9be",
+    "rom_sha256": "4ab7b1f7fb246490d798f49db1511d197d7c72376b6347d08e7c557122c6d722",
+    "field_table": "0x885e1bc",
+    "index": 30,
+    "template": "0x8874360",
+    "images": "0x8874340",
+    "palette_tag": "0x1005",
+    "template_sha256": "28f6bf5f9074096891f5224899fb076e1e280aa45cc2fdf8b1a1d3af06c91f02",
+    "frames": [
+      {
+        "pointer": "0x86fcb64",
+        "bytes": 128,
+        "sha256": "b5f91160dba34f6c8d9e6fb611cbaf27a32ffb9e94a1b856a0d4f59c07e5237b"
+      },
+      {
+        "pointer": "0x86fcbe4",
+        "bytes": 128,
+        "sha256": "a01897513bfaed76563b2b5dcfe0407112b13c654f8d9f26d15f18065d0684ed"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Own-ROM field table and all indexed frames reviewed: tall/long grass foliage and movement rustles. Exact template/image identities only; Thor winter walking still required."
+  },
+  {
+    "game": "frlgplus",
+    "rom_crc32": "964763c0",
+    "rom_sha256": "41b51f4f1d0a894dbb27572d6580821c6a192231f930d85c2805af664c13bbb6",
+    "field_table": "0x8416280",
+    "index": 4,
+    "template": "0x841cdbc",
+    "images": "0x841cd28",
+    "palette_tag": "0x1005",
+    "template_sha256": "95f3bbf9fbe5b84076950b22e1e242a8a3ed54195f1964ce45de819839022455",
+    "frames": [
+      {
+        "pointer": "0x840faac",
+        "bytes": 128,
+        "sha256": "a04fb0db353777d1af1a2dd586d497b37cec0019a55714507758b1f674ebc35b"
+      },
+      {
+        "pointer": "0x840fb2c",
+        "bytes": 128,
+        "sha256": "1f3519247d88961e304a9cb2a8db4e9740de6368bcb7fcda628631f93d5972ff"
+      },
+      {
+        "pointer": "0x840fbac",
+        "bytes": 128,
+        "sha256": "af8ba5ddf1c92b8cdc2730532e839984681ebac2ce9428df8361bff8204045b0"
+      },
+      {
+        "pointer": "0x840fc2c",
+        "bytes": 128,
+        "sha256": "13e312fd8fc8f424d796db4d688b0b3232e9660001114ca9066053f537e706e9"
+      },
+      {
+        "pointer": "0x840fcac",
+        "bytes": 128,
+        "sha256": "a820ceda1cf2ef42b2f9387f092a56d6f7cfbf2324a342e64cdd901647b5c372"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Own-ROM field table and all indexed frames reviewed: tall/long grass foliage and movement rustles. Exact template/image identities only; Thor winter walking still required."
+  },
+  {
+    "game": "frlgplus",
+    "rom_crc32": "964763c0",
+    "rom_sha256": "41b51f4f1d0a894dbb27572d6580821c6a192231f930d85c2805af664c13bbb6",
+    "field_table": "0x8416280",
+    "index": 10,
+    "template": "0x841d064",
+    "images": "0x841d02c",
+    "palette_tag": "0x1005",
+    "template_sha256": "43dc358653925141d3e409af20310f838e42c89165c0fa5cdcf8a221c39ae09b",
+    "frames": [
+      {
+        "pointer": "0x840ec2c",
+        "bytes": 64,
+        "sha256": "701d2ff11d7dcfef2d22877421ba0a6bbe08f027a2b1953db1356c78a9713c68"
+      },
+      {
+        "pointer": "0x840ec6c",
+        "bytes": 64,
+        "sha256": "55f6003ad4fbbe405e724ba31a18a199c9a6bfc2db59bc48b2a150520f7b057b"
+      },
+      {
+        "pointer": "0x840ecac",
+        "bytes": 64,
+        "sha256": "3195a6f074889c8b1368e26d7e6a3b4e636a81103b3c9deded62c353f7d74279"
+      },
+      {
+        "pointer": "0x840ecec",
+        "bytes": 64,
+        "sha256": "b8d661ad45a1a3f5d58dae8b25a1b8ca46ab85633b15870297075dd02e5b2243"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Own-ROM field table and all indexed frames reviewed: tall/long grass foliage and movement rustles. Exact template/image identities only; Thor winter walking still required."
+  },
+  {
+    "game": "frlgplus",
+    "rom_crc32": "964763c0",
+    "rom_sha256": "41b51f4f1d0a894dbb27572d6580821c6a192231f930d85c2805af664c13bbb6",
+    "field_table": "0x8416280",
+    "index": 15,
+    "template": "0x841d308",
+    "images": "0x841d2c4",
+    "palette_tag": "0x1005",
+    "template_sha256": "0c3e77b15eac9b4532424b67dc14c3f500c7e261b93100ab9f9ab5686d75b884",
+    "frames": [
+      {
+        "pointer": "0x840f8ac",
+        "bytes": 128,
+        "sha256": "75146b7dbca803e85f139bb9fa9b7e17a92369d5785c6ba301d947d10273481f"
+      },
+      {
+        "pointer": "0x840f92c",
+        "bytes": 128,
+        "sha256": "95b41af9904957a4ac9b19212fc6855796f8e6ba90aabf86a6b0cc9d7b1e2247"
+      },
+      {
+        "pointer": "0x840f9ac",
+        "bytes": 128,
+        "sha256": "791665dd614bd6a76435fafcc5ca37cd8abf661abb078b90bcaeacb0f100f865"
+      },
+      {
+        "pointer": "0x840fa2c",
+        "bytes": 128,
+        "sha256": "2caf8906c1be35348e023c0230d420ccf322f52aedb83c2110cefd09bc9083e1"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Own-ROM field table and all indexed frames reviewed: tall/long grass foliage and movement rustles. Exact template/image identities only; Thor winter walking still required."
+  },
+  {
+    "game": "frlgplus",
+    "rom_crc32": "964763c0",
+    "rom_sha256": "41b51f4f1d0a894dbb27572d6580821c6a192231f930d85c2805af664c13bbb6",
+    "field_table": "0x8416280",
+    "index": 16,
+    "template": "0x841d370",
+    "images": "0x841d320",
+    "palette_tag": "0x1005",
+    "template_sha256": "947b0ef6afde7e572dadad9cc96d8b282bc51e3c05ec4ab0c657fdadef794500",
+    "frames": [
+      {
+        "pointer": "0x840ef2c",
+        "bytes": 128,
+        "sha256": "151aa542662b5eca787d3e1be21d988c3c62b3d47dee427aeeb97916e9f253e3"
+      },
+      {
+        "pointer": "0x840efac",
+        "bytes": 128,
+        "sha256": "f8754f163791c1c143f0c35ac625d430676cb53211ec844b110ac23209160c9c"
+      },
+      {
+        "pointer": "0x840f02c",
+        "bytes": 128,
+        "sha256": "2b3daf1f70e89ef1ae5a1949ca4ef62b7d096c3c06cd569d4188b6cf163d99d7"
+      },
+      {
+        "pointer": "0x840f0ac",
+        "bytes": 128,
+        "sha256": "13a36a8bf36540af57ddf16e8e07de7c18e26910a7f9d3246d9a5b767e79d1aa"
+      },
+      {
+        "pointer": "0x840f12c",
+        "bytes": 128,
+        "sha256": "0738781e9b9a0e3b480473eb9e0f981ae211692f1ded24d70a3c09dc6279cddf"
+      },
+      {
+        "pointer": "0x840f22c",
+        "bytes": 128,
+        "sha256": "5f973565acb4a9e4e596a8f587d596eff84054bc967bfe0a34340e886eec5b7a"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Own-ROM field table and all indexed frames reviewed: tall/long grass foliage and movement rustles. Exact template/image identities only; Thor winter walking still required."
+  },
+  {
+    "game": "frlgplus",
+    "rom_crc32": "964763c0",
+    "rom_sha256": "41b51f4f1d0a894dbb27572d6580821c6a192231f930d85c2805af664c13bbb6",
+    "field_table": "0x8416280",
+    "index": 30,
+    "template": "0x841d804",
+    "images": "0x841d7e4",
+    "palette_tag": "0x1005",
+    "template_sha256": "839ba6cb4c1aadae34c67d99838b752834e63fa1a1a3f29604a8d8759c60fc82",
+    "frames": [
+      {
+        "pointer": "0x840ff2c",
+        "bytes": 128,
+        "sha256": "b5f91160dba34f6c8d9e6fb611cbaf27a32ffb9e94a1b856a0d4f59c07e5237b"
+      },
+      {
+        "pointer": "0x840ffac",
+        "bytes": 128,
+        "sha256": "a01897513bfaed76563b2b5dcfe0407112b13c654f8d9f26d15f18065d0684ed"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Own-ROM field table and all indexed frames reviewed: tall/long grass foliage and movement rustles. Exact template/image identities only; Thor winter walking still required."
+  },
+  {
+    "game": "firered",
+    "rom_crc32": "dd88761c",
+    "rom_sha256": "3d0c79f1627022e18765766f6cb5ea067f6b5bf7dca115552189ad65a5c3a8ac",
+    "field_table": "0x83a0010",
+    "index": 4,
+    "template": "0x83a5420",
+    "images": "0x83a53dc",
+    "palette_tag": "0x1005",
+    "template_sha256": "9cffc379cc85378fed5d3322158711413def5102df123344f65cfeaaedcee806",
+    "frames": [
+      {
+        "pointer": "0x839a008",
+        "bytes": 128,
+        "sha256": "a04fb0db353777d1af1a2dd586d497b37cec0019a55714507758b1f674ebc35b"
+      },
+      {
+        "pointer": "0x839a088",
+        "bytes": 128,
+        "sha256": "1f3519247d88961e304a9cb2a8db4e9740de6368bcb7fcda628631f93d5972ff"
+      },
+      {
+        "pointer": "0x839a108",
+        "bytes": 128,
+        "sha256": "af8ba5ddf1c92b8cdc2730532e839984681ebac2ce9428df8361bff8204045b0"
+      },
+      {
+        "pointer": "0x839a188",
+        "bytes": 128,
+        "sha256": "13e312fd8fc8f424d796db4d688b0b3232e9660001114ca9066053f537e706e9"
+      },
+      {
+        "pointer": "0x839a208",
+        "bytes": 128,
+        "sha256": "a820ceda1cf2ef42b2f9387f092a56d6f7cfbf2324a342e64cdd901647b5c372"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Own-ROM field table and all indexed frames reviewed: tall/long grass foliage and movement rustles. Exact template/image identities only; Thor winter walking still required."
+  },
+  {
+    "game": "firered",
+    "rom_crc32": "dd88761c",
+    "rom_sha256": "3d0c79f1627022e18765766f6cb5ea067f6b5bf7dca115552189ad65a5c3a8ac",
+    "field_table": "0x83a0010",
+    "index": 10,
+    "template": "0x83a5698",
+    "images": "0x83a5660",
+    "palette_tag": "0x1005",
+    "template_sha256": "3cd687037c658639687bc5007fb3654881fba6bf35673b9bd1840dee0fa5fb10",
+    "frames": [
+      {
+        "pointer": "0x8399188",
+        "bytes": 64,
+        "sha256": "701d2ff11d7dcfef2d22877421ba0a6bbe08f027a2b1953db1356c78a9713c68"
+      },
+      {
+        "pointer": "0x83991c8",
+        "bytes": 64,
+        "sha256": "55f6003ad4fbbe405e724ba31a18a199c9a6bfc2db59bc48b2a150520f7b057b"
+      },
+      {
+        "pointer": "0x8399208",
+        "bytes": 64,
+        "sha256": "3195a6f074889c8b1368e26d7e6a3b4e636a81103b3c9deded62c353f7d74279"
+      },
+      {
+        "pointer": "0x8399248",
+        "bytes": 64,
+        "sha256": "b8d661ad45a1a3f5d58dae8b25a1b8ca46ab85633b15870297075dd02e5b2243"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Own-ROM field table and all indexed frames reviewed: tall/long grass foliage and movement rustles. Exact template/image identities only; Thor winter walking still required."
+  },
+  {
+    "game": "firered",
+    "rom_crc32": "dd88761c",
+    "rom_sha256": "3d0c79f1627022e18765766f6cb5ea067f6b5bf7dca115552189ad65a5c3a8ac",
+    "field_table": "0x83a0010",
+    "index": 15,
+    "template": "0x83a593c",
+    "images": "0x83a58f8",
+    "palette_tag": "0x1005",
+    "template_sha256": "f2c32604e141935c7c5efe112f13009bcf9772064d791dd95fe93c1a5106d658",
+    "frames": [
+      {
+        "pointer": "0x8399e08",
+        "bytes": 128,
+        "sha256": "75146b7dbca803e85f139bb9fa9b7e17a92369d5785c6ba301d947d10273481f"
+      },
+      {
+        "pointer": "0x8399e88",
+        "bytes": 128,
+        "sha256": "95b41af9904957a4ac9b19212fc6855796f8e6ba90aabf86a6b0cc9d7b1e2247"
+      },
+      {
+        "pointer": "0x8399f08",
+        "bytes": 128,
+        "sha256": "791665dd614bd6a76435fafcc5ca37cd8abf661abb078b90bcaeacb0f100f865"
+      },
+      {
+        "pointer": "0x8399f88",
+        "bytes": 128,
+        "sha256": "2caf8906c1be35348e023c0230d420ccf322f52aedb83c2110cefd09bc9083e1"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Own-ROM field table and all indexed frames reviewed: tall/long grass foliage and movement rustles. Exact template/image identities only; Thor winter walking still required."
+  },
+  {
+    "game": "firered",
+    "rom_crc32": "dd88761c",
+    "rom_sha256": "3d0c79f1627022e18765766f6cb5ea067f6b5bf7dca115552189ad65a5c3a8ac",
+    "field_table": "0x83a0010",
+    "index": 16,
+    "template": "0x83a59a4",
+    "images": "0x83a5954",
+    "palette_tag": "0x1005",
+    "template_sha256": "25284128c380e678f4cfece894177142d439f9bbcce19408460cc00ed14a2f04",
+    "frames": [
+      {
+        "pointer": "0x8399488",
+        "bytes": 128,
+        "sha256": "151aa542662b5eca787d3e1be21d988c3c62b3d47dee427aeeb97916e9f253e3"
+      },
+      {
+        "pointer": "0x8399508",
+        "bytes": 128,
+        "sha256": "f8754f163791c1c143f0c35ac625d430676cb53211ec844b110ac23209160c9c"
+      },
+      {
+        "pointer": "0x8399588",
+        "bytes": 128,
+        "sha256": "2b3daf1f70e89ef1ae5a1949ca4ef62b7d096c3c06cd569d4188b6cf163d99d7"
+      },
+      {
+        "pointer": "0x8399608",
+        "bytes": 128,
+        "sha256": "13a36a8bf36540af57ddf16e8e07de7c18e26910a7f9d3246d9a5b767e79d1aa"
+      },
+      {
+        "pointer": "0x8399688",
+        "bytes": 128,
+        "sha256": "0738781e9b9a0e3b480473eb9e0f981ae211692f1ded24d70a3c09dc6279cddf"
+      },
+      {
+        "pointer": "0x8399788",
+        "bytes": 128,
+        "sha256": "5f973565acb4a9e4e596a8f587d596eff84054bc967bfe0a34340e886eec5b7a"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Own-ROM field table and all indexed frames reviewed: tall/long grass foliage and movement rustles. Exact template/image identities only; Thor winter walking still required."
+  },
+  {
+    "game": "firered",
+    "rom_crc32": "dd88761c",
+    "rom_sha256": "3d0c79f1627022e18765766f6cb5ea067f6b5bf7dca115552189ad65a5c3a8ac",
+    "field_table": "0x83a0010",
+    "index": 30,
+    "template": "0x83a5e38",
+    "images": "0x83a5e18",
+    "palette_tag": "0x1005",
+    "template_sha256": "0e956e02a7d9ed5714be7ffea398b5f32f29eb60e8e0c6e03dff99d8d23560b1",
+    "frames": [
+      {
+        "pointer": "0x839a288",
+        "bytes": 128,
+        "sha256": "b5f91160dba34f6c8d9e6fb611cbaf27a32ffb9e94a1b856a0d4f59c07e5237b"
+      },
+      {
+        "pointer": "0x839a308",
+        "bytes": 128,
+        "sha256": "a01897513bfaed76563b2b5dcfe0407112b13c654f8d9f26d15f18065d0684ed"
+      }
+    ],
+    "reviewed": true,
+    "climate_foliage": true,
+    "review": "Own-ROM field table and all indexed frames reviewed: tall/long grass foliage and movement rustles. Exact template/image identities only; Thor winter walking still required."
   }
 ]

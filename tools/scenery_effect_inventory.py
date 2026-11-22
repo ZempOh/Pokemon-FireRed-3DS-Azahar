@@ -1,13 +1,29 @@
 """Find structurally complete field-effect tables; keep art review mandatory."""
 from pathlib import Path
-import struct,json,hashlib,argparse,re
+import struct,json,hashlib,argparse,re,zlib
 parser=argparse.ArgumentParser(description=__doc__)
-parser.add_argument('--manifest',type=Path,required=True)
-parser.add_argument('--rom-directory',type=Path,required=True)
+inputs=parser.add_mutually_exclusive_group(required=True)
+inputs.add_argument('--manifest',type=Path)
+inputs.add_argument('--workspace',type=Path)
+parser.add_argument('--rom-directory',type=Path)
+parser.add_argument('--games',nargs='+')
 parser.add_argument('--output',type=Path,required=True)
-args=parser.parse_args();manifest=json.loads(args.manifest.read_text())['games'];result={}
+args=parser.parse_args();result={}
+assert not args.output.exists(),'Preserve previous inventory'
+if args.workspace:
+ from scenery_inputs import resolve_input
+ assert args.games and not args.rom_directory
+ manifest=[]
+ for game in args.games:
+  path,inv=resolve_input(args.workspace,game)
+  manifest.append(dict(key=game,path=path,sha256=inv['rom_sha256'],crc32=inv.get('rom_crc32',inv.get('crc32'))))
+else:
+ assert args.rom_directory
+ manifest=json.loads(args.manifest.read_text())['games']
+ if args.games:manifest=[g for g in manifest if g['key'] in args.games]
 for g in manifest:
- b=(args.rom_directory/(g['key']+'.gba')).read_bytes();assert hashlib.sha256(b).hexdigest()==g['sha256']
+ b=(g.get('path') or args.rom_directory/(g['key']+'.gba')).read_bytes();assert hashlib.sha256(b).hexdigest()==g['sha256']
+ crc=f'{zlib.crc32(b):08x}';assert g['crc32'] in (None,crc);g['crc32']=crc
  def off(p,n=24):
   o=p-0x08000000
   if not 0<=o<=len(b)-n:raise ValueError('bad pointer')

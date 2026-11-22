@@ -9,6 +9,24 @@ PROOF=json.loads((ROOT/'android-secondary-land-review.json').read_text())
 MASKS=json.loads((ROOT/'android-land-mask-review.json').read_text())
 
 class SecondaryLandTests(unittest.TestCase):
+ def test_native_route_ground_preserves_ledge_and_water(self):
+  for game in ('classic','frlgplus','firered'):
+   cap=next(p for p in CAPS if p['game']==game)
+   self.assertTrue(any(0xe4 in g['ids'] for g in cap['land']))
+   self.assertFalse(any(set(g['ids'])&{0x91,0x99,0xfa,0xfb} for g in cap['land']))
+   cells=[c for g in cap['secondary_land_masks'] for c in g['cells'] if c['id']==0xc0]
+   self.assertTrue(cells)
+   for cell in cells:
+    self.assertEqual(cell['rows'][0],65535) # Soil above the ledge.
+    self.assertFalse(cell['rows'][12]&(1<<8)) # Rock face below it.
+ def test_native_live_grass_has_own_effect_identities(self):
+  effects=json.loads((ROOT/'android-grass-effects.json').read_text())
+  for game in ('classic','frlgplus','firered'):
+   rows=[p for p in effects if p['game']==game]
+   self.assertEqual({p['index'] for p in rows},{4,10,15,16,30})
+   self.assertTrue(all(p['reviewed'] and p['climate_foliage'] for p in rows))
+   self.assertEqual(len({p['rom_sha256'] for p in rows}),1)
+  self.assertEqual(len({p['rom_sha256'] for p in effects if p['game'] in ('classic','frlgplus','firered')}),3)
  def test_plant_layer_alias_cannot_silently_select_background(self):
   plant=next(p for p in json.loads((ROOT/'android-potted-plants.json').read_text()) if p['game']=='classic')
   self.assertEqual(plant['top_layer'],2)

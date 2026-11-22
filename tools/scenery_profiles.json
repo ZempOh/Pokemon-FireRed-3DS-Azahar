@@ -32,7 +32,7 @@
       ],
       "active_models": "3ds_port/scripts/classic_building_specs.py",
       "notes": "The imported Emerald voxel_building_specs is not the active Classic model list. The tree renderer has no FireRed room-renderer path.",
-      "android_adapter_status": "Isolated source-reviewed draft; not enabled or Thor-qualified. See scenery-pipeline.md and private native-three-android proofs."
+      "android_adapter_status": "Diagnostic Android adapter; exact63 rejected for Route1 winter path/live-grass gaps after partial Pallet/indoor/HM checks. Patch62 stages shared own-source path materials and foliage-effect identities. No Android qualification or publication scope expansion."
     },
     "firered": {
       "repo": "firered",
@@ -48,7 +48,7 @@
       "active_models": "3ds_port/scripts/fr_building_specs.py",
       "room_models": "3ds_port/scripts/fr_gen_rooms.py",
       "notes": "Room shapes and their packed texture must be generated together. Keep original row fields and UVs unless rebuilding the matching recipe.",
-      "android_adapter_status": "Isolated source-reviewed draft; not enabled or Thor-qualified. See scenery-pipeline.md and private native-three-android proofs."
+      "android_adapter_status": "Diagnostic Android adapter; exact63 rejected for Route1 winter path/live-grass gaps after partial Pallet/indoor/HM checks. Patch62 stages shared own-source path materials and foliage-effect identities. No Android qualification or publication scope expansion."
     },
     "frlg": {
       "repo": "frlg",
@@ -64,7 +64,7 @@
       "active_models": "3ds_port/scripts/fr_building_specs.py",
       "room_models": "3ds_port/scripts/fr_gen_rooms.py",
       "notes": "Shares FireRed renderer structure, but rebuilding from the FRLG+ ROM produces different room rows and texture slots. Never copy generated tables by game-name similarity.",
-      "android_adapter_status": "Isolated source-reviewed draft; not enabled or Thor-qualified. See scenery-pipeline.md and private native-three-android proofs."
+      "android_adapter_status": "Diagnostic Android adapter; exact63 rejected for Route1 winter path/live-grass gaps after partial Pallet/indoor/HM checks. Patch62 stages shared own-source path materials and foliage-effect identities. No Android qualification or publication scope expansion."
     },
     "letsgo": {
       "repo": "pokedaisy",

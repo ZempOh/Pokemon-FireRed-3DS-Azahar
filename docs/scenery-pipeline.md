@@ -1041,3 +1041,53 @@ trust in a nonmatching source rebuild. Shared season/weather rendering is enable
 for these diagnostic profiles. This is partial environmental recognition, not
 whole-game coverage or a Thor pass. Interiors, wider terrain, authentic HM script
 tests and per-game UI persistence still require qualification before publication.
+
+### Disposable fixtures: save layout, obedience and occlusion
+
+Exact63 selected native Pallet winter and indoor scenes passed full-size review;
+Cut/Smash/Strength pilots retain separate visual and live-object evidence. These
+partial checks are not full qualification. Keep the tested source frozen and
+record further findings in the private `native63-findings.md` before integration.
+
+Read each native ROM's own 14-entry save-slot table before editing a fixture.
+Classic uses a4084-byte save-block stride; FireRed/FRLG+ use3968. Zero padding can
+make the wrong full-payload checksum appear valid until a flag crosses a section
+boundary. `native_save_layout.py` verifies exact section lengths and all populated
+banks; `warp_fixture.py` and HM preparation share it. Preserve erased banks and
+old failed seeds. Corrected FRLG+/FireRed interaction seeds use `native63r2`.
+The plan generator now defaults to a fresh output label and validates inputs.
+
+Transferred high-level parties can disobey a new trainer even when their party
+checksums and moves are valid. Record player and original-trainer IDs, verify
+the game's actual obedience prerequisites, and observe an attack and return to
+the field before a long active run. Better Emerald2's corrected badge-only seed
+passed that sequence and its exact63 active run; earlier failures remain failed.
+`prepare_obedience_seed.py` preserves the party while changing explicit fixture
+flags. A reviewed replacement fixture binds setup deltas, old failed inputs,
+new attack/return evidence, ROM, APK and fixture hashes.
+
+A rock hidden behind the player is not proof of missing geometry. Classic's
+initial Smash framing required a native2D control and one-step side view. After
+removal, `record_native_removal.py` checks absence of the target object and player
+entry into its tile. Strength checks separately record the push and subsequent
+walkthrough; retain an incomplete first position proof instead of overwriting it.
+`native_qa.py` reuses shared runners through process-local pilot registration;
+it does not enable a game's publication scope. `qa_progress.py` lists retained
+timing phases without promoting them to visual or full-game passes.
+
+Exact63 subsequently failed Route1 winter review in all three native adapters:
+yellow paths remained uncovered and the live grass effect beneath the player
+stayed green. Its nine successful Pallet timing phases remain partial evidence,
+and cannot override this rejection. Check route grass and path families before
+long qualification runs; a town-only winter scene misses these asset classes.
+
+Patch62 adds 36 reviewed full-ground variants per native game and 199 mixed
+ground masks across 52 exact matching tileset pairs. Ledge faces remain stone;
+stairs, solid rock caps, fences, hedges and water are excluded from this family.
+Each transfer checks rendered source art and mask identity, and each primary
+full-ground registration retains its own source hash. Fifteen own-ROM foliage
+effect profiles cover tall/long grass and movement rustles. New Thor review is
+mandatory. `scenery_effect_inventory.py --workspace ... --games ...` and
+`scenery_effect_review.py` now reuse private input resolution for future games.
+Cell review accepts multiple explicit ground references; palette coincidences
+still require visual exclusion of structure materials before registration.

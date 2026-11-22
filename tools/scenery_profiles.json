@@ -259,7 +259,7 @@
       ],
       "rom_crc32": "6c5ee1b2",
       "rom_sha256": "44c7e3eafab19c39df7c39d54bafb78a1d9caf7c371244b6f5efb12cfd98d0d0",
-      "notes": "Expansion candidate; no Thor qualification. Consult tools/scenery-profiles/expansion-transfer.json; no automatic asset inheritance."
+      "notes": "Expansion candidate; no Thor qualification. Consult tools/scenery-profiles/expansion-transfer.json; no automatic asset inheritance. Exact70 winter review found six source grass pixels at Pokemon Center facade corners; patch70 crops reviewed x2..78 facade span while preserving roof UVs. New exact-APK Thor test required."
     }
   },
   "required_checks": [

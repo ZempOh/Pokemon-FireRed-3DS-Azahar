@@ -1203,3 +1203,11 @@ through the existing hip-roof geometry. Explicit facade bounds exclude source
 ground corners; the private source audit passes. Use the disposable viewpoint
 26,10 to review the whole model and winter footprint. This is one recognized
 building pattern, not all-map building coverage, and needs exact-build Thor QA.
+
+Exact70 passed the reviewed Lazarus round-tree winter footprint, but the all-game
+preflight exposed six grass pixels at Odyssey Pokemon Center facade corners.
+Patch70 uses reviewed wall bounds x2..78, y48..80 on its own source-art identity;
+roof UVs are unchanged. Run the facade material audit after each new crop.
+A successful earlier audit covers only profiles with wall_crop_review, not every
+registered building. Review full-size winter captures for all remaining profiles
+before timing. No exact70 qualification or publication is inherited.

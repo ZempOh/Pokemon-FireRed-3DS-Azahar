@@ -1196,9 +1196,16 @@
       "hip_inset": 8,
       "gable_x": 0.5,
       "gable_row": 0,
-      "ridge_back_height": 48
+      "ridge_back_height": 48,
+      "wall_left": 2,
+      "wall_right": 78,
+      "wall_bottom": 80
     },
-    "scope": "Reviewed source rectangle and geometry family; exact APK device qualification remains separate."
+    "scope": "Reviewed source rectangle and geometry family; exact APK device qualification remains separate.",
+    "wall_crop_review": {
+      "source_art_sha256": "9da56760292831fff569d36aa142deddadf3149e31ceab5291fdff2b7e0cd4e1",
+      "scope": "Full source-art review excludes the two-pixel outer strips containing six grass pixels at lower corners; preserves interior facade, door and bottom trim. Exact70 Thor winter failure retained. Roof UV span unchanged."
+    }
   },
   {
     "game": "modern-emerald",

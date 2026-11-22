@@ -48,7 +48,11 @@
       "active_models": "3ds_port/scripts/fr_building_specs.py",
       "room_models": "3ds_port/scripts/fr_gen_rooms.py",
       "notes": "Room shapes and their packed texture must be generated together. Keep original row fields and UVs unless rebuilding the matching recipe.",
-      "android_adapter_status": "Diagnostic Android adapter; exact63 rejected for Route1 winter path/live-grass gaps after partial Pallet/indoor/HM checks. Patch62 stages shared own-source path materials and foliage-effect identities. No Android qualification or publication scope expansion."
+      "android_adapter_status": "Diagnostic Android adapter; exact63 rejected for Route1 winter path/live-grass gaps after partial Pallet/indoor/HM checks. Patch62 stages shared own-source path materials and foliage-effect identities. No Android qualification or publication scope expansion.",
+      "interaction_qa": {
+        "smash_encounters": "A low-level QA party may faint; a source-verified Smoke Ball-only fixture correction preserves other party fields and both failure/replacement evidence",
+        "proof": "Actual escape plus live target absence and player walkthrough required"
+      }
     },
     "frlg": {
       "repo": "frlg",
@@ -187,7 +191,19 @@
       ],
       "rom_crc32": "63478921",
       "rom_sha256": "a08055484c8366768d3e98e2dbed0998641abd2899ffbfc8d7f132925875f7a1",
-      "notes": "Expansion candidate; no Thor qualification. Consult tools/scenery-profiles/expansion-transfer.json; no automatic asset inheritance."
+      "notes": "Expansion candidate; no Thor qualification. Consult tools/scenery-profiles/expansion-transfer.json; no automatic asset inheritance.",
+      "interaction_qa": {
+        "mode": "custom_tools_and_scripted_scene",
+        "field_tools": {
+          "cut": "Hatchet269",
+          "smash": "Pickaxe278"
+        },
+        "retail_strength": "Invalid in this revision: entry branches into erased code; preserve failed probes",
+        "scripted_rock": "Dark City coordinate-triggered spawn/jump/remove; paired2D/3D completion required",
+        "cutscene_rendering": "Native2D fallback retained; no3D cutscene-rock claim",
+        "coverage": "Reviewed recognized objects only; malformed map1,115 and secondary water-map object remain outside coverage",
+        "qualification": "Exact build still requires all scenery, weather, timing, audio, UI and restoration gates"
+      }
     },
     "gaia": {
       "repo": "pokedaisy",

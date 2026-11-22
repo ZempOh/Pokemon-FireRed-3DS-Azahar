@@ -29,6 +29,29 @@ expansion manifest. Actors and battle Pokémon are a separate pass.
 
 ## Shared geometry rules
 
+Strength probes must distinguish boulder displacement from player follow-through.
+Classic exact66's short upward input moved the rock from 7,18 to 7,17 while
+the player stayed at 7,19; native 2D reproduced the same result. A separate
+upward step from each retained state reached 7,18 without moving the rock
+again. Preserve the failed original assertion and both continuation proofs;
+do not rebuild or retry unchanged inputs merely to obtain a pass. The private
+`capture_walkthrough.py` helper records explicit continuation inputs and hashes.
+Native pilot reports can be adapted into shared building/indoor evidence with
+`export_native_scene_evidence.py`: it checks exact APK, ROM, fixture and file
+hashes and copies the original log bytes. It grants no visual approval.
+
+Ash Gray's map 3,32 local object 6 (graphics 97) is a scripted thrown rock,
+not a retail Strength puzzle. Its coordinate trigger at y=32 spawns the
+three children, moves the rock, removes it, then releases player control.
+Use the disposable Dark City seed at 13,33 and replay the actual script in
+both modes. Exact66 paired state checks returned the player to 13,34 with
+objects 3 through 6 inactive. This proves scene completion, not a Strength
+push or full-game qualification. Retain the original failed static-object
+probe and inspect dense motion frames for appearance before changing scope.
+The other candidate rock at map 3,80 lies on water; a forced standing warp
+there is not a valid walking interaction fixture. The QA preference helper
+supports ORIGINAL as well as WIDE through the existing atomic recovery path.
+
 Classic's Route 1 berry plot reuses rocky edge cells. Exact64 passed selected
 Pallet and southern Route 1 winter views, but the full-size boundary view exposed
 brown soil beneath the berry plants. Keep that build rejected. Reused material
@@ -1087,6 +1110,34 @@ walkthrough; retain an incomplete first position proof instead of overwriting it
 it does not enable a game's publication scope. `qa_progress.py` lists retained
 timing phases without promoting them to visual or full-game passes.
 
+Rock Smash may trigger wild encounters far above a disposable starter's level.
+Treat fainting or failed escape as an incomplete interaction, never a removal
+pass. If correcting the fixture, verify a guaranteed-escape held item against
+that ROM's own item record, preserve party identity/moves/HP and all other data,
+and recompute its encrypted party and exact save-section checksums. Retain the
+failed probe and use a new seed namespace. FireRed's exact66 correction uses
+Smoke Ball194 (held effect37); the live escape, object absence and walkthrough
+must still pass independently. This is test setup, not an APK workaround.
+
+Custom interactions need their own source-bound capability profile. Ash Gray's
+retail party Strength entry jumps into erased bytes; its recognized rock is used
+by a coordinate-triggered story scene. `interaction-scope-profiles.json` records
+its actual Hatchet269/Pickaxe278 scripts and paired Dark City scene requirement.
+`custom_interaction_gate.py` rechecks exact source, media, live object removal,
+player movement and both story-scene outcomes. It explicitly retains native2D
+cutscene fallback and never claims a Strength push or 3D cutscene-rock coverage.
+The old failed probes stay in the hold archive. A malformed map and unreviewed
+secondary water-map object remain outside the reviewed scope. Eligibility for
+these corrected tests is not release qualification.
+
+`native_interaction_gate.py` independently rechecks retained push/follow-through
+chains and Cut/Smash object states. Negative checks reject failed original proofs,
+wrong APKs, cross-game evidence and mismatched operations. `adopt_qa_evidence.py`
+can register exact completed manual captures in the queue after rechecking their
+files and timing gates; it cannot replace a prior queue result or approve visuals.
+Completion accounting includes native profiles still disabled for publication,
+and permanent app consolidation requires all requested profiles to qualify.
+
 Exact63 subsequently failed Route1 winter review in all three native adapters:
 yellow paths remained uncovered and the live grass effect beneath the player
 stayed green. Its nine successful Pallet timing phases remain partial evidence,
@@ -1103,3 +1154,18 @@ mandatory. `scenery_effect_inventory.py --workspace ... --games ...` and
 `scenery_effect_review.py` now reuse private input resolution for future games.
 Cell review accepts multiple explicit ground references; palette coincidences
 still require visual exclusion of structure materials before registration.
+
+Exact66 failed full-size Ash Gray Route12 winter review despite native timing
+passes. Ground-detail cells8/9 and mixed sign/ledge/fence backgrounds were not
+covered. The same preflight sweep found Rocket forest path pixels below walls.
+Patch65 adds two full cells and285 exact-art mixed masks for Ash Gray; patch66
+adds nine Rocket forest masks. Both preserve source structure pixels and require
+fresh Thor tests. Unsupported Ash tileset compression remains explicitly excluded
+from transfer. Source proof JSON records selected cells, hashes and exclusions.
+
+Run the full game winter preflight sweep before long timing queues. A town-only
+sample misses route-specific ground and secondary building-footprint materials.
+The reusable cell review supports several ground references because alternate
+path palettes can differ even when their colors look similar. Review masks at
+full size; never treat a palette coincidence as proof that an object is ground.
+Tests now pin the preserved sign face, ledge face and Rocket wall/ground split.

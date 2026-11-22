@@ -9,6 +9,23 @@ PROOF=json.loads((ROOT/'android-secondary-land-review.json').read_text())
 MASKS=json.loads((ROOT/'android-land-mask-review.json').read_text())
 
 class SecondaryLandTests(unittest.TestCase):
+ def test_rocket_forest_path_below_wall_is_ground_not_facade(self):
+  cap=next(p for p in CAPS if p['game']=='rocket')
+  group=next(g for g in cap['secondary_land_masks'] if int(g['secondary'],16)==0x82d4dc4)
+  cells={c['id']:c['rows'] for c in group['cells']}
+  for mid in (0x28c,0x293):
+   self.assertEqual(cells[mid][:8],[0]*8)
+   self.assertEqual(cells[mid][8:],[65535]*8)
+ def test_ash_winter_covers_details_but_preserves_sign_and_rock(self):
+  cap=next(p for p in CAPS if p['game']=='ash-gray')
+  land=next(g for g in cap['land'] if int(g['primary'],16)==0x82d4a94)
+  self.assertTrue({1,8,9}<=set(land['ids']))
+  group=next(g for g in cap['secondary_land_masks'] if int(g['secondary'],16)==0x82d4b6c)
+  cells={c['id']:c['rows'] for c in group['cells']}
+  self.assertTrue(cells[3][8]&1) # Ground beside the sign.
+  self.assertFalse(cells[3][8]&(1<<8)) # Sign face.
+  self.assertEqual(cells[0x87][:8],[65535]*8) # Ground above the ledge.
+  self.assertEqual(cells[0x87][8:],[0]*8) # Rock face is not snow ground.
  def test_native_route_ground_preserves_ledge_and_water(self):
   for game in ('classic','frlgplus','firered'):
    cap=next(p for p in CAPS if p['game']==game)

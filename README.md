@@ -32,7 +32,7 @@ One-app PokéDaisy consolidation with a persistent per-game 2D/3D toggle is stil
 
 Later full-size reviews found additional winter ground gaps in Let’s Go, Lazarus and Odyssey. Corrections are under exact-APK retesting; the currently published Android build retains those known gaps. No new candidate has been released.
 
-Android pilots for Classic, FireRed and FRLG+ corrected the selected Pallet and Route 1 winter scenes. A wider Classic boundary view exposed uncovered berry-plot soil, so that exact APK was rejected. A complete-pattern correction passed host and CI regression checks and awaits Thor retesting. Earlier indoor checks remain tied to their own builds. Full game qualification and the one-app migration remain pending; published downloads and screenshots are unchanged.
+The latest Android candidate passed Classic's selected full berry-plot winter, summer-restoration and map-boundary checks on the Thor. Better Emerald 2 passed a 90-second active battle test at 59.7 FPS with no audio underruns and returned to the field. Ash Gray's actual Dark City scripted scene completed in both 2D and 3D; this is not a retail Strength test. Full game qualification, remaining visual checks and the one-app migration are still pending. Earlier failures remain rejected; published downloads and screenshots are unchanged.
 
 <!-- CURRENT SCENERY STATUS END -->
 

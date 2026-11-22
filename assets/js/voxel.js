@@ -44,7 +44,7 @@ function choose(port, button) {
   $("[data-rom-help]").textContent = "Required ROM: " + port.input;
   build.textContent = port.format === "homebrew" ? "Build Azahar ZIP" : "Build .3ds cartridge";
   $("[data-install]").textContent = port.format === "homebrew"
-    ? "Unzip the download and copy its 3ds folder into Azaharâ€™s sdmc folder. Open PokeClassicVoxel.3dsx from Azahar."
+    ? "Unzip the download and copy its 3ds folder into Azahar's sdmc folder. Open PokeClassicVoxel.3dsx from Azahar."
     : "Copy the finished file into your Azahar 3DS games folder and launch it from the library.";
   chooseFile(undefined);
 }
@@ -77,8 +77,8 @@ function receive(event) {
     progress.value = Math.max(progress.value, value);
     if (message.message) announce(message.message);
   } else if (message.type === "phase") {
-    const phases = { runtime: "Loading builderâ€¦", payload: "Downloading build filesâ€¦",
-                     data: "Checking and extracting the ROMâ€¦", zip: "Assembling the downloadâ€¦" };
+    const phases = { runtime: "Loading builder...", payload: "Downloading build files...",
+                     data: "Checking and extracting the ROM...", zip: "Assembling the download..." };
     if (phases[message.phase]) announce(phases[message.phase]);
   } else if (message.type === "error") {
     stop();
@@ -108,7 +108,7 @@ $("[data-form]").addEventListener("submit", async (event) => {
   clearDownload();
   setBusy(true);
   progress.value = 0;
-  announce("Reading the ROM on this deviceâ€¦");
+  announce("Reading the ROM on this device...");
   const id = ++buildId;
   try {
     const bytes = await rom.arrayBuffer();

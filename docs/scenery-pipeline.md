@@ -29,6 +29,14 @@ expansion manifest. Actors and battle Pokémon are a separate pass.
 
 ## Shared geometry rules
 
+Exact76's horizontal camera pan exposed a viewport rounding boundary: a
+480-pixel zoom becomes 481 pixels after floor/ceil coverage of a fractional
+origin. The 3D guard must allow this extra pixel in both dimensions. The C
+projection test calls the runtime guard and covers maximum padded source bounds.
+Thor preflights retain separate whole-house and whole-laboratory views, with
+signed vertical and horizontal camera pans recorded in each report. Every
+required additional view must be explicitly reviewed before qualification.
+
 Exact74's full-size Let's Go winter capture exposed green pixels at the rear
 gable edges. Both vertical gables must use the reviewed facade crop; copying
 roof vertices also copies their uncropped UVs and can project exterior grass.

@@ -284,15 +284,15 @@
   ],
   "projected_source_bounds": {
     "output_max": [
-      480,
-      400
+      481,
+      401
     ],
     "scratch_max": [
       1024,
       1024
     ],
     "regression": "tools/test_voxel_projection.c",
-    "thor_fixture": "Lazarus Acrisia reviewed-field, zoom2, centered camera",
-    "finding": "Exact72 flat fallback from padded building source window exceeding800px; new candidate must retest, no inherited passes"
+    "thor_fixture": "Lazarus wide centered view plus LetsGo Pallet whole-laboratory zoom2 horizontal fractional pan",
+    "finding": "Exact76 right pan rounds480 to481 and triggered flat fallback; allow one coverage pixel per axis, retain1024 scratch cap, require latest live mesh sample. Exact77 Thor retest pending."
   }
 }

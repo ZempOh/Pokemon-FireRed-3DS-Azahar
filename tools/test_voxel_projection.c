@@ -2,6 +2,15 @@
 #include <stdio.h>
 #include "pk_wide_voxel.h"
 int main(void) {
+    // Exact76 Thor right-stick pan: ceil(right)-floor(left) is 481,
+    // although the selected zoom spans 480 pixels. Exercise runtime guard.
+    assert(voxelViewportFits(480,270));
+    assert(voxelViewportFits(481,271));
+    assert(voxelViewportFits(481,401));
+    assert(!voxelViewportFits(482,271));
+    assert(!voxelViewportFits(480,402));
+    assert(!voxelViewportFits(119,80));
+    assert(!voxelViewportFits(120,79));
     // Exact72 Thor: the 480x271 Lazarus view needs more than 800 source pixels.
     struct VoxelSourceWindow wide = voxelSourceWindow(0,0,0,0,480,271,144);
     assert(wide.right-wide.left > 800);

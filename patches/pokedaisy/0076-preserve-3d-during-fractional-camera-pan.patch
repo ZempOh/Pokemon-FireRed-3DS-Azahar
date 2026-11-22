@@ -1,0 +1,32 @@
+--- a/app/src/main/cpp/pk_wide_voxel.h
++++ b/app/src/main/cpp/pk_wide_voxel.h
+@@ -5,10 +5,16 @@
+ 
+ #define VOXEL_TILE 16
+ #define VOXEL_MAX_RISE 20
+-#define VOXEL_MAX_W 480
+-#define VOXEL_MAX_H 400
++// WideCamera floors the origin and ceils the far edge; fractional pans
++// add one coverage pixel without increasing the selected zoom.
++#define VOXEL_MAX_W 481
++#define VOXEL_MAX_H 401
+ // Padded source art is larger than the output viewport.
+ #define VOXEL_SOURCE_MAX 1024
++
++static int voxelViewportFits(int width, int height) {
++    return width >= 120 && height >= 80 && width <= VOXEL_MAX_W && height <= VOXEL_MAX_H;
++}
+ 
+ struct VoxelView {
+     uint32_t* out;
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -5330,7 +5330,7 @@
+ 
+ static bool drawVoxel(const struct Snap* s, int cx, int cy, int href, int vref,
+                       uint32_t* out, struct PkWideView v, uint32_t alpha) {
+-    if (v.w > VOXEL_MAX_W || v.h > VOXEL_MAX_H || v.w < 120 || v.h < 80) return false;
++    if (!voxelViewportFits(v.w, v.h)) return false;
+ 
+     // Include the extra rows and columns the projected view can see. Align the
+     // source window to the live map grid so cell boundaries follow camera motion.

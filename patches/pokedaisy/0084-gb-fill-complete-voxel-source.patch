@@ -1,0 +1,9 @@
+--- a/app/src/main/cpp/pk_wide_gb.c
++++ b/app/src/main/cpp/pk_wide_gb.c
+@@ -1094,5 +1094,5 @@
+             int sy = y0 + j;
+-            bool skip = sy >= 0 && sy < GBH && !rowWhole[j];
++            bool skip = !terrainOnly && sy >= 0 && sy < GBH && !rowWhole[j];
+             uint32_t* out = dst + j * stride;
+             uint8_t* bgIdx = gbBgIdx + j * w;
+             for (int i = 0; i < w;) {

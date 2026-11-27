@@ -13,10 +13,15 @@
       7,
       2,
       7,
-      2
+      3
     ],
     "source_sha256": "61021cf5042efdb0186e5346d37cd21349321d1c9f2412c4b71f8ccdff809b99",
-    "reviewed": true
+    "reviewed": true,
+    "palette_inks": [
+      35,
+      41,
+      43
+    ]
   },
   {
     "game": "better-emerald-2",

@@ -1,6 +1,30 @@
 {
   "schema": 1,
   "scope": "Environmental scenery in the original six games and ten additional collected games",
+  "rollout_smoke": {
+    "commit": "a50dad7e4c8614dfaf793f82a55cbccb23f2b679",
+    "gen1_cartridge_profiles": 23,
+    "gba_game_profiles": 16,
+    "thor_captures": 117,
+    "gen1_fixture": "Pallet Town",
+    "release_qualified": false
+  },
+  "pilots": {
+    "red-us-eu": {
+      "rom_crc32": "9f7fdd53",
+      "runtime": "game-boy",
+      "fixture": "Pallet Town",
+      "tileset": 0,
+      "coverage": "Pallet Town 2D/3D comparison and live walking on Thor",
+      "thor_verified": true
+    },
+    "firered-calendar": {
+      "rom_crc32": "dd88761c",
+      "runtime": "game-boy-advance",
+      "coverage": "Pallet Town 2D/3D and current-date autumn checked on Thor; calendar boundaries checked on host",
+      "thor_verified": true
+    }
+  },
   "families": [
     "grass",
     "flowers",

@@ -29,6 +29,52 @@ expansion manifest. Actors and battle Pokémon are a separate pass.
 
 ## Shared geometry rules
 
+The initial Red/FireRed pilot was separate from the sixteen-game rollout.
+The local Pallet Town proof
+reads the ROM map and 2bpp tiles and shows independently drawn voxel houses,
+trees, fences and flowers. Its placements are scoped to that map. Keep it out
+of the publication gallery. Patch 0082 adds a live adapter using Red's WRAM
+layout and exact cartridge map tables. The 3D pilot requires the verified
+Pallet blockset and a matched field frame, with native presentation for other
+scenes. It shares the GBA projection and depth rasterizer, decodes live GB
+tiles, synthesizes a ground plane under raised geometry and repositions
+actors from OAM. The preview's geometry is scoped to this map.
+
+For local Android builds, replay the ordered patches at the workflow's pinned
+upstream commit and run both game data generators before Gradle. A local debug
+signer cannot update an existing preview APK signed by CI. Use an isolated
+package and disposable fixtures for local hardware review, then restore the
+original enabled package. A pilot build does not qualify any release.
+
+The FireRed calendar pilot in patch 0081 uses the device's local civil date.
+Automatic mode blends seasonal materials over the first 14 days of each
+season, so entering or reloading a map does not restart the progression.
+Weather has deterministic three-hour slots and 15-minute fades. Scoped to the
+reviewed FireRed input; manual presets still support quick comparisons.
+Host checks cover the transition phase and indoor/re-entry behavior.
+The local d779038 pilot booted both games on Thor. Red remained 3D while walking
+from (9,8) to (9,14). FireRed's November 27 automatic woodland sample matched
+the manual autumn palette and was clearly distinct from manual winter. A
+separate candidate initially left dark bands on Red façades because the Game
+Boy flat path skipped the screen centre. A fully projected view needs all
+source rows and columns. Keep the earlier captures and retest the same fixture
+when changing this fast path. The scope is a two-game pilot, not release QA.
+
+Rollout candidate `a50dad7` shares the calendar across the 16 GBA profiles and
+23 verified Gen 1 cartridges. It preserves saved climate choices and defaults
+new 3D choices to Automatic. Standard Game Boy overworld scenery uses matched
+2-by-2 live tiles and complete roof and wall signatures. Use
+`audit_gen1_house_signatures.py` and `test_gen1_projection_bounds.c` in
+`scenery-completion` to replay the host checks. Other tile families retain live
+tile art until they have reviewed material rules.
+
+The isolated Thor run captured 2D, automatic 3D, and manual winter for all
+39 inputs. Gen 1 hardware coverage uses Pallet Town. Fourteen localized
+cartridges lack companion location telemetry. Their field views were reviewed
+against exact resumed fixtures. The tested build is held for visible flat
+flower outlines in Japanese Pallet Town, remaining winter plant coverage in
+Better Emerald 2, and the absence of a release-signed candidate with full QA.
+
 Exact79 passed Classic settled winter and all five pacing phases, but its wide
 LetsGo Pallet showcase failed pacing (59.1 then60.3FPS; work peak26.5ms).
 Retain that failure; do not average away the dip or rerun to cherry-pick.

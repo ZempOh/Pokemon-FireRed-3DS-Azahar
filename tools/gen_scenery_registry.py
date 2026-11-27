@@ -91,7 +91,7 @@ def generate_engines(profiles,output):
 
 def generate_ground_props(profiles,output):
     lines=['// Generated reviewed field props; no ROM artwork.','#pragma once',
-           'struct SceneryGroundProp { uint32_t rom,primary; uint16_t id,ground; uint8_t kind,ink[6]; };',
+           'struct SceneryGroundProp { uint32_t rom,primary; uint16_t id,ground; uint8_t kind,ink[6],paletteInk[3]; };',
            'static const struct SceneryGroundProp sceneryGroundProps[] = {']
     seen=set()
     for p in profiles:
@@ -99,8 +99,12 @@ def generate_ground_props(profiles,output):
         assert p['reviewed'] and key not in seen and p['kind'] in (1,3,4,13)
         if p['kind']==1:assert p.get('behavior')==2,'Encounter grass needs reviewed own-ROM tall-grass semantics'
         assert 0<=p['id']<512 and 0<=p['ground']<512 and len(p['ink'])==6 and all(0<=n<16 for n in p['ink'])
+        palette_inks=p.get('palette_inks',[0,0,0])
+        if 'palette_inks' in p:
+            assert p['kind']==13 and len(palette_inks)==3, 'Fixed palette inks are only for reviewed flowers'
+            assert all(0<n<256 and n%16 for n in palette_inks), 'Palette inks need opaque BG colors'
         seen.add(key)
-        lines.append('    {0x%s,%s,%d,%d,%d,{%s}},'%(p['rom_crc32'],p['primary'],p['id'],p['ground'],p['kind'],','.join(map(str,p['ink']))))
+        lines.append('    {0x%s,%s,%d,%d,%d,{%s},{%s}},'%(p['rom_crc32'],p['primary'],p['id'],p['ground'],p['kind'],','.join(map(str,p['ink'])),','.join(map(str,palette_inks))))
     lines+=['};','static const struct SceneryGroundProp *sceneryGroundProp(uint32_t rom,uint32_t primary,int id) {',
             '    for(unsigned i=0;i<sizeof(sceneryGroundProps)/sizeof(sceneryGroundProps[0]);i++) {',
             '        const struct SceneryGroundProp *p=&sceneryGroundProps[i];',

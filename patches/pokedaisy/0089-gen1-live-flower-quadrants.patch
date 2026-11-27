@@ -1,0 +1,101 @@
+--- a/app/src/main/cpp/pk_red_voxel_pilot.h
++++ b/app/src/main/cpp/pk_red_voxel_pilot.h
+@@ -12,7 +12,6 @@
+     if (cx >= 10 && cx < 16 && (cy == 8 || cy == 9)) return RED_ROOF;
+     if (cx >= 10 && cx < 16 && (cy == 10 || cy == 11)) return RED_WALL;
+     if ((cy == 9 && cx >= 4 && cx <= 7) || (cy == 13 && cx >= 11 && cx <= 15)) return RED_POST;
+-    if ((cy == 10 && cx >= 4 && cx <= 7) || (cy == 14 && cx >= 11 && cx <= 14)) return RED_FLOWER;
+     if (cy >= 14 && cx >= 4 && cx <= 7) return RED_WATER;
+     return RED_FIELD;
+ }
+@@ -129,17 +128,28 @@
+         | ((uint32_t)gbTile(s,tx,ty+1)<<16) | ((uint32_t)gbTile(s,tx+1,ty+1)<<24);
+ }
+ 
+-static enum RedMaterial gbVoxelMaterial(const struct GbSnap* s, int cx, int cy,
+-                                       bool classicTiles, bool pallet) {
++/* A recognized flower cell consists of one live 8x8 flower and three
++ * ordinary grass tiles. Its bit identifies the source quadrant to replace. */
++static unsigned gbVoxelFlowerMask(uint32_t signature) {
++    switch (signature) {
++    case 0x2c2c2c03u: return 1u << 0;
++    case 0x2c2c032cu: return 1u << 1;
++    case 0x2c032c2cu: return 1u << 2;
++    case 0x032c2c2cu: return 1u << 3;
++    default: return 0;
++    }
++}
++
++static enum RedMaterial gbVoxelMaterial(uint32_t signature, int cx, int cy,
++                                       bool classicTiles, bool pallet, unsigned flower) {
++    if (flower) return RED_FLOWER;
+     int x=cx-6, y=cy-6;
+     if (pallet && (unsigned)x<20 && (unsigned)y<18) return redMaterialAt(x,y);
+     if (!classicTiles) return RED_NATIVE;
+-    switch(gbVoxelSignature(s,cx,cy)) {
++    switch(signature) {
+     case 0x3b3a2b2au: return RED_TREE;
+     case 0x55550e0eu: return RED_POST;
+     case 0x57564746u: return RED_SIGN;
+-    case 0x2c032c2cu: case 0x032c2c2cu:
+-    case 0x2c2c032cu: case 0x2c2c2c03u: return RED_FLOWER;
+     case 0x14141414u: case 0x54141414u: case 0x14141432u: return RED_WATER;
+     case 0x23232323u: case 0x39393939u: case 0x52525252u:
+     case 0x23232339u: case 0x23392323u: case 0x23233923u:
+@@ -195,6 +205,7 @@
+     static uint32_t art[GB_BUF], floor[GB_BUF], depth[VOXEL_MAX_W*VOXEL_MAX_H];
+     static const uint8_t flat[GB_BUF/(VOXEL_TILE*VOXEL_TILE)];
+     static uint8_t materials[GB_BUF/(VOXEL_TILE*VOXEL_TILE)];
++    static uint8_t flowerMasks[GB_BUF/(VOXEL_TILE*VOXEL_TILE)];
+     gbDraw(snap, ox, oy, window.left, window.top, w, h, art, w, alpha, false, true);
+     int cols = w / VOXEL_TILE, rows = h / VOXEL_TILE;
+     struct VoxelView view = {
+@@ -214,7 +225,9 @@
+     }
+     for (int y = 0; y < rows; ++y) {
+         for (int x = 0; x < cols; ++x) {
+-            enum RedMaterial material=gbVoxelMaterial(snap,view.left/16+x,view.top/16+y,classicTiles,pallet);
++            uint32_t signature=classicTiles ? gbVoxelSignature(snap,left+x,top+y) : 0;
++            unsigned flower=gbVoxelFlowerMask(signature);
++            enum RedMaterial material=gbVoxelMaterial(signature,left+x,top+y,classicTiles,pallet,flower);
+             for (int i=0; i<houseCount; ++i) {
+                 const struct GbVoxelHouse* h=&houses[i];
+                 if (left+x>=h->x && left+x<h->x+h->width &&
+@@ -224,13 +237,18 @@
+                 }
+             }
+             materials[y*cols+x]=(uint8_t)material;
++            flowerMasks[y*cols+x]=material==RED_FLOWER ? (uint8_t)flower : 0;
+             const struct RedMaterialStyle* style = &redStyles[material];
+             for (int dy = 0; dy < VOXEL_TILE; ++dy) {
+                 int at = (y*VOXEL_TILE+dy)*w + x*VOXEL_TILE;
+                 for (int dx = 0; dx < VOXEL_TILE; ++dx) {
+                     uint32_t color = art[at+dx];
+                     if (material == RED_NATIVE) floor[at+dx]=color;
+-                    else if (style->rise) floor[at+dx]=ground;
++                    else if (material == RED_FLOWER) {
++                        unsigned bit=1u << ((dy/8)*2+dx/8);
++                        floor[at+dx] = (flower & bit) ? ground :
++                            climateGround(redTint(color,&redStyles[RED_FIELD]),2);
++                    } else if (style->rise) floor[at+dx]=ground;
+                     else {
+                         uint32_t ink=redTint(color,style);
+                         floor[at+dx]=material==RED_FIELD ? climateGround(ink,2) : ink;
+@@ -264,11 +282,12 @@
+                 for (int dx=2; dx<16; dx+=8)
+                     redBox(&view,x+dx,y+6,4,3,0,7,alpha|RED_COLOR(165,126,85));
+             }
+-            if (material==RED_FLOWER) {
+-                for (int dx=3; dx<16; dx+=8) {
+-                    redBox(&view,x+dx,y+7,2,2,0,3,climateLeafColor(alpha|RED_COLOR(91,155,101)));
+-                    redBox(&view,x+dx-1,y+6,4,4,3,2,alpha|RED_COLOR(213,127,143));
+-                }
++            unsigned flower=flowerMasks[row*cols+col];
++            for (int tile=0; tile<4; ++tile) {
++                if (!(flower & (1u<<tile))) continue;
++                int fx=x+(tile%2)*8+3, fy=y+(tile/2)*8+3;
++                redBox(&view,fx,fy,2,2,0,3,climateLeafColor(alpha|RED_COLOR(91,155,101)));
++                redBox(&view,fx-1,fy-1,4,4,3,2,alpha|RED_COLOR(213,127,143));
+             }
+         }
+     }

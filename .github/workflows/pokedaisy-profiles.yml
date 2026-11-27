@@ -20,7 +20,8 @@ jobs:
       - uses: actions/checkout@v5
       - uses: actions/checkout@v5
         with:
-          repository: lidor30/pokedaisy
+          # This public mirror contains the same immutable upstream commit.
+          repository: ratherDashing/pokedaisy-3ds
           ref: 79bd00e155fcc7d4373f23f5386d6e67c8c423eb
           submodules: recursive
           path: pokedaisy

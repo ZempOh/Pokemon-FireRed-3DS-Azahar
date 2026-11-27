@@ -1,0 +1,38 @@
+--- a/app/src/main/kotlin/com/pokedaisy/app/Prefs.kt
++++ b/app/src/main/kotlin/com/pokedaisy/app/Prefs.kt
+@@ -644,7 +644,9 @@
+         get() = p.getBoolean("status_bar_on_companion", false)
+         set(v) = p.edit().putBoolean("status_bar_on_companion", v).apply()
+ 
+-    fun voxelClimateFor(crc: String): Int = p.getInt("voxel_climate_$crc", 0)
++    /** Existing choices, including Original (0), only change when the player sets them. */
++    fun voxelClimateFor(crc: String, supported: Boolean): Int =
++        p.getInt("voxel_climate_$crc", if (supported) 1 else 0)
+     fun setVoxelClimateFor(crc: String, value: Int) { p.edit().putInt("voxel_climate_$crc", value).apply() }
+ 
+     fun voxelFieldFor(crc: String): Boolean = p.getBoolean("voxel_field_$crc", false)
+--- a/app/src/main/kotlin/com/pokedaisy/app/PokeDaisyActivity.kt
++++ b/app/src/main/kotlin/com/pokedaisy/app/PokeDaisyActivity.kt
+@@ -2429,7 +2429,7 @@
+             runOnUiThread { syncGameScreen() }
+         }
+         override val wideSupported get() = wideGame != WideScreen.OFF
+-        override val voxelClimate get() = Prefs(this@PokeDaisyActivity).voxelClimateFor(romKey)
++        override val voxelClimate get() = Prefs(this@PokeDaisyActivity).voxelClimateFor(romKey, voxelFieldSupported)
+         override fun setVoxelClimate(value: Int) {
+             Prefs(this@PokeDaisyActivity).setVoxelClimateFor(romKey, value)
+             runOnUiThread { syncGameScreen() }
+@@ -4529,9 +4529,10 @@
+         syncTouchExtras()
+         if (::engine.isInitialized) {
+             engine.wideGame = if (aspect == GameAspect.WIDE) wideGame else WideScreen.OFF
+-            engine.voxelClimateConfig = prefs.voxelClimateFor(romKey)
+-            engine.voxelNativeClock = companionSettings.voxelFieldSupported
+-            engine.wideVoxelGame = if (companionSettings.voxelFieldSupported && companionSettings.voxelField) {
++            val voxelSupported = companionSettings.voxelFieldSupported
++            engine.voxelClimateConfig = prefs.voxelClimateFor(romKey, voxelSupported)
++            engine.voxelNativeClock = voxelSupported
++            engine.wideVoxelGame = if (voxelSupported && companionSettings.voxelField) {
+                 wideGame
+             } else {
+                 WideScreen.OFF

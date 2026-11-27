@@ -1,0 +1,103 @@
+--- a/app/src/main/cpp/pk_wide_gb.c
++++ b/app/src/main/cpp/pk_wide_gb.c
+@@ -43,6 +43,7 @@
+ /** A game's addresses (WRAM unless noted; D000-DFFF in WRAM bank 1). Gen 1's and Crystal's share where they mean the
+  * same; the rest is one generation's (0 in the other's rows). */
+ #include "pk_wide_gb_profile.h"
++#include "pk_gen1_wide_profiles.h"
+ #include "pk_wide_voxel.h"
+ #include "pk_wide_gb_polished_tables.h"   // pcWideConfig: Polished Crystal 3.2.3 (normal), by PC_WIDE_CRC
+ #include "pk_wide_gb_polished_lz.inc"       // pcLz
+@@ -50,13 +51,9 @@
+ #define GB_LINEAR(bank, addr) ((uint32_t) (bank) * 0x4000u + ((addr) - 0x4000u))
+ 
+ static const struct GbGame { uint32_t crc; int gen; uint32_t a[GB_CONFIG]; } GB_ROMS[] = {
+-    // Red (USA, Europe): WRAM from pret/pokered's RAM layout. ROM table starts
+-    // checked against the header addresses and banks in the exact cart.
+-    { 0x9F7FDD53u, 1, { 0xC100, 0xC200, 0xC6E8, 0xD35F, 0xD361, 0xD363, 0xD367, 0xD368, 0xD370, 0xD52B, 0xD3AD, 0xD057,
+-                        0xCFC4, 0xD5A6, 0xD5CE, 0x01AE, 0xC23D, 0xCC2D, 0xD747 } },
+-    // Pokémon Yellow (USA, Europe): pret/pokeyellow's symbols (its build is the cart byte for byte).
+-    { 0x7D527D62u, 1, { 0xC100, 0xC200, 0xC6E8, 0xD35E, 0xD360, 0xD362, 0xD366, 0xD367, 0xD36F, 0xD52A, 0xD3AC, 0xD056,
+-                        0xCFC3, 0xD5A5, 0xD5CD, GB_LINEAR(0x3F, 0x41F2), GB_LINEAR(0x3F, 0x43E4), 0xCC2D, 0xD746 } },
++#define PD_GEN1_ROW(crc, addresses) { crc, 1, addresses },
++    PD_GEN1_WIDE_CARTS(PD_GEN1_ROW)
++#undef PD_GEN1_ROW
+     // Pokémon Yellow Legacy v1.0.10: its pokeyellow.sym (its build is the patched cart byte for byte).
+     { 0xE7D07A3Fu, 1, { 0xC100, 0xC200, 0xC6E8, 0xD3AC, 0xD3AE, 0xD3B0, 0xD3B4, 0xD3B5, 0xD3BD, 0xD578, 0xD3FA, 0xD057,
+                         0xCFC3, 0xD5F3, 0xD61B, GB_LINEAR(0x3F, 0x41F2), GB_LINEAR(0x3F, 0x43E4), 0xCC2D, 0xD746 } },
+@@ -1356,6 +1353,17 @@
+ static bool gbMixSnap; // pk_wide_gb_snap
+ static int gbMix, gbLastScore = -1, gbLastMode = PK_WIDE_MODE_NONE, gbLastClose = 1, gbLastScene = PK_WIDE_SCENE_OFF;
+ 
++int pk_wide_gb_voxel_knows(uint32_t crc) {
++    switch (crc) {
++#define PD_GEN1_CASE(value, addresses) case value:
++        PD_GEN1_WIDE_CARTS(PD_GEN1_CASE)
++#undef PD_GEN1_CASE
++        return 1;
++    default:
++        return 0;
++    }
++}
++
+ int pk_wide_gb_knows(uint32_t crc) {
+   if (crc && crc == PC_WIDE_CRC)
+     return 1;
+--- a/app/src/main/cpp/pk_wide.h
++++ b/app/src/main/cpp/pk_wide.h
+@@ -352,6 +352,7 @@
+ #define PK_WIDE_GB_W 160
+ #define PK_WIDE_GB_H 144
+ int pk_wide_gb_knows(uint32_t crc);
++int pk_wide_gb_voxel_knows(uint32_t crc);
+ int pk_wide_gb_configure(uint32_t crc);
+ void pk_wide_gb_reset(void);
+ void pk_wide_gb_snap(void);   // pk_wide_jump's: the next drawn scene at full strength
+--- /dev/null
++++ b/app/src/main/cpp/pk_gen1_wide_profiles.h
+@@ -0,0 +1,45 @@
++// Retail Game Boy profile cells, vetted against cartridge symbols and ROM bytes.
++#pragma once
++
++#define PD_GEN1_RED_BLUE_EN { 0xC100, 0xC200, 0xC6E8, 0xD35F, 0xD361, 0xD363, 0xD367, 0xD368, 0xD370, 0xD52B, \
++    0xD3AD, 0xD057, 0xCFC4, 0xD5A6, 0xD5CE, 0x01AE, 0xC23D, 0xCC2D, 0xD747 }
++#define PD_GEN1_YELLOW_EN { 0xC100, 0xC200, 0xC6E8, 0xD35E, 0xD360, 0xD362, 0xD366, 0xD367, 0xD36F, 0xD52A, \
++    0xD3AC, 0xD056, 0xCFC3, 0xD5A5, 0xD5CD, 0xFC1F2, 0xFC3E4, 0xCC2D, 0xD746 }
++#define PD_GEN1_RED_BLUE_LOCALIZED { 0xC100, 0xC200, 0xC6E8, 0xD364, 0xD366, 0xD368, 0xD36C, 0xD36D, 0xD375, 0xD530, \
++    0xD3B2, 0xD05C, 0xCFC9, 0xD5AB, 0xD5D3, 0x01AE, 0xC23D, 0xCC2D, 0xD74C }
++#define PD_GEN1_YELLOW_LOCALIZED { 0xC100, 0xC200, 0xC6E8, 0xD363, 0xD365, 0xD367, 0xD36B, 0xD36C, 0xD374, 0xD52F, \
++    0xD3B1, 0xD05B, 0xCFC8, 0xD5AA, 0xD5D2, 0xFC1F2, 0xFC3E4, 0xCC2D, 0xD74B }
++#define PD_GEN1_RED_GREEN_JP_REV1 { 0xC100, 0xC200, 0xC6E8, 0xD2DE, 0xD2E0, 0xD2E2, 0xD2E6, 0xD2E7, 0xD2EF, 0xD4AA, \
++    0xD32C, 0xD034, 0xCFAB, 0xD525, 0xD54D, 0x1BB9, 0xC883, 0xCC2D, 0xD6C6 }
++#define PD_GEN1_RED_GREEN_JP { 0xC100, 0xC200, 0xC6E8, 0xD2DE, 0xD2E0, 0xD2E2, 0xD2E6, 0xD2E7, 0xD2EF, 0xD4AA, \
++    0xD32C, 0xD034, 0xCFAB, 0xD525, 0xD54D, 0x1BCB, 0xC883, 0xCC2D, 0xD6C6 }
++#define PD_GEN1_BLUE_JP { 0xC100, 0xC200, 0xC6E8, 0xD2DE, 0xD2E0, 0xD2E2, 0xD2E6, 0xD2E7, 0xD2EF, 0xD4AA, \
++    0xD32C, 0xD034, 0xCFAB, 0xD525, 0xD54D, 0x0167, 0xC275, 0xCC2D, 0xD6C6 }
++#define PD_GEN1_YELLOW_JP { 0xC100, 0xC200, 0xC6E8, 0xD2DE, 0xD2E0, 0xD2E2, 0xD2E6, 0xD2E7, 0xD2EF, 0xD4AA, \
++    0xD32C, 0xD034, 0xCFAB, 0xD525, 0xD54D, 0xFC1F2, 0xFC3E4, 0xCC2D, 0xD6C6 }
++
++// Single list for native mapper registration and 3D eligibility.
++#define PD_GEN1_WIDE_CARTS(ROW) \
++    ROW(0x9F7FDD53u, PD_GEN1_RED_BLUE_EN) /* red-en */ \
++    ROW(0xD6DA8A1Au, PD_GEN1_RED_BLUE_EN) /* blue-en */ \
++    ROW(0x7D527D62u, PD_GEN1_YELLOW_EN) /* yellow-en */ \
++    ROW(0x89197825u, PD_GEN1_RED_BLUE_LOCALIZED) /* red-de */ \
++    ROW(0x9C336307u, PD_GEN1_RED_BLUE_LOCALIZED) /* blue-de */ \
++    ROW(0x337FCE11u, PD_GEN1_RED_BLUE_LOCALIZED) /* red-fr */ \
++    ROW(0x50E2FC1Du, PD_GEN1_RED_BLUE_LOCALIZED) /* blue-fr */ \
++    ROW(0xD8507D8Au, PD_GEN1_RED_BLUE_LOCALIZED) /* red-es */ \
++    ROW(0xD95416F9u, PD_GEN1_RED_BLUE_LOCALIZED) /* blue-es */ \
++    ROW(0x2945ACEBu, PD_GEN1_RED_BLUE_LOCALIZED) /* red-it */ \
++    ROW(0x4D0984A9u, PD_GEN1_RED_BLUE_LOCALIZED) /* blue-it */ \
++    ROW(0x7A01E45Au, PD_GEN1_YELLOW_LOCALIZED) /* yellow-de */ \
++    ROW(0xD03426E9u, PD_GEN1_YELLOW_LOCALIZED) /* yellow-fr */ \
++    ROW(0x964B7A10u, PD_GEN1_YELLOW_LOCALIZED) /* yellow-es */ \
++    ROW(0x8B56FE33u, PD_GEN1_YELLOW_LOCALIZED) /* yellow-it */ \
++    ROW(0xB77BE1E0u, PD_GEN1_RED_GREEN_JP_REV1) /* red-ja-reva */ \
++    ROW(0x13652705u, PD_GEN1_RED_GREEN_JP) /* red-ja */ \
++    ROW(0xBAEACD2Bu, PD_GEN1_RED_GREEN_JP) /* green-ja */ \
++    ROW(0xE4468D14u, PD_GEN1_BLUE_JP) /* blue-ja */ \
++    ROW(0xA2545D33u, PD_GEN1_YELLOW_JP) /* yellow-ja-rev1 */ \
++    ROW(0xFD3DA7FFu, PD_GEN1_YELLOW_JP) /* yellow-ja-rev2 */ \
++    ROW(0xE9E6483Au, PD_GEN1_YELLOW_JP) /* yellow-ja-rev3 */ \
++    ROW(0x4EC85504u, PD_GEN1_YELLOW_JP) /* yellow-ja */

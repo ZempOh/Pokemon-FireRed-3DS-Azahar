@@ -1,0 +1,166 @@
+--- /dev/null
++++ b/app/src/main/cpp/pk_voxel_calendar.h
+@@ -0,0 +1,60 @@
++// Shared civil-date seasons and absolute weather slots for voxel rendering.
++#pragma once
++#include <stdint.h>
++#include <time.h>
++
++enum { CLIMATE_TRANSITION_DAYS = 14, CLIMATE_FRONT_SECONDS = 10800,
++       CLIMATE_FRONT_FADE_SECONDS = 900 };
++
++struct VoxelCalendarSample {
++    int valid;
++    int season;   // Spring, summer, autumn, winter.
++    unsigned previousSeasonBlend;
++    int weather;  // Clear, rain, snow, fog are 1 through 4.
++    unsigned weatherBlend;
++};
++
++/* Stable pseudo-random fronts. Equivalent to the FireRed pilot's hash,
++ * but with the three-hour slot passed directly. No gameplay RNG is used. */
++static int voxelCalendarWeather(uint64_t slot, int season) {
++    uint32_t x = (uint32_t)slot ^ 0x6d2b79f5u;
++    x ^= x >> 16; x *= 0x7feb352du; x ^= x >> 15;
++    x *= 0x846ca68bu; x ^= x >> 16;
++    unsigned roll = x % 100u;
++    static const unsigned clear[4] = {50, 70, 45, 45};
++    if (season < 0 || season > 3) season = 0;
++    if (roll < clear[season]) return 1;
++    if (roll >= 90) return 4;
++    return season == 3 ? 3 : 2;
++}
++
++/* Civil dates advance the palette fade once per day. Absolute time advances
++ * weather so repeated local hours and map reloads do not reroll a front. */
++static struct VoxelCalendarSample voxelCalendarAt(time_t now, const struct tm* local) {
++    struct VoxelCalendarSample sample = {0};
++    if (now < 0 || !local || (unsigned)local->tm_mon >= 12 ||
++        local->tm_mday < 1 || local->tm_mday > 31) return sample;
++
++    sample.valid = 1;
++    unsigned month = (unsigned)(local->tm_mon + 10) % 12u;
++    sample.season = (int)(month / 3u);
++    if (month % 3u == 0 && local->tm_mday <= CLIMATE_TRANSITION_DAYS) {
++        unsigned days = (unsigned)(local->tm_mday - 1);
++        sample.previousSeasonBlend = 256u - days * 256u / CLIMATE_TRANSITION_DAYS;
++    }
++
++    uint64_t seconds = (uint64_t)now;
++    sample.weather = voxelCalendarWeather(seconds / CLIMATE_FRONT_SECONDS, sample.season);
++    unsigned phase = (unsigned)(seconds % CLIMATE_FRONT_SECONDS);
++    unsigned end = CLIMATE_FRONT_SECONDS - phase;
++    unsigned edge = phase < end ? phase : end;
++    sample.weatherBlend = edge < CLIMATE_FRONT_FADE_SECONDS
++        ? edge * 256u / CLIMATE_FRONT_FADE_SECONDS : 256u;
++    return sample;
++}
++
++static struct VoxelCalendarSample voxelCalendarNow(void) {
++    time_t now = time(NULL);
++    struct tm local;
++    return voxelCalendarAt(now, now >= 0 && localtime_r(&now, &local) ? &local : NULL);
++}
+--- a/app/src/main/cpp/pk_voxel_climate.h
++++ b/app/src/main/cpp/pk_voxel_climate.h
+@@ -4,21 +4,7 @@
+ #include <time.h>
+ #include <string.h>
+ #include "pk_scenery_grass_effects.h"
+-/* Stable pseudo-random fronts change on real-clock 15-minute boundaries.
+- * Reloading a map does not reroll weather. Seasons weight precipitation;
+- * consecutive equal fronts naturally last longer. No gameplay RNG is used. */
+-static int climateWeatherAt(time_t seconds, int season) {
+-    if (seconds < 0) return 1;
+-    uint32_t x=(uint32_t)((uint64_t)seconds/900u) ^ 0x6d2b79f5u;
+-    x ^= x >> 16; x *= 0x7feb352du; x ^= x >> 15;
+-    x *= 0x846ca68bu; x ^= x >> 16;
+-    unsigned roll=x%100u;
+-    static const unsigned clear[4]={50,70,45,45};
+-    if (season<0 || season>3) season=0;
+-    if (roll<clear[season]) return 1;
+-    if (roll>=90) return 4;
+-    return season==3 ? 3 : 2;
+-}
++#include "pk_voxel_calendar.h"
+ 
+ struct VoxelClimate { int config, season, weather; unsigned blend, seasonBlend; uint64_t lastMs; int nativeWeather; unsigned fadeRemainder; unsigned seasonTransition; };
+ static struct VoxelClimate voxelClimate;
+@@ -32,19 +18,7 @@
+     struct timespec ts; clock_gettime(CLOCK_MONOTONIC, &ts);
+     return (uint64_t)ts.tv_sec * 1000 + ts.tv_nsec/1000000;
+ }
+-enum { CLIMATE_TRANSITION_DAYS = 14, CLIMATE_FRONT_SECONDS = 10800,
+-       CLIMATE_FRONT_FADE_SECONDS = 900 };
+-
+-/* Use civil dates for foliage so a daylight-saving jump cannot change the
+- * phase. Weather uses elapsed Unix time so repeated local hours are harmless. */
+-static unsigned climateCalendarPhase(const struct tm* local) {
+-    unsigned monthInSeason = (unsigned)(local->tm_mon + 10) % 3u;
+-    if (monthInSeason || local->tm_mday > CLIMATE_TRANSITION_DAYS) return 0;
+-    unsigned days = (unsigned)(local->tm_mday - 1);
+-    return 256u - days * 256u / CLIMATE_TRANSITION_DAYS;
+-}
+-
+-static void climateUpdate(int outdoor, int nativeWeather, int calendarPreview) {
++static void climateUpdate(int outdoor, int nativeWeather) {
+     uint64_t now = climateMs();
+     unsigned dt = voxelClimate.lastMs ? (unsigned)(now-voxelClimate.lastMs) : 0;
+     voxelClimate.lastMs = now;
+@@ -52,35 +26,24 @@
+     int mode = voxelClimate.config & 3;
+     int season = (voxelClimate.config>>2)&3, weather = (voxelClimate.config>>4)&7;
+     voxelClimate.seasonTransition = 0;
+-    if (mode == 1 && calendarPreview) {
+-        time_t t = time(NULL);
+-        struct tm local;
++    if (mode == 1) {
++        struct VoxelCalendarSample sample = {0};
++        if (outdoor) sample = voxelCalendarNow();
+         voxelClimate.nativeWeather = nativeWeather;
+         voxelClimate.seasonBlend = voxelClimate.blend = 0;
+-        if (!outdoor || t < 0 || !localtime_r(&t, &local)) return;
+-        voxelClimate.season = ((local.tm_mon + 10) % 12) / 3;
+-        voxelClimate.seasonTransition = climateCalendarPhase(&local);
++        if (!sample.valid) return;
+         voxelClimate.seasonBlend = 256;
+-        time_t slot = t / CLIMATE_FRONT_SECONDS;
+-        unsigned offset = (unsigned)(t % CLIMATE_FRONT_SECONDS);
+-        unsigned window = CLIMATE_FRONT_FADE_SECONDS;
+-        voxelClimate.weather = climateWeatherAt(slot * 900, voxelClimate.season);
+-        unsigned edge = CLIMATE_FRONT_SECONDS - offset;
+-        if (offset < edge) edge = offset;
+-        voxelClimate.blend = edge < window ? edge * 256u / window : 256u;
++        voxelClimate.season = sample.season;
++        voxelClimate.seasonTransition = sample.previousSeasonBlend;
++        voxelClimate.weather = sample.weather;
++        voxelClimate.blend = sample.weatherBlend;
+         return;
+-    }
+-    if (mode == 1) {
+-        time_t t = time(NULL); struct tm tm;
+-        localtime_r(&t, &tm);
+-        season = ((tm.tm_mon + 10) % 12) / 3; // Mar-May spring, Dec-Feb winter.
+-        weather = climateWeatherAt(t,season);
+     }
+     if (weather > 4) weather = 0;
+     // Change the preset only at zero opacity; never interpolate through unrelated palettes.
+     voxelClimate.nativeWeather = nativeWeather;
+     int eligible = outdoor && mode != 0 && mode != 3;
+-    unsigned duration = mode == 1 ? 8000 : 1000;
++    unsigned duration = 1000;
+     unsigned elapsed = dt * 256 + voxelClimate.fadeRemainder;
+     unsigned step = elapsed/duration;
+     voxelClimate.fadeRemainder = elapsed%duration;
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -5388,8 +5388,7 @@
+     int nativeWeather = F.mapHeader ? r8(F.mapHeader + 0x16) > 2 : 1;
+     for (int i=0; i<npieces[shown]; i++)
+         if (!pieces[shown][i].world) nativeWeather = 1;
+-    climateUpdate(sceneryOutdoor(solidRom,s->group,s->num,(int)mapType), nativeWeather,
+-                  solidRom == 0xdd88761c);
++    climateUpdate(sceneryOutdoor(solidRom,s->group,s->num,(int)mapType), nativeWeather);
+     SCENERY_FRAME_MARK(cost1);
+     SCENERY_FRAME_ADD(0,cost0,cost1);
+     static struct SolidBuilding buildings[SOLID_BUILDING_CAP];

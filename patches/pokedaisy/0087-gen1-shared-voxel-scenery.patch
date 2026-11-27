@@ -1,0 +1,286 @@
+--- a/app/src/main/cpp/pk_wide_gb.c
++++ b/app/src/main/cpp/pk_wide_gb.c
+@@ -45,6 +45,7 @@
+ #include "pk_wide_gb_profile.h"
+ #include "pk_gen1_wide_profiles.h"
+ #include "pk_wide_voxel.h"
++#include "pk_voxel_climate.h"
+ #include "pk_wide_gb_polished_tables.h"   // pcWideConfig: Polished Crystal 3.2.3 (normal), by PC_WIDE_CRC
+ #include "pk_wide_gb_polished_lz.inc"       // pcLz
+ 
+@@ -1038,7 +1039,7 @@
+ static uint8_t gbBgIdx[GB_BUF];      // its BG colour index per pixel (| 0x80: the BG tile has priority), for objects
+ static uint8_t gbObjMask[GB_BUF];    // an object already took this pixel
+ static struct PkWideView gbRawView;
+-static bool gbRedPilot;
++static bool gbVoxelProfile;
+ static uint32_t gbOver[GB_MAX_OBJS * 64];   // gbRaw's pixels (an `over` object's) that go over the game's own picture
+ static int gbNOver;
+ 
+@@ -1376,7 +1377,8 @@
+ static int pk_wide_gb_configure_polished(const uint32_t addresses[GB_CONFIG], pk_wide_gb_decode_fn decode);
+ 
+ int pk_wide_gb_configure(uint32_t crc) {
+-    gbRedPilot = crc == 0x9F7FDD53u;
++    gbVoxelProfile = pk_wide_gb_voxel_knows(crc);
++    memset(&voxelClimate, 0, sizeof(voxelClimate));
+     // Polished Crystal 3.2.3 (normal): its own structs and LZ, a profile of its own (pk_wide_gb_polished.inc)
+     if (crc && crc == PC_WIDE_CRC) return pk_wide_gb_configure_polished(pcWideConfig, pcLz);
+     gbCfg = NULL;
+@@ -1497,7 +1499,7 @@
+ #include "pk_red_voxel_pilot.h"
+ 
+ int pk_wide_gb_view(struct mCore* core, const uint32_t* frame, uint32_t* out,
+-                    struct PkWideView v, uint32_t* centre, int voxel) {
++                    struct PkWideView v, uint32_t* centre, int voxel, int climate) {
+     if (!core || core->platform(core) != mPLATFORM_GB || !gbCfg) {
+         if (out) {
+             uint32_t alpha = frame[0] & 0xFF000000u;
+@@ -1695,8 +1697,10 @@
+         if (gbGen == 2) gbObjsOffScreenCrystal(s, ox, oy);
+         else gbObjsOffScreen(s, ox, oy);
+         gbNOver = 0;
+-        if (voxel && gbRedPilot && gbLastScene == PK_WIDE_SCENE_FIELD && !centre)
+-            voxelRendered = redVoxelDraw(s, ox, oy, v, alpha);
++        if (voxel && gbVoxelProfile && gbLastScene == PK_WIDE_SCENE_FIELD && !centre) {
++            voxelClimate.config = climate;
++            voxelRendered = gbVoxelDraw(s, ox, oy, v, alpha);
++        }
+         if (!voxelRendered) gbDraw(s, ox, oy, v.x, v.y, v.w, v.h, gbRaw, v.w, alpha, false, false);
+         gbRawView = v;
+         if (centre) {
+--- a/app/src/main/cpp/pk_wide.h
++++ b/app/src/main/cpp/pk_wide.h
+@@ -357,7 +357,7 @@
+ void pk_wide_gb_reset(void);
+ void pk_wide_gb_snap(void);   // pk_wide_jump's: the next drawn scene at full strength
+ /** pk_wide_view's twin; `out` NULL = pk_wide_skip's (only the RAM after the frame is kept). */
+-int pk_wide_gb_view(struct mCore* core, const uint32_t* frame, uint32_t* out, struct PkWideView v, uint32_t* centre, int voxel);
++int pk_wide_gb_view(struct mCore* core, const uint32_t* frame, uint32_t* out, struct PkWideView v, uint32_t* centre, int voxel, int climate);
+ /** pk_wide_glow's twin for a Game Boy game: the frame over its menus' bars. */
+ int pk_wide_gb_glow(struct mCore* core, const uint32_t* frame, uint32_t* out, struct PkWideView view);
+ int pk_wide_gb_scene(void);
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -2769,7 +2769,7 @@
+ 
+ int pk_wide_voxel_knows(uint32_t crc) {
+     // Candidate capabilities are independent of release qualification.
+-    return crc == 0x9F7FDD53u || sceneryCandidate(crc);
++    return pk_wide_gb_voxel_knows(crc) || sceneryCandidate(crc);
+ }
+ 
+ void pk_wide_voxel(int on) { voxelEnabled = on != 0; }
+@@ -5461,7 +5461,7 @@
+     if (laterJoin) laterJoin();
+     if (gbGame) {
+         needFrame();
+-        return pk_wide_gb_view(core, frame, out, v, centre, voxelEnabled && voxelKnown);
++        return pk_wide_gb_view(core, frame, out, v, centre, voxelEnabled && voxelKnown, voxelClimate.config);
+     }
+     realFrame = frame;
+     if (!out) {
+--- a/app/src/main/cpp/pk_red_voxel_pilot.h
++++ b/app/src/main/cpp/pk_red_voxel_pilot.h
+@@ -1,6 +1,6 @@
+ // Reviewed Pallet material cells for the exact US/EU Red cartridge.
+ // Units are 16 source pixels; the live map has a three-block border.
+-enum RedMaterial { RED_FIELD, RED_TREE, RED_ROOF, RED_WALL, RED_FLOWER, RED_POST, RED_WATER };
++enum RedMaterial { RED_FIELD, RED_TREE, RED_ROOF, RED_WALL, RED_FLOWER, RED_POST, RED_WATER, RED_NATIVE, RED_SIGN };
+ static enum RedMaterial redMaterialAt(int cx, int cy) {
+     if ((unsigned)cx >= 20 || (unsigned)cy >= 18) return RED_FIELD;
+     if ((cy == 1 && cx != 9) || (cy == 0 && (cx == 3 || cx == 8 || cx == 10 || cx == 17)) ||
+@@ -27,6 +27,9 @@
+     [RED_FLOWER] = {2, 199, 131, 136},
+     [RED_POST]   = {4, 179, 148, 108},
+     [RED_WATER]  = {0, 108, 173, 180},
++    [RED_NATIVE] = {0, 0, 0, 0},
++    [RED_SIGN]   = {5, 192, 164, 122},
++
+ };
+ 
+ static uint32_t redTint(uint32_t color, const struct RedMaterialStyle* style) {
+@@ -112,48 +115,150 @@
+ 
+ static void redTree(const struct VoxelView* v, int x, int y, uint32_t alpha) {
+     redBox(v,x-2,y-2,4,4,0,11,alpha|RED_COLOR(122,90,67));
+-    redBox(v,x-6,y-6,12,12,7,5,alpha|RED_COLOR(83,133,92));
+-    redBox(v,x-7,y-7,14,14,11,5,alpha|RED_COLOR(106,153,103));
+-    redBox(v,x-5,y-5,10,10,15,5,alpha|RED_COLOR(126,173,115));
+-    redBox(v,x-3,y-3,6,6,19,4,alpha|RED_COLOR(154,192,133));
+-}
+-static bool redVoxelDraw(const struct GbSnap* snap, int ox, int oy, struct PkWideView v, uint32_t alpha) {
+-    if (gbRam(0xD35E) != 0 || snap->tileset != 0 || snap->blockset != 0x645e0 ||
+-        snap->w != 10 || snap->h != 9 || !voxelViewportFits(v.w, v.h)) return false;
++    redBox(v,x-6,y-6,12,12,7,5,climateLeafColor(alpha|RED_COLOR(83,133,92)));
++    redBox(v,x-7,y-7,14,14,11,5,climateLeafColor(alpha|RED_COLOR(106,153,103)));
++    redBox(v,x-5,y-5,10,10,15,5,climateLeafColor(alpha|RED_COLOR(126,173,115)));
++    redBox(v,x-3,y-3,6,6,19,4,climateLeafColor(alpha|RED_COLOR(154,192,133)));
++}
++/* Profiles use the live 2x2 tile signatures. The standard overworld
++ * tileset is checked as a family before its material rules are enabled.
++ * Other tilesets keep their source colors and gain the depth camera. */
++static uint32_t gbVoxelSignature(const struct GbSnap* s, int cx, int cy) {
++    int tx=cx*2, ty=cy*2;
++    return (uint32_t)gbTile(s,tx,ty) | ((uint32_t)gbTile(s,tx+1,ty)<<8)
++        | ((uint32_t)gbTile(s,tx,ty+1)<<16) | ((uint32_t)gbTile(s,tx+1,ty+1)<<24);
++}
++
++static enum RedMaterial gbVoxelMaterial(const struct GbSnap* s, int cx, int cy,
++                                       bool classicTiles, bool pallet) {
++    int x=cx-6, y=cy-6;
++    if (pallet && (unsigned)x<20 && (unsigned)y<18) return redMaterialAt(x,y);
++    if (!classicTiles) return RED_NATIVE;
++    switch(gbVoxelSignature(s,cx,cy)) {
++    case 0x3b3a2b2au: return RED_TREE;
++    case 0x55550e0eu: return RED_POST;
++    case 0x57564746u: return RED_SIGN;
++    case 0x2c032c2cu: case 0x032c2c2cu:
++    case 0x2c2c032cu: case 0x2c2c2c03u: return RED_FLOWER;
++    case 0x14141414u: case 0x54141414u: case 0x14141432u: return RED_WATER;
++    case 0x23232323u: case 0x39393939u: case 0x52525252u:
++    case 0x23232339u: case 0x23392323u: case 0x23233923u:
++    case 0x2c2c2c2cu: return RED_FIELD;
++    default: return RED_NATIVE;
++    }
++}
++
++struct GbVoxelHouse { int x, y, width, rows; };
++
++/* Recognize a complete roof and both wall ends. Unknown layouts retain their
++ * live flat textures instead of clearing ground under unmatched fragments. */
++static struct GbVoxelHouse gbVoxelHouseAt(const struct GbSnap* s, int x, int y) {
++    uint32_t first=gbVoxelSignature(s,x,y);
++    bool tall=first==0x38150605u;
++    if (!tall && first!=0x16150605u) return (struct GbVoxelHouse){0};
++    uint32_t middle=tall ? 0x12125353u : 0x17170707u;
++    uint32_t end=tall ? 0x19380908u : 0x19180908u;
++    int width;
++    for (width=1; width<12 && gbVoxelSignature(s,x+width,y)==middle; ++width) {}
++    if (width<2 || gbVoxelSignature(s,x+width,y)!=end) return (struct GbVoxelHouse){0};
++    int rows=2;
++    uint32_t left=gbVoxelSignature(s,x,y+1);
++    uint32_t right=gbVoxelSignature(s,x+width,y+1);
++    if (tall) {
++        rows=4;
++        if (left!=0x16153815u || right!=0x19181938u ||
++            gbVoxelSignature(s,x,y+2)!=0x220f2625u ||
++            gbVoxelSignature(s,x,y+3)!=0x1a4e0a0fu ||
++            gbVoxelSignature(s,x+width,y+3)!=0x4f1a1f0au) return (struct GbVoxelHouse){0};
++    } else if (left==0x175c2625u && right==0x5d172928u) {
++        rows=3;
++        if (gbVoxelSignature(s,x,y+2)!=0x1a4e220fu ||
++            gbVoxelSignature(s,x+width,y+2)!=0x4f1a1f22u) return (struct GbVoxelHouse){0};
++    } else if (left!=0x1a4e2625u || right!=0x4f1a2928u) {
++        return (struct GbVoxelHouse){0};
++    }
++    return (struct GbVoxelHouse){x,y,width+1,rows};
++}
++
++static bool gbVoxelDraw(const struct GbSnap* snap, int ox, int oy, struct PkWideView v, uint32_t alpha) {
++    if (gbGen != 1 || !voxelViewportFits(v.w,v.h)) return false;
++    const uint8_t* tree = snap->tileset==0 ? gbRom(snap->blockset+0x4eu*16u,16) : NULL;
++    bool classicTiles=tree && tree[0]==0x2a && tree[1]==0x2b && tree[4]==0x3a && tree[5]==0x3b;
++    bool pallet=classicTiles && snap->w==10 && snap->h==9 &&
++        gbBlock(snap,5,4)==0x38 && gbBlock(snap,6,4)==0x39 &&
++        gbBlock(snap,8,7)==0x0c && gbBlock(snap,9,7)==0x0d &&
++        gbBlock(snap,10,7)==0x0e;
++    climateUpdate(snap->tileset==0 || snap->tileset==3 || snap->tileset==23,0);
+     struct VoxelSourceWindow window = voxelSourceWindow(ox, oy, v.x, v.y, v.w, v.h, 0);
+     int w = window.right - window.left, h = window.bottom - window.top;
+     if (w <= 0 || h <= 0 || w > PK_WIDE_MAX_VIEW_W || h > PK_WIDE_MAX_VIEW_H) return false;
+     static uint32_t art[GB_BUF], floor[GB_BUF], depth[VOXEL_MAX_W*VOXEL_MAX_H];
+     static const uint8_t flat[GB_BUF/(VOXEL_TILE*VOXEL_TILE)];
++    static uint8_t materials[GB_BUF/(VOXEL_TILE*VOXEL_TILE)];
+     gbDraw(snap, ox, oy, window.left, window.top, w, h, art, w, alpha, false, true);
+     int cols = w / VOXEL_TILE, rows = h / VOXEL_TILE;
+     struct VoxelView view = {
+         gbRaw, depth, art, v.w, v.h, ox+v.x+v.w/2, oy+v.y+v.h/2,
+         ox+window.left, oy+window.top, cols, rows, w, flat
+     };
++    const uint32_t ground=climateGround(redTint(alpha|0x00ffffffu,&redStyles[RED_FIELD]),2);
++    struct GbVoxelHouse houses[64];
++    int houseCount=0, left=view.left/16, top=view.top/16;
++    if (classicTiles && !pallet) {
++        for (int y=top-4; y<top+rows && houseCount<64; ++y) {
++            for (int x=left-12; x<left+cols && houseCount<64; ++x) {
++                struct GbVoxelHouse h=gbVoxelHouseAt(snap,x,y);
++                if (h.width && x+h.width>left && y+h.rows>top) houses[houseCount++]=h;
++            }
++        }
++    }
+     for (int y = 0; y < rows; ++y) {
+         for (int x = 0; x < cols; ++x) {
+-            enum RedMaterial material = redMaterialAt((view.left/16)+x-6, (view.top/16)+y-6);
++            enum RedMaterial material=gbVoxelMaterial(snap,view.left/16+x,view.top/16+y,classicTiles,pallet);
++            for (int i=0; i<houseCount; ++i) {
++                const struct GbVoxelHouse* h=&houses[i];
++                if (left+x>=h->x && left+x<h->x+h->width &&
++                    top+y>=h->y && top+y<h->y+h->rows) {
++                    material=RED_WALL;
++                    break;
++                }
++            }
++            materials[y*cols+x]=(uint8_t)material;
+             const struct RedMaterialStyle* style = &redStyles[material];
+             for (int dy = 0; dy < VOXEL_TILE; ++dy) {
+                 int at = (y*VOXEL_TILE+dy)*w + x*VOXEL_TILE;
+                 for (int dx = 0; dx < VOXEL_TILE; ++dx) {
+                     uint32_t color = art[at+dx];
+-                    floor[at+dx] = style->rise
+-                        ? redTint(alpha|0x00ffffffu, &redStyles[RED_FIELD]) : redTint(color,style);
++                    if (material == RED_NATIVE) floor[at+dx]=color;
++                    else if (style->rise) floor[at+dx]=ground;
++                    else {
++                        uint32_t ink=redTint(color,style);
++                        floor[at+dx]=material==RED_FIELD ? climateGround(ink,2) : ink;
++                    }
+                 }
+             }
+         }
+     }
+     voxelTerrainWithFloor(&view, floor);
+     const int border=96;
+-    redHouse(&view,art,border+64,border+48,64,48,20,alpha);
+-    redHouse(&view,art,border+192,border+48,64,48,20,alpha);
+-    redHouse(&view,art,border+160,border+128,96,64,24,alpha);
+-    for (int cy=0; cy<18; ++cy) {
+-        for (int cx=0; cx<20; ++cx) {
+-            int x=border+cx*16, y=border+cy*16;
+-            enum RedMaterial material=redMaterialAt(cx,cy);
++    if (pallet) {
++        redHouse(&view,art,border+64,border+48,64,48,20,alpha);
++        redHouse(&view,art,border+192,border+48,64,48,20,alpha);
++        redHouse(&view,art,border+160,border+128,96,64,24,alpha);
++    }
++    for (int i=0; i<houseCount; ++i) {
++        const struct GbVoxelHouse* h=&houses[i];
++        redHouse(&view,art,h->x*16,h->y*16,h->width*16,h->rows*16,
++                 h->rows==4 ? 24 : 20,alpha);
++    }
++    for (int row=0; row<rows; ++row) {
++        for (int col=0; col<cols; ++col) {
++            int x=view.left+col*16, y=view.top+row*16;
++            enum RedMaterial material=(enum RedMaterial)materials[row*cols+col];
++            if (material==RED_SIGN) {
++                redBox(&view,x+6,y+8,3,3,0,6,alpha|RED_COLOR(107,82,60));
++                redBox(&view,x+2,y+7,12,4,5,6,alpha|RED_COLOR(196,170,124));
++            }
+             if (material==RED_TREE) redTree(&view,x+8,y+8,alpha);
+             if (material==RED_POST) {
+                 for (int dx=2; dx<16; dx+=8)
+@@ -161,12 +266,13 @@
+             }
+             if (material==RED_FLOWER) {
+                 for (int dx=3; dx<16; dx+=8) {
+-                    redBox(&view,x+dx,y+7,2,2,0,3,alpha|RED_COLOR(91,155,101));
++                    redBox(&view,x+dx,y+7,2,2,0,3,climateLeafColor(alpha|RED_COLOR(91,155,101)));
+                     redBox(&view,x+dx-1,y+6,4,4,3,2,alpha|RED_COLOR(213,127,143));
+                 }
+             }
+         }
+     }
+     redVoxelActors(&view, ox, oy, alpha);
++    climateAtmosphere(view.out,view.depth,view.width,view.height);
+     return true;
+ }

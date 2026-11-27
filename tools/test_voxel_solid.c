@@ -31,19 +31,39 @@ int main(void) {
     assert(!sceneryLand(0xf2d16ebd,0x82d4a94,0xc0));
     assert(sceneryLandCapRows(0x5e704d77,0x82d4a94,0xc0)==8);
     assert(!sceneryLand(0x5e704d77,0x82d4a94,0xc0));
+    static const struct {
+        uint32_t rom, primary;
+        uint8_t ink[3];
+    } stableFlowers[] = {
+        {0x2be557a3,0x083df704,{35,41,43}},
+        {0xe4deb9be,0x084ad600,{15,11,9}},
+        {0x964763c0,0x08316a4c,{15,11,9}},
+        {0xdd88761c,0x082d4a94,{15,11,9}},
+        {0x63478921,0x082d4a94,{4,11,9}},
+        {0xb9465c5a,0x082d4a94,{3,9,9}},
+        {0x558ae42f,0x08e3e21c,{35,43,42}},
+        {0x263a1187,0x08bb3ac8,{35,41,41}},
+        {0x6c5ee1b2,0x082d4a94,{4,11,9}},
+        {0x14465a33,0x08a2e6ac,{35,44,44}},
+    };
+    unsigned stableCount=0;
     for(unsigned i=0;i<sizeof(sceneryGroundProps)/sizeof(sceneryGroundProps[0]);i++) {
         const struct SceneryGroundProp *p=&sceneryGroundProps[i];
         assert(sceneryGroundProp(p->rom,p->primary,p->id)==p);
         assert(!sceneryGroundProp(p->rom^1,p->primary,p->id));
         assert(!sceneryGroundProp(p->rom,p->primary^4,p->id));
-        if(p->rom==0x2be557a3 && p->primary==0x083df704 && p->id==4) {
-            const uint8_t expected[]={35,41,43};
-            assert(p->kind==13 && !memcmp(p->paletteInk,expected,sizeof(expected)));
-        } else {
-            assert(!p->paletteInk[0] && !p->paletteInk[1] && !p->paletteInk[2]);
+        const uint8_t fallback[]={0,0,0};
+        const uint8_t* expected=fallback;
+        if(p->id==4)for(unsigned j=0;j<sizeof(stableFlowers)/sizeof(stableFlowers[0]);j++) {
+            if(p->rom!=stableFlowers[j].rom || p->primary!=stableFlowers[j].primary)continue;
+            assert(p->kind==13);
+            expected=stableFlowers[j].ink;
+            stableCount++;
+            break;
         }
+        assert(!memcmp(p->paletteInk,expected,sizeof(p->paletteInk)));
     }
-    assert(sceneryGroundProp(0x2be557a3,0x083df704,4));
+    assert(stableCount==sizeof(stableFlowers)/sizeof(stableFlowers[0]));
     assert(!sceneryGroundProp(0xb9465c5a,0x082d4a94,0x12)); /* Gaia tree/cliff, not grass */
     assert(!sceneryGroundProp(0x558ae42f,0x08e3e21c,5)); /* Lazarus window, not shrub */
     assert(sceneryOutdoor(0xcec21496,1,6,0));

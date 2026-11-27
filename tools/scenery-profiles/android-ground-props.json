@@ -98,7 +98,12 @@
       2
     ],
     "source_sha256": "61021cf5042efdb0186e5346d37cd21349321d1c9f2412c4b71f8ccdff809b99",
-    "reviewed": true
+    "reviewed": true,
+    "palette_inks": [
+      35,
+      41,
+      41
+    ]
   },
   {
     "game": "modern-emerald",
@@ -175,7 +180,12 @@
       1
     ],
     "source_sha256": "1ecf08ebbeebff9722e8bcdd894c7a3515c1ab73c42c5cebf3daa6cf5b3f4e7b",
-    "reviewed": true
+    "reviewed": true,
+    "palette_inks": [
+      35,
+      43,
+      42
+    ]
   },
   {
     "game": "lazarus",
@@ -214,7 +224,12 @@
       2
     ],
     "source_sha256": "a3f5b66906329dc755130c1c2ae93903d7f2973fde43391fef51c054aff566bc",
-    "reviewed": true
+    "reviewed": true,
+    "palette_inks": [
+      35,
+      44,
+      44
+    ]
   },
   {
     "game": "seaglass",
@@ -330,7 +345,12 @@
       4
     ],
     "source_sha256": "c68c2d849ca14c8a615793369545dbd0259bd0ac11db651699728bdac5ee75a5",
-    "reviewed": true
+    "reviewed": true,
+    "palette_inks": [
+      4,
+      11,
+      9
+    ]
   },
   {
     "game": "ash-gray",
@@ -407,7 +427,12 @@
       2
     ],
     "source_sha256": "a190bd2cd4c0ac343d07e0b4b2b462336eeb04a6fbdaadc7503a05ca46569941",
-    "reviewed": true
+    "reviewed": true,
+    "palette_inks": [
+      3,
+      9,
+      9
+    ]
   },
   {
     "game": "gaia",
@@ -484,7 +509,12 @@
       4
     ],
     "source_sha256": "5f28fd1853527760c41ffeeb12e1e2375040280e092305869e6f968c05daed40",
-    "reviewed": true
+    "reviewed": true,
+    "palette_inks": [
+      4,
+      11,
+      9
+    ]
   },
   {
     "game": "odyssey",
@@ -731,7 +761,12 @@
     "source_sha256": "198afb1386a9e7f14f9374dd0855e4a3c69e689efcef2e939fbb3b165a23ea59",
     "reviewed": true,
     "enabled": false,
-    "thor_qualified": false
+    "thor_qualified": false,
+    "palette_inks": [
+      15,
+      11,
+      9
+    ]
   },
   {
     "game": "classic",
@@ -773,7 +808,12 @@
     "source_sha256": "198afb1386a9e7f14f9374dd0855e4a3c69e689efcef2e939fbb3b165a23ea59",
     "reviewed": true,
     "enabled": false,
-    "thor_qualified": false
+    "thor_qualified": false,
+    "palette_inks": [
+      15,
+      11,
+      9
+    ]
   },
   {
     "game": "frlgplus",
@@ -815,7 +855,12 @@
     "source_sha256": "198afb1386a9e7f14f9374dd0855e4a3c69e689efcef2e939fbb3b165a23ea59",
     "reviewed": true,
     "enabled": false,
-    "thor_qualified": false
+    "thor_qualified": false,
+    "palette_inks": [
+      15,
+      11,
+      9
+    ]
   },
   {
     "game": "firered",

@@ -75,6 +75,20 @@ against exact resumed fixtures. The tested build is held for visible flat
 flower outlines in Japanese Pallet Town, remaining winter plant coverage in
 Better Emerald 2, and the absence of a release-signed candidate with full QA.
 
+Gen 1 flower recognition uses the exact 2-by-2 live tile signature and a mask
+of the 8-by-8 flower quadrants. Replace only those quadrants and anchor the
+voxel flower to the detected tile. A fixed map coordinate list can leave flat
+outlines when a localized tileset places its flower tiles differently.
+
+For GBA flower models with animated source tiles, record exact `paletteInk`
+indices for the stem, petal and center. The renderer reads the live colors at
+those indices and applies seasonal tint to the stem. The source-art audit
+`tools/audit_ground_prop_palette_inks.py` checks authored colors and palette
+uses. Compare native 2D with 3D after the native palette settles on Thor.
+The signed `4475ad3` candidate passed the targeted Japanese Gen 1 and Better
+Emerald 2 reviews, then failed this check on Classic's green winter petals.
+Use that capture as a regression fixture and qualify each replacement APK.
+
 Exact79 passed Classic settled winter and all five pacing phases, but its wide
 LetsGo Pallet showcase failed pacing (59.1 then60.3FPS; work peak26.5ms).
 Retain that failure; do not average away the dip or rerun to cherry-pick.

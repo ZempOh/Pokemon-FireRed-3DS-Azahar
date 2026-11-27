@@ -1,0 +1,262 @@
+--- a/app/src/main/cpp/pk_wide_gb.c
++++ b/app/src/main/cpp/pk_wide_gb.c
+@@ -43,12 +43,17 @@
+ /** A game's addresses (WRAM unless noted; D000-DFFF in WRAM bank 1). Gen 1's and Crystal's share where they mean the
+  * same; the rest is one generation's (0 in the other's rows). */
+ #include "pk_wide_gb_profile.h"
++#include "pk_wide_voxel.h"
+ #include "pk_wide_gb_polished_tables.h"   // pcWideConfig: Polished Crystal 3.2.3 (normal), by PC_WIDE_CRC
+ #include "pk_wide_gb_polished_lz.inc"       // pcLz
+ 
+ #define GB_LINEAR(bank, addr) ((uint32_t) (bank) * 0x4000u + ((addr) - 0x4000u))
+ 
+ static const struct GbGame { uint32_t crc; int gen; uint32_t a[GB_CONFIG]; } GB_ROMS[] = {
++    // Red (USA, Europe): WRAM from pret/pokered's RAM layout. ROM table starts
++    // checked against the header addresses and banks in the exact cart.
++    { 0x9F7FDD53u, 1, { 0xC100, 0xC200, 0xC6E8, 0xD35F, 0xD361, 0xD363, 0xD367, 0xD368, 0xD370, 0xD52B, 0xD3AD, 0xD057,
++                        0xCFC4, 0xD5A6, 0xD5CE, 0x01AE, 0xC23D, 0xCC2D, 0xD747 } },
+     // Pokémon Yellow (USA, Europe): pret/pokeyellow's symbols (its build is the cart byte for byte).
+     { 0x7D527D62u, 1, { 0xC100, 0xC200, 0xC6E8, 0xD35E, 0xD360, 0xD362, 0xD366, 0xD367, 0xD36F, 0xD52A, 0xD3AC, 0xD056,
+                         0xCFC3, 0xD5A5, 0xD5CD, GB_LINEAR(0x3F, 0x41F2), GB_LINEAR(0x3F, 0x43E4), 0xCC2D, 0xD746 } },
+@@ -1036,6 +1041,7 @@
+ static uint8_t gbBgIdx[GB_BUF];      // its BG colour index per pixel (| 0x80: the BG tile has priority), for objects
+ static uint8_t gbObjMask[GB_BUF];    // an object already took this pixel
+ static struct PkWideView gbRawView;
++static bool gbRedPilot;
+ static uint32_t gbOver[GB_MAX_OBJS * 64];   // gbRaw's pixels (an `over` object's) that go over the game's own picture
+ static int gbNOver;
+ 
+@@ -1045,7 +1051,7 @@
+  * `screen` (the middle, for the headless check), the screen's own font tiles go over the world, as the PPU draws them:
+  * a text box, the START menu. */
+ static void gbDraw(const struct GbSnap* s, int ox, int oy, int x0, int y0, int w, int h, uint32_t* dst, int stride,
+-                   uint32_t alpha, bool screen) {
++                   uint32_t alpha, bool screen, bool terrainOnly) {
+     // The world alone (every frame, the whole view: the 3DS draws ~96,000 pixels of it): a tile row's 8 pixels decoded at
+     // once from its two VRAM bytes and its palette's 4 colours, the same pixels the per-pixel loop below draws.
+     if (!screen) {
+@@ -1155,6 +1161,7 @@
+             gbObjMask[j * w + i] = 0;
+         }
+     }
++    if (terrainOnly) return;
+     // Objects, the first (lowest OAM index) on top as on a Color; one behind the BG (its priority bit, or the BG
+     // tile's) shows only over BG colour 0. LCDC bit 0 off on a Color lets every object over the BG.
+     for (int k = 0; k < gbNObjs; k++) {
+@@ -1361,6 +1368,7 @@
+ static int pk_wide_gb_configure_polished(const uint32_t addresses[GB_CONFIG], pk_wide_gb_decode_fn decode);
+ 
+ int pk_wide_gb_configure(uint32_t crc) {
++    gbRedPilot = crc == 0x9F7FDD53u;
+     // Polished Crystal 3.2.3 (normal): its own structs and LZ, a profile of its own (pk_wide_gb_polished.inc)
+     if (crc && crc == PC_WIDE_CRC) return pk_wide_gb_configure_polished(pcWideConfig, pcLz);
+     gbCfg = NULL;
+@@ -1478,7 +1486,10 @@
+ 
+ 
+ 
+-int pk_wide_gb_view(struct mCore* core, const uint32_t* frame, uint32_t* out, struct PkWideView v, uint32_t* centre) {
++#include "pk_red_voxel_pilot.h"
++
++int pk_wide_gb_view(struct mCore* core, const uint32_t* frame, uint32_t* out,
++                    struct PkWideView v, uint32_t* centre, int voxel) {
+     if (!core || core->platform(core) != mPLATFORM_GB || !gbCfg) {
+         if (out) {
+             uint32_t alpha = frame[0] & 0xFF000000u;
+@@ -1658,6 +1669,7 @@
+                 : match->text ? PK_WIDE_SCENE_TEXT : PK_WIDE_SCENE_FIELD;
+     gbLastClose = gbLastScene != PK_WIDE_SCENE_FIELD;
+ 
++    bool voxelRendered = false;
+     if (valid) {
+         const struct GbSnap* s = match;
+         if (s != &gbGood) {
+@@ -1675,12 +1687,14 @@
+         if (gbGen == 2) gbObjsOffScreenCrystal(s, ox, oy);
+         else gbObjsOffScreen(s, ox, oy);
+         gbNOver = 0;
+-        gbDraw(s, ox, oy, v.x, v.y, v.w, v.h, gbRaw, v.w, alpha, false);
++        if (voxel && gbRedPilot && gbLastScene == PK_WIDE_SCENE_FIELD && !centre)
++            voxelRendered = redVoxelDraw(s, ox, oy, v, alpha);
++        if (!voxelRendered) gbDraw(s, ox, oy, v.x, v.y, v.w, v.h, gbRaw, v.w, alpha, false, false);
+         gbRawView = v;
+         if (centre) {
+             int n = gbNObjs;
+             gbObjsFromOam();   // the middle as the hardware draws it: OAM's objects alone
+-            gbDraw(s, ox, oy, 0, 0, GBW, GBH, centre, GBW, alpha, true);
++            gbDraw(s, ox, oy, 0, 0, GBW, GBH, centre, GBW, alpha, true, false);
+             gbNObjs = n;
+         }
+         gbMix = gbMixSnap || gbMix + GB_MIX_STEP > 256 ? 256 : gbMix + GB_MIX_STEP;
+@@ -1694,7 +1708,12 @@
+         if (!valid || !gbFillSet) gbBackgroundRows(frame);   // fading in again from a menu: from its bars
+     } else if (gbMix < 256) gbAmbientPrepare(frame);
+     else gbEdgeAccOk = false;   // the glow starts from the edges as they are when it is next needed
+-    gbCompose(frame, out, v, alpha, valid && gbLastScene == PK_WIDE_SCENE_FIELD);
++    if (voxelRendered) {
++        memcpy(out, gbRaw, (size_t)v.w * (size_t)v.h * sizeof(*out));
++        gbMix = 256;
++    } else {
++        gbCompose(frame, out, v, alpha, valid && gbLastScene == PK_WIDE_SCENE_FIELD);
++    }
+     gbPrev = cur;
+     return gbMix;
+ }
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -2769,7 +2769,7 @@
+ 
+ int pk_wide_voxel_knows(uint32_t crc) {
+     // Candidate capabilities are independent of release qualification.
+-    return sceneryCandidate(crc);
++    return crc == 0x9F7FDD53u || sceneryCandidate(crc);
+ }
+ 
+ void pk_wide_voxel(int on) { voxelEnabled = on != 0; }
+@@ -5462,7 +5462,7 @@
+     if (laterJoin) laterJoin();
+     if (gbGame) {
+         needFrame();
+-        return pk_wide_gb_view(core, frame, out, v, centre);
++        return pk_wide_gb_view(core, frame, out, v, centre, voxelEnabled && voxelKnown);
+     }
+     realFrame = frame;
+     if (!out) {
+--- a/app/src/main/cpp/pk_wide.h
++++ b/app/src/main/cpp/pk_wide.h
+@@ -356,7 +356,7 @@
+ void pk_wide_gb_reset(void);
+ void pk_wide_gb_snap(void);   // pk_wide_jump's: the next drawn scene at full strength
+ /** pk_wide_view's twin; `out` NULL = pk_wide_skip's (only the RAM after the frame is kept). */
+-int pk_wide_gb_view(struct mCore* core, const uint32_t* frame, uint32_t* out, struct PkWideView view, uint32_t* centre);
++int pk_wide_gb_view(struct mCore* core, const uint32_t* frame, uint32_t* out, struct PkWideView v, uint32_t* centre, int voxel);
+ /** pk_wide_glow's twin for a Game Boy game: the frame over its menus' bars. */
+ int pk_wide_gb_glow(struct mCore* core, const uint32_t* frame, uint32_t* out, struct PkWideView view);
+ int pk_wide_gb_scene(void);
+--- a/app/src/main/cpp/pk_wide_voxel.h
++++ b/app/src/main/cpp/pk_wide_voxel.h
+@@ -91,13 +91,13 @@
+     return (color & 0xFF000000u) | rb | g;
+ }
+ 
+-static void voxelTerrain(const struct VoxelView* v) {
++static void voxelTerrainWithFloor(const struct VoxelView* v, const uint32_t* floor) {
+     // The floor fills the output. The projection bounds in pk_wide.c include every sample.
+     for (int y = 0; y < v->height; y++) {
+         int worldY = voxelWorldY(v, y, 0);
+         int worldX = v->centreX - v->width / 2 - voxelFloor(worldY - v->centreY, 4);
+         int at = y * v->width;
+-        const uint32_t* src = v->texture + (worldY - v->top) * v->stride + worldX - v->left;
++        const uint32_t* src = floor + (worldY - v->top) * v->stride + worldX - v->left;
+         for (int x = 0; x < v->width; x++) {
+             v->out[at + x] = src[x];
+             v->depth[at + x] = (uint32_t) (worldY - v->top + 1) * 512u;
+@@ -151,3 +151,7 @@
+         }
+     }
+ }
++
++static void voxelTerrain(const struct VoxelView* v) {
++    voxelTerrainWithFloor(v, v->texture);
++}
+--- /dev/null
++++ b/app/src/main/cpp/pk_red_voxel_pilot.h
+@@ -0,0 +1,98 @@
++// Reviewed Pallet material cells for the exact US/EU Red cartridge.
++// Units are 16 source pixels; the live map has a three-block border.
++enum RedMaterial { RED_FIELD, RED_TREE, RED_ROOF, RED_WALL, RED_FLOWER, RED_POST, RED_WATER };
++static enum RedMaterial redMaterialAt(int cx, int cy) {
++    if ((unsigned)cx >= 20 || (unsigned)cy >= 18) return RED_FIELD;
++    if ((cy == 1 && cx != 9) || (cy == 0 && (cx == 3 || cx == 8 || cx == 10 || cx == 17)) ||
++        ((cx == 0 || cx == 19) && cy >= 2) ||
++        (cy == 17 && (cx == 1 || cx >= 8))) return RED_TREE;
++    bool home = (cx >= 4 && cx < 8) || (cx >= 12 && cx < 16);
++    if (home && (cy == 3 || cy == 4)) return RED_ROOF;
++    if (home && cy == 5) return RED_WALL;
++    if (cx >= 10 && cx < 16 && (cy == 8 || cy == 9)) return RED_ROOF;
++    if (cx >= 10 && cx < 16 && (cy == 10 || cy == 11)) return RED_WALL;
++    if ((cy == 9 && cx >= 4 && cx <= 7) || (cy == 13 && cx >= 11 && cx <= 15)) return RED_POST;
++    if ((cy == 10 && cx >= 4 && cx <= 7) || (cy == 14 && cx >= 11 && cx <= 14)) return RED_FLOWER;
++    if (cy >= 14 && cx >= 4 && cx <= 7) return RED_WATER;
++    return RED_FIELD;
++}
++
++static const struct RedMaterialStyle {
++    uint8_t rise, r, g, b;
++} redStyles[] = {
++    [RED_FIELD]  = {0, 155, 181, 123},
++    [RED_TREE]   = {16, 117, 164, 106},
++    [RED_ROOF]   = {17, 196, 125, 105},
++    [RED_WALL]   = {6, 216, 191, 148},
++    [RED_FLOWER] = {2, 199, 131, 136},
++    [RED_POST]   = {4, 179, 148, 108},
++    [RED_WATER]  = {0, 108, 173, 180},
++};
++
++static uint32_t redTint(uint32_t color, const struct RedMaterialStyle* style) {
++    unsigned luminance = ((color & 255) + 2 * ((color >> 8) & 255) + ((color >> 16) & 255)) / 4;
++    unsigned shade = 112 + luminance / 2;
++    return (color & 0xff000000u) | (style->r * shade >> 8)
++        | ((style->g * shade >> 8) << 8) | ((style->b * shade >> 8) << 16);
++}
++
++static void redVoxelActors(const struct VoxelView* view, int ox, int oy, uint32_t alpha) {
++    for (int k = 0; k < gbNObjs; ++k) {
++        const struct GbObj* o = &gbObjs[k];
++        bool tall = (gbLcdc & 4) != 0;
++        int wx = ox + o->x;
++        int foot = oy + o->y + (tall && !(o->attr & 0x100) ? 16 : 8);
++        if (foot < view->top || foot >= view->top + view->rows * VOXEL_TILE) continue;
++        int x0 = voxelX(view, wx, foot);
++        int y0 = voxelY(view, foot, foot - oy - o->y);
++        uint32_t base = (uint32_t)(o->tile & 255) * 16;
++        if (gbCgb && (o->attr & 8)) base += 0x2000;
++        if (tall && (o->attr & 0x40)) base ^= 16;
++        for (int yy = 0; yy < 8; ++yy) {
++            int row = (o->attr & 0x40) ? 7 - yy : yy;
++            for (int xx = 0; xx < 8; ++xx) {
++                int col = (o->attr & 0x20) ? 7 - xx : xx;
++                int idx = gbTilePixel(base, col, row);
++                if (gbObjectRomTiles[k]) {
++                    const uint8_t* tile = gbObjectRomTiles[k] + row * 2;
++                    idx = ((tile[0] >> (7-col)) & 1) | (((tile[1] >> (7-col)) & 1) << 1);
++                }
++                if (idx) voxelSpritePixel(view, x0+xx, y0+yy, foot, k, gbObjColor((uint8_t)o->attr, idx, alpha));
++            }
++        }
++    }
++}
++
++static bool redVoxelDraw(const struct GbSnap* snap, int ox, int oy, struct PkWideView v, uint32_t alpha) {
++    if (gbRam(0xD35E) != 0 || snap->tileset != 0 || snap->blockset != 0x645e0 ||
++        snap->w != 10 || snap->h != 9 || !voxelViewportFits(v.w, v.h)) return false;
++    struct VoxelSourceWindow window = voxelSourceWindow(ox, oy, v.x, v.y, v.w, v.h, 0);
++    int w = window.right - window.left, h = window.bottom - window.top;
++    if (w <= 0 || h <= 0 || w > PK_WIDE_MAX_VIEW_W || h > PK_WIDE_MAX_VIEW_H) return false;
++    static uint32_t art[GB_BUF], floor[GB_BUF], depth[VOXEL_MAX_W*VOXEL_MAX_H];
++    static uint8_t rises[GB_BUF/(VOXEL_TILE*VOXEL_TILE)];
++    gbDraw(snap, ox, oy, window.left, window.top, w, h, art, w, alpha, false, true);
++    int cols = w / VOXEL_TILE, rows = h / VOXEL_TILE;
++    struct VoxelView view = {
++        gbRaw, depth, art, v.w, v.h, ox+v.x+v.w/2, oy+v.y+v.h/2,
++        ox+window.left, oy+window.top, cols, rows, w, rises
++    };
++    for (int y = 0; y < rows; ++y) {
++        for (int x = 0; x < cols; ++x) {
++            enum RedMaterial material = redMaterialAt((view.left/16)+x-6, (view.top/16)+y-6);
++            const struct RedMaterialStyle* style = &redStyles[material];
++            rises[y*cols+x] = style->rise;
++            for (int dy = 0; dy < VOXEL_TILE; ++dy) {
++                int at = (y*VOXEL_TILE+dy)*w + x*VOXEL_TILE;
++                for (int dx = 0; dx < VOXEL_TILE; ++dx) {
++                    uint32_t color = art[at+dx];
++                    art[at+dx] = redTint(color, style);
++                    floor[at+dx] = style->rise ? redTint(alpha|0x00eeeeeeu, &redStyles[RED_FIELD]) : art[at+dx];
++                }
++            }
++        }
++    }
++    voxelTerrainWithFloor(&view, floor);
++    redVoxelActors(&view, ox, oy, alpha);
++    return true;
++}

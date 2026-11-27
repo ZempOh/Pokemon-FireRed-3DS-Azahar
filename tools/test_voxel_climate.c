@@ -20,12 +20,12 @@ int main(void) {
      * must keep winter on crossing from Celadon; an actual room must clear it. */
     voxelClimate.config=62;
     fakeMs=5000;
-    climateUpdate(sceneryOutdoor(0xcec21496,1,6,0),0);
+    climateUpdate(sceneryOutdoor(0xcec21496,1,6,0),0,0);
     fakeMs+=5000;
-    climateUpdate(sceneryOutdoor(0xcec21496,1,26,0),0);
+    climateUpdate(sceneryOutdoor(0xcec21496,1,26,0),0,0);
     assert(voxelClimate.seasonBlend>0 && voxelClimate.season==3);
     fakeMs+=5000;
-    climateUpdate(sceneryOutdoor(0xcec21496,13,83,0),0);
+    climateUpdate(sceneryOutdoor(0xcec21496,13,83,0),0,0);
     assert(voxelClimate.seasonBlend==0 && voxelClimate.blend==0);
     assert(!sceneryOutdoor(0xcec21496,55,5,0)); /* Ice cave. */
     assert(!sceneryOutdoor(0xcec21497,1,26,0)); /* Unreviewed ROM. */
@@ -122,10 +122,10 @@ int main(void) {
     voxelClimate.seasonBlend=0;assert(climateGround(foliage,1)==foliage);
     voxelClimate.config=2|(3<<2)|(3<<4);
     voxelClimate.blend=256;
-    climateUpdate(0,0); assert(voxelClimate.blend==0);
+    climateUpdate(0,0,0); assert(voxelClimate.blend==0);
     voxelClimate.blend=256;
     voxelClimate.season=3; voxelClimate.weather=3;
-    climateUpdate(1,1); assert(voxelClimate.blend==256);
+    climateUpdate(1,1,0); assert(voxelClimate.blend==256);
     /* Native weather retains foliage season but owns precipitation. */
     uint32_t native[4]={1,2,3,4},ground[4]={0,0,0,0};
     climateAtmosphere(native,ground,2,2);
@@ -138,14 +138,33 @@ int main(void) {
     for(int w=0;w<5;w++){voxelClimate.weather=w;climateAtmosphere(out,depth,2,2);}
     assert(out[0]==1 && out[1]==2 && out[2]==3 && out[3]==4);
     memset(&voxelClimate,0,sizeof voxelClimate);voxelClimate.config=1;
-    for(int i=0;i<200;i++){fakeMs+=100;climateUpdate(1,0);}
+    for(int i=0;i<200;i++){fakeMs+=100;climateUpdate(1,0,0);}
     assert(voxelClimate.season==2 && voxelClimate.weather==1 && voxelClimate.seasonBlend==256);
     uint32_t autumn=climateTerrain(foliage);
     fakeSeconds++;
     for(int i=0;i<200;i++) {
-        fakeMs+=100;climateUpdate(1,0);
+        fakeMs+=100;climateUpdate(1,0,0);
         assert(climateTerrain(foliage)==autumn && voxelClimate.seasonBlend==256);
     }
     assert(voxelClimate.weather==4 && voxelClimate.blend==256);
+    // FireRed preview samples civil time directly, including on first outdoor frame.
+    struct tm boundary = {.tm_mon=11, .tm_mday=1};
+    assert(climateCalendarPhase(&boundary)==256);
+    boundary.tm_mday=8;
+    assert(climateCalendarPhase(&boundary)==128);
+    boundary.tm_mday=15;
+    assert(climateCalendarPhase(&boundary)==0);
+    boundary.tm_hour=23;
+    assert(climateCalendarPhase(&boundary)==0);
+    boundary.tm_mon=0; boundary.tm_mday=1;
+    assert(climateCalendarPhase(&boundary)==0);
+    climateUpdate(1,0,1);
+    assert(voxelClimate.seasonBlend==256);
+    uint32_t liveColor=climateGround(foliage,2);
+    climateUpdate(0,0,1);
+    assert(voxelClimate.seasonBlend==0 && voxelClimate.blend==0);
+    fakeMs+=60000;
+    climateUpdate(1,0,1);
+    assert(voxelClimate.seasonBlend==256 && climateGround(foliage,2)==liveColor);
     puts("climate: original identity, foliage mask, alpha, indoor/native weather and UI protection passed");
 }

@@ -1,0 +1,144 @@
+--- a/app/src/main/cpp/pk_voxel_climate.h
++++ b/app/src/main/cpp/pk_voxel_climate.h
+@@ -20,7 +20,7 @@
+     return season==3 ? 3 : 2;
+ }
+ 
+-struct VoxelClimate { int config, season, weather; unsigned blend, seasonBlend; uint64_t lastMs; int nativeWeather; unsigned fadeRemainder; };
++struct VoxelClimate { int config, season, weather; unsigned blend, seasonBlend; uint64_t lastMs; int nativeWeather; unsigned fadeRemainder; unsigned seasonTransition; };
+ static struct VoxelClimate voxelClimate;
+ static uint32_t climateMix(uint32_t a, uint32_t b, unsigned f) {
+     unsigned r = ((a & 255) * (256-f) + (b & 255) * f) >> 8;
+@@ -32,13 +32,44 @@
+     struct timespec ts; clock_gettime(CLOCK_MONOTONIC, &ts);
+     return (uint64_t)ts.tv_sec * 1000 + ts.tv_nsec/1000000;
+ }
+-static void climateUpdate(int outdoor, int nativeWeather) {
++enum { CLIMATE_TRANSITION_DAYS = 14, CLIMATE_FRONT_SECONDS = 10800,
++       CLIMATE_FRONT_FADE_SECONDS = 900 };
++
++/* Use civil dates for foliage so a daylight-saving jump cannot change the
++ * phase. Weather uses elapsed Unix time so repeated local hours are harmless. */
++static unsigned climateCalendarPhase(const struct tm* local) {
++    unsigned monthInSeason = (unsigned)(local->tm_mon + 10) % 3u;
++    if (monthInSeason || local->tm_mday > CLIMATE_TRANSITION_DAYS) return 0;
++    unsigned days = (unsigned)(local->tm_mday - 1);
++    return 256u - days * 256u / CLIMATE_TRANSITION_DAYS;
++}
++
++static void climateUpdate(int outdoor, int nativeWeather, int calendarPreview) {
+     uint64_t now = climateMs();
+     unsigned dt = voxelClimate.lastMs ? (unsigned)(now-voxelClimate.lastMs) : 0;
+     voxelClimate.lastMs = now;
+     if (dt > 100) dt = 100;
+     int mode = voxelClimate.config & 3;
+     int season = (voxelClimate.config>>2)&3, weather = (voxelClimate.config>>4)&7;
++    voxelClimate.seasonTransition = 0;
++    if (mode == 1 && calendarPreview) {
++        time_t t = time(NULL);
++        struct tm local;
++        voxelClimate.nativeWeather = nativeWeather;
++        voxelClimate.seasonBlend = voxelClimate.blend = 0;
++        if (!outdoor || t < 0 || !localtime_r(&t, &local)) return;
++        voxelClimate.season = ((local.tm_mon + 10) % 12) / 3;
++        voxelClimate.seasonTransition = climateCalendarPhase(&local);
++        voxelClimate.seasonBlend = 256;
++        time_t slot = t / CLIMATE_FRONT_SECONDS;
++        unsigned offset = (unsigned)(t % CLIMATE_FRONT_SECONDS);
++        unsigned window = CLIMATE_FRONT_FADE_SECONDS;
++        voxelClimate.weather = climateWeatherAt(slot * 900, voxelClimate.season);
++        unsigned edge = CLIMATE_FRONT_SECONDS - offset;
++        if (offset < edge) edge = offset;
++        voxelClimate.blend = edge < window ? edge * 256u / window : 256u;
++        return;
++    }
+     if (mode == 1) {
+         time_t t = time(NULL); struct tm tm;
+         localtime_r(&t, &tm);
+@@ -84,16 +115,24 @@
+     return 0;
+ }
+ /* Only callers with verified foliage identity may bypass the terrain hue mask. */
+-static uint32_t climateLeafColor(uint32_t c) {
+-    if (!voxelClimate.seasonBlend) return c;
++static uint32_t climateLeafTarget(uint32_t c, int season) {
+     unsigned r=c&255, g=(c>>8)&255, b=(c>>16)&255;
+     uint32_t target=c;
+-    switch (voxelClimate.season) {
++    switch (season) {
+     case 0: target=(c&0xff000000u) | ((r+g)/2) | ((g+(255-g)/5)<<8) | ((b+12>255?255:b+12)<<16); break;
+     case 1: target=(c&0xff000000u) | (r*3/4) | ((g*9/10)<<8) | ((b*3/4)<<16); break;
+     case 2: target=(c&0xff000000u) | (g+(255-g)/3) | ((g/2+r/4)<<8) | ((b/3)<<16); break;
+     case 3: target=climateMix(c,0x00fff1e5u,215); break;
+     }
++    return target;
++}
++
++static uint32_t climateLeafColor(uint32_t c) {
++    if (!voxelClimate.seasonBlend) return c;
++    int season = voxelClimate.season;
++    uint32_t target = climateLeafTarget(c, season);
++    if (voxelClimate.seasonTransition)
++        target = climateMix(target, climateLeafTarget(c, (season+3)&3), voxelClimate.seasonTransition);
+     return climateMix(c,target,voxelClimate.seasonBlend);
+ }
+ static uint32_t climateTerrain(uint32_t c) {
+@@ -109,9 +148,11 @@
+ }
+ // Verified native snow already carries the map lighting and snow texture.
+ enum { CLIMATE_GROUND_NATIVE_SNOW = 3 };
+-static uint32_t climateGround(uint32_t c,int path) {
+-    if(path==CLIMATE_GROUND_NATIVE_SNOW)return c;
+-    if(voxelClimate.season!=3 || !voxelClimate.seasonBlend)return climateTerrain(c);
++static uint32_t climateGroundColor(uint32_t c, int path, int season, unsigned blend) {
++    if (season != 3) {
++        unsigned r=c&255, g=(c>>8)&255, b=(c>>16)&255;
++        return g>r+8 && g>b+8 ? climateMix(c,climateLeafTarget(c,season),blend) : c;
++    }
+     unsigned r=c&255,g=(c>>8)&255,b=(c>>16)&255;
+     int grass=g>r+8 && g>b+8;
+     int earth=path && r>=g && g>b+16 && r>72;
+@@ -119,9 +160,19 @@
+     if(path!=2&&!grass&&!earth)return c;
+     unsigned lum=(r+2*g+b)/4;
+     unsigned nr=184+lum/5,ng=192+lum/5,nb=200+lum/5;
+-    unsigned f=voxelClimate.seasonBlend;
+-    if(earth && path!=2)f=f*3/4;
+-    return climateMix(c,(c&0xff000000u)|nr|(ng<<8)|(nb<<16),f);
++    uint32_t snow=(c&0xff000000u)|nr|(ng<<8)|(nb<<16);
++    if (earth && path != 2) blend = blend * 3 / 4;
++    return climateMix(c,snow,blend);
++}
++static uint32_t climateGround(uint32_t c, int path) {
++    if (path == CLIMATE_GROUND_NATIVE_SNOW || !voxelClimate.seasonBlend) return c;
++    if (!voxelClimate.seasonTransition && voxelClimate.season != 3) return climateTerrain(c);
++    int season = voxelClimate.season;
++    unsigned blend = voxelClimate.seasonBlend;
++    uint32_t target = climateGroundColor(c,path,season,blend);
++    if (voxelClimate.seasonTransition)
++        target = climateMix(target,climateGroundColor(c,path,(season+3)&3,blend),voxelClimate.seasonTransition);
++    return target;
+ }
+ static void climateAtmosphere(uint32_t* out, const uint32_t* depth, int w, int h) {
+     unsigned f=voxelClimate.blend;
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -5326,7 +5326,7 @@
+             uint32_t ground[256];
+             for(int y=0;y<16;y++)for(int x=0;x<16;x++) {
+                 uint32_t ink=solidMaterialPixel(s,p->ground,x,y,alpha);
+-                ground[y*16+x]=voxelClimate.season==3?climateGround(ink,2):ink;
++                ground[y*16+x]=(voxelClimate.season==3 || (voxelClimate.season==0 && voxelClimate.seasonTransition)) ? climateGround(ink,2) : ink;
+             }
+             for(int y=0;y<height;y++)for(int x=0;x<width;x++)texture[(row*16+y)*v->stride+col*16+x]=ground[(y&15)*16+(x&15)];
+             for(int y=0;y<p->height;y++)for(int x=0;x<p->width;x++)occupied[(row+y)*v->cols+col+x]=1;
+@@ -5388,7 +5388,8 @@
+     int nativeWeather = F.mapHeader ? r8(F.mapHeader + 0x16) > 2 : 1;
+     for (int i=0; i<npieces[shown]; i++)
+         if (!pieces[shown][i].world) nativeWeather = 1;
+-    climateUpdate(sceneryOutdoor(solidRom,s->group,s->num,(int)mapType), nativeWeather);
++    climateUpdate(sceneryOutdoor(solidRom,s->group,s->num,(int)mapType), nativeWeather,
++                  solidRom == 0xdd88761c);
+     SCENERY_FRAME_MARK(cost1);
+     SCENERY_FRAME_ADD(0,cost0,cost1);
+     static struct SolidBuilding buildings[SOLID_BUILDING_CAP];

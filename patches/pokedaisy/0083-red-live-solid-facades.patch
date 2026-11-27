@@ -1,0 +1,118 @@
+--- a/app/src/main/cpp/pk_red_voxel_pilot.h
++++ b/app/src/main/cpp/pk_red_voxel_pilot.h
+@@ -63,6 +63,60 @@
+     }
+ }
+ 
++/* Draw the lit surfaces of an axis-aligned solid through the same depth
++ * buffer as the shared ground projection and the game's live actors. */
++static void redBox(const struct VoxelView* v, int x, int y, int w, int h, int z, int height,
++                   uint32_t tone) {
++    int front = y+h;
++    int top = z+height;
++    if (front < v->top || y >= v->top+v->rows*VOXEL_TILE) return;
++    for (int yy=y; yy<front; ++yy) {
++        int left = voxelX(v,x,yy), sy = voxelY(v,yy,top);
++        for (int dx=0; dx<w; ++dx) voxelPixel(v,left+dx,sy,yy,tone);
++        for (int dz=z; dz<top; ++dz)
++            voxelPixel(v,left,voxelY(v,yy,dz),yy,voxelShade(tone,165));
++    }
++    int left = voxelX(v,x,front);
++    for (int dz=z; dz<top; ++dz) {
++        int sy=voxelY(v,front,dz);
++        for (int dx=0; dx<w; ++dx) voxelPixel(v,left+dx,sy,front,voxelShade(tone,200));
++    }
++}
++
++#define RED_COLOR(r,g,b) ((r) | ((g)<<8) | ((b)<<16))
++
++static void redHouse(const struct VoxelView* v, const uint32_t* art, int x, int y,
++                     int w, int h, int height, uint32_t alpha) {
++    int front=y+h;
++    if (front < v->top || y >= v->top+v->rows*VOXEL_TILE) return;
++    redBox(v,x,y,w,h,0,height,alpha|RED_COLOR(218,191,149));
++    int left=voxelX(v,x,front);
++    for (int dz=0; dz<height; ++dz) {
++        int wy=front-1-dz*16/height;
++        if (wy < v->top || wy >= v->top+v->rows*VOXEL_TILE) continue;
++        for (int dx=0; dx<w; ++dx) {
++            int sx=x+dx-v->left;
++            if ((unsigned)sx >= (unsigned)v->stride) continue;
++            uint32_t ink=art[(wy-v->top)*v->stride+sx];
++            voxelPixel(v,left+dx,voxelY(v,front,dz),front,
++                       redTint(ink,&redStyles[RED_WALL]));
++        }
++    }
++    uint32_t roof=alpha|(w>70 ? RED_COLOR(104,143,156) : RED_COLOR(195,110,93));
++    for (int step=0; step<5; ++step) {
++        int inset=step*3;
++        redBox(v,x-2+step,y-2+inset,w+4-2*step,h+4-2*inset,height+step*2,2,
++               voxelShade(roof,228+step*7));
++    }
++}
++
++static void redTree(const struct VoxelView* v, int x, int y, uint32_t alpha) {
++    redBox(v,x-2,y-2,4,4,0,11,alpha|RED_COLOR(122,90,67));
++    redBox(v,x-6,y-6,12,12,7,5,alpha|RED_COLOR(83,133,92));
++    redBox(v,x-7,y-7,14,14,11,5,alpha|RED_COLOR(106,153,103));
++    redBox(v,x-5,y-5,10,10,15,5,alpha|RED_COLOR(126,173,115));
++    redBox(v,x-3,y-3,6,6,19,4,alpha|RED_COLOR(154,192,133));
++}
+ static bool redVoxelDraw(const struct GbSnap* snap, int ox, int oy, struct PkWideView v, uint32_t alpha) {
+     if (gbRam(0xD35E) != 0 || snap->tileset != 0 || snap->blockset != 0x645e0 ||
+         snap->w != 10 || snap->h != 9 || !voxelViewportFits(v.w, v.h)) return false;
+@@ -70,29 +124,49 @@
+     int w = window.right - window.left, h = window.bottom - window.top;
+     if (w <= 0 || h <= 0 || w > PK_WIDE_MAX_VIEW_W || h > PK_WIDE_MAX_VIEW_H) return false;
+     static uint32_t art[GB_BUF], floor[GB_BUF], depth[VOXEL_MAX_W*VOXEL_MAX_H];
+-    static uint8_t rises[GB_BUF/(VOXEL_TILE*VOXEL_TILE)];
++    static const uint8_t flat[GB_BUF/(VOXEL_TILE*VOXEL_TILE)];
+     gbDraw(snap, ox, oy, window.left, window.top, w, h, art, w, alpha, false, true);
+     int cols = w / VOXEL_TILE, rows = h / VOXEL_TILE;
+     struct VoxelView view = {
+         gbRaw, depth, art, v.w, v.h, ox+v.x+v.w/2, oy+v.y+v.h/2,
+-        ox+window.left, oy+window.top, cols, rows, w, rises
++        ox+window.left, oy+window.top, cols, rows, w, flat
+     };
+     for (int y = 0; y < rows; ++y) {
+         for (int x = 0; x < cols; ++x) {
+             enum RedMaterial material = redMaterialAt((view.left/16)+x-6, (view.top/16)+y-6);
+             const struct RedMaterialStyle* style = &redStyles[material];
+-            rises[y*cols+x] = style->rise;
+             for (int dy = 0; dy < VOXEL_TILE; ++dy) {
+                 int at = (y*VOXEL_TILE+dy)*w + x*VOXEL_TILE;
+                 for (int dx = 0; dx < VOXEL_TILE; ++dx) {
+                     uint32_t color = art[at+dx];
+-                    art[at+dx] = redTint(color, style);
+-                    floor[at+dx] = style->rise ? redTint(alpha|0x00eeeeeeu, &redStyles[RED_FIELD]) : art[at+dx];
++                    floor[at+dx] = style->rise
++                        ? redTint(alpha|0x00ffffffu, &redStyles[RED_FIELD]) : redTint(color,style);
+                 }
+             }
+         }
+     }
+     voxelTerrainWithFloor(&view, floor);
++    const int border=96;
++    redHouse(&view,art,border+64,border+48,64,48,20,alpha);
++    redHouse(&view,art,border+192,border+48,64,48,20,alpha);
++    redHouse(&view,art,border+160,border+128,96,64,24,alpha);
++    for (int cy=0; cy<18; ++cy) {
++        for (int cx=0; cx<20; ++cx) {
++            int x=border+cx*16, y=border+cy*16;
++            enum RedMaterial material=redMaterialAt(cx,cy);
++            if (material==RED_TREE) redTree(&view,x+8,y+8,alpha);
++            if (material==RED_POST) {
++                for (int dx=2; dx<16; dx+=8)
++                    redBox(&view,x+dx,y+6,4,3,0,7,alpha|RED_COLOR(165,126,85));
++            }
++            if (material==RED_FLOWER) {
++                for (int dx=3; dx<16; dx+=8) {
++                    redBox(&view,x+dx,y+7,2,2,0,3,alpha|RED_COLOR(91,155,101));
++                    redBox(&view,x+dx-1,y+6,4,4,3,2,alpha|RED_COLOR(213,127,143));
++                }
++            }
++        }
++    }
+     redVoxelActors(&view, ox, oy, alpha);
+     return true;
+ }

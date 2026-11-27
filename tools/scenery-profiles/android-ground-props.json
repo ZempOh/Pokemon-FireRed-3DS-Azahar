@@ -887,5 +887,45 @@
     "reviewed": true,
     "enabled": false,
     "thor_qualified": false
+  },
+  {
+    "game": "unbound",
+    "rom_crc32": "4b3d4957",
+    "rom_sha256": "7aa25bbf568f7cfcf6ee1cf2e9e6ff637350b3d0705c2375cabb6baa7d9739f7",
+    "primary": "0x08725ab4",
+    "id": 36,
+    "kind": 3,
+    "ground": 0,
+    "ink": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "source_sha256": "224a489c044017777aeacb2b7bb2a6d3417fac2de144eeaed95541f909e1f7a4",
+    "ground_sha256": "59043736d6cdb2f7499cfdddb9b6b11b7ac2f89b4894239bb20a7920a2d406cd",
+    "reviewed": true
+  },
+  {
+    "game": "unbound",
+    "rom_crc32": "4b3d4957",
+    "rom_sha256": "7aa25bbf568f7cfcf6ee1cf2e9e6ff637350b3d0705c2375cabb6baa7d9739f7",
+    "primary": "0x08725ab4",
+    "id": 83,
+    "kind": 3,
+    "ground": 89,
+    "ink": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "source_sha256": "4723af51ebeb8aebe256129a9449b6b0819118d854db6e48ef8c348d8486caa0",
+    "ground_sha256": "abab91ab97d95d499d97c6f2b2f8571785d7d9c31b5e3bde0ca5f09cb726929a",
+    "reviewed": true
   }
 ]

@@ -65,6 +65,11 @@ int main(void) {
         assert(!memcmp(p->paletteInk,expected,sizeof(p->paletteInk)));
     }
     assert(stableCount==sizeof(stableFlowers)/sizeof(stableFlowers[0]));
+    // Native snow and striped ice carry different terrain under identical rocks.
+    const struct SceneryGroundProp* snowRock=sceneryGroundProp(0x4b3d4957,0x08725ab4,0x24);
+    const struct SceneryGroundProp* iceRock=sceneryGroundProp(0x4b3d4957,0x08725ab4,0x53);
+    assert(snowRock && snowRock->kind==3 && snowRock->ground==0x0);
+    assert(iceRock && iceRock->kind==3 && iceRock->ground==0x59);
     assert(!sceneryGroundProp(0xb9465c5a,0x082d4a94,0x12)); /* Gaia tree/cliff, not grass */
     assert(!sceneryGroundProp(0x558ae42f,0x08e3e21c,5)); /* Lazarus window, not shrub */
     assert(sceneryOutdoor(0xcec21496,1,6,0));

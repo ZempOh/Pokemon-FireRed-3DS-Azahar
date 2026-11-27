@@ -1,0 +1,24 @@
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -5281,7 +5281,9 @@
+         const uint32_t* groundMaterial=sceneryMaterialTile(&materials,ground,solidCachedMaterialSample,&materialContext);
+         for(int y=0;y<16;y++) {
+             uint32_t* dst=texture+(row*16+y)*v->stride+col*16;
+-            if(!voxelClimate.seasonBlend)memcpy(dst,groundMaterial+y*16,16*sizeof(uint32_t));
++            // This reviewed native-snow tileset includes striped ice as
++            // well as snow. Keep both source materials under its solid props.
++            if(snow || !voxelClimate.seasonBlend)memcpy(dst,groundMaterial+y*16,16*sizeof(uint32_t));
+             else for(int x=0;x<16;x++)dst[x]=climateGround(groundMaterial[y*16+x],groundClimate);
+         }
+     }
+--- a/app/src/main/cpp/pk_scenery_ground_props.h
++++ b/app/src/main/cpp/pk_scenery_ground_props.h
+@@ -44,6 +44,8 @@
+     {0x964763c0,0x8316a4c,5,17,4,{0,0,0,0,0,0},{0,0,0}},
+     {0xdd88761c,0x82d4a94,4,17,13,{3,10,5,1,4,4},{15,11,9}},
+     {0xdd88761c,0x82d4a94,5,17,4,{0,0,0,0,0,0},{0,0,0}},
++    {0x4b3d4957,0x08725ab4,36,0,3,{0,0,0,0,0,0},{0,0,0}},
++    {0x4b3d4957,0x08725ab4,83,89,3,{0,0,0,0,0,0},{0,0,0}},
+ };
+ static const struct SceneryGroundProp *sceneryGroundProp(uint32_t rom,uint32_t primary,int id) {
+     for(unsigned i=0;i<sizeof(sceneryGroundProps)/sizeof(sceneryGroundProps[0]);i++) {

@@ -156,6 +156,12 @@ checks preserve its color and alpha across seasons and fade levels. Keep both
 field and winter full-size captures; passing timing does not erase this failure.
 Run this scene before the long all-game timing queue on the next exact APK.
 
+Exact `4fe6650` exposed a separate rock-footprint issue at Frozen Heights.
+Rock cell `0x53` sits over the same striped ice as uncovered cell `0x59` in
+both mapped tileset pairs. Rock cell `0x24` sits on native snow. The ground
+reference must match the source layer words for each prop. Check the striped
+ice around the rocks in clear 3D and manual winter against native 2D.
+
 Exact72 exposed a shared wide-camera failure: Lazarus at zoom step2 uses a
 480x271 output, but its tall building needs a padded source window wider than
 800 pixels. The old viewport-sized scratch buffers silently forced flat rendering

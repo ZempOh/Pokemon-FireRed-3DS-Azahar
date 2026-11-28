@@ -1,0 +1,79 @@
+diff --git a/app/src/main/cpp/pk_wide.c b/app/src/main/cpp/pk_wide.c
+index aabf39f..dd3da45 100644
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -5864,6 +5864,66 @@ static void sceneryCaveFootVolume(const struct Snap* s, const struct VoxelView*
+ }
+ 
+ 
++/* These lower path tiles supply the authored rock for the rise in the
++ * adjoining lawn. The original terrain supplies the cap, depth and collision. */
++static void sceneryTerraceSouthFace(const struct Snap* s,const struct VoxelView* view,
++                                    int col,int row,int wall,uint32_t alpha) {
++    static const uint8_t cornerRockRows[16]={0,0,0,0,0,0,0,0,0,0,0,0,1,1,2,4};
++    int pathY=view->top+(row+1)*VOXEL_TILE;
++    int x=voxelX(view,view->left+col*VOXEL_TILE,pathY), top=voxelY(view,pathY,8);
++    for (int u=0; u<VOXEL_TILE; ++u) {
++        int rockRow=wall==0x17d ? cornerRockRows[u] : 0;
++        uint32_t cap=solidMaterialPixel(s,wall,u,rockRow,alpha);
++        uint32_t base=solidMaterialPixel(s,wall,u,rockRow+1,alpha);
++        for (int y=0; y<8; ++y) {
++            uint32_t rock=y<4?cap:base;
++            uint32_t color=voxelShade(rock,y==7 ? 182u : 221u-(unsigned)y*4u);
++            voxelPixel(view,x+u,top+y,pathY,color);
++        }
++    }
++}
++
++static void sceneryTerraceWestFace(const struct Snap* s,const struct VoxelView* view,
++                                   int col,int row,int wall,uint32_t alpha) {
++    int edgeX=view->left+col*VOXEL_TILE;
++    int y0=view->top+row*VOXEL_TILE, y1=y0+VOXEL_TILE;
++    int x0=voxelX(view,edgeX,y0), x1=voxelX(view,edgeX,y1-1);
++    for (int x=x0; x<=x1; ++x) {
++        int first=view->centreY+4*(x-(view->width/2+edgeX-view->centreX));
++        int worldY=first+3 < y1 ? first+3 : y1-1;
++        int top=voxelY(view,first>y0?first:y0,8);
++        int bottom=voxelY(view,worldY,0);
++        uint32_t cap=solidMaterialPixel(s,wall,14,worldY-y0,alpha);
++        uint32_t base=solidMaterialPixel(s,wall,15,worldY-y0,alpha);
++        for (int y=top; y<=bottom; ++y) {
++            uint32_t rock=y-top<3?cap:base;
++            voxelPixel(view,x,y,worldY,voxelShade(rock,y==bottom?135u:168u));
++        }
++    }
++}
++
++static void sceneryRoute12Terrace(const struct Snap* s,const struct VoxelView* view,
++                                  int cellX,int cellY,uint32_t alpha) {
++    if (solidRom!=0x63478921u || s->group!=3 || s->num!=38 ||
++        !F.mapHeader || r32(F.mapHeader)!=0x082f5598u ||
++        s->primary!=0x082d4a94u || s->secondary!=0x082d4b6cu ||
++        s->width!=120 || s->height!=20) return;
++    for (int row=0; row+1<view->rows; ++row) for (int col=1; col<view->cols; ++col) {
++        int x=cellX+col,y=cellY+row;
++        if (x<=MAP_OFFSET || x>=MAP_OFFSET+s->width ||
++            y<MAP_OFFSET || y>=MAP_OFFSET+s->height-1 ||
++            (unsigned)x>=(unsigned)s->vw || y+1>=s->vh) continue;
++        const uint16_t* cell=s->vmap+y*s->vw+x;
++        if (*cell!=0x3001) continue;
++        int south=cell[s->vw];
++        if (south==0x117b || south==0x117d)
++            sceneryTerraceSouthFace(s,view,col,row,south&1023,alpha);
++        if (cell[-1]==0x117e)
++            sceneryTerraceWestFace(s,view,col,row,0x17e,alpha);
++    }
++}
++
++
+ static bool scenerySouthLedgeMap(const struct Snap* s) {
+     if (!F.mapHeader || r8(F.mapHeader+0x17)!=3 || r8(F.mapHeader+0x16)!=2) return false;
+     for (size_t n=0; n<sizeof(scenerySouthLedgeMaps)/sizeof(*scenerySouthLedgeMaps); ++n) {
+@@ -6303,6 +6363,7 @@ static bool drawVoxel(const struct Snap* s, int cx, int cy, int href, int vref,
+         const struct VoxelGroundMaterial groundMaterial = {groundCells,cx,cy};
+         voxelTerrainSurfaces(&voxel,texture,&groundMaterial,span);
+     } else voxelTerrainSurfaces(&voxel,texture,NULL,span);
++    sceneryRoute12Terrace(s,&voxel,cellX,cellY,alpha);
+     if (span) voxelBridgeDraw(&voxel,span);
+     if (caveContact) sceneryCaveFootVolume(s,&voxel,cellX,cellY);
+     if (scenerySouthLedgeMap(s) && solidGroundAligned(href,vref))

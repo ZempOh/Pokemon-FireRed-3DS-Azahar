@@ -1,0 +1,34 @@
+diff --git a/app/src/main/cpp/pk_wide.c b/app/src/main/cpp/pk_wide.c
+index dd3da45..157c3c8 100644
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -5389,6 +5389,19 @@ static uint32_t solidCachedMaterialSample(void* raw,int id,int x,int y) {
+     return solidMaterialPixel(context->snapshot,id,x,y,context->alpha);
+ }
+ 
++/* Ash Gray's Route 12 fence carries primary-only tiles and palettes across
++ * the west map join. Sample the live primary art on either side. */
++static bool sceneryConnectedRail(const struct Snap* s,int connection,int id,int x,int y) {
++    if (solidRom!=0x63478921u || s->group!=3 || s->num!=38 || id!=0xe7 ||
++        !F.mapHeader || r32(F.mapHeader)!=0x082f5598u ||
++        s->primary!=0x082d4a94u || s->secondary!=0x082d4b6cu) return false;
++    const struct Conn* neighbor=&s->conn[connection];
++    return neighbor->degree==1 && neighbor->dir==3 && neighbor->group==3 && neighbor->num==32 &&
++        r32(neighbor->header)==0x082efca0u && neighbor->secondary==0x082d4b9cu &&
++        (unsigned)(x-neighbor->ox)<(unsigned)neighbor->w &&
++        (unsigned)(y-neighbor->oy)<(unsigned)neighbor->h;
++}
++
+ static int solidPropsPrepare(const struct Snap* s,struct VoxelView* v,int cx,int cy,
+                              uint32_t* texture,struct SolidProp* props,int cap,uint32_t alpha) {
+     int letsgo=solidRom==0x25c3d89f && s->primary==0x082d4a94;
+@@ -5408,7 +5421,8 @@ static int solidPropsPrepare(const struct Snap* s,struct VoxelView* v,int cx,int
+     for(int row=0;row<v->rows;row++)for(int col=0;col<v->cols;col++) {
+         int conn,id=blockIn(s,cellX+col,cellY+row,&conn,false),kind=0,ground=8;
+         if(conn>=0 && s->conn[conn].primary!=s->primary)continue;
+-        if (smallFixtures && count<cap && (conn<0 || s->conn[conn].secondary==s->secondary)) {
++        if (smallFixtures && count<cap && (conn<0 || s->conn[conn].secondary==s->secondary ||
++            sceneryConnectedRail(s,conn,id,cellX+col,cellY+row))) {
+             int index=scenerySmallFixture(smallFixtures,id);
+             if (index>=0) {
+                 const struct SceneryFixture* profile=&sceneryFixtures[index];

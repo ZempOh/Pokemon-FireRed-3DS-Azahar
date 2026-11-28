@@ -1,0 +1,69 @@
+diff --git a/app/src/main/cpp/pk_voxel_ledge_material.h b/app/src/main/cpp/pk_voxel_ledge_material.h
+index 6f97e5f..1380002 100644
+--- a/app/src/main/cpp/pk_voxel_ledge_material.h
++++ b/app/src/main/cpp/pk_voxel_ledge_material.h
+@@ -24,10 +24,10 @@ static const uint8_t* voxelLedgeTexture(void) {
+     return atlas;
+ }
+ 
+-static inline unsigned voxelLedgeFaceShade(const uint8_t* atlas, int worldX, int depth) {
++static inline unsigned voxelLedgeFaceShade(const uint8_t* atlas, int across, int depth, unsigned baseShade) {
+     enum { size = VOXEL_LEDGE_TEXTURE_SIZE };
+-    const unsigned u=((unsigned)worldX*8u&255u)*size/256u;
+-    const unsigned v=(unsigned)(depth-1)*24u*size/256u;
+-    return (235u*atlas[v*size+u]+128u)/256u;
++    const unsigned u=((unsigned)across*8u&255u)*size/256u;
++    const unsigned v=((unsigned)(depth-1)*24u&255u)*size/256u;
++    return (baseShade*atlas[v*size+u]+128u)/256u;
+ }
+ #endif
+diff --git a/app/src/main/cpp/pk_wide.c b/app/src/main/cpp/pk_wide.c
+index b1e31be..cb780ff 100644
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -6070,7 +6070,7 @@ static void scenerySouthLedgeVolume(const struct Snap* s, const struct VoxelView
+                 if (!inset) for (int v=1; v<=height; ++v) {
+                     uint32_t face=climateMix(texel[-2*view->stride],material,40u*(unsigned)v);
+ #if VOXEL_LEDGE_TEXTURE_SIZE
+-                    unsigned shade=voxelLedgeFaceShade(atlas,worldX,v);
++                    unsigned shade=voxelLedgeFaceShade(atlas,worldX,v,235u);
+ #else
+                     unsigned shade=235u;
+ #endif
+diff --git a/app/src/main/cpp/pk_red_voxel_pilot.h b/app/src/main/cpp/pk_red_voxel_pilot.h
+index c0c82b5..9c186ca 100644
+--- a/app/src/main/cpp/pk_red_voxel_pilot.h
++++ b/app/src/main/cpp/pk_red_voxel_pilot.h
+@@ -2,6 +2,7 @@
+ #include "pk_voxel_board_material.h"
+ #include "pk_gen1_boardwalks.h"
+ #include "pk_water_surface.h"
++#include "pk_voxel_ledge_material.h"
+ 
+ // Reviewed Pallet material cells for the exact US/EU Red cartridge.
+ // Units are 16 source pixels; the live map has a three-block border.
+@@ -390,6 +391,9 @@ static void redDoorSill(const struct VoxelView* view, const uint32_t* art, int x
+  * Depth remains in the source cell, independent of the jump animation. */
+ static void redLedgeRiser(const struct VoxelView* view, const uint32_t* floor, int x, int y,
+                           enum RedTerrainDetail detail) {
++#if VOXEL_LEDGE_TEXTURE_SIZE
++    const uint8_t* atlas=voxelLedgeTexture();
++#endif
+     int start=detail==RED_LEDGE_SOUTH ? 0 : detail==RED_LEDGE_WEST ? 2 : 7;
+     int width=detail==RED_LEDGE_SOUTH ? 16 : 3;
+     int firstRow=detail==RED_LEDGE_SOUTH ? 11 : 2;
+@@ -403,7 +407,13 @@ static void redLedgeRiser(const struct VoxelView* view, const uint32_t* floor, i
+         for (int col=0; col<width; ++col) {
+             uint32_t color=source[start+col];
+             voxelPixel(view,left+col,top,worldY,voxelShade(color,241));
+-            voxelPixel(view,left+col,face,worldY,voxelShade(color,183));
++#if VOXEL_LEDGE_TEXTURE_SIZE
++            int across=detail==RED_LEDGE_SOUTH ? x+start+col : worldY;
++            unsigned faceShade=voxelLedgeFaceShade(atlas,across,2,183u);
++#else
++            unsigned faceShade=183u;
++#endif
++            voxelPixel(view,left+col,face,worldY,voxelShade(color,faceShade));
+         }
+     }
+ }

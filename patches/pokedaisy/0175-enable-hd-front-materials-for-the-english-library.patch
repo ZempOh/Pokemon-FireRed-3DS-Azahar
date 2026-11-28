@@ -1,0 +1,50 @@
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -4590,8 +4590,10 @@
+     bool ready;
+ } battleDetail;
+ 
++static bool battleHasFrontProfile(uint32_t crc);
++
+ bool pk_wide_sprite_detail_knows(uint32_t crc) {
+-    return crc==0x9f7fdd53u || crc==0xdd88761cu;
++    return crc==0x9f7fdd53u || crc==0xd6da8a1au || crc==0x7d527d62u || battleHasFrontProfile(crc);
+ }
+ 
+ bool pk_wide_battle_detail_requested(void) {
+@@ -4992,6 +4994,12 @@
+     {0x964763c0u, 0x94d81a08u, 22}, // frlgplus
+     {0xdd88761cu, 0x1e472829u, 21}, // firered
+ };
++
++static bool battleHasFrontProfile(uint32_t crc) {
++    for (size_t i=0; i<sizeof(battleFrontProfiles)/sizeof(*battleFrontProfiles); ++i)
++        if (battleFrontProfiles[i].crc==crc) return true;
++    return false;
++}
+ 
+ static bool battleUsesSharedFireRedFronts(uint32_t crc) {
+     return crc == 0xdd88761cu || crc == 0x964763c0u || crc == 0x63478921u || crc == 0xf2d16ebdu;
+@@ -5046,8 +5054,7 @@
+     static struct BattleVolume mesh;
+     static struct BattleVolumeDetail detail;
+     static bool detailReady;
+-    const bool detailed=solidRom==0xdd88761cu && fingerprint==0x1e472829u &&
+-        pk_wide_battle_detail_requested();
++    const bool detailed=pk_wide_battle_detail_requested();
+     static uint32_t cachedFingerprint;
+     static uint32_t cachedCartridge;
+     static bool meshReady;
+--- a/app/src/main/cpp/pk_red_battle_pilot.h
++++ b/app/src/main/cpp/pk_red_battle_pilot.h
+@@ -146,8 +146,8 @@
+     static struct BattleVolume volume;
+     static struct BattleVolumeDetail detail;
+     static bool detailReady;
+-    const bool detailed=gbGen1BattleCrc==0x9f7fdd53u && fingerprint==0x9e4c3d9au &&
+-        pk_wide_battle_detail_requested();
++    const bool detailed=pk_wide_battle_detail_requested() &&
++        pk_wide_sprite_detail_knows(gbGen1BattleCrc);
+     static uint32_t meshFingerprint;
+     if (meshFingerprint!=fingerprint || (detailed && !detailReady)) {
+         // Retain the native picture's placement and color indices. The

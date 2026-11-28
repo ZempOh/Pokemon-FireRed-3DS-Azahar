@@ -1,0 +1,118 @@
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -1482,15 +1482,16 @@
+         }
+     }
+ }
+ 
+ static uint32_t solidRom;
+ struct Piece {
+     int solidKind,solidLeaf,solidBark;
+-    bool vegetation, actor, nativeOverScenery, roundedFollower, winterBerry;
++    bool vegetation, actor, roundedFollower, winterBerry;
++    uint8_t flyerDepth;
+     int x, y, w, h, tile, prio, pal, mode;   // mode: OAM objMode (0 normal, 1 semi-transparent, 2 OBJ window)
+     bool hflip, vflip;
+     bool copy;                               // a weather sprite repeated past the screen: margins only
+     bool world;                              // coordOffsetEnabled: placed on the map, rather than the screen
+     int rot, mat;                            // OAM affine mode (0 none, 1 affine, 3 double-size) and matrix
+ };
+ 
+@@ -1525,29 +1526,31 @@
+ 
+ /** The OAM entries the game would build if the screen were wider, front first (BuildOamBuffer +
+  * AddSubspritesToOamBuffer), positions kept as s16 instead of OAM's 9 / 8 bits. */
+ static int buildPieces(const struct Snap* s, struct Piece* out) {
+     int nspr = C[PK_WIDE_MAX_SPRITES];
+     bool actor[SPRITES_CAP] = { false };
+     bool winterBerry[SPRITES_CAP] = { false };
+-    bool nativeOverScenery[SPRITES_CAP] = { false };
++    uint8_t flyerDepth[SPRITES_CAP] = { 0 };
+     int classicFollower = -1;
+     bool letsGoPallet = solidRom == 0x25c3d89f && s->group == 3 && s->num == 0 &&
+                        s->primary == 0x082d4a94 && s->secondary == 0x082d4aac;
+     bool classicPallet = solidRom == 0xe4deb9be && s->group == 6 && s->num == 0 &&
+                          s->primary == 0x084ad600 && s->secondary == 0x084add10;
+     bool route212Plot=solidRom==0x2be557a3u && s->group==0 && s->num==30 &&
+                       s->primary==0x083df704u && s->secondary==0x083df77cu;
+     static const struct PalletFlyer {
+         uint8_t local, graphics, movement;
+         uint32_t imageTable;
++        bool extendsPastNativeFrame;
+     } flyers[] = {
+-        {0x0a, 0xae, 0x2d, 0x0881335c}, // House-roof Beedrill
+-        {0x0c, 0x72, 0x1a, 0x088122bc}, // South forest flyer
+-        {0x0d, 0xae, 0x1a, 0x0881335c}, // West forest Beedrill
++        {0x07, 0xa8, 0x1c, 0x088131ac, true}, // East lab Butterfree
++        {0x0a, 0xae, 0x2d, 0x0881335c, false}, // House-roof Beedrill
++        {0x0c, 0x72, 0x1a, 0x088122bc, false}, // South forest flyer
++        {0x0d, 0xae, 0x1a, 0x0881335c, false}, // West forest Beedrill
+     };
+     bool offscreen[SPRITES_CAP] = { false };   // sprites the game hid only for being off screen
+     int propKind[SPRITES_CAP]={0},propLeaf[SPRITES_CAP]={0},propBark[SPRITES_CAP]={0};
+     for (int i = 0; i < 16; i++) {
+         const uint8_t* oe = s->objects + C[PK_WIDE_OBJECT_SIZE] * i;
+         uint32_t flags = (uint32_t) oe[0] | (uint32_t) oe[1] << 8;
+         int id = C[PK_WIDE_SPRITE_ID_OFF] >= 0 && C[PK_WIDE_SPRITE_ID_OFF] < C[PK_WIDE_OBJECT_SIZE] ? oe[C[PK_WIDE_SPRITE_ID_OFF]] : 0xFF;
+@@ -1563,15 +1566,15 @@
+                 (imageTable==0x08861b64u || imageTable==0x088616b4u))
+                 classicFollower = classicFollower == -1 ? id : -2;
+             // These source events intentionally draw above the trees or roof.
+             if (letsGoPallet && oe[9]==0 && oe[10]==3) {
+                 for (unsigned k=0;k<sizeof(flyers)/sizeof(*flyers);++k) {
+                     const struct PalletFlyer* f=&flyers[k];
+                     if (oe[8]==f->local && oe[5]==f->graphics && oe[6]==f->movement && imageTable==f->imageTable)
+-                        nativeOverScenery[id]=true;
++                        flyerDepth[id]=f->extendsPastNativeFrame ? 2 : 1;
+                 }
+             }
+             // Match the live image table, not an engine-dependent graphics byte.
+             const struct SceneryObjectProfile *profile=sceneryObjectProfile(solidRom,imageTable);
+             if(profile) { propKind[id]=profile->kind; propLeaf[id]=profile->leaf; propBark[id]=profile->bark; }
+         }
+     }
+@@ -1599,15 +1602,15 @@
+             if (x >= 512 - 128) x -= 512;
+             y &= 0xFF;
+             if (y > 255 - bh) y -= 256;    // reaching past 255 shows at the top, as the hardware wraps it
+         }
+         struct Piece base = { .tile = (int) (a2 & 0x3FF), .prio = (int) ((a2 >> 10) & 3), .pal = (int) (a2 >> 12),
+                               .solidKind=propKind[id],.solidLeaf=propLeaf[id],.solidBark=propBark[id],
+                               .actor=actor[id] && !propKind[id],
+-                              .nativeOverScenery=nativeOverScenery[id],
++                              .flyerDepth=flyerDepth[id],
+                               .winterBerry=winterBerry[id],
+                               .vegetation=climateGrassEffect(solidRom,le32(sp+0x14),le32(sp+0x0c)),
+                               .mode = (int) ((a0 >> 10) & 3), .hflip = !(rot & 1) && (a1 & 0x1000), .vflip = !(rot & 1) && (a1 & 0x2000),
+                               .copy = false, .world = world, .rot = rot, .mat = (int) ((a1 >> 9) & 31) };
+         uint32_t tables = (uint32_t) sp[0x18] | (uint32_t) sp[0x19] << 8 | (uint32_t) sp[0x1A] << 16 | (uint32_t) sp[0x1B] << 24;
+         int mode = sp[0x42] >> 6;
+         uint32_t table = tables && mode ? tables + 8 * (uint32_t) (sp[0x42] & 0x3F) : 0;
+@@ -2296,17 +2299,24 @@
+                 if (!voxel) {
+                     dst[J * stride + X] = c;
+                     holeBuf[J][X] = 0;
+                 } else if (p[i].world) {
+                     if (roundFollower) fieldActorPixel(voxel,&shell,vx+xx,vy+yy,foot,i,px,py,c);
+                     else if (solidActor) voxelActorPixel(voxel, vx + xx, vy + yy, foot, i, c);
+                     else voxelSpritePixel(voxel, vx + xx, vy + yy, foot, i, c);
+-                    if (solidActor && p[i].nativeOverScenery && onFrame(p[i].x + xx, Y) &&
+-                        (c & 0xffffffu) == (realFrame[Y * PK_WIDE_W + p[i].x + xx] & 0xffffffu))
+-                        voxelRestoreNativeActorPixel(voxel, vx + xx, vy + yy, c);
++                    if (solidActor && p[i].flyerDepth) {
++                        int nativeX=p[i].x+xx;
++                        bool onNative=onFrame(nativeX,Y);
++                        bool owned=onNative
++                            ? (c & 0xffffffu)==(realFrame[Y*PK_WIDE_W+nativeX] & 0xffffffu)
++                            // On the extension, the same OAM/window/BG priority
++                            // checks above have already admitted this source pixel.
++                            : p[i].flyerDepth==2 && !p[i].copy && (unsigned)Y<PK_WIDE_H;
++                        if (owned) voxelRestoreNativeActorPixel(voxel,vx+xx,vy+yy,c);
++                    }
+                 } else if (onFrame(p[i].x + xx, Y)) {
+                     int sx = p[i].x + xx - (voxel->centreX - voxel->width / 2);
+                     int sy = Y - (voxel->centreY - voxel->height / 2);
+                     if ((unsigned) sx < (unsigned) voxel->width && (unsigned) sy < (unsigned) voxel->height) {
+                         int at = sy * voxel->width + sx;
+                         voxel->out[at] = realFrame[Y * PK_WIDE_W + p[i].x + xx];
+                         voxel->depth[at] = UINT32_MAX;

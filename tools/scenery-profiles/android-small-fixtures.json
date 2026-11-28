@@ -18410,5 +18410,118 @@
     "source_art_sha256": "39e05fc2385224c1f472dd662ad211b44f69341987ae03a548377cae363d43d0",
     "floor_sha256": "5fe0edd3056760956c10c62b4df0f786d246f51fa93c9311b918a383836e0898",
     "reviewed": true
+  },
+  {
+    "game": "ash-gray",
+    "rom_crc32": "63478921",
+    "rom_sha256": "a08055484c8366768d3e98e2dbed0998641abd2899ffbfc8d7f132925875f7a1",
+    "primary": "0x082d4a94",
+    "secondary": "0x082d4b6c",
+    "id": 252,
+    "shape": "steel_fence",
+    "rail": "north_corner_left",
+    "feet_x": [
+      4,
+      12
+    ],
+    "ink": [
+      3,
+      5,
+      3,
+      3
+    ],
+    "source_art_sha256": "38f4f320befb616e49beb71fef616330a67a9a8427032f48b15d5cef3acdc9ea",
+    "floor_sha256": "6f7ef88d6926129e68bb840d719162822233ff2949dbab619fc9ea0db49601a9",
+    "reviewed": true
+  },
+  {
+    "game": "ash-gray",
+    "rom_crc32": "63478921",
+    "rom_sha256": "a08055484c8366768d3e98e2dbed0998641abd2899ffbfc8d7f132925875f7a1",
+    "primary": "0x082d4a94",
+    "secondary": "0x082d4b6c",
+    "id": 253,
+    "shape": "steel_fence",
+    "rail": "north_corner_right",
+    "feet_x": [
+      4,
+      12
+    ],
+    "ink": [
+      3,
+      5,
+      3,
+      3
+    ],
+    "source_art_sha256": "25f0ca9bb5cbeafcbecfd126ed6ffc37055644b0202698927c086e2b85d1595b",
+    "floor_sha256": "791f3cbf344b405e6feea24d611f49f9ca3962c1cc6cb5d784875594e31f92fb",
+    "reviewed": true
+  },
+  {
+    "game": "ash-gray",
+    "rom_crc32": "63478921",
+    "rom_sha256": "a08055484c8366768d3e98e2dbed0998641abd2899ffbfc8d7f132925875f7a1",
+    "primary": "0x082d4a94",
+    "secondary": "0x082d4b6c",
+    "id": 239,
+    "shape": "steel_fence",
+    "rail": "single_west_to_south",
+    "feet_x": [
+      4
+    ],
+    "ink": [
+      3,
+      5,
+      3,
+      3
+    ],
+    "source_art_sha256": "a989f293bd59f4cdafdaaf47f6f50b5d85e427e6a85e70d8c1d7f0b344bf1abe",
+    "floor_sha256": "791f3cbf344b405e6feea24d611f49f9ca3962c1cc6cb5d784875594e31f92fb",
+    "reviewed": true
+  },
+  {
+    "game": "ash-gray",
+    "rom_crc32": "63478921",
+    "rom_sha256": "a08055484c8366768d3e98e2dbed0998641abd2899ffbfc8d7f132925875f7a1",
+    "primary": "0x082d4a94",
+    "secondary": "0x082d4b6c",
+    "id": 247,
+    "shape": "steel_fence",
+    "rail": "single_north_end",
+    "feet_x": [
+      4
+    ],
+    "ink": [
+      3,
+      5,
+      3,
+      3
+    ],
+    "source_art_sha256": "3a0e44193638e0f42a1aa147e455e9ffbcadfbc714f1ad1f858c6ca85a9823a8",
+    "floor_sha256": "791f3cbf344b405e6feea24d611f49f9ca3962c1cc6cb5d784875594e31f92fb",
+    "reviewed": true
+  },
+  {
+    "game": "radical",
+    "rom_crc32": "fba55dd8",
+    "rom_sha256": "679d112cdfe699c2793d82c7e7999ac9dfca9e222ad5a85d4f8f1e457cd0283f",
+    "primary": "0x082d4a94",
+    "secondary": "0x082d4aac",
+    "id": 236,
+    "shape": "steel_fence",
+    "rail": "corner_left",
+    "feet_x": [
+      4,
+      12
+    ],
+    "ink": [
+      3,
+      5,
+      3,
+      3
+    ],
+    "source_art_sha256": "d51cfb959d8d41094cac010eabf3b9e57472f80cae7585429c5042a874ca55c4",
+    "floor_sha256": "015e1efefe4a6149047b8805c80a939a554a15d2039fb54881b4f4bd14544402",
+    "reviewed": true
   }
 ]

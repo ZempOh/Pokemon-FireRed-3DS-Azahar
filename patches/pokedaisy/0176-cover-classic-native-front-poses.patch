@@ -1,0 +1,220 @@
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -36,6 +36,7 @@
+ #include "pk_scenery_dresco_bench.h"
+ #include "pk_battle_volume.h"
+ #include "pk_battle_front_family.h"
++#include "pk_classic_battle_fronts.h"
+ #include "pk_wide_solid.h"
+ #include "pk_wide_props.h"
+ #include "pk_wide_buildings.h"
+@@ -5016,6 +5017,23 @@
+     return false;
+ }
+ 
++/* Classic adds four bytes to each BattlePokemon. The exact ROM symbol table has
++ * four 0x5c entries; the second entry is this single battle's opponent. */
++static const struct ClassicBattleFront* battleClassicFront(void) {
++    if (r8(0x020230e0u)!=2 || r8(0x020230ebu)!=1) return NULL;
++    unsigned species=r16(0x02023154u);
++    return species && species<sizeof(classicBattleFronts)/sizeof(*classicBattleFronts)
++        ? &classicBattleFronts[species] : NULL;
++}
++
++static bool battleKnownClassicPose(const struct ClassicBattleFront* front,
++        uint32_t art, int y, const uint16_t* colors) {
++    if (y!=front->y || (art!=front->frame[0] && art!=front->frame[1] && art!=front->frame[2]))
++        return false;
++    uint32_t palette=battleVolumeFingerprint((const uint8_t*)(colors+1),30);
++    return palette==front->normal || palette==front->shiny;
++}
++
+ static void battleVolumeDraw(const uint32_t* frame, uint32_t* out, struct PkWideView v, uint32_t alpha) {
+     if (!voxelEnabled || lineIoFrames < 2 || lineOamN != 1 || linePalN != 1 || tintShown) return;
+     const struct BattleFrontProfile* profile = NULL;
+@@ -5026,7 +5044,9 @@
+         }
+     }
+     bool sharedFronts = battleUsesSharedFireRedFronts(solidRom);
+-    if (!sharedFronts && !profile) return;
++    bool classic=solidRom==0xe4deb9beu;
++    const struct ClassicBattleFront* classicFront=classic ? battleClassicFront() : NULL;
++    if (classic ? !classicFront : !sharedFronts && !profile) return;
+     const uint16_t* oam = lineOamBuf[0];
+     const uint8_t* vram = (const uint8_t*)G->video.vram;
+     const uint8_t* art = NULL;
+@@ -5041,7 +5061,9 @@
+         const uint8_t* candidate = vram + 0x10000 + tile*32;
+         uint32_t candidateFingerprint = battleVolumeFingerprint(candidate, 2048);
+         int paletteBase = 256 + (a[2] >> 12)*16;
+-        if (sharedFronts) {
++        if (classicFront) {
++            if (!battleKnownClassicPose(classicFront,candidateFingerprint,y,linePalBuf[0]+paletteBase)) continue;
++        } else if (sharedFronts) {
+             if (!battleSharedFireRedFront(candidateFingerprint, y, linePalBuf[0] + paletteBase)) continue;
+         } else if (y != profile->y || candidateFingerprint != profile->fingerprint) continue;
+         const uint16_t* matrix = oam + ((a[1] >> 9) & 31) * 16;
+--- /dev/null
++++ b/app/src/main/cpp/pk_classic_battle_fronts.h
+@@ -0,0 +1,161 @@
++/* Verified Kanto front frames from the exact English Classic profile. */
++#pragma once
++
++struct ClassicBattleFront {
++    uint32_t frame[3], normal, shiny;
++    uint8_t y;
++};
++static const struct ClassicBattleFront classicBattleFronts[] = {
++    {{0,0,0},0,0,0},
++    {{0x0b4e2745u, 0x5ba1abefu, 0x0b4e2745u}, 0xccaf322du, 0x0588ac92u, 22}, // 1
++    {{0xf253e2a7u, 0x907af389u, 0xf253e2a7u}, 0xd01a4176u, 0xd4236822u, 18}, // 2
++    {{0xa5b81205u, 0x98081f1eu, 0xa5b81205u}, 0x7f25d3dcu, 0x944e6d07u, 11}, // 3
++    {{0xc2c89979u, 0x622c447cu, 0xc2c89979u}, 0xb47bfc8au, 0x78d756f5u, 20}, // 4
++    {{0x2e137947u, 0xb0b44967u, 0x2e137947u}, 0x7bed2076u, 0xffc54bbau, 17}, // 5
++    {{0xe078e238u, 0x24318e50u, 0xe078e238u}, 0xe5ecd29cu, 0x1f08d4b4u, 9}, // 6
++    {{0x2e4dcd83u, 0xeedc291au, 0x15a4bee6u}, 0x74bcbdb4u, 0xdc5f4c45u, 21}, // 7
++    {{0x5e5fc73cu, 0xeb618e89u, 0x5e5fc73cu}, 0x9153b707u, 0x42ff2732u, 16}, // 8
++    {{0x8bb9dbc2u, 0x0058091du, 0x8bb9dbc2u}, 0xe2cc176au, 0xc1692041u, 8}, // 9
++    {{0x90a62a05u, 0xcb5a1d58u, 0x7f90b669u}, 0x00bd1c50u, 0x1a8530d4u, 24}, // 10
++    {{0xa48f24d9u, 0x2bb264e6u, 0xa48f24d9u}, 0xfa2ca45du, 0x7a61ebd5u, 28}, // 11
++    {{0x6bcccec1u, 0x9e788f4du, 0x6bcccec1u}, 0xfbf54dbau, 0xa23ed2b8u, 9}, // 12
++    {{0x75c0436du, 0xfe722f0fu, 0x75c0436du}, 0xb5b6aaffu, 0x2545d06eu, 26}, // 13
++    {{0x84133256u, 0x91801b09u, 0x84133256u}, 0x63f63f4du, 0x0d31ba58u, 22}, // 14
++    {{0x89672c1au, 0x550e2111u, 0x89672c1au}, 0x891e3784u, 0x8fe38358u, 9}, // 15
++    {{0x65473f54u, 0x483f95feu, 0x65473f54u}, 0x7e8db311u, 0xcda61aecu, 5}, // 16
++    {{0xe01b4e32u, 0x7fd7328du, 0xe01b4e32u}, 0xf0cdecd9u, 0xf6e256d4u, 19}, // 17
++    {{0x375afd5fu, 0xc4c3dd6bu, 0x375afd5fu}, 0x81887c6au, 0x98c83f53u, 5}, // 18
++    {{0x7eb383c8u, 0x7bf2b1c9u, 0x7eb383c8u}, 0x531b8849u, 0x257791f1u, 24}, // 19
++    {{0xee77a6d2u, 0x5e7709bcu, 0xee77a6d2u}, 0xef17de2au, 0xa2cc58f7u, 19}, // 20
++    {{0xc5df8c56u, 0x99127908u, 0xc5df8c56u}, 0x64ebd3ecu, 0x332fefebu, 23}, // 21
++    {{0x6eecc917u, 0x1dec3b92u, 0x6eecc917u}, 0x42101020u, 0xdcc39ac7u, 2}, // 22
++    {{0x4632708bu, 0x77934c06u, 0x4632708bu}, 0x56af1fc1u, 0x3ec99a2eu, 20}, // 23
++    {{0x475a13b9u, 0x0f6355b6u, 0x475a13b9u}, 0x44d7c689u, 0xcb7f9002u, 10}, // 24
++    {{0xe220c4cfu, 0x96f2e2a0u, 0xe220c4cfu}, 0x7e39fa2bu, 0x154251edu, 17}, // 25
++    {{0x9bf221aau, 0x3c69e221u, 0x9bf221aau}, 0x93999bd2u, 0x2f12a69fu, 12}, // 26
++    {{0x929bb1cfu, 0x00e88e13u, 0x929bb1cfu}, 0xa3a6923au, 0x1492c179u, 22}, // 27
++    {{0x063826ddu, 0x025d8716u, 0x063826ddu}, 0x4ff0ea2cu, 0xf200013au, 17}, // 28
++    {{0x02018e8au, 0x77ff63edu, 0x02018e8au}, 0xbcb61fcau, 0x2dccb313u, 23}, // 29
++    {{0x985df88au, 0x2b97e001u, 0x985df88au}, 0x31ba74d7u, 0x09d2c560u, 19}, // 30
++    {{0x338caf73u, 0xb7360baau, 0x338caf73u}, 0x05157af8u, 0x6b8879a4u, 11}, // 31
++    {{0xd432c7c1u, 0xbd31461au, 0xd432c7c1u}, 0xe08e01a4u, 0x7d0d8117u, 20}, // 32
++    {{0xfbb9881cu, 0x78b27382u, 0xfbb9881cu}, 0xe472c555u, 0xb3881c58u, 17}, // 33
++    {{0x38b5cf96u, 0xf011db6eu, 0x38b5cf96u}, 0x12e93e59u, 0xfbfec881u, 10}, // 34
++    {{0x42de06a7u, 0xef8c999du, 0x42de06a7u}, 0xa2789e2du, 0xd1eea54du, 24}, // 35
++    {{0x00b206d2u, 0x3322d3ecu, 0x6e030938u}, 0x1f960385u, 0x965362c6u, 16}, // 36
++    {{0xa159d300u, 0xf2dc4fdeu, 0xa159d300u}, 0x9fb784c7u, 0x192d343au, 20}, // 37
++    {{0x4be594a5u, 0xcbec5f18u, 0x4be594a5u}, 0xd40c9ea8u, 0xdeea07c1u, 11}, // 38
++    {{0xe9ec8416u, 0xbfae4bd3u, 0xe9ec8416u}, 0x10180029u, 0x089ddfd0u, 24}, // 39
++    {{0x54449a45u, 0xdff50086u, 0x54449a45u}, 0x7db925a3u, 0x872d4581u, 16}, // 40
++    {{0x950d57aeu, 0x3323b834u, 0x950d57aeu}, 0xb9f9759eu, 0x54738216u, 6}, // 41
++    {{0xa2debfa2u, 0xd4129a6du, 0xa2debfa2u}, 0xf3fd7e2du, 0xfffe3894u, 3}, // 42
++    {{0x4cf78d1bu, 0x60d0200fu, 0x4cf78d1bu}, 0xed328e3du, 0xd05fe8b6u, 23}, // 43
++    {{0x7f478e46u, 0xb25a9c25u, 0x7f478e46u}, 0xc3cf3be8u, 0x5a706c3cu, 18}, // 44
++    {{0x79320618u, 0x81ddceadu, 0x79320618u}, 0x8233c8e8u, 0xd43ea1abu, 14}, // 45
++    {{0x0801c6d6u, 0x3cbcd759u, 0x0801c6d6u}, 0xa06e8eb7u, 0x373f18d7u, 23}, // 46
++    {{0x950ce07fu, 0xe1e9d0f1u, 0x950ce07fu}, 0x2171efd2u, 0x2cabff43u, 16}, // 47
++    {{0x56969611u, 0x16f2a0dcu, 0x56969611u}, 0xb0d6674au, 0xc41443b3u, 16}, // 48
++    {{0xc0511f50u, 0x38677be9u, 0xc0511f50u}, 0x535e1dd1u, 0x5ec20a51u, 2}, // 49
++    {{0x9d751990u, 0xe6d6977fu, 0x9d751990u}, 0x9966d084u, 0x562bdce1u, 26}, // 50
++    {{0x5836025eu, 0xb3e19792u, 0x5836025eu}, 0x9966d084u, 0x562bdce1u, 21}, // 51
++    {{0xde8b0198u, 0xb2da9cc3u, 0xde8b0198u}, 0x41b77870u, 0xcf4b9840u, 20}, // 52
++    {{0xfe3451bfu, 0x909b8192u, 0xe9aca882u}, 0x44733dd2u, 0xc0d0a1f9u, 15}, // 53
++    {{0xf47d8696u, 0xaa50833cu, 0xf47d8696u}, 0x9f489ba0u, 0x7b052e70u, 17}, // 54
++    {{0x7076e180u, 0xfea15856u, 0x7076e180u}, 0x5a24fcc3u, 0x671d2a06u, 10}, // 55
++    {{0x62d94186u, 0xad758735u, 0x62d94186u}, 0x82097e01u, 0x49a3e900u, 22}, // 56
++    {{0x9a3d9790u, 0x5db60a26u, 0x3e2f6930u}, 0xddc5c177u, 0x34b40f45u, 15}, // 57
++    {{0x272fd466u, 0xb85b2df7u, 0x272fd466u}, 0x12ee8a0bu, 0xaec1fcbdu, 19}, // 58
++    {{0x9b890fd2u, 0x9e802978u, 0x9b890fd2u}, 0xd11c3967u, 0xfa897c37u, 10}, // 59
++    {{0xa0e7f692u, 0x450cc2d1u, 0xa0e7f692u}, 0x67218046u, 0xb145f3d7u, 27}, // 60
++    {{0x59df454fu, 0xa1c0e088u, 0x96eb5292u}, 0xe9b5bb6cu, 0x0f859811u, 18}, // 61
++    {{0x52f0f430u, 0xa01247d7u, 0x3fc97b73u}, 0xc03a563eu, 0x1339a7adu, 16}, // 62
++    {{0x276d1d25u, 0x94622052u, 0x276d1d25u}, 0x1e1bb907u, 0xf109c078u, 19}, // 63
++    {{0x7d1b98fau, 0xa627ae62u, 0x66f8565au}, 0x647a2739u, 0x8face163u, 13}, // 64
++    {{0x50f49a1du, 0x43cd7f4eu, 0x50f49a1du}, 0x622c568cu, 0xbfa163edu, 12}, // 65
++    {{0x1cfe2b7cu, 0xf4e12116u, 0x1cfe2b7cu}, 0x4ce2c85au, 0xd5d5815bu, 19}, // 66
++    {{0xbef81082u, 0x7aaa9c25u, 0xde0286b6u}, 0xd2ca8badu, 0x2fdb5ca2u, 14}, // 67
++    {{0xbc2af018u, 0xde4a9f4fu, 0xbc2af018u}, 0x6f892bbdu, 0xf797b521u, 9}, // 68
++    {{0x3b42b97eu, 0x285250f5u, 0x3b42b97eu}, 0xf9ed153cu, 0xff77f508u, 23}, // 69
++    {{0x034ff90du, 0xda556963u, 0x034ff90du}, 0x2b0ac3d3u, 0xccdf326bu, 19}, // 70
++    {{0xc3032c72u, 0x231b5eb7u, 0xc3032c72u}, 0x4510c3e2u, 0x9c03e30bu, 13}, // 71
++    {{0x93431aa0u, 0x5fe3cd0au, 0x93431aa0u}, 0xb7f80a1bu, 0x82d1139cu, 17}, // 72
++    {{0xb0f9f169u, 0xfd0d789eu, 0xb0f9f169u}, 0x69f902e9u, 0x28f5825au, 12}, // 73
++    {{0x573484f1u, 0x229d055eu, 0x573484f1u}, 0xdec90ed0u, 0x72d187f4u, 10}, // 74
++    {{0x2e7fb6c9u, 0xe7adabafu, 0x141a4266u}, 0x3d9707e5u, 0x02f16d84u, 12}, // 75
++    {{0x2369c26bu, 0x17cfbb71u, 0x2369c26bu}, 0xdb599992u, 0xdddd5919u, 13}, // 76
++    {{0x730811e3u, 0x46b85726u, 0x730811e3u}, 0xb1013690u, 0x75bc3b17u, 16}, // 77
++    {{0xf2891cb1u, 0x775b4947u, 0xc808ff81u}, 0xbbe43f95u, 0x4196056cu, 9}, // 78
++    {{0xc2ecc55fu, 0x0a31469fu, 0xc2ecc55fu}, 0x4399154fu, 0x1ea5af0eu, 19}, // 79
++    {{0x84f301a1u, 0x18e5cb44u, 0x84f301a1u}, 0x63a262ecu, 0x1bf7a919u, 16}, // 80
++    {{0x4380d50eu, 0x315b00cfu, 0x4380d50eu}, 0xc6cca576u, 0x17697536u, 13}, // 81
++    {{0xf5ffaa3au, 0xbaa59bb0u, 0xf5ffaa3au}, 0xc6cca576u, 0xd76fa1e6u, 8}, // 82
++    {{0xed7d524cu, 0x22d281bcu, 0xed7d524cu}, 0xc52ea458u, 0x2336d6b2u, 17}, // 83
++    {{0xda6d7d73u, 0xe7199096u, 0xda6d7d73u}, 0x94506200u, 0xe8771742u, 13}, // 84
++    {{0x15ccd78au, 0xd5b70134u, 0x15ccd78au}, 0xc3a843d7u, 0xd8c9eba0u, 8}, // 85
++    {{0xe8ef8c70u, 0x9f601cf5u, 0xe8ef8c70u}, 0x77e69cb1u, 0xb80cb228u, 18}, // 86
++    {{0xd19ad3c3u, 0x15a53a1bu, 0xd19ad3c3u}, 0x2f7ae508u, 0xdb845ce6u, 15}, // 87
++    {{0xeca90e55u, 0xe83f0453u, 0xeca90e55u}, 0xb4f8079eu, 0xb136e603u, 20}, // 88
++    {{0x90c44eccu, 0x3f773d95u, 0x90c44eccu}, 0x20353856u, 0xc87e924au, 12}, // 89
++    {{0xdd26f80du, 0x359b4421u, 0xdd26f80du}, 0xd33d8d60u, 0x9de14b5du, 24}, // 90
++    {{0x66f81b88u, 0x49eca829u, 0x66f81b88u}, 0x6bd30811u, 0x7184e63au, 13}, // 91
++    {{0x4eff51a3u, 0x091662ecu, 0x4eff51a3u}, 0x916f0811u, 0x5149c390u, 10}, // 92
++    {{0x7445bfe5u, 0x9841e657u, 0x7445bfe5u}, 0x48927594u, 0xf6e8ce87u, 9}, // 93
++    {{0x6164b6c3u, 0x165f4b94u, 0x6164b6c3u}, 0xdc720ac7u, 0x80ce68c4u, 13}, // 94
++    {{0x4bebd07eu, 0xbd42a3bdu, 0x4bebd07eu}, 0x1fe77127u, 0xf0113099u, 10}, // 95
++    {{0xe2acb146u, 0xaba3d29fu, 0x86c460ddu}, 0x9abf6e9du, 0x987fb398u, 15}, // 96
++    {{0x57ac5ce9u, 0xbed5ef8eu, 0x57ac5ce9u}, 0x1f37e9a1u, 0xca1ca7f4u, 12}, // 97
++    {{0x31a310b6u, 0xda961f3cu, 0x31a310b6u}, 0xcdb7b2efu, 0xd18e4034u, 21}, // 98
++    {{0x0cf978a8u, 0xe128514eu, 0x0cf978a8u}, 0x2b8cd6f1u, 0x602206e2u, 11}, // 99
++    {{0x2c3a6375u, 0x1957b7c7u, 0x2c3a6375u}, 0xc34d5a3cu, 0x01a92d53u, 17}, // 100
++    {{0xfc0d6b84u, 0x3b3f5a5cu, 0xfc0d6b84u}, 0xac88176fu, 0xd0236213u, 10}, // 101
++    {{0x02abe9bcu, 0x1dd8785cu, 0x02abe9bcu}, 0xe937fc94u, 0x3162a7efu, 15}, // 102
++    {{0x6b04ed7eu, 0x9db7ec89u, 0x6b04ed7eu}, 0x46c21c5du, 0x47c43b3du, 8}, // 103
++    {{0xcef0f040u, 0xad1980bdu, 0xc28605bfu}, 0xf54b782du, 0x292851edu, 23}, // 104
++    {{0xb5448c01u, 0x5d240610u, 0xb5448c01u}, 0xc8f62397u, 0x0d7457a1u, 19}, // 105
++    {{0xe307a437u, 0xc420e4bau, 0xe307a437u}, 0x74229ddeu, 0x548028efu, 12}, // 106
++    {{0x4501b03au, 0x1c8e37a0u, 0x4501b03au}, 0x884a6e5eu, 0x2616c08fu, 12}, // 107
++    {{0x6f52bb2eu, 0x7a507c24u, 0xf8cd3617u}, 0x7e51cab0u, 0xe06d6f81u, 16}, // 108
++    {{0xfa6d7d2bu, 0xfacac36bu, 0x50490d7bu}, 0x101e0ba4u, 0x17c7eea9u, 8}, // 109
++    {{0xe12ae30fu, 0xda3ef3e4u, 0x1a225b8fu}, 0x110f41dcu, 0x609ac08eu, 4}, // 110
++    {{0x7fe2142du, 0xbdc9a32eu, 0x7fe2142du}, 0x2b717dbeu, 0xe25641f5u, 17}, // 111
++    {{0xc6446a79u, 0x004e9762u, 0xc6446a79u}, 0xcb6edf89u, 0x3ddbb092u, 10}, // 112
++    {{0xee503291u, 0x648d055du, 0xee503291u}, 0xe31498c9u, 0x86e41ab4u, 17}, // 113
++    {{0xf4f8b852u, 0x9d763170u, 0xf4f8b852u}, 0x390fbeedu, 0xa4e0c651u, 15}, // 114
++    {{0x461b1d35u, 0xffb1a191u, 0x353a7fecu}, 0x68fa1dbcu, 0x0218baabu, 8}, // 115
++    {{0x409db745u, 0x0610f7efu, 0x409db745u}, 0xa6d709e8u, 0x7aa1ad41u, 23}, // 116
++    {{0xe14381ebu, 0x37b275bcu, 0xe14381ebu}, 0x2e90e903u, 0x02a4407eu, 15}, // 117
++    {{0x38a00525u, 0x6d2d3e75u, 0x38a00525u}, 0x3434a87bu, 0x33acbc76u, 18}, // 118
++    {{0x645d5d0au, 0x0412ef0au, 0x645d5d0au}, 0x316b2deeu, 0xa91b771cu, 12}, // 119
++    {{0x6fb1cda0u, 0x7fbd9847u, 0xd69de23du}, 0x13f2e5e5u, 0xb7f0bf7du, 18}, // 120
++    {{0x05a9554eu, 0xd7ea4b97u, 0x05a9554eu}, 0xd2a1ac52u, 0x4a79c3dcu, 14}, // 121
++    {{0x5c0b519cu, 0x85f29da4u, 0x1ea48d6eu}, 0xbdb5a64cu, 0xb13f0a61u, 16}, // 122
++    {{0x4af453b2u, 0x46374924u, 0x4af453b2u}, 0x04b35214u, 0x25e3baefu, 8}, // 123
++    {{0x53cb367au, 0x4a837671u, 0x53cb367au}, 0xe7ce0192u, 0xb24d6a27u, 12}, // 124
++    {{0x5dc96e0cu, 0xf1a18e2bu, 0x5dc96e0cu}, 0x3667128cu, 0xf52012d6u, 10}, // 125
++    {{0xeb84f643u, 0x53e8dcbcu, 0xcace0733u}, 0x9c88437du, 0xb9e95825u, 12}, // 126
++    {{0xe8fe6607u, 0xd28ee1f5u, 0x85d1ca7cu}, 0x31ff9e07u, 0x6e64aaecu, 12}, // 127
++    {{0x9aac37c1u, 0x5943023eu, 0x9aac37c1u}, 0x87bf4adfu, 0x6576e83bu, 8}, // 128
++    {{0x3a66f719u, 0x0daa018fu, 0x3a66f719u}, 0xa13b3042u, 0xb01e8712u, 14}, // 129
++    {{0xe9bb060eu, 0x3384a776u, 0xe9bb060eu}, 0x7922749fu, 0x24823ca0u, 16}, // 130
++    {{0x92d0eb1bu, 0x8be6d4abu, 0x92d0eb1bu}, 0xdcacfca7u, 0x9b58d3deu, 21}, // 131
++    {{0x86e66398u, 0xca2dee9du, 0x86e66398u}, 0x3aa34dafu, 0x2ce95295u, 25}, // 132
++    {{0x63c99d92u, 0x673cf3ebu, 0x63c99d92u}, 0x42087cb5u, 0xfe08ac6au, 17}, // 133
++    {{0x3a766585u, 0x2d2fdb1au, 0x3a766585u}, 0x24b5e3a3u, 0x97ef602au, 14}, // 134
++    {{0x57ce5b60u, 0xe593a7d6u, 0x57ce5b60u}, 0x4bb1078au, 0xd5a40de3u, 17}, // 135
++    {{0xeea8938fu, 0xbeae079eu, 0xeea8938fu}, 0x667b1b52u, 0x2bdeddf8u, 18}, // 136
++    {{0xb0c99954u, 0xa6eb5675u, 0xb0c99954u}, 0x7d837bd4u, 0x07cb8314u, 21}, // 137
++    {{0x48ee9aa2u, 0x305b268bu, 0x7cb26a70u}, 0x466f1bd6u, 0xa250d0f3u, 23}, // 138
++    {{0xd270f67fu, 0x4f4c1121u, 0xd270f67fu}, 0xfa3f20c9u, 0xc43defeau, 15}, // 139
++    {{0x86a47309u, 0xdc64d9c5u, 0x86a47309u}, 0xf2a58bc6u, 0x51e71beau, 25}, // 140
++    {{0x841be4a7u, 0x7ae1561au, 0x841be4a7u}, 0x6e829110u, 0x0ec68f6fu, 11}, // 141
++    {{0xdd395eabu, 0x6a0ac945u, 0xc5611392u}, 0x87c80a34u, 0x22cc4f4bu, 2}, // 142
++    {{0x450364e8u, 0xa1e3b5afu, 0x235bec75u}, 0x92a8d010u, 0xf13f2995u, 13}, // 143
++    {{0x0c2c6a08u, 0x07e3f1f4u, 0x0c2c6a08u}, 0xdd3fccd9u, 0xc2354939u, 5}, // 144
++    {{0xc27835beu, 0x34343a31u, 0xc27835beu}, 0x5b596eb0u, 0xd55aeeadu, 4}, // 145
++    {{0x2677891du, 0x359e8c6au, 0x2677891du}, 0x0483355bu, 0x90e3173du, 3}, // 146
++    {{0xac141262u, 0xfdef4261u, 0xac141262u}, 0x05c53164u, 0xc09261e3u, 22}, // 147
++    {{0x7ef2a8d5u, 0x59dc92b1u, 0x7ef2a8d5u}, 0x74453d7du, 0x2e32c248u, 14}, // 148
++    {{0xbffffd6bu, 0x3bcb5270u, 0xbffffd6bu}, 0xd63231efu, 0x33de8e73u, 2}, // 149
++    {{0xd98812c1u, 0xf2d07a93u, 0xd98812c1u}, 0x93b48666u, 0x784242eau, 8}, // 150
++    {{0x3ad6c237u, 0xc3be281eu, 0x3ad6c237u}, 0xb26285b6u, 0x3e6625e7u, 13}, // 151
++};

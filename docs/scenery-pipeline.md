@@ -1597,10 +1597,21 @@ Android marker reports the source atlas, target, and count only after a visible
 sample. Keep the original door and window marks and review their borders and
 the winter floor in the same scene.
 
-English Red and FireRed have a separate Pokémon Detail pilot. HD uses a 2×
+Pokémon Detail uses the same native opponent ownership table as the existing
+volume renderer. English Red and FireRed were the signed Thor pilot. Host
+replays extend the same front renderer to representative opponents in all 19
+English games. Classic's reviewed alternate pose table keeps its native
+animation. Each target still needs its own exact device check. HD uses a 2×
 triangle raster and a 256×256 relief texture at the native battler's position.
 Standard keeps the existing native-size 3D path, and 2D uses original output.
 Nearest presentation is required for this pilot. Match the same APK and battle
 between the three modes. Record source art size, material size, projected
 target, upload size, and display size separately. Keep HUD and native fallback
 frames exact and time both modes on the Thor before broader activation.
+
+The field atlas also supplies exposed rock detail to exact Route 1 ledges
+and Flash-lit Rock Tunnel feet. Native jump, collision, darkness, and 2D
+controls remain the source of truth. Viridian Mart counters share a
+limestone atlas across the three English Gen 1 games. Run handheld probes
+with Android's SGB borders disabled, assert the native buffer size after
+loading the fixture, and keep any text and clerk interactions intact.

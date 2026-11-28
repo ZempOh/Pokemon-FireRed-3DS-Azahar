@@ -7,11 +7,25 @@
     "secondary": "0x082d4aac",
     "id": 662,
     "kind": 13,
-    "source_floor": {"clear_layer": 1, "surface": "turf"},
-    "ink": [6, 11, 1, 9, 3, 11],
+    "source_floor": {
+      "clear_layer": 1,
+      "surface": "turf"
+    },
+    "ink": [
+      6,
+      11,
+      1,
+      9,
+      3,
+      11
+    ],
     "source_sha256": "c52a4e540211625cf4b0e9275ad2febd48242e3f702875bf9978eef3ea823796",
     "reviewed": true,
-    "palette_inks": [37, 43, 33]
+    "palette_inks": [
+      37,
+      43,
+      33
+    ]
   },
   {
     "game": "better-emerald-2",
@@ -983,5 +997,30 @@
     "reviewed": true,
     "behavior": 2,
     "compatible_ground_sha256": "2ac691155451152075f28c01bfd7997effbc71c367732afd39cdb35e786c9275"
+  },
+  {
+    "game": "gaia",
+    "rom_crc32": "b9465c5a",
+    "rom_sha256": "186a36cd389aecf10fb9ba112e7340fd81127fcb23d9564294df80b1e1473ab5",
+    "primary": "0x082d4a94",
+    "secondary": "0x082d4aac",
+    "id": 640,
+    "kind": 13,
+    "ground": 8,
+    "ink": [
+      5,
+      2,
+      7,
+      2,
+      7,
+      3
+    ],
+    "source_sha256": "b7fb96adec428e5c59cd00f1d6be7db5d19c72426d622c8aaddd0eec52768591",
+    "reviewed": true,
+    "palette_inks": [
+      163,
+      169,
+      171
+    ]
   }
 ]

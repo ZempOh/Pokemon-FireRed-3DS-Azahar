@@ -223,6 +223,7 @@ def generate_small_fixtures(profiles, output):
     lines = ['// Generated from reviewed tileset pairs and source layers.',
              '#pragma once',
              'enum SceneryFixtureShape { SCENERY_STEEL_FENCE, SCENERY_CUT_TIMBER, SCENERY_SIGN };',
+             'enum { SCENERY_FENCE_WEST_TO_SOUTH = 7, SCENERY_FENCE_NORTH_END };',
              'struct SceneryFixture { uint16_t tile; uint8_t shape, rail, posts, x[2], ink[4], art; };',
              'struct SceneryFixtureGroup { uint32_t rom, primary, secondary; uint16_t first, count; };',
              'struct SceneryFixtureArt { uint8_t box[4]; uint16_t mask[16]; };',
@@ -230,7 +231,8 @@ def generate_small_fixtures(profiles, output):
     shapes = {'steel_fence': 'SCENERY_STEEL_FENCE', 'cut_timber': 'SCENERY_CUT_TIMBER', 'sign': 'SCENERY_SIGN'}
     signs = {}
     rails = {'none': 0, 'horizontal': 1, 'vertical': 2, 'corner_left': 3, 'corner_right': 4,
-             'north_corner_left': 5, 'north_corner_right': 6}
+             'north_corner_left': 5, 'north_corner_right': 6,
+             'single_west_to_south': 7, 'single_north_end': 8}
     groups = {}
     seen = set()
     for profile in profiles:
@@ -248,7 +250,7 @@ def generate_small_fixtures(profiles, output):
         steel = profile['shape'] == 'steel_fence'
         rail = rails[profile.get('rail', 'horizontal' if steel else 'none')]
         assert (rail != 0) == steel
-        assert not steel or len(posts) == (1 if rail == rails['vertical'] else 2)
+        assert not steel or len(posts) == (1 if rail in (2, 7, 8) else 2)
         art = 0
         if profile['shape'] == 'sign':
             box = tuple(profile['board'])

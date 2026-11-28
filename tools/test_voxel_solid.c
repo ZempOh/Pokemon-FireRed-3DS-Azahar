@@ -95,8 +95,13 @@ int main(void) {
         const uint8_t fallback[]={0,0,0};
         const uint8_t* expected=fallback;
         const uint8_t palletPlanter[]={37,43,33};
+        const uint8_t celantoFlowers[]={163,169,171};
         if(p->rom==0x25c3d89f && p->primary==0x082d4a94 && p->secondary==0x082d4aac && p->id==0x296)
             expected=palletPlanter;
+        if(p->rom==0xb9465c5a && p->primary==0x082d4a94 && p->secondary==0x082d4aac && p->id==0x280) {
+            assert(p->kind==13 && p->ground==8);
+            expected=celantoFlowers;
+        }
         if(p->id==4)for(unsigned j=0;j<sizeof(stableFlowers)/sizeof(stableFlowers[0]);j++) {
             if(p->rom!=stableFlowers[j].rom || p->primary!=stableFlowers[j].primary)continue;
             assert(p->kind==13);

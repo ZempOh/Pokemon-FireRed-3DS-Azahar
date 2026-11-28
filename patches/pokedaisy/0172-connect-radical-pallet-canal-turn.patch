@@ -1,0 +1,47 @@
+diff --git a/app/src/main/cpp/pk_scenery_small_fixtures.h b/app/src/main/cpp/pk_scenery_small_fixtures.h
+index 9d28e07..bf7426d 100644
+--- a/app/src/main/cpp/pk_scenery_small_fixtures.h
++++ b/app/src/main/cpp/pk_scenery_small_fixtures.h
+@@ -654,6 +654,7 @@ static const struct SceneryFixture sceneryFixtures[] = {
+     {0xea, SCENERY_CUT_TIMBER, 0, 1, {12}, {10,3,11,3}, 0},
+     {0xf1, SCENERY_CUT_TIMBER, 0, 1, {12}, {10,3,11,3}, 0},
+     {0xe7, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}, 0},
++    {0xec, SCENERY_STEEL_FENCE, 3, 2, {4,12}, {3,5,3,3}, 0},
+     {0xed, SCENERY_STEEL_FENCE, 4, 2, {4,12}, {3,5,3,3}, 0},
+     {0xf4, SCENERY_STEEL_FENCE, 2, 1, {4}, {3,0,3,3}, 0},
+     {0xf5, SCENERY_STEEL_FENCE, 2, 1, {12}, {11,0,11,3}, 0},
+@@ -875,20 +876,20 @@ static const struct SceneryFixtureGroup sceneryFixtureGroups[] = {
+     {0xf2d16ebd, 0x082d4a94, 0x082d504c, 632, 3},
+     {0xf2d16ebd, 0x082d4a94, 0x082d5064, 635, 6},
+     {0xf2d16ebd, 0x082d4a94, 0x082d507c, 641, 6},
+-    {0xfba55dd8, 0x082d4a94, 0x082d4aac, 647, 8},
+-    {0xfba55dd8, 0x082d4a94, 0x082d4ac4, 655, 1},
+-    {0xfba55dd8, 0x082d4a94, 0x082d4adc, 656, 2},
+-    {0xfba55dd8, 0x082d4a94, 0x082d4af4, 658, 2},
+-    {0xfba55dd8, 0x082d4a94, 0x082d4b0c, 660, 1},
+-    {0xfba55dd8, 0x082d4a94, 0x082d4b24, 661, 1},
+-    {0xfba55dd8, 0x082d4a94, 0x082d4b3c, 662, 3},
+-    {0xfba55dd8, 0x082d4a94, 0x082d4b54, 665, 1},
+-    {0xfba55dd8, 0x082d4a94, 0x082d4b84, 666, 1},
+-    {0xfba55dd8, 0x082d4a94, 0x082d4b9c, 667, 1},
+-    {0xfba55dd8, 0x082d4a94, 0x082d4dc4, 668, 4},
+-    {0xfba55dd8, 0x082d4a94, 0x082d504c, 672, 3},
+-    {0xfba55dd8, 0x082d4a94, 0x082d5064, 675, 3},
+-    {0xfba55dd8, 0x082d4a94, 0x082d507c, 678, 3},
++    {0xfba55dd8, 0x082d4a94, 0x082d4aac, 647, 9},
++    {0xfba55dd8, 0x082d4a94, 0x082d4ac4, 656, 1},
++    {0xfba55dd8, 0x082d4a94, 0x082d4adc, 657, 2},
++    {0xfba55dd8, 0x082d4a94, 0x082d4af4, 659, 2},
++    {0xfba55dd8, 0x082d4a94, 0x082d4b0c, 661, 1},
++    {0xfba55dd8, 0x082d4a94, 0x082d4b24, 662, 1},
++    {0xfba55dd8, 0x082d4a94, 0x082d4b3c, 663, 3},
++    {0xfba55dd8, 0x082d4a94, 0x082d4b54, 666, 1},
++    {0xfba55dd8, 0x082d4a94, 0x082d4b84, 667, 1},
++    {0xfba55dd8, 0x082d4a94, 0x082d4b9c, 668, 1},
++    {0xfba55dd8, 0x082d4a94, 0x082d4dc4, 669, 4},
++    {0xfba55dd8, 0x082d4a94, 0x082d504c, 673, 3},
++    {0xfba55dd8, 0x082d4a94, 0x082d5064, 676, 3},
++    {0xfba55dd8, 0x082d4a94, 0x082d507c, 679, 3},
+ };
+ static const struct SceneryFixtureGroup* scenerySmallFixtureGroup(uint32_t rom, uint32_t primary, uint32_t secondary) {
+     for (unsigned i=0; i<sizeof(sceneryFixtureGroups)/sizeof(sceneryFixtureGroups[0]); ++i) {

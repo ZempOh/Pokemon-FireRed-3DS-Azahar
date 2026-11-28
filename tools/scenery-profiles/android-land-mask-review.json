@@ -8336,6 +8336,78 @@
         65280
       ],
       "rgba_sha256": "91e79f9e4034a2db2b59deccfec1fe2627c8cd5f327447859b74099982459f4a"
+    },
+    {
+      "id": "modern-emerald-petalburg-shore-turf:002",
+      "game": "modern-emerald",
+      "source_metatile_id": 2,
+      "rows": [
+        0,
+        0,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535
+      ],
+      "rgba_sha256": "bea6860278d8379387b5b2dacc28e48258e4e7b7166552b5a33cc3e860a39be3"
+    },
+    {
+      "id": "modern-emerald-petalburg-shore-turf:250",
+      "game": "modern-emerald",
+      "source_metatile_id": 592,
+      "rows": [
+        0,
+        0,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        127,
+        63,
+        31,
+        15,
+        7,
+        3,
+        1,
+        0
+      ],
+      "rgba_sha256": "8da41232411659c3d370bbfbfd490337abd67c9b8f5424a1e19fb2aad3fd2ed2"
+    },
+    {
+      "id": "modern-emerald-petalburg-shore-turf:251",
+      "game": "modern-emerald",
+      "source_metatile_id": 593,
+      "rows": [
+        0,
+        0,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        65535,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "rgba_sha256": "d8da28edd9b9166359e8b540fa4b34b220260c284a23964109a8cc11868ffb8c"
     }
   ],
   "targets": [
@@ -14317,29 +14389,6 @@
           "rgba_sha256": "5613a80fa186ddcf4872c32cc543a85add0d8c32a5e7b712eac7b62ba6c9a274"
         },
         {
-          "id": 2,
-          "rows": [
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            65535,
-            65535,
-            65535,
-            65535,
-            65535,
-            65535,
-            65535,
-            65535
-          ],
-          "reference_id": "modern-emerald-petalburg-visible-turf:002",
-          "rgba_sha256": "bea6860278d8379387b5b2dacc28e48258e4e7b7166552b5a33cc3e860a39be3"
-        },
-        {
           "id": 304,
           "rows": [
             65535,
@@ -14384,29 +14433,6 @@
           ],
           "reference_id": "modern-emerald-petalburg-visible-turf:131",
           "rgba_sha256": "8d6356c654c4d16383e9748dbeb23c2d8015b0316aef0cc715fedcebce625bd3"
-        },
-        {
-          "id": 592,
-          "rows": [
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            127,
-            63,
-            31,
-            15,
-            7,
-            3,
-            1,
-            0
-          ],
-          "reference_id": "modern-emerald-petalburg-visible-turf:250",
-          "rgba_sha256": "8da41232411659c3d370bbfbfd490337abd67c9b8f5424a1e19fb2aad3fd2ed2"
         },
         {
           "id": 580,
@@ -14729,6 +14755,75 @@
           ],
           "reference_id": "modern-emerald-petalburg-visible-turf:1cf",
           "rgba_sha256": "91e79f9e4034a2db2b59deccfec1fe2627c8cd5f327447859b74099982459f4a"
+        },
+        {
+          "id": 2,
+          "rows": [
+            0,
+            0,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535
+          ],
+          "reference_id": "modern-emerald-petalburg-shore-turf:002",
+          "rgba_sha256": "bea6860278d8379387b5b2dacc28e48258e4e7b7166552b5a33cc3e860a39be3"
+        },
+        {
+          "id": 592,
+          "rows": [
+            0,
+            0,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            127,
+            63,
+            31,
+            15,
+            7,
+            3,
+            1,
+            0
+          ],
+          "reference_id": "modern-emerald-petalburg-shore-turf:250",
+          "rgba_sha256": "8da41232411659c3d370bbfbfd490337abd67c9b8f5424a1e19fb2aad3fd2ed2"
+        },
+        {
+          "id": 593,
+          "rows": [
+            0,
+            0,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            65535,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "reference_id": "modern-emerald-petalburg-shore-turf:251",
+          "rgba_sha256": "d8da28edd9b9166359e8b540fa4b34b220260c284a23964109a8cc11868ffb8c"
         }
       ]
     },
@@ -88147,6 +88242,29 @@
         463
       ],
       "scope": "Verified source palette of open turf. Admit only its unobscured lower-layer pixels after layers and flips, preserving upper Gym, signage, hedge and pond art. Existing reviewed ground masks remain intact."
+    },
+    {
+      "game": "modern-emerald",
+      "rom_sha256": "bc7286dca750cf735480fece3ff68c7d86ecbf8391031b5ca2964da78fc945a1",
+      "primary": "0x8bb3ac8",
+      "secondary": "0x8bb3ae0",
+      "source_ground_reference_ids": [
+        1
+      ],
+      "source_ground_palette_indices": [
+        44,
+        45,
+        46,
+        54,
+        55,
+        63
+      ],
+      "reviewed_ids": [
+        2,
+        592,
+        593
+      ],
+      "scope": "Lower-layer rows two through seven of the exact three shore variants are exposed turf. Palette RGB aliases match the base open turf. Preserve the native shore rim and roof overlay."
     }
   ]
 }

@@ -1,0 +1,12 @@
+diff --git a/app/src/main/cpp/pk_scenery_ground_props.h b/app/src/main/cpp/pk_scenery_ground_props.h
+index 5a56dbf..f7be034 100644
+--- a/app/src/main/cpp/pk_scenery_ground_props.h
++++ b/app/src/main/cpp/pk_scenery_ground_props.h
+@@ -49,6 +49,7 @@ static const struct SceneryGroundProp sceneryGroundProps[] = {
+     {0x4b3d4957,0x08725ab4,0x0,83,89,3,{0,0,0,0,0,0},{0,0,0},0,0},
+     {0xdd88761c,0x82d4a94,0x0,13,17,1,{0,0,0,0,0,0},{0,0,0},0,0},
+     {0x964763c0,0x8316a4c,0x0,13,17,1,{0,0,0,0,0,0},{0,0,0},0,0},
++    {0xb9465c5a,0x082d4a94,0x82d4aac,640,8,13,{5,2,7,2,7,3},{163,169,171},0,0},
+ };
+ static const struct SceneryGroundProp *sceneryGroundProp(uint32_t rom,uint32_t primary,uint32_t secondary,int id) {
+     for(unsigned i=0;i<sizeof(sceneryGroundProps)/sizeof(sceneryGroundProps[0]);i++) {

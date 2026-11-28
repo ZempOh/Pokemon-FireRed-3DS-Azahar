@@ -1,0 +1,132 @@
+diff --git a/app/src/main/cpp/pk_wide.c b/app/src/main/cpp/pk_wide.c
+index afcee61..19c8c25 100644
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -32,9 +32,10 @@
+ #include "pk_scenery_water_profiles.h"
+ #include "pk_scenery_pallet_banks.h"
+ #include "pk_scenery_cave_contact_profiles.h"
+ #include "pk_scenery_south_ledge_profiles.h"
+ #include "pk_voxel_ledge_material.h"
+ #include "pk_scenery_berry_soil.h"
++#include "pk_scenery_stone_profiles.h"
+ #include "pk_scenery_dresco_monument.h"
+ #include "pk_scenery_dresco_bench.h"
+ #include "pk_battle_volume.h"
+@@ -5862,6 +5863,76 @@ static void sceneryCaveFootVolume(const struct Snap* s, const struct VoxelView*
+ }
+ 
+ 
++struct SceneryStone {
++    const struct SceneryStoneShape* shape;
++    int x,y,rise,tile;
++};
++
++/* Only the source-scoped standalone placements own a whole turf floor.
++ * The connected outcrops and adjoining retaining walls use different layers. */
++static int sceneryAcrisiaStonesPrepare(const struct Snap* s,const struct VoxelView* view,
++                                       int cellX,int cellY,uint32_t alpha,uint32_t* texture,
++                                       struct SceneryStone* stones) {
++    if (solidRom!=0x558ae42fu || s->group!=0 || s->num!=57 ||
++        !F.mapHeader || r32(F.mapHeader)!=0x08f638a4u ||
++        s->primary!=0x08e3e21cu || s->secondary!=0x08e3e92cu ||
++        s->width!=50 || s->height!=36) return 0;
++    int count=0;
++    for (size_t i=0; i<sizeof(acrisiaStonePlacements)/sizeof(*acrisiaStonePlacements); ++i) {
++        const struct SceneryStonePlacement* p=&acrisiaStonePlacements[i];
++        int mx=MAP_OFFSET+p->x,my=MAP_OFFSET+p->y;
++        int col=mx-cellX,row=my-cellY;
++        if ((unsigned)col>=(unsigned)view->cols || (unsigned)row>=(unsigned)view->rows ||
++            (unsigned)mx>=(unsigned)s->vw || (unsigned)my>=(unsigned)s->vh ||
++            s->vmap[my*s->vw+mx]!=p->native || !sceneryCellVisible(col,row)) continue;
++        struct SceneryStone* stone=&stones[count++];
++        stone->shape=&sceneryStoneShapes[p->shape];
++        stone->x=view->left+col*16;
++        stone->y=view->top+row*16;
++        stone->rise=voxelRise(view,col,row);
++        stone->tile=p->native&1023;
++        for (int y=0; y<16; ++y) for (int x=0; x<16; ++x) {
++            uint32_t floor=solidPlantGroundPixel(s,stone->tile,x,y,alpha,1);
++            unsigned weight=(x>=stone->shape->twoEdges[y][0] && x<=stone->shape->twoEdges[y][1])?218u:256u;
++            texture[(row*16+y)*view->stride+col*16+x]=voxelShade(climateGround(floor,2),weight);
++        }
++    }
++    return count;
++}
++
++static unsigned sceneryStoneHeight(const struct SceneryStoneShape* shape,int x,int y) {
++    if ((unsigned)x>=16 || (unsigned)y>=16) return 0;
++    int west=shape->twoEdges[y][0],east=shape->twoEdges[y][1];
++    if (x<west || x>east) return 0;
++    int distance=x-west;
++    if (east-x<distance) distance=east-x;
++    if (y<distance) distance=y;
++    if (15-y<distance) distance=15-y;
++    if (distance==0) return 1;
++    unsigned rise=2u+(unsigned)distance;
++    return rise<shape->peak?rise:shape->peak;
++}
++
++static void sceneryStoneDraw(const struct Snap* s,const struct VoxelView* view,
++                             const struct SceneryStone* stone,uint32_t alpha) {
++    for (int y=0; y<16; ++y) for (int x=0; x<16; ++x) {
++        unsigned height=sceneryStoneHeight(stone->shape,x,y);
++        if (!height) continue;
++        int wy=stone->y+y,wx=stone->x+x;
++        int rx=voxelX(view,wx,wy), cap=voxelY(view,wy,stone->rise+(int)height);
++        uint32_t ink=solidMaterialPixel(s,stone->tile,x,y,alpha);
++        unsigned west=sceneryStoneHeight(stone->shape,x-1,y);
++        unsigned south=sceneryStoneHeight(stone->shape,x,y+1);
++        unsigned edge=west<south?west:south;
++        for (unsigned z=edge; z<height; ++z) {
++            int front=voxelY(view,wy,stone->rise+(int)z);
++            voxelPixel(view,rx,front,wy,voxelShade(ink,z==0?160u:203u));
++        }
++        voxelPixel(view,rx,cap,wy,voxelShade(ink,west<height?233u:256u));
++    }
++}
++
++
+ static bool scenerySouthLedgeMap(const struct Snap* s) {
+     if (!F.mapHeader || r8(F.mapHeader+0x17)!=3 || r8(F.mapHeader+0x16)!=2) return false;
+     for (size_t n=0; n<sizeof(scenerySouthLedgeMaps)/sizeof(*scenerySouthLedgeMaps); ++n) {
+@@ -6232,6 +6303,9 @@ static bool drawVoxel(const struct Snap* s, int cx, int cy, int href, int vref,
+         ?sceneryAcrisiaBenches(s,&voxel,cellX,cellY,texture,alpha,benches):0;
+     struct DrescoBench drescoBenches[sizeof(drescoBenchPlacements)/sizeof(*drescoBenchPlacements)];
+     int drescoBenchCount=drescoBenchPrepare(s,&voxel,cellX,cellY,href,vref,alpha,texture,drescoBenches);
++    struct SceneryStone stones[sizeof(acrisiaStonePlacements)/sizeof(*acrisiaStonePlacements)];
++    int stoneCount=solidGroundAligned(href,vref)
++        ? sceneryAcrisiaStonesPrepare(s,&voxel,cellX,cellY,alpha,texture,stones) : 0;
+     if (groundMask && aligned) {
+         uint8_t groundCells[sizeof(rises)];
+         for (int row=0; row<rows; ++row)
+@@ -6245,6 +6319,7 @@ static bool drawVoxel(const struct Snap* s, int cx, int cy, int href, int vref,
+         const struct VoxelGroundMaterial groundMaterial = {groundCells,cx,cy};
+         voxelTerrainSurfaces(&voxel,texture,&groundMaterial,span);
+     } else voxelTerrainSurfaces(&voxel,texture,NULL,span);
++    for (int i=0; i<stoneCount; ++i) sceneryStoneDraw(s,&voxel,&stones[i],alpha);
+     sceneryRoute12Terrace(s,&voxel,cellX,cellY,alpha);
+     if (span) voxelBridgeDraw(&voxel,span);
+     if (caveContact) sceneryCaveFootVolume(s,&voxel,cellX,cellY);
+diff --git a/app/src/main/cpp/pk_scenery_stone_profiles.h b/app/src/main/cpp/pk_scenery_stone_profiles.h
+new file mode 100644
+index 0000000..33d7c14
+--- /dev/null
++++ b/app/src/main/cpp/pk_scenery_stone_profiles.h
+@@ -0,0 +1,16 @@
++#pragma once
++
++struct SceneryStoneShape { uint8_t twoEdges[16][2], peak; };
++static const struct SceneryStoneShape sceneryStoneShapes[] = {
++    {{{6,9},{5,11},{4,12},{3,13},{2,13},{2,14},{2,14},{1,15},{1,15},{1,15},{1,15},{1,15},{1,14},{2,14},{3,13},{5,11}},5},
++    {{{5,10},{4,11},{3,12},{3,13},{2,13},{2,14},{1,14},{1,15},{1,15},{1,15},{1,15},{1,15},{2,14},{2,14},{3,13},{5,11}},6},
++};
++
++struct SceneryStonePlacement { uint8_t x,y,shape; uint16_t native; };
++static const struct SceneryStonePlacement acrisiaStonePlacements[] = {
++    {23,12,0,0x0665},
++    {28,16,0,0x0665},
++    {25,15,1,0x066d},
++    {25,22,1,0x066d},
++    {10,24,1,0x066d},
++};

@@ -1,0 +1,28 @@
+diff --git a/app/src/main/cpp/pk_wide.c b/app/src/main/cpp/pk_wide.c
+index cb780ff..5270351 100644
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -5989,6 +5989,9 @@ static void sceneryCaveContact(const struct Snap* s, const struct VoxelView* vie
+ static void sceneryCaveFootVolume(const struct Snap* s, const struct VoxelView* view,
+                                   int cellX, int cellY) {
+     const int height=4;
++#if VOXEL_LEDGE_TEXTURE_SIZE
++    const uint8_t* atlas=voxelLedgeTexture();
++#endif
+     for (int row=0; row+1<view->rows; ++row) for (int col=0; col<view->cols; ++col) {
+         int x=cellX+col, y=cellY+row;
+         if ((unsigned)(x-MAP_OFFSET)>=(unsigned)s->width ||
+@@ -6012,7 +6015,12 @@ static void sceneryCaveFootVolume(const struct Snap* s, const struct VoxelView*
+                 voxelPixel(view,sx,sy,worldY,material);
+                 if (!inset) for (int v=1; v<=height; ++v) {
+                     uint32_t face=climateMix(texel[-2*view->stride],material,40u*(unsigned)v);
+-                    voxelPixel(view,sx,sy+v,worldY,voxelShade(face,235u));
++#if VOXEL_LEDGE_TEXTURE_SIZE
++                    unsigned shade=voxelLedgeFaceShade(atlas,worldX,v,235u);
++#else
++                    unsigned shade=235u;
++#endif
++                    voxelPixel(view,sx,sy+v,worldY,voxelShade(face,shade));
+                 }
+             }
+         }

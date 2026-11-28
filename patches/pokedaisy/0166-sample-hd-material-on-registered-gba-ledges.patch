@@ -1,0 +1,103 @@
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -28,16 +28,17 @@
+ #include "pk_wide.h"
+ #include "pk_cheats.h"
+ #include "pk_wide_voxel.h"
+ #include "pk_water_surface.h"
+ #include "pk_scenery_water_profiles.h"
+ #include "pk_scenery_pallet_banks.h"
+ #include "pk_scenery_cave_contact_profiles.h"
+ #include "pk_scenery_south_ledge_profiles.h"
++#include "pk_voxel_ledge_material.h"
+ #include "pk_scenery_berry_soil.h"
+ #include "pk_scenery_dresco_monument.h"
+ #include "pk_scenery_dresco_bench.h"
+ #include "pk_battle_volume.h"
+ #include "pk_battle_front_family.h"
+ #include "pk_wide_solid.h"
+ #include "pk_wide_props.h"
+ #include "pk_wide_buildings.h"
+@@ -6137,16 +6138,19 @@
+         if (m->rom==solidRom && m->group==s->group && m->map==s->num &&
+             m->primary==s->primary && m->secondary==s->secondary &&
+             m->width==s->width && m->height==s->height && m->layout==r32(F.mapHeader)) return true;
+     }
+     return false;
+ }
+ 
+ static void scenerySouthLedgeVolume(const struct Snap* s, const struct VoxelView* view, int cellX, int cellY) {
++#if VOXEL_LEDGE_TEXTURE_SIZE
++    const uint8_t* atlas=voxelLedgeTexture();
++#endif
+     for (int row=0; row<view->rows; ++row) for (int col=0; col<view->cols; ++col) {
+         int x=cellX+col, y=cellY+row;
+         if ((unsigned)(x-MAP_OFFSET)>=(unsigned)s->width ||
+             y<=MAP_OFFSET || y>=MAP_OFFSET+s->height-1 ||
+             (unsigned)x>=(unsigned)s->vw || y+1>=s->vh) continue;
+         const uint16_t* block=s->vmap+y*s->vw+x;
+         if ((*block>>10)!=1 || (block[-s->vw]>>10)!=12 || (block[s->vw]>>10)!=12) continue;
+         const struct ScenerySouthLedgeShape* shape=NULL;
+@@ -6171,17 +6175,22 @@
+             for (int inset=2; inset>=0; --inset) {
+                 int worldY=view->top+row*16+front-inset;
+                 int sx=voxelX(view,worldX,worldY);
+                 int sy=voxelY(view,worldY,z+height);
+                 uint32_t material=texel[-inset*view->stride];
+                 voxelPixel(view,sx,sy,worldY,material);
+                 if (!inset) for (int v=1; v<=height; ++v) {
+                     uint32_t face=climateMix(texel[-2*view->stride],material,40u*(unsigned)v);
+-                    voxelPixel(view,sx,sy+v,worldY,voxelShade(face,235u));
++#if VOXEL_LEDGE_TEXTURE_SIZE
++                    unsigned shade=voxelLedgeFaceShade(atlas,worldX,v);
++#else
++                    unsigned shade=235u;
++#endif
++                    voxelPixel(view,sx,sy+v,worldY,voxelShade(face,shade));
+                 }
+             }
+         }
+     }
+ }
+ 
+ 
+ struct DrescoMonument {
+diff --git a/app/src/main/cpp/pk_voxel_ledge_material.h b/app/src/main/cpp/pk_voxel_ledge_material.h
+new file mode 100644
+index 0000000..6f97e5f
+--- /dev/null
++++ b/app/src/main/cpp/pk_voxel_ledge_material.h
+@@ -0,0 +1,33 @@
++/* Original shallow sediment and chips for source-owned ledge faces. */
++#pragma once
++#include <stdint.h>
++
++#ifndef VOXEL_LEDGE_TEXTURE_SIZE
++#define VOXEL_LEDGE_TEXTURE_SIZE 256
++#endif
++
++#if VOXEL_LEDGE_TEXTURE_SIZE
++static const uint8_t* voxelLedgeTexture(void) {
++    enum { size = VOXEL_LEDGE_TEXTURE_SIZE };
++    static uint8_t atlas[size * size];
++    static bool ready;
++    if (ready) return atlas;
++    for (unsigned y=0; y<size; ++y) for (unsigned x=0; x<size; ++x) {
++        const unsigned u=(x*256u+128u)/size, v=(y*256u+128u)/size;
++        const unsigned fault=(u>>3)*17u ^ (u>>5)*29u;
++        const unsigned layer=(v+(fault&15u))&31u;
++        const unsigned grit=(u*1667u+v*607u)^(u*v*23u);
++        const unsigned strata=layer<4 ? 22u : layer<9 ? 10u : 0u;
++        atlas[y*size+x]=(uint8_t)(255u-strata-((grit^(grit>>11))&7u));
++    }
++    ready=true;
++    return atlas;
++}
++
++static inline unsigned voxelLedgeFaceShade(const uint8_t* atlas, int worldX, int depth) {
++    enum { size = VOXEL_LEDGE_TEXTURE_SIZE };
++    const unsigned u=((unsigned)worldX*8u&255u)*size/256u;
++    const unsigned v=(unsigned)(depth-1)*24u*size/256u;
++    return (235u*atlas[v*size+u]+128u)/256u;
++}
++#endif

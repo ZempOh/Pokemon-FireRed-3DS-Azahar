@@ -1,0 +1,127 @@
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -1482,7 +1482,7 @@
+ static uint32_t solidRom;
+ struct Piece {
+     int solidKind,solidLeaf,solidBark;
+-    bool vegetation, actor, nativeOverScenery;
++    bool vegetation, actor, nativeOverScenery, roundedFollower;
+     int x, y, w, h, tile, prio, pal, mode;   // mode: OAM objMode (0 normal, 1 semi-transparent, 2 OBJ window)
+     bool hflip, vflip;
+     bool copy;                               // a weather sprite repeated past the screen: margins only
+@@ -1525,8 +1525,11 @@
+     int nspr = C[PK_WIDE_MAX_SPRITES];
+     bool actor[SPRITES_CAP] = { false };
+     int palletBeedrill = -1;
++    int classicFollower = -1;
+     bool letsGoPallet = solidRom == 0x25c3d89f && s->group == 3 && s->num == 0 &&
+                        s->primary == 0x082d4a94 && s->secondary == 0x082d4aac;
++    bool classicPallet = solidRom == 0xe4deb9be && s->group == 6 && s->num == 0 &&
++                         s->primary == 0x084ad600 && s->secondary == 0x084add10;
+     bool offscreen[SPRITES_CAP] = { false };   // sprites the game hid only for being off screen
+     int propKind[SPRITES_CAP]={0},propLeaf[SPRITES_CAP]={0},propBark[SPRITES_CAP]={0};
+     for (int i = 0; i < 16; i++) {
+@@ -1537,13 +1540,17 @@
+         if((flags&1)&&!(flags&(1<<13))&&id<nspr&&solidRom==0x25c3d89f&&oe[5]==0xd7)propKind[id]=6;
+         if ((flags&1) && !(flags&(1<<13)) && id<nspr) {
+             actor[id] = true;
++            uint32_t imageTable=le32(s->sprites+0x44*id+0x0c);
++            if (classicPallet && oe[8]==254 && oe[6]==81 &&
++                (imageTable==0x08861b64u || imageTable==0x088616b4u))
++                classicFollower = classicFollower == -1 ? id : -2;
+             // Pallet's west Beedrill is drawn in front of the forest in the native frame.
+             if (letsGoPallet && oe[5] == 0xae && oe[6] == 0x1a &&
+                 oe[8] == 0x0d && oe[9] == 0 && oe[10] == 3 &&
+                 le32(s->sprites + 0x44 * id + 0x0c) == 0x0881335c)
+                 palletBeedrill = id;
+             // Match the live image table, not an engine-dependent graphics byte.
+-            const struct SceneryObjectProfile *profile=sceneryObjectProfile(solidRom,le32(s->sprites+0x44*id+0x0c));
++            const struct SceneryObjectProfile *profile=sceneryObjectProfile(solidRom,imageTable);
+             if(profile) { propKind[id]=profile->kind; propLeaf[id]=profile->leaf; propBark[id]=profile->bark; }
+         }
+     }
+@@ -1624,6 +1631,8 @@
+             out[n].y = by + sy;
+             out[n].w = w;
+             out[n].h = h;
++            out[n].roundedFollower = id==classicFollower && cnt==1 && h==32 &&
++                ((w==32 && subs==0x0886a2f0u) || (w==16 && subs==0x0886a29cu));
+             out[n].tile = base.tile + (int) ((v >> 4) & 0x3FF);
+             if (mode != 2) out[n].prio = (int) (v >> 14);
+             if (world && !revealed) hardwareWrap(&out[n]);
+@@ -2078,6 +2087,50 @@
+     if (!groundOnly) drawObjects(s, cx, cy, x0, y0, x1, y1, dst, stride, alpha, NULL);
+ }
+ 
++/* A native opaque silhouette yields thin details and a fuller curved core.
++ * Read the live indexed art so each native turn and animation frame has its
++ * own shell. Palette index zero remains transparent. */
++struct FieldActorShell { uint32_t rim[32], core[32]; int dx[3], dy[3]; };
++
++static void fieldActorShell(const struct Piece* sprite, const struct VoxelView* view,
++                            const uint8_t* vram, int foot, int rise, struct FieldActorShell* shell) {
++    uint32_t silhouette[32]={0};
++    memset(shell,0,sizeof(*shell));
++    for (int y=0;y<32;++y) for (int x=0;x<sprite->w;++x) {
++        unsigned tile=sprite->tile+(y/8)*(sprite->w/8)+x/8;
++        unsigned off=(tile*32+(y&7)*4+(x&7)/2)&0x7fffu;
++        unsigned index=(vram[0x10000+off]>>((x&1)*4))&15;
++        if (index) silhouette[y]|=1u<<x;
++    }
++    for (int y=1;y<31;++y) {
++        uint32_t row=silhouette[y];
++        shell->rim[y]=row&(row<<1)&(row>>1)&silhouette[y-1]&silhouette[y+1];
++    }
++    for (int y=2;y<30;++y) {
++        uint32_t row=shell->rim[y];
++        shell->core[y]=row&(row<<1)&(row>>1)&shell->rim[y-1]&shell->rim[y+1];
++    }
++    for (int layer=0;layer<3;++layer) {
++        int back=foot-2*(layer+1);
++        shell->dx[layer]=voxelX(view,sprite->x,back)-voxelX(view,sprite->x,foot);
++        shell->dy[layer]=voxelY(view,back,rise)-voxelY(view,foot,rise);
++    }
++}
++
++static void fieldActorPixel(const struct VoxelView* view,const struct FieldActorShell* shell,
++                             int x,int y,int foot,int order,int px,int py,uint32_t color) {
++    static const unsigned shade[3]={216,173,142};
++    uint32_t bit=1u<<px;
++    int depth=(shell->core[py]&bit) ? 3 : (shell->rim[py]&bit) ? 2 : 1;
++    while (depth>0) {
++        int back=foot-2*depth;
++        --depth;
++        if (back<view->top) continue;
++        voxelSpritePixel(view,x+shell->dx[depth],y+shell->dy[depth],back,order,voxelShade(color,shade[depth]));
++    }
++    voxelSpritePixel(view,x,y,foot,order,color);
++}
++
+ // The PPU's OBJ layer: per pixel the first opaque piece in OAM order wins among sprites,
+ // then shows if its priority is <= the front BG's.
+ static void drawObjects(const struct Snap* s, int cx, int cy, int x0, int y0, int x1, int y1, uint32_t* dst, int stride,
+@@ -2101,11 +2154,14 @@
+         int pc = (int16_t) oam[(4 * m + 2) * 4 + 3], pd = (int16_t) oam[(4 * m + 3) * 4 + 3];
+         int foot = p[i].y + bh - 1;
+         bool solidActor = p[i].actor && !p[i].vegetation && p[i].mode == 0 && !(p[i].rot & 1);
++        bool roundFollower = voxel && p[i].world && solidActor && p[i].roundedFollower;
++        struct FieldActorShell shell;
+         int vx = 0, vy = 0;
+         if (voxel && p[i].world) {
+             int z = voxelRiseAt(voxel, p[i].x + bw / 2, foot);
+             vx = voxelX(voxel, p[i].x, foot);
+             vy = voxelY(voxel, foot, z) - bh + 1;
++            if (roundFollower) fieldActorShell(&p[i],voxel,vram,foot,z,&shell);
+         }
+         if(voxel && p[i].world && (p[i].solidKind==7 || p[i].solidKind==8 || p[i].solidKind==9 || p[i].solidKind==12) &&
+            !(p[i].rot&1) && p[i].mode==0 && sw>=16 && sh>=16) {
+@@ -2217,7 +2273,8 @@
+                     dst[J * stride + X] = c;
+                     holeBuf[J][X] = 0;
+                 } else if (p[i].world) {
+-                    if (solidActor) voxelActorPixel(voxel, vx + xx, vy + yy, foot, i, c);
++                    if (roundFollower) fieldActorPixel(voxel,&shell,vx+xx,vy+yy,foot,i,px,py,c);
++                    else if (solidActor) voxelActorPixel(voxel, vx + xx, vy + yy, foot, i, c);
+                     else voxelSpritePixel(voxel, vx + xx, vy + yy, foot, i, c);
+                     if (solidActor && p[i].nativeOverScenery && onFrame(p[i].x + xx, Y) &&
+                         (c & 0xffffffu) == (realFrame[Y * PK_WIDE_W + p[i].x + xx] & 0xffffffu))

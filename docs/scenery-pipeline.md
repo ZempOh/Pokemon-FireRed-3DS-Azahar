@@ -1563,6 +1563,11 @@ separately so removed objects do not reappear in the projected view.
   validated 8,989 map references, with 41 map headers still held. Classify
   the underlying art before adding geometry. A height boundary can be a
   footprint, bridge, or special movement layer.
+  Add `--group-art` to index visible height changes by exact oriented tile
+  art, palette, layer order, map type and native flags. The first run found
+  58,238 exact art groups. 6,508 had matches across multiple GBA profiles.
+  Reuse these matches to reduce source review. Each admitted family still
+  needs native behavior and full-size scene checks.
 - The shared Gen 1 sign and Cut-tree profiles use exact live metatiles.
   Red and Yellow host replays used the native Pokémon menu to clear the
   tree and cross its former tile. Source audit covers all 23 revisions.
@@ -1583,3 +1588,19 @@ separately so removed objects do not reappear in the projected view.
   four-cell and sixteen-cell footprints respectively. Restore their native
   ground before drawing depth and keep palette, material classes, and live
   actors intact. Inspect winter at full size after restoring the underlay.
+
+### Wall and Pokémon detail
+
+Exact wall masks limit the 256×256 materials to source-owned surface texels.
+Host fixtures cover all 19 English games with a 16×16 matched control. The
+Android marker reports the source atlas, target, and count only after a visible
+sample. Keep the original door and window marks and review their borders and
+the winter floor in the same scene.
+
+English Red and FireRed have a separate Pokémon Detail pilot. HD uses a 2×
+triangle raster and a 256×256 relief texture at the native battler's position.
+Standard keeps the existing native-size 3D path, and 2D uses original output.
+Nearest presentation is required for this pilot. Match the same APK and battle
+between the three modes. Record source art size, material size, projected
+target, upload size, and display size separately. Keep HUD and native fallback
+frames exact and time both modes on the Thor before broader activation.

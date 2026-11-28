@@ -1,0 +1,196 @@
+--- a/app/src/main/cpp/pk_session.c
++++ b/app/src/main/cpp/pk_session.c
+@@ -166,6 +166,7 @@
+     pk_wide_extras_reset();   // FOLLOWER and DAY AND NIGHT: the closed game's lead walked on in the next one
+     pk_flight_configure(NULL, 0);   // FREE FLIGHT: the next game configures its own
+     g.wideCrc = 0;
++    g.wideSpriteDetail = g.wideSpriteDetailEnabled = g.wideSpriteDetailReported = false;
+     g.wideW = 0;
+     free(g.wide);
+     g.wide = NULL;
+@@ -379,15 +380,15 @@
+     } else if (g.wide && g.wideCrc && v.w > 0 && v.h > 0 && v.w <= PK_WIDE_MAX_VIEW_W && v.h <= PK_WIDE_MAX_VIEW_H &&
+         sizeof(color_t) == 4 && pkWideFrameFits()) {
+ #ifdef __ANDROID__
+-        if (g.wideCrc==0x9f7fdd53u || g.wideCrc==0xdd88761cu) {
++        if (g.wideSpriteDetailEnabled && pk_wide_sprite_detail_knows(g.wideCrc)) {
+             const size_t capacity=(size_t)PK_WIDE_MAX_VIEW_W*PK_WIDE_MAX_VIEW_H;
+             g.wideSpriteDetail=pk_wide_view_sprite_detail(g.core,(const uint32_t*)g.video,g.wide,v,capacity);
+-            static uint32_t detailReported;
+-            if (g.wideSpriteDetail && detailReported!=g.wideCrc) {
+-                detailReported=g.wideCrc;
+-                LOGI("battle sprite detail: crc=%08x source=%dx%d relief=256x256 target=%dx%d",
+-                     g.wideCrc,pk_wide_frame_w()==PK_WIDE_W ? 64 : 56,
+-                     pk_wide_frame_w()==PK_WIDE_W ? 64 : 56,v.w*2,v.h*2);
++            if (g.wideSpriteDetail && !g.wideSpriteDetailReported) {
++                g.wideSpriteDetailReported=true;
++                int source=pk_wide_frame_w()==PK_WIDE_W ? 64 : 56;
++                __android_log_print(ANDROID_LOG_INFO,"pokedaisy",
++                    "battle sprite detail: crc=%08x source=%dx%d relief=256x256 target=%dx%d filter=nearest",
++                    g.wideCrc,source,source,v.w*2,v.h*2);
+             }
+         } else
+ #endif
+--- a/app/src/main/cpp/pk_session.h
++++ b/app/src/main/cpp/pk_session.h
+@@ -43,6 +43,8 @@
+     uint32_t* wide;
+     int wideW, wideH;
+     bool wideSpriteDetail;              // the optional 2x texture follows the native wide frame
++    bool wideSpriteDetailEnabled;
++    bool wideSpriteDetailReported;
+     uint32_t wideCrc;                   // the game WIDE draws (its ROM's CRC32; 0 = off)
+     volatile int viewX, viewY, viewW, viewH;
+     volatile bool wideSkipNext;         // the next frame won't be shown: only note it (pk_wide_skip); false = draw
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -4590,6 +4590,10 @@
+     bool ready;
+ } battleDetail;
+ 
++bool pk_wide_sprite_detail_knows(uint32_t crc) {
++    return crc==0x9f7fdd53u || crc==0xdd88761cu;
++}
++
+ bool pk_wide_battle_detail_requested(void) {
+     return battleDetail.detailed != NULL;
+ }
+--- a/app/src/main/cpp/pk_wide.h
++++ b/app/src/main/cpp/pk_wide.h
+@@ -186,6 +186,7 @@
+  * after it in out, within capacityPixels. Only the audited opponent gets subpixels. */
+ bool pk_wide_view_sprite_detail(struct mCore* core, const uint32_t* frame, uint32_t* out,
+                                 struct PkWideView view, size_t capacityPixels);
++bool pk_wide_sprite_detail_knows(uint32_t crc);
+ bool pk_wide_battle_detail_requested(void);
+ void pk_wide_battle_detail_pixel(int x, int y, const uint32_t samples[4]);
+ 
+--- a/app/src/main/cpp/pokedaisy_jni.c
++++ b/app/src/main/cpp/pokedaisy_jni.c
+@@ -424,6 +424,17 @@
+ JNIEXPORT jint JNICALL
+ Java_com_pokedaisy_app_MgbaCore_pkWideHeight(JNIEnv* env, jobject thiz) {
+     return g.wideH;
++}
++
++JNIEXPORT jboolean JNICALL
++Java_com_pokedaisy_app_MgbaCore_pkWideSpriteDetailKnows(JNIEnv* env, jobject thiz, jint crc) {
++    return pk_wide_sprite_detail_knows((uint32_t)crc) ? JNI_TRUE : JNI_FALSE;
++}
++
++JNIEXPORT void JNICALL
++Java_com_pokedaisy_app_MgbaCore_pkWideSetSpriteDetail(JNIEnv* env, jobject thiz, jboolean enabled) {
++    g.wideSpriteDetailEnabled = enabled != JNI_FALSE;
++    if (!g.wideSpriteDetailEnabled) g.wideSpriteDetailReported = false;
+ }
+ 
+ JNIEXPORT jboolean JNICALL
+--- a/app/src/main/kotlin/com/pokedaisy/app/companion/CompanionSettings.kt
++++ b/app/src/main/kotlin/com/pokedaisy/app/companion/CompanionSettings.kt
+@@ -449,6 +449,9 @@
+     val voxelFieldSupported: Boolean get() = false
+     val voxelField: Boolean get() = false
+     fun setVoxelField(on: Boolean) {}
++    val pokemonDetailSupported: Boolean get() = false
++    val pokemonDetail: Boolean get() = false
++    fun setPokemonDetail(enabled: Boolean) {}
+ 
+     /** EXPAND's LOOK AROUND - see [com.pokedaisy.app.Prefs.lookAround]. */
+     val lookAround: Boolean get() = true
+--- a/app/src/main/kotlin/com/pokedaisy/app/companion/ui/CompanionSettingsScreen.kt
++++ b/app/src/main/kotlin/com/pokedaisy/app/companion/ui/CompanionSettingsScreen.kt
+@@ -790,8 +790,12 @@
+         },
+         if (s.voxelFieldSupported) SettingRow(
+             "GRAPHICS", if (s.voxelField) "3D" else "2D",
+-            subtitle = "Saved separately for this game; battles keep their original graphics",
++            subtitle = "Saved separately for this game",
+         ) { s.setVoxelField(!s.voxelField); changed() } else null,
++        if (s.voxelField && s.pokemonDetailSupported) SettingRow(
++            "POKÉMON DETAIL", if (s.pokemonDetail) "HD" else "Standard",
++            subtitle = "HD artwork uses nearest display filtering",
++        ) { s.setPokemonDetail(!s.pokemonDetail); changed() } else null,
+         if (s.voxelFieldSupported) SettingRow(
+             "VISUAL CLIMATE", listOf("Original", "Automatic", "Manual").getOrElse(s.voxelClimate and 3) { "Original" },
+             subtitle = "Automatic: calendar seasons and changing weather",
+--- a/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt
++++ b/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt
+@@ -82,6 +82,7 @@
+     /** WIDE's native tables for this game ([WideScreen.gameFor]), or [WideScreen.OFF]; applied between frames. */
+     @Volatile var wideGame = WideScreen.OFF
+     @Volatile var voxelClimateConfig = 0
++    @Volatile var pokemonDetail = false
+     @Volatile var wideVoxelGame = WideScreen.OFF
+     /** Keep supported voxel profiles on the cartridge clock in both 2D and 3D. */
+     @Volatile var voxelNativeClock = false
+@@ -1331,6 +1332,7 @@
+         var rewindApplied = -1   // pkInit dropped any buffer: set it again for this core
+         var wideApplied = WideScreen.OFF   // pkInit starts with WIDE off
+         var voxelApplied = false
++        var pokemonDetailApplied = false
+         var wideFaultReported = false
+         var lastWideDraw = 0L
+         var frame = 0L
+@@ -1392,6 +1394,11 @@
+             if (voxelWanted != voxelApplied) {
+                 MgbaCore.pkWideSetVoxel(voxelWanted)
+                 voxelApplied = voxelWanted
++            }
++            val spriteDetailWanted = voxelWanted && pokemonDetail
++            if (spriteDetailWanted != pokemonDetailApplied) {
++                MgbaCore.pkWideSetSpriteDetail(spriteDetailWanted)
++                pokemonDetailApplied = spriteDetailWanted
+             }
+             MgbaCore.pkWideSetClimate(if (voxelWanted) voxelClimateConfig else 0)
+             val camera = wideCamera
+--- a/app/src/main/kotlin/com/pokedaisy/app/MgbaCore.kt
++++ b/app/src/main/kotlin/com/pokedaisy/app/MgbaCore.kt
+@@ -198,6 +198,8 @@
+     external fun pkWideWidth(): Int
+     external fun pkWideHeight(): Int
+     external fun pkWideHasSpriteDetail(): Boolean
++    external fun pkWideSpriteDetailKnows(crc: Int): Boolean
++    external fun pkWideSetSpriteDetail(enabled: Boolean)
+     /** WIDE: draw the next frame's window, or (false) only keep its RAM - a frame the screen won't show. Emu thread. */
+     external fun pkWideSetDraw(draw: Boolean)
+     /** WIDE: the last frame was only noted ([pkWideSetDraw] false): nothing new to put on screen. Emu thread. */
+--- a/app/src/main/kotlin/com/pokedaisy/app/PokeDaisyActivity.kt
++++ b/app/src/main/kotlin/com/pokedaisy/app/PokeDaisyActivity.kt
+@@ -2440,6 +2440,13 @@
+             if (!voxelFieldSupported) return
+             Prefs(this@PokeDaisyActivity).setVoxelFieldFor(romKey, on)
+             if (on) setGameAspect(GameAspect.WIDE) else runOnUiThread { syncGameScreen() }
++        }
++        override val pokemonDetailSupported get() = wideSupported && MgbaCore.pkWideSpriteDetailKnows(wideGame)
++        override val pokemonDetail get() = Prefs(this@PokeDaisyActivity).pokemonDetailFor(romKey)
++        override fun setPokemonDetail(enabled: Boolean) {
++            if (!pokemonDetailSupported) return
++            Prefs(this@PokeDaisyActivity).setPokemonDetailFor(romKey, enabled)
++            runOnUiThread { syncGameScreen() }
+         }
+         override val lookAround get() = Prefs(this@PokeDaisyActivity).lookAround
+         override fun setLookAround(on: Boolean) {
+@@ -4531,6 +4538,8 @@
+             engine.wideGame = if (aspect == GameAspect.WIDE) wideGame else WideScreen.OFF
+             val voxelSupported = companionSettings.voxelFieldSupported
+             engine.voxelClimateConfig = prefs.voxelClimateFor(romKey, voxelSupported)
++            engine.pokemonDetail = companionSettings.pokemonDetailSupported && companionSettings.pokemonDetail &&
++                prefs.smoothing == Smoothing.OFF && prefs.screenFilter == ScreenFilter.NONE && !prefs.unlitScreen
+             engine.voxelNativeClock = voxelSupported
+             engine.wideVoxelGame = if (voxelSupported && companionSettings.voxelField) {
+                 wideGame
+--- a/app/src/main/kotlin/com/pokedaisy/app/Prefs.kt
++++ b/app/src/main/kotlin/com/pokedaisy/app/Prefs.kt
+@@ -655,6 +655,12 @@
+         p.edit().putBoolean("voxel_field_$crc", enabled).apply()
+     }
+ 
++    fun pokemonDetailFor(crc: String): Boolean = p.getBoolean("pokemon_detail_$crc", true)
++
++    fun setPokemonDetailFor(crc: String, enabled: Boolean) {
++        p.edit().putBoolean("pokemon_detail_$crc", enabled).apply()
++    }
++
+     /** Keep each game's display choice independent; retain existing 3D opt-ins. */
+     fun gameAspectFor(crc: String): GameAspect =
+         GameAspect.entries.firstOrNull { it.name == p.getString("game_aspect_$crc", null) }

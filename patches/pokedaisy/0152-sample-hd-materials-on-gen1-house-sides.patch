@@ -1,0 +1,61 @@
+--- a/app/src/main/cpp/pk_red_voxel_pilot.h
++++ b/app/src/main/cpp/pk_red_voxel_pilot.h
+@@ -1,4 +1,5 @@
+ #include "pk_voxel_roof_material.h"
++#include "pk_voxel_board_material.h"
+ #include "pk_gen1_boardwalks.h"
+ #include "pk_water_surface.h"
+ 
+@@ -76,10 +77,11 @@
+ /* Draw the lit surfaces of an axis-aligned solid through the same depth
+  * buffer as the shared ground projection and the game's live actors. */
+ static void redBoxMaterial(const struct VoxelView* v, int x, int y, int w, int h, int z, int height,
+-                   uint32_t tone, const uint8_t* roof, int roofX, int roofY) {
++                   uint32_t tone, const uint8_t* roof, int roofX, int roofY, const uint8_t* siding) {
+     int front = y+h;
+     int top = z+height;
+     if (front < v->top || y >= v->top+v->rows*VOXEL_TILE) return;
++    const uint32_t wallTone=voxelShade(tone,165);
+     for (int yy=y; yy<front; ++yy) {
+         int left = voxelX(v,x,yy), sy = voxelY(v,yy,top);
+         for (int dx=0; dx<w; ++dx) {
+@@ -88,8 +90,10 @@
+                 : tone;
+             voxelPixel(v,left+dx,sy,yy,surface);
+         }
+-        for (int dz=z; dz<top; ++dz)
+-            voxelPixel(v,left,voxelY(v,yy,dz),yy,voxelShade(tone,165));
++        for (int dz=z; dz<top; ++dz) {
++            const uint32_t side=siding ? voxelShade(wallTone,voxelFacadeSample(siding,(yy-y)*8+4,(dz-z)*8+4)) : wallTone;
++            voxelPixel(v,left,voxelY(v,yy,dz),yy,side);
++        }
+     }
+     int left = voxelX(v,x,front);
+     for (int dz=z; dz<top; ++dz) {
+@@ -100,7 +104,7 @@
+ 
+ static void redBox(const struct VoxelView* v, int x, int y, int w, int h, int z, int height,
+                    uint32_t tone) {
+-    redBoxMaterial(v,x,y,w,h,z,height,tone,0,0,0);
++    redBoxMaterial(v,x,y,w,h,z,height,tone,0,0,0,0);
+ }
+ 
+ #define RED_COLOR(r,g,b) ((r) | ((g)<<8) | ((b)<<16))
+@@ -109,7 +113,7 @@
+                      int w, int h, int height, uint32_t alpha, const uint8_t* roofTexture) {
+     int front=y+h;
+     if (front < v->top || y >= v->top+v->rows*VOXEL_TILE) return;
+-    redBox(v,x,y,w,h,0,height,alpha|RED_COLOR(218,191,149));
++    redBoxMaterial(v,x,y,w,h,0,height,alpha|RED_COLOR(218,191,149),0,0,0,voxelBoardTexture());
+     int left=voxelX(v,x,front);
+     for (int dz=0; dz<height; ++dz) {
+         int wy=front-1-dz*16/height;
+@@ -126,7 +130,7 @@
+     for (int step=0; step<5; ++step) {
+         int inset=step*3;
+         redBoxMaterial(v,x-2+step,y-2+inset,w+4-2*step,h+4-2*inset,height+step*2,2,
+-                       voxelShade(roof,228+step*7),roofTexture,x-2,y-2);
++                       voxelShade(roof,228+step*7),roofTexture,x-2,y-2,0);
+     }
+ }
+ 

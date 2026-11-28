@@ -1,0 +1,343 @@
+--- a/app/src/main/cpp/pk_wide_buildings.h
++++ b/app/src/main/cpp/pk_wide_buildings.h
+@@ -6,6 +6,7 @@
+ #include "pk_voxel_roof_material.h"
+ #include "pk_pallet_board_mask.h"
+ #include "pk_pallet_facade_registry.h"
++#include "pk_region_facade_materials.h"
+ #include "pk_voxel_board_material.h"
+ #define SOLID_BUILDING_MAX_W 320
+ #define SOLID_BUILDING_MAX_H 160
+@@ -21,6 +22,7 @@
+     const struct SolidBuilding* building;
+     const uint8_t* facadeTexture;
+     unsigned material;
++    const struct SceneryRegionalFacade* regional;
+ };
+ 
+ enum { FACADE_BOARDS=1, FACADE_ASHLAR=2 };
+@@ -34,6 +36,28 @@
+             row->width==p->width && row->firstCell==p->cells[0]) return row->material;
+     }
+     return 0;
++}
++
++static const struct SceneryRegionalFacade* solidBuildingRegionalMaterial(const struct SceneryBuildingProfile* p) {
++    for (unsigned i=0;i<sizeof(sceneryRegionalFacades)/sizeof(*sceneryRegionalFacades);++i) {
++        const struct SceneryRegionalFacade* row=&sceneryRegionalFacades[i];
++        if (row->crc==p->crc && row->primary==p->primary && row->secondary==p->secondary &&
++            row->width==p->width && row->height==p->height && row->firstCell==p->cells[0]) return row;
++    }
++    return 0;
++}
++
++static bool solidBuildingFacadeOwns(const struct SolidBuildingContext* ctx,int u,int v) {
++    uint32_t owned;
++    if (ctx->regional) {
++        const struct SceneryRegionalFacade* region=ctx->regional;
++        if ((unsigned)(v-region->top)>=region->rows) return false;
++        owned=region->mask[(v-region->top)*region->words+(u>>5)];
++    } else {
++        if ((unsigned)(v-48)>=32u) return false;
++        owned=ctx->material==FACADE_BOARDS ? voxelPalletBoardMask[v-48][u>>5] : voxelPalletAshlarMask[v-48][u>>5];
++    }
++    return (owned & (1u<<(u&31)))!=0;
+ }
+ static void solidBuildingTriangle(void* opaque,const SceneryBuildingVertex* a,
+         const SceneryBuildingVertex* b,const SceneryBuildingVertex* c,unsigned shade) {
+@@ -77,11 +101,11 @@
+             const int x8=(int)((wa*a->x+wb*b->x+wc*c->x)*8.0f);
+             const int z8=(int)((wa*a->z+wb*b->z+wc*c->z)*8.0f);
+             color=voxelShade(color,voxelRoofSample(roof,x8,z8));
+-        } else if (facade && (unsigned)(v-48)<32u) {
+-            uint32_t owned=ctx->material==FACADE_BOARDS
+-                ? voxelPalletBoardMask[v-48][u/32] : voxelPalletAshlarMask[v-48][u/32];
+-            if (owned & (1u<<(u&31)))
+-                color=voxelShade(color,voxelFacadeSample(facade,(int)(sourceU*8.0f),(int)(sourceV*8.0f)));
++        } else if (facade && solidBuildingFacadeOwns(ctx,u,v)) {
++            int u8=(int)(sourceU*8.0f),v8=(int)(sourceV*8.0f);
++            if (ctx->regional && ctx->regional->vertical)
++                color=voxelShade(color,voxelFacadeSample(facade,v8,u8));
++            else color=voxelShade(color,voxelFacadeSample(facade,u8,v8));
+         }
+         voxelPixel(view,x,y,(int)floorf(wa*wy[0]+wb*wy[1]+wc*wy[2]),voxelShade(color,shade));
+     }
+@@ -96,9 +120,10 @@
+         if((unsigned)px<(unsigned)view->width && (unsigned)py<(unsigned)view->height)
+             voxelPixel(view,px,py,wy,voxelShade(view->out[py*view->width+px],224));
+     }
+-    const unsigned material=solidBuildingPalletMaterial(p);
++    const struct SceneryRegionalFacade* regional=solidBuildingRegionalMaterial(p);
++    const unsigned material=regional ? regional->material : solidBuildingPalletMaterial(p);
+     const uint8_t* facade=material==FACADE_BOARDS ? voxelBoardTexture()
+         : material==FACADE_ASHLAR ? voxelAshlarTexture() : 0;
+-    struct SolidBuildingContext ctx={view,building,facade,material};
++    struct SolidBuildingContext ctx={view,building,facade,material,regional};
+     SceneryBuilding_Emit(&ctx,solidBuildingTriangle,&p->shape);
+ }
+--- /dev/null
++++ b/app/src/main/cpp/pk_region_facade_materials.h
+@@ -0,0 +1,263 @@
++/* Source-verified material masks for exact regional facades. */
++#pragma once
++
++static const uint32_t sceneryRegionalFacadeMask0[] = {
++    0xfffffe00u, 0xffffffffu,
++    0x00000000u, 0x00000000u,
++    0x00000000u, 0x00000000u,
++    0xfdfdf400u, 0xfdfdfdfdu,
++    0xfdfdf400u, 0xfdfdfdfdu,
++    0x00000000u, 0x00000000u,
++    0xdfdf7c00u, 0xdfdfdfdfu,
++    0xdfdf7c00u, 0xdfdfdfdfu,
++    0x00000000u, 0x00000000u,
++    0xf81df400u, 0xf81dfdfdu,
++    0xe005f400u, 0xe005fdfdu,
++    0x00000000u, 0x00000000u,
++    0x80017c00u, 0x8001dfdfu,
++    0x80017c00u, 0x8001dfdfu,
++    0x00000000u, 0x00000000u,
++    0x0000f400u, 0x0000fdfdu,
++    0x0000f400u, 0x0000fdfdu,
++    0x00000000u, 0x00000000u,
++    0x00007c00u, 0x0000dfdfu,
++    0x00007c00u, 0x0000dfdfu,
++    0x00000000u, 0x00000000u,
++    0x00000000u, 0x00000000u,
++    0x00000000u, 0x00000000u,
++    0x00000200u, 0x00000000u,
++    0x00000200u, 0x00000000u,
++    0x0000f400u, 0x0000fdfdu,
++    0x0000f400u, 0x0000fdfdu,
++    0x00000000u, 0x00000000u,
++    0x00007c00u, 0x0000dfdfu,
++    0x00007c00u, 0x0000dfdfu,
++    0x00000000u, 0x00000000u,
++    0xfdfdf400u, 0xfdfdfdfdu,
++    0xfdfdf400u, 0xfdfdfdfdu,
++    0x00000000u, 0x00000000u,
++    0xdfdf7c00u, 0xdfdfdfdfu,
++    0xdfdf7c00u, 0xdfdfdfdfu,
++    0x00000000u, 0x00000000u,
++    0x00000000u, 0x00000000u,
++    0x00000000u, 0x00000000u,
++    0x00000200u, 0x00000000u,
++    0x00000200u, 0x00000000u,
++    0xf81df400u, 0xf81dfdfdu,
++    0xe005f400u, 0xe005fdfdu,
++    0x00000000u, 0x00000000u,
++    0x80017c00u, 0x8001dfdfu,
++    0x80017c00u, 0x8001dfdfu,
++    0x00000000u, 0x00000000u,
++    0x0000f400u, 0x0000fdfdu,
++    0x0000f400u, 0x0000fdfdu,
++    0x00000000u, 0x00000000u,
++    0x00007c00u, 0x0000dfdfu,
++    0x00007c00u, 0x0000dfdfu,
++    0x00000000u, 0x00000000u,
++    0x00000000u, 0x00000000u,
++    0x00000000u, 0x00000000u,
++    0x00000200u, 0x00000000u,
++    0x00000200u, 0x00000000u,
++    0x00000000u, 0x00000000u,
++    0x0000f400u, 0x0000fdfdu,
++    0x00000000u, 0x00000000u,
++    0x00007c00u, 0x0000dfdfu,
++    0x00007c00u, 0x0000dfdfu,
++    0x00000000u, 0x00000000u,
++    0xfdfdf400u, 0xfdfdfdfdu,
++    0xfdfdf400u, 0xfdfdfdfdu,
++    0x00000000u, 0x00000000u,
++    0xdfdf7c00u, 0xdfdfdfdfu,
++    0xdfdf7c00u, 0xdfdfdfdfu,
++    0x00000000u, 0x00000000u,
++    0xfdfdf400u, 0xfdfdfdfdu,
++    0xfdfdf400u, 0xfdfdfdfdu,
++};
++
++static const uint32_t sceneryRegionalFacadeMask1[] = {
++    0x00000000u, 0x00000000u, 0x00000000u,
++    0x00dfdfc0u, 0xdc000000u, 0x000007dfu,
++    0x00dfdfc0u, 0xdc000000u, 0x000007dfu,
++    0x00000000u, 0x00000000u, 0x00000000u,
++    0x00fdfde0u, 0xfc000000u, 0x000005fdu,
++    0x00fdfde0u, 0xfc000000u, 0x000005fdu,
++    0x00000000u, 0x00000000u, 0x00000000u,
++    0x00dfdfc0u, 0xdc000000u, 0x000007dfu,
++    0x00dfdfc0u, 0xdc000000u, 0x000007dfu,
++    0x00000000u, 0x00000000u, 0x00000000u,
++    0x00000000u, 0x00000000u, 0x00000000u,
++    0x00000000u, 0x00000000u, 0x00000000u,
++    0x00000000u, 0x00000000u, 0x00000000u,
++    0x00000000u, 0x00000000u, 0x00000000u,
++    0x00000000u, 0x00000000u, 0x00000000u,
++    0x00fdfde0u, 0xfc000000u, 0x000005fdu,
++    0x00000000u, 0x00000000u, 0x00000000u,
++    0x00dfdfc0u, 0xdc000000u, 0x000007dfu,
++    0x00dfdfc0u, 0xdc000000u, 0x000007dfu,
++    0x00000000u, 0x00000000u, 0x00000000u,
++    0x00fdfde0u, 0xfc000000u, 0x000005fdu,
++    0x00fdfde0u, 0xfc000000u, 0x000005fdu,
++    0x00000000u, 0x00000000u, 0x00000000u,
++    0x00dfdfc0u, 0xdc000000u, 0x000007dfu,
++    0x00dfdfc0u, 0xdc000000u, 0x000007dfu,
++    0x00000000u, 0x00000000u, 0x00000000u,
++    0x00fdfde0u, 0xfc000000u, 0x000005fdu,
++    0x00fdfde0u, 0xfc000000u, 0x000005fdu,
++};
++
++static const uint32_t sceneryRegionalFacadeMask2[] = {
++    0xffffffffu, 0x003fffffu,
++    0x00000000u, 0x00000000u,
++    0x00000000u, 0x00000000u,
++    0xfdfdfdfdu, 0x002ffdfdu,
++    0xfdfdfdfdu, 0x002ffdfdu,
++    0x00000000u, 0x00000000u,
++    0xdfdfdfdfu, 0x003edfdfu,
++    0xdfdfdfdfu, 0x003edfdfu,
++    0x00000000u, 0x00000000u,
++    0xfdfdf81du, 0x002ff81du,
++    0xfdfde005u, 0x002fe005u,
++    0x00000000u, 0x00000000u,
++    0xdfdf8001u, 0x003e8001u,
++    0xdfdf8001u, 0x003e8001u,
++    0x00000000u, 0x00000000u,
++    0xfdfd0000u, 0x002f0000u,
++    0xfdfd0000u, 0x002f0000u,
++    0x00000000u, 0x00000000u,
++    0xdfdf0000u, 0x003e0000u,
++    0xdfdf0000u, 0x003e0000u,
++    0x00000000u, 0x00000000u,
++    0x00000000u, 0x00000000u,
++    0x00000000u, 0x00000000u,
++    0x00000000u, 0x00000000u,
++    0x00000000u, 0x00000000u,
++    0xfdfd0000u, 0x002f0000u,
++    0xfdfd0000u, 0x002f0000u,
++    0x00000000u, 0x00000000u,
++    0xdfdf0000u, 0x003e0000u,
++    0xdfdf0000u, 0x003e0000u,
++    0x00000000u, 0x00000000u,
++    0xfdfdfdfdu, 0x002ffdfdu,
++    0xfdfdfdfdu, 0x002ffdfdu,
++    0x00000000u, 0x00000000u,
++    0xdfdfdfdfu, 0x003edfdfu,
++    0xdfdfdfdfu, 0x003edfdfu,
++    0x00000000u, 0x00000000u,
++    0x00000000u, 0x00000000u,
++    0x00000000u, 0x00000000u,
++    0x00000000u, 0x00000000u,
++    0x00000000u, 0x00000000u,
++    0xfdfdf81du, 0x002ff81du,
++    0xfdfde005u, 0x002fe005u,
++    0x00000000u, 0x00000000u,
++    0xdfdf8001u, 0x003e8001u,
++    0xdfdf8001u, 0x003e8001u,
++    0x00000000u, 0x00000000u,
++    0xfdfd0000u, 0x002f0000u,
++    0xfdfd0000u, 0x002f0000u,
++    0x00000000u, 0x00000000u,
++    0xdfdf0000u, 0x003e0000u,
++    0xdfdf0000u, 0x003e0000u,
++    0x00000000u, 0x00000000u,
++    0x00000000u, 0x00000000u,
++    0x00000000u, 0x00000000u,
++    0x00000000u, 0x00000000u,
++    0x00000000u, 0x00000000u,
++    0x00000000u, 0x00000000u,
++    0xfdfd0000u, 0x002f0000u,
++    0x00000000u, 0x00000000u,
++    0xdfdf0000u, 0x003e0000u,
++    0xdfdf0000u, 0x003e0000u,
++    0x00000000u, 0x00000000u,
++    0xfdfdfdfdu, 0x002ffdfdu,
++    0xfdfdfdfdu, 0x002ffdfdu,
++    0x00000000u, 0x00000000u,
++    0xdfdfdfdfu, 0x003edfdfu,
++    0xdfdfdfdfu, 0x003edfdfu,
++    0x00000000u, 0x00000000u,
++    0xfdfdfdfdu, 0x002ffdfdu,
++    0xfdfdfdfdu, 0x002ffdfdu,
++};
++
++static const uint32_t sceneryRegionalFacadeMask3[] = {
++    0x00003c60u, 0x06700000u,
++    0x00003c60u, 0x06700000u,
++    0x00003c60u, 0x06700000u,
++    0x00003c60u, 0x06700000u,
++    0x00003c60u, 0x06700000u,
++    0x00003c60u, 0x06700000u,
++    0x00003c60u, 0x06700000u,
++    0x00003c60u, 0x06700000u,
++    0x00003c60u, 0x06700000u,
++    0x00003c60u, 0x06700000u,
++    0x00003c60u, 0x06700000u,
++    0x00003c60u, 0x06700000u,
++    0x00003c60u, 0x06700000u,
++    0x00003c60u, 0x06700000u,
++    0x00003c60u, 0x0670fffcu,
++    0x00003c60u, 0x0670fffcu,
++    0x00003e60u, 0x0672fffcu,
++    0x00003e60u, 0x0672fffcu,
++    0x00003e60u, 0x0672fffcu,
++    0x00003e60u, 0x0672fffcu,
++};
++
++static const uint32_t sceneryRegionalFacadeMask4[] = {
++    0x0000c0c0u, 0x00000000u, 0x03c0c000u,
++    0x00007f78u, 0x00000000u, 0x1f7f4000u,
++    0x00007f78u, 0x00000000u, 0x1f7f4000u,
++    0x00000000u, 0x00000000u, 0x00000000u,
++    0x0000eff0u, 0x00000000u, 0x0ff7c000u,
++    0x0000eff0u, 0x00000000u, 0x0ff7c000u,
++    0x0000eff0u, 0x00000000u, 0x0ff7c000u,
++    0x00000000u, 0x00000000u, 0x00000000u,
++    0x00007f78u, 0x00000000u, 0x1f7f4000u,
++    0x00007f78u, 0x00000000u, 0x1f7f4000u,
++    0x00007f78u, 0x00000000u, 0x1f7f4000u,
++    0x00000000u, 0x00000000u, 0x00000000u,
++    0x0000eff8u, 0x00000000u, 0x0ffbc000u,
++    0x0000eff8u, 0x00000000u, 0x0ffbc000u,
++    0x0000eff8u, 0x00000000u, 0x0ffbc000u,
++    0x00000000u, 0x00000000u, 0x00000000u,
++    0x00007f78u, 0x00000000u, 0x1f7f4000u,
++    0x00007f78u, 0x00000000u, 0x1f7f4000u,
++    0x00007f78u, 0x00000000u, 0x1f7f4000u,
++};
++
++static const uint32_t sceneryRegionalFacadeMask5[] = {
++    0x00003c60u, 0x06700000u,
++    0x00003c60u, 0x06700000u,
++    0x00003c60u, 0x06700000u,
++    0x00003c60u, 0x06700000u,
++    0x00003c60u, 0x06700000u,
++    0x00003c60u, 0x06700000u,
++    0x00003c60u, 0x06700000u,
++    0x00003c60u, 0x06700000u,
++    0x00003c60u, 0x06700000u,
++    0x00003c60u, 0x06700000u,
++    0x00003c60u, 0x06700000u,
++    0x00003c60u, 0x06700000u,
++    0x00003c60u, 0x06700000u,
++    0x00003c60u, 0x06700000u,
++    0x00003c60u, 0x0670fffcu,
++    0x00003c60u, 0x0670fffcu,
++    0x00003e60u, 0x0672fffcu,
++    0x00003e60u, 0x0672fffcu,
++    0x00003e60u, 0x0672fffcu,
++    0x00003e60u, 0x0672fffcu,
++};
++
++static const struct SceneryRegionalFacade {
++    uint32_t crc, primary, secondary;
++    uint16_t firstCell;
++    uint8_t width, height, material, vertical, top, rows, words;
++    const uint32_t* mask;
++} sceneryRegionalFacades[] = {
++    {0x558ae42fu, 0x8e3e21cu, 0x8e3e92cu, 548, 4, 9, 2, 0, 71, 71, 2, sceneryRegionalFacadeMask0},
++    {0x558ae42fu, 0x8e3e21cu, 0x8e3e92cu, 550, 5, 9, 2, 0, 114, 28, 3, sceneryRegionalFacadeMask1},
++    {0x558ae42fu, 0x8e3e21cu, 0x8e3e92cu, 549, 4, 9, 2, 0, 71, 71, 2, sceneryRegionalFacadeMask2},
++    {0x263a1187u, 0x8bb3ac8u, 0x8bb3ae0u, 8, 4, 4, 1, 1, 42, 20, 2, sceneryRegionalFacadeMask3},
++    {0x14465a33u, 0x8a2e6acu, 0x8a2e6c4u, 658, 6, 5, 2, 0, 55, 19, 3, sceneryRegionalFacadeMask4},
++    {0x2be557a3u, 0x83df704u, 0x83df734u, 8, 4, 4, 1, 1, 42, 20, 2, sceneryRegionalFacadeMask5},
++};

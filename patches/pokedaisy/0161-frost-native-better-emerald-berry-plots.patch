@@ -1,0 +1,121 @@
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -33,6 +33,7 @@
+ #include "pk_scenery_pallet_banks.h"
+ #include "pk_scenery_cave_contact_profiles.h"
+ #include "pk_scenery_south_ledge_profiles.h"
++#include "pk_scenery_berry_soil.h"
+ #include "pk_scenery_dresco_monument.h"
+ #include "pk_scenery_dresco_bench.h"
+ #include "pk_battle_volume.h"
+@@ -1483,7 +1484,7 @@
+ static uint32_t solidRom;
+ struct Piece {
+     int solidKind,solidLeaf,solidBark;
+-    bool vegetation, actor, nativeOverScenery, roundedFollower;
++    bool vegetation, actor, nativeOverScenery, roundedFollower, winterBerry;
+     int x, y, w, h, tile, prio, pal, mode;   // mode: OAM objMode (0 normal, 1 semi-transparent, 2 OBJ window)
+     bool hflip, vflip;
+     bool copy;                               // a weather sprite repeated past the screen: margins only
+@@ -1525,12 +1526,15 @@
+ static int buildPieces(const struct Snap* s, struct Piece* out) {
+     int nspr = C[PK_WIDE_MAX_SPRITES];
+     bool actor[SPRITES_CAP] = { false };
++    bool winterBerry[SPRITES_CAP] = { false };
+     bool nativeOverScenery[SPRITES_CAP] = { false };
+     int classicFollower = -1;
+     bool letsGoPallet = solidRom == 0x25c3d89f && s->group == 3 && s->num == 0 &&
+                        s->primary == 0x082d4a94 && s->secondary == 0x082d4aac;
+     bool classicPallet = solidRom == 0xe4deb9be && s->group == 6 && s->num == 0 &&
+                          s->primary == 0x084ad600 && s->secondary == 0x084add10;
++    bool route212Plot=solidRom==0x2be557a3u && s->group==0 && s->num==30 &&
++                      s->primary==0x083df704u && s->secondary==0x083df77cu;
+     static const struct PalletFlyer {
+         uint8_t local, graphics, movement;
+         uint32_t imageTable;
+@@ -1550,6 +1554,9 @@
+         if ((flags&1) && !(flags&(1<<13)) && id<nspr) {
+             actor[id] = true;
+             uint32_t imageTable=le32(s->sprites+0x44*id+0x0c);
++            if (route212Plot && oe[9]==30 && oe[10]==0 && (oe[8]==13 || oe[8]==14) &&
++                oe[5]==62 && oe[6]==12 && imageTable==0x0850c0c8u)
++                winterBerry[id]=true;
+             if (classicPallet && oe[8]==254 && oe[6]==81 &&
+                 (imageTable==0x08861b64u || imageTable==0x088616b4u))
+                 classicFollower = classicFollower == -1 ? id : -2;
+@@ -1595,6 +1602,7 @@
+                               .solidKind=propKind[id],.solidLeaf=propLeaf[id],.solidBark=propBark[id],
+                               .actor=actor[id] && !propKind[id],
+                               .nativeOverScenery=nativeOverScenery[id],
++                              .winterBerry=winterBerry[id],
+                               .vegetation=climateGrassEffect(solidRom,le32(sp+0x14),le32(sp+0x0c)),
+                               .mode = (int) ((a0 >> 10) & 3), .hflip = !(rot & 1) && (a1 & 0x1000), .vflip = !(rot & 1) && (a1 & 0x2000),
+                               .copy = false, .world = world, .rot = rot, .mat = (int) ((a1 >> 9) & 31) };
+@@ -2278,8 +2286,10 @@
+                 if (!(wl & 0x10)) continue;
+                 takenBuf[J][X] = 1;
+                 if (p[i].prio > OBJ_PRIO(J, X)) continue;
+-                uint32_t c = color(P[256 + p[i].pal * 16 + ci], alpha);
+-                if(voxel && p[i].world && p[i].vegetation)c=climateLeafColor(c);
++                uint16_t ink=P[256+p[i].pal*16+ci];
++                uint32_t c=color(ink,alpha);
++                bool frostBerry=p[i].winterBerry && voxelClimate.season==3 && ci>=8 && ci<=10 && solidCutLeaf(ink);
++                if(voxel && p[i].world && (p[i].vegetation || frostBerry)) c=climateLeafColor(c);
+                 c = p[i].mode == 1 ? blend(c, OBJ_BELOW(J, X), OBJ_LAYER(J, X)) : wl & 0x20 ? brightness(c, 4) : c;
+                 if (!voxel) {
+                     dst[J * stride + X] = c;
+@@ -5959,6 +5969,33 @@
+     return true;
+ }
+ 
++static void sceneryRoute212GardenFrost(const struct Snap* s,const struct VoxelView* v,
++                                      int cellX,int cellY,uint32_t* texture,uint32_t alpha) {
++    if (solidRom!=0x2be557a3u || s->group!=0 || s->num!=30 || s->width!=40 || s->height!=80 ||
++        s->primary!=0x083df704u || s->secondary!=0x083df77cu || !F.mapHeader ||
++        r32(F.mapHeader)!=0x089d90c0u || voxelClimate.season!=3 || !voxelClimate.seasonBlend) return;
++    static const uint16_t cells[2][4]={{0x314b,0x354c,0x354c,0x314d},{0x3113,0x3114,0x3114,0x3115}};
++    static const uint8_t masks[2][4]={{0,1,1,2},{3,4,4,5}};
++    const int west=29+MAP_OFFSET,north=58+MAP_OFFSET;
++    if (west+3>=s->vw || north+1>=s->vh) return;
++    for (int y=0;y<2;++y) for (int x=0;x<4;++x)
++        if (s->vmap[(north+y)*s->vw+west+x]!=cells[y][x]) return;
++    for (int y=0;y<2;++y) for (int x=0;x<4;++x) {
++        int col=west+x-cellX,row=north+y-cellY;
++        if ((unsigned)col>=(unsigned)v->cols || (unsigned)row>=(unsigned)v->rows ||
++            !sceneryCellVisible(col,row)) continue;
++        int id=cells[y][x]&1023;
++        const uint16_t* soil=route212PlotSoil[masks[y][x]];
++        for (int py=0;py<16;++py) for (int px=0;px<16;++px) {
++            uint32_t original=solidMaterialPixel(s,id,px,py,alpha);
++            uint32_t winter=climateGround(original,2);
++            // A light dusting preserves the native soil color and its planting cues.
++            texture[(row*16+py)*v->stride+col*16+px]=soil[py]&(1u<<px)
++                ?climateMix(original,winter,104):winter;
++        }
++    }
++}
++
+ static void sceneryCaveContact(const struct Snap* s, const struct VoxelView* view,
+                                       int cellX, int cellY, uint32_t* texture) {
+     for (int row=0; row<view->rows; ++row) for (int col=0; col<view->cols; ++col) {
+@@ -6369,6 +6406,7 @@
+     fireRedPalletWater(s,&voxel,cellX,cellY,texture);
+     bool caveContact=sceneryCaveContactReady(s,href,vref);
+     if (caveContact) sceneryCaveContact(s,&voxel,cellX,cellY,texture);
++    if (solidGroundAligned(href,vref)) sceneryRoute212GardenFrost(s,&voxel,cellX,cellY,texture,alpha);
+ 
+     // Header metadata and weather OAM are read from this same live session.
+     unsigned mapType = F.mapHeader ? r8(F.mapHeader + 0x17) : 0;
+--- /dev/null
++++ b/app/src/main/cpp/pk_scenery_berry_soil.h
+@@ -0,0 +1,10 @@
++// Exact lower-layer masks for the Route 212 plot.
++#pragma once
++static const uint16_t route212PlotSoil[][16] = {
++    {0x0000u, 0x0000u, 0x4000u, 0xe000u, 0xf000u, 0xf800u, 0xf000u, 0xf800u, 0xfc00u, 0xfc00u, 0xf800u, 0xfc00u, 0xfc00u, 0xfc00u, 0xfe00u, 0xf800u},
++    {0x0000u, 0x0808u, 0xbfbau, 0xffffu, 0xffffu, 0xffffu, 0xffffu, 0xffffu, 0xffffu, 0xffffu, 0xffffu, 0xffffu, 0xffffu, 0xffffu, 0xffffu, 0xffffu},
++    {0x0000u, 0x0000u, 0x0000u, 0x0005u, 0x000fu, 0x000fu, 0x001fu, 0x003fu, 0x001fu, 0x003fu, 0x007fu, 0x003fu, 0x003fu, 0x001fu, 0x003fu, 0x003fu},
++    {0xf800u, 0xf000u, 0xf800u, 0xf000u, 0xe000u, 0x4000u, 0x0000u, 0x0000u, 0x0000u, 0x0000u, 0x0000u, 0x0000u, 0x0000u, 0x0000u, 0x0000u, 0x0000u},
++    {0xffffu, 0xffffu, 0xffffu, 0xffffu, 0xffffu, 0xfd5du, 0x1010u, 0x0000u, 0x0000u, 0x0000u, 0x0000u, 0x0000u, 0x0000u, 0x0000u, 0x0000u, 0x0000u},
++    {0x003fu, 0x001fu, 0x000fu, 0x000fu, 0x0005u, 0x0000u, 0x0000u, 0x0000u, 0x0000u, 0x0000u, 0x0000u, 0x0000u, 0x0000u, 0x0000u, 0x0000u, 0x0000u},
++};

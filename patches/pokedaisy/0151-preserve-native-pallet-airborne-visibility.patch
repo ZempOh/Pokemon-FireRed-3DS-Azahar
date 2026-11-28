@@ -1,0 +1,53 @@
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -1524,12 +1524,20 @@
+ static int buildPieces(const struct Snap* s, struct Piece* out) {
+     int nspr = C[PK_WIDE_MAX_SPRITES];
+     bool actor[SPRITES_CAP] = { false };
+-    int palletBeedrill = -1;
++    bool nativeOverScenery[SPRITES_CAP] = { false };
+     int classicFollower = -1;
+     bool letsGoPallet = solidRom == 0x25c3d89f && s->group == 3 && s->num == 0 &&
+                        s->primary == 0x082d4a94 && s->secondary == 0x082d4aac;
+     bool classicPallet = solidRom == 0xe4deb9be && s->group == 6 && s->num == 0 &&
+                          s->primary == 0x084ad600 && s->secondary == 0x084add10;
++    static const struct PalletFlyer {
++        uint8_t local, graphics, movement;
++        uint32_t imageTable;
++    } flyers[] = {
++        {0x0a, 0xae, 0x2d, 0x0881335c}, // House-roof Beedrill
++        {0x0c, 0x72, 0x1a, 0x088122bc}, // South forest flyer
++        {0x0d, 0xae, 0x1a, 0x0881335c}, // West forest Beedrill
++    };
+     bool offscreen[SPRITES_CAP] = { false };   // sprites the game hid only for being off screen
+     int propKind[SPRITES_CAP]={0},propLeaf[SPRITES_CAP]={0},propBark[SPRITES_CAP]={0};
+     for (int i = 0; i < 16; i++) {
+@@ -1544,11 +1552,14 @@
+             if (classicPallet && oe[8]==254 && oe[6]==81 &&
+                 (imageTable==0x08861b64u || imageTable==0x088616b4u))
+                 classicFollower = classicFollower == -1 ? id : -2;
+-            // Pallet's west Beedrill is drawn in front of the forest in the native frame.
+-            if (letsGoPallet && oe[5] == 0xae && oe[6] == 0x1a &&
+-                oe[8] == 0x0d && oe[9] == 0 && oe[10] == 3 &&
+-                le32(s->sprites + 0x44 * id + 0x0c) == 0x0881335c)
+-                palletBeedrill = id;
++            // These source events intentionally draw above the trees or roof.
++            if (letsGoPallet && oe[9]==0 && oe[10]==3) {
++                for (unsigned k=0;k<sizeof(flyers)/sizeof(*flyers);++k) {
++                    const struct PalletFlyer* f=&flyers[k];
++                    if (oe[8]==f->local && oe[5]==f->graphics && oe[6]==f->movement && imageTable==f->imageTable)
++                        nativeOverScenery[id]=true;
++                }
++            }
+             // Match the live image table, not an engine-dependent graphics byte.
+             const struct SceneryObjectProfile *profile=sceneryObjectProfile(solidRom,imageTable);
+             if(profile) { propKind[id]=profile->kind; propLeaf[id]=profile->leaf; propBark[id]=profile->bark; }
+@@ -1582,7 +1593,7 @@
+         struct Piece base = { .tile = (int) (a2 & 0x3FF), .prio = (int) ((a2 >> 10) & 3), .pal = (int) (a2 >> 12),
+                               .solidKind=propKind[id],.solidLeaf=propLeaf[id],.solidBark=propBark[id],
+                               .actor=actor[id] && !propKind[id],
+-                              .nativeOverScenery=id == palletBeedrill,
++                              .nativeOverScenery=nativeOverScenery[id],
+                               .vegetation=climateGrassEffect(solidRom,le32(sp+0x14),le32(sp+0x0c)),
+                               .mode = (int) ((a0 >> 10) & 3), .hflip = !(rot & 1) && (a1 & 0x1000), .vflip = !(rot & 1) && (a1 & 0x2000),
+                               .copy = false, .world = world, .rot = rot, .mat = (int) ((a1 >> 9) & 31) };

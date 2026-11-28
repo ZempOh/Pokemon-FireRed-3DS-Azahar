@@ -1,5 +1,19 @@
 [
   {
+    "game": "letsgo",
+    "rom_crc32": "25c3d89f",
+    "rom_sha256": "ffb57f40fa4be71707fec0d36b0356220edc9b30648c31641d2b97118d792282",
+    "primary": "0x082d4a94",
+    "secondary": "0x082d4aac",
+    "id": 662,
+    "kind": 13,
+    "source_floor": {"clear_layer": 1, "surface": "turf"},
+    "ink": [6, 11, 1, 9, 3, 11],
+    "source_sha256": "c52a4e540211625cf4b0e9275ad2febd48242e3f702875bf9978eef3ea823796",
+    "reviewed": true,
+    "palette_inks": [37, 43, 33]
+  },
+  {
     "game": "better-emerald-2",
     "rom_crc32": "2be557a3",
     "rom_sha256": "8025d00d96a801387fe7c234475c9662b6bcf771ffaa55a29502c919238b039b",

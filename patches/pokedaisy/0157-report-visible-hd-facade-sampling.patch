@@ -1,0 +1,108 @@
+--- a/app/src/main/cpp/pk_voxel_board_material.h
++++ b/app/src/main/cpp/pk_voxel_board_material.h
+@@ -1,6 +1,9 @@
+ /* Original painted timber relief. The exact live facade supplies the color. */
+ #pragma once
+ #include <stdint.h>
++#ifdef __ANDROID__
++#include <android/log.h>
++#endif
+ 
+ #ifndef VOXEL_BOARD_TEXTURE_SIZE
+ #define VOXEL_BOARD_TEXTURE_SIZE 256
+@@ -55,3 +58,21 @@
+     const unsigned v = ((unsigned)v8 & 255u) * VOXEL_BOARD_TEXTURE_SIZE / 256u;
+     return atlas[v * VOXEL_BOARD_TEXTURE_SIZE + u];
+ }
++
++#ifdef __ANDROID__
++/* Count actual sampled surface pixels in the renderer's viewport. Emit the
++ * first occurrence for each cartridge/material and then every 256 draws. */
++static void voxelFacadeProbe(uint32_t crc,unsigned material,int width,int height,unsigned samples) {
++    static uint32_t previous[4];
++    static unsigned draws[4];
++    if (!samples || material==0 || material>=4) return;
++    if (previous[material]!=crc) {
++        previous[material]=crc;
++        draws[material]=0;
++    }
++    if (draws[material]++ & 255u) return;
++    __android_log_print(ANDROID_LOG_INFO,"pokedaisy",
++        "voxel facade atlas crc=%08x material=%u source=%ux%u target=%dx%d samples=%u",
++        crc,material,(unsigned)VOXEL_BOARD_TEXTURE_SIZE,(unsigned)VOXEL_BOARD_TEXTURE_SIZE,width,height,samples);
++}
++#endif
+--- a/app/src/main/cpp/pk_wide_buildings.h
++++ b/app/src/main/cpp/pk_wide_buildings.h
+@@ -23,6 +23,9 @@
+     const uint8_t* facadeTexture;
+     unsigned material;
+     const struct SceneryRegionalFacade* regional;
++#ifdef __ANDROID__
++    unsigned facadeSamples;
++#endif
+ };
+ 
+ enum { FACADE_BOARDS=1, FACADE_ASHLAR=2 };
+@@ -62,7 +65,7 @@
+ static void solidBuildingTriangle(void* opaque,const SceneryBuildingVertex* a,
+         const SceneryBuildingVertex* b,const SceneryBuildingVertex* c,unsigned shade) {
+     if(a->y==0 && b->y==0 && c->y==0)return; /* Closed model underside is never visible from this camera. */
+-    const struct SolidBuildingContext* ctx=opaque;
++    struct SolidBuildingContext* ctx=opaque;
+     const struct VoxelView* view=ctx->view;const struct SolidBuilding* building=ctx->building;
+     const SceneryBuildingVertex* p[3]={a,b,c};float sx[3],sy[3],wy[3];
+     for(int i=0;i<3;i++) {
+@@ -106,6 +109,9 @@
+             if (ctx->regional && ctx->regional->vertical)
+                 color=voxelShade(color,voxelFacadeSample(facade,v8,u8));
+             else color=voxelShade(color,voxelFacadeSample(facade,u8,v8));
++#ifdef __ANDROID__
++            ++ctx->facadeSamples;
++#endif
+         }
+         voxelPixel(view,x,y,(int)floorf(wa*wy[0]+wb*wy[1]+wc*wy[2]),voxelShade(color,shade));
+     }
+@@ -124,6 +130,9 @@
+     const unsigned material=regional ? regional->material : solidBuildingPalletMaterial(p);
+     const uint8_t* facade=material==FACADE_BOARDS ? voxelBoardTexture()
+         : material==FACADE_ASHLAR ? voxelAshlarTexture() : 0;
+-    struct SolidBuildingContext ctx={view,building,facade,material,regional};
++    struct SolidBuildingContext ctx={.view=view,.building=building,.facadeTexture=facade,.material=material,.regional=regional};
+     SceneryBuilding_Emit(&ctx,solidBuildingTriangle,&p->shape);
++#ifdef __ANDROID__
++    voxelFacadeProbe(p->crc,material,view->width,view->height,ctx.facadeSamples);
++#endif
+ }
+--- a/app/src/main/cpp/pk_red_voxel_pilot.h
++++ b/app/src/main/cpp/pk_red_voxel_pilot.h
+@@ -82,6 +82,9 @@
+     int top = z+height;
+     if (front < v->top || y >= v->top+v->rows*VOXEL_TILE) return;
+     const uint32_t wallTone=voxelShade(tone,165);
++#ifdef __ANDROID__
++    unsigned facadeSamples=0;
++#endif
+     for (int yy=y; yy<front; ++yy) {
+         int left = voxelX(v,x,yy), sy = voxelY(v,yy,top);
+         for (int dx=0; dx<w; ++dx) {
+@@ -92,9 +95,16 @@
+         }
+         for (int dz=z; dz<top; ++dz) {
+             const uint32_t side=siding ? voxelShade(wallTone,voxelFacadeSample(siding,(yy-y)*8+4,(dz-z)*8+4)) : wallTone;
+-            voxelPixel(v,left,voxelY(v,yy,dz),yy,side);
+-        }
+-    }
++            const int py=voxelY(v,yy,dz);
++            voxelPixel(v,left,py,yy,side);
++#ifdef __ANDROID__
++            if (siding && (unsigned)left<(unsigned)v->width && (unsigned)py<(unsigned)v->height) ++facadeSamples;
++#endif
++        }
++    }
++#ifdef __ANDROID__
++    voxelFacadeProbe(gbGen1BattleCrc,3u,v->width,v->height,facadeSamples);
++#endif
+     int left = voxelX(v,x,front);
+     for (int dz=z; dz<top; ++dz) {
+         int sy=voxelY(v,front,dz);

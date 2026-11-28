@@ -1,0 +1,151 @@
+--- a/app/src/main/cpp/pk_wide_buildings.h
++++ b/app/src/main/cpp/pk_wide_buildings.h
+@@ -4,6 +4,8 @@
+ #include "scenery_building_geometry.h"
+ #include "pk_scenery_buildings.h"
+ #include "pk_voxel_roof_material.h"
++#include "pk_pallet_board_mask.h"
++#include "pk_voxel_board_material.h"
+ #define SOLID_BUILDING_MAX_W 320
+ #define SOLID_BUILDING_MAX_H 160
+ #define SOLID_BUILDING_CAP 12
+@@ -13,7 +15,20 @@
+     const uint8_t* roofTexture;
+     uint32_t art[SOLID_BUILDING_MAX_W*SOLID_BUILDING_MAX_H];
+ };
+-struct SolidBuildingContext { const struct VoxelView* view; const struct SolidBuilding* building; };
++struct SolidBuildingContext {
++    const struct VoxelView* view;
++    const struct SolidBuilding* building;
++    const uint8_t* boardTexture;
++};
++
++/* This registry entry already matches the complete 5×5 live footprint.
++ * The three exact profiles also share the offline-reviewed UV/source mask. */
++static bool solidBuildingPalletBoards(const struct SceneryBuildingProfile* p) {
++    if (p->width != 5 || p->height != 5 || p->cells[0] != 641 || p->shape.wallRow != 48) return false;
++    return (p->crc == 0xdd88761cu && p->primary == 0x082d4a94u && p->secondary == 0x082d4aacu) ||
++           (p->crc == 0xe4deb9beu && p->primary == 0x084ad600u && p->secondary == 0x084add10u) ||
++           (p->crc == 0x964763c0u && p->primary == 0x08316a4cu && p->secondary == 0x08316a64u);
++}
+ static void solidBuildingTriangle(void* opaque,const SceneryBuildingVertex* a,
+         const SceneryBuildingVertex* b,const SceneryBuildingVertex* c,unsigned shade) {
+     if(a->y==0 && b->y==0 && c->y==0)return; /* Closed model underside is never visible from this camera. */
+@@ -37,11 +52,16 @@
+     // The normal's vertical component is zero for facades and gables.
+     const float up=(b->x-a->x)*(c->z-a->z)-(c->x-a->x)*(b->z-a->z);
+     const uint8_t* roof=fabsf(up)>.01f ? building->roofTexture : 0;
++    // The UVs for side posts, roof and gables do not use the front-wall mask.
++    const float front=building->profile->shape.depth;
++    const uint8_t* boards=a->z==front && b->z==front && c->z==front ? ctx->boardTexture : 0;
+     for(int y=y0;y<=y1;y++)for(int x=x0;x<=x1;x++) {
+         float wa=((sy[1]-sy[2])*(x+.5f-sx[2])+(sx[2]-sx[1])*(y+.5f-sy[2]))/den;
+         float wb=((sy[2]-sy[0])*(x+.5f-sx[2])+(sx[0]-sx[2])*(y+.5f-sy[2]))/den;
+         float wc=1-wa-wb;if(wa<-.0001f||wb<-.0001f||wc<-.0001f)continue;
+-        int u=(int)(wa*a->u+wb*b->u+wc*c->u),v=(int)(wa*a->v+wb*b->v+wc*c->v);
++        const float sourceU=wa*a->u+wb*b->u+wc*c->u;
++        const float sourceV=wa*a->v+wb*b->v+wc*c->v;
++        int u=(int)sourceU,v=(int)sourceV;
+         if(u<0)u=0;
+         if(v<0)v=0;
+         if(u>=width)u=width-1;
+@@ -51,6 +71,9 @@
+             const int x8=(int)((wa*a->x+wb*b->x+wc*c->x)*8.0f);
+             const int z8=(int)((wa*a->z+wb*b->z+wc*c->z)*8.0f);
+             color=voxelShade(color,voxelRoofSample(roof,x8,z8));
++        } else if (boards && (unsigned)(v-48)<32u &&
++                   (voxelPalletBoardMask[v-48][u/32] & (1u<<(u&31)))) {
++            color=voxelShade(color,voxelBoardSample(boards,(int)(sourceU*8.0f),(int)(sourceV*8.0f)));
+         }
+         voxelPixel(view,x,y,(int)floorf(wa*wy[0]+wb*wy[1]+wc*wy[2]),voxelShade(color,shade));
+     }
+@@ -65,6 +88,7 @@
+         if((unsigned)px<(unsigned)view->width && (unsigned)py<(unsigned)view->height)
+             voxelPixel(view,px,py,wy,voxelShade(view->out[py*view->width+px],224));
+     }
+-    struct SolidBuildingContext ctx={view,building};
++    const uint8_t* boards=solidBuildingPalletBoards(p) ? voxelBoardTexture() : 0;
++    struct SolidBuildingContext ctx={view,building,boards};
+     SceneryBuilding_Emit(&ctx,solidBuildingTriangle,&p->shape);
+ }
+--- /dev/null
++++ b/app/src/main/cpp/pk_pallet_board_mask.h
+@@ -0,0 +1,37 @@
++/* Verified native Pallet house board coverage. No art or palette is embedded. */
++#pragma once
++
++static const uint32_t voxelPalletBoardMask[32][3] = {
++    {0x00000000u, 0x00000000u, 0x00000000u},
++    {0x0000ff00u, 0x00000000u, 0x000000ffu},
++    {0x0000ff00u, 0x00000000u, 0x000000ffu},
++    {0x0000ff00u, 0x00000000u, 0x000000ffu},
++    {0x0000ff00u, 0x00000000u, 0x000000ffu},
++    {0x0000ff00u, 0x00000000u, 0x000000ffu},
++    {0x0000ff00u, 0x00000000u, 0x000000ffu},
++    {0x0000ff00u, 0x00000000u, 0x000000ffu},
++    {0x0000ff00u, 0x00000000u, 0x000000ffu},
++    {0x0000ff00u, 0x00000000u, 0x000000ffu},
++    {0x0000ff00u, 0x00000000u, 0x000000ffu},
++    {0xffffff00u, 0xffffffffu, 0x000000ffu},
++    {0xffffff00u, 0xffffffffu, 0x000000ffu},
++    {0x00000000u, 0x00000000u, 0x00000000u},
++    {0x00003f00u, 0xfffffffcu, 0x000000ffu},
++    {0x00003f00u, 0x000000fcu, 0x000000ffu},
++    {0x00003f00u, 0x000000fcu, 0x000000ffu},
++    {0x00003f00u, 0x000000fcu, 0x000000ffu},
++    {0x00003f00u, 0x000000fcu, 0x000000ffu},
++    {0x00003f00u, 0x000000fcu, 0x000000ffu},
++    {0x00003f00u, 0x000000fcu, 0x000000ffu},
++    {0x00003f00u, 0x000000fcu, 0x000000ffu},
++    {0x00003f00u, 0x000000fcu, 0x000000ffu},
++    {0x00003f00u, 0x000000fcu, 0x000000ffu},
++    {0x00003f00u, 0x000000fcu, 0x000000ffu},
++    {0x00003f00u, 0x000000fcu, 0x000000ffu},
++    {0x00003f00u, 0x000000fcu, 0x000000ffu},
++    {0x00003f00u, 0xfffffffcu, 0x000000ffu},
++    {0x00003f00u, 0xfffffffcu, 0x000000ffu},
++    {0x00000000u, 0x00000000u, 0x00000000u},
++    {0x00000000u, 0x00000000u, 0x00000000u},
++    {0x00000000u, 0x00000000u, 0x00000000u},
++};
+--- /dev/null
++++ b/app/src/main/cpp/pk_voxel_board_material.h
+@@ -0,0 +1,38 @@
++/* Original painted timber relief. The exact live facade supplies the color. */
++#pragma once
++#include <stdint.h>
++
++#ifndef VOXEL_BOARD_TEXTURE_SIZE
++#define VOXEL_BOARD_TEXTURE_SIZE 256
++#endif
++
++static const uint8_t* voxelBoardTexture(void) {
++    enum { size = VOXEL_BOARD_TEXTURE_SIZE };
++    static uint8_t atlas[size * size];
++    static bool ready;
++    if (ready) return atlas;
++    for (unsigned y = 0; y < size; ++y) {
++        const unsigned v = (y * 256u + 128u) / size;
++        const unsigned course = v >> 5, edge = v & 31u;
++        for (unsigned x = 0; x < size; ++x) {
++            const unsigned u = (x * 256u + 128u) / size;
++            const unsigned joint = (u + course * 61u) & 255u;
++            const unsigned grain = (v * 37u + (u >> 4) * 13u + (u >> 6) * v * 3u) & 15u;
++            unsigned light = 255u - grain / 2u;
++            if (edge < 4u) light -= 9u;
++            if (edge > 24u) light -= 12u;
++            if (joint < 8u) light -= 22u;
++            else if (joint < 16u) light -= 9u;
++            atlas[y * size + x] = (uint8_t)light;
++        }
++    }
++    ready = true;
++    return atlas;
++}
++
++/* A repeat covers 32×32 source-art units, as in the roof texture control. */
++static unsigned voxelBoardSample(const uint8_t* atlas, int u8, int v8) {
++    const unsigned u = ((unsigned)u8 & 255u) * VOXEL_BOARD_TEXTURE_SIZE / 256u;
++    const unsigned v = ((unsigned)v8 & 255u) * VOXEL_BOARD_TEXTURE_SIZE / 256u;
++    return atlas[v * VOXEL_BOARD_TEXTURE_SIZE + u];
++}

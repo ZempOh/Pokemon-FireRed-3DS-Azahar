@@ -1,0 +1,501 @@
+--- a/app/src/main/cpp/pk_battle_volume.h
++++ b/app/src/main/cpp/pk_battle_volume.h
+@@ -1,6 +1,7 @@
+ /* Private FireRed fixture pilot. The native 2D pipeline is authoritative. */
+ #pragma once
+ #include <math.h>
++#include <stdbool.h>
+ #include <stdint.h>
+ #include <string.h>
+ 
+@@ -14,6 +15,17 @@
+ struct BattleVolume {
+     struct BattleVolumePixel pixels[BATTLE_VOLUME_SIZE][BATTLE_VOLUME_SIZE];
+     uint8_t mask[BATTLE_VOLUME_ART][BATTLE_VOLUME_ART];
++};
++
++enum {
++    BATTLE_DETAIL_SCALE = 2,
++    BATTLE_DETAIL_SIZE = BATTLE_VOLUME_SIZE * BATTLE_DETAIL_SCALE,
++    BATTLE_DETAIL_MATERIAL_SIZE = BATTLE_VOLUME_ART * 4,
++};
++
++struct BattleVolumeDetail {
++    struct BattleVolumePixel pixels[BATTLE_DETAIL_SIZE][BATTLE_DETAIL_SIZE];
++    uint8_t material[BATTLE_DETAIL_MATERIAL_SIZE][BATTLE_DETAIL_MATERIAL_SIZE];
+ };
+ 
+ struct BattleVolumeVertex { float x, y, z; };
+@@ -38,13 +50,15 @@
+     return neighbor ? neighbor + 1 : 2; // A visible rim even on straight edges.
+ }
+ 
+-static void battleVolumeTriangle(struct BattleVolume* mesh, struct BattleVolumeVertex a,
++static void battleVolumeTriangle(struct BattleVolumePixel* surface, int scale, struct BattleVolumeVertex a,
+         struct BattleVolumeVertex b, struct BattleVolumeVertex c, uint8_t ink, uint8_t light,
+         uint8_t face, float yaw, float pitch) {
+     struct BattleVolumeVertex v[3] = {a, b, c};
+     for (int i = 0; i < 3; ++i) {
+         v[i].x += BATTLE_VOLUME_MARGIN + v[i].z * yaw;
+         v[i].y += BATTLE_VOLUME_MARGIN + v[i].z * pitch;
++        v[i].x *= scale;
++        v[i].y *= scale;
+     }
+     a = v[0]; b = v[1]; c = v[2];
+     float det = (b.y-c.y)*(a.x-c.x) + (c.x-b.x)*(a.y-c.y);
+@@ -53,32 +67,35 @@
+     int y0 = (int)floorf(fminf(a.y, fminf(b.y,c.y)));
+     int x1 = (int)ceilf(fmaxf(a.x, fmaxf(b.x,c.x)));
+     int y1 = (int)ceilf(fmaxf(a.y, fmaxf(b.y,c.y)));
++    const int width = BATTLE_VOLUME_SIZE * scale;
+     for (int y = y0; y < y1; ++y) for (int x = x0; x < x1; ++x) {
+-        if ((unsigned)x >= BATTLE_VOLUME_SIZE || (unsigned)y >= BATTLE_VOLUME_SIZE) continue;
++        if ((unsigned)x >= (unsigned)width || (unsigned)y >= (unsigned)width) continue;
+         float u = ((b.y-c.y)*(x+.5f-c.x) + (c.x-b.x)*(y+.5f-c.y)) / det;
+         float w = ((c.y-a.y)*(x+.5f-c.x) + (a.x-c.x)*(y+.5f-c.y)) / det;
+         float r = 1.f-u-w;
+         if (u < -.0001f || w < -.0001f || r < -.0001f) continue;
+         float z = u*a.z + w*b.z + r*c.z;
+-        struct BattleVolumePixel* pixel = &mesh->pixels[y][x];
++        struct BattleVolumePixel* pixel = &surface[y*width+x];
+         if (!pixel->ink || z < pixel->depth)
+             *pixel = (struct BattleVolumePixel){ z, ink, light, face };
+     }
+ }
+ 
+-static void battleVolumeQuad(struct BattleVolume* mesh, struct BattleVolumeVertex a,
++static void battleVolumeQuad(struct BattleVolumePixel* surface, int scale, struct BattleVolumeVertex a,
+         struct BattleVolumeVertex b, struct BattleVolumeVertex c, struct BattleVolumeVertex d,
+         uint8_t ink, uint8_t light, uint8_t face, float yaw, float pitch) {
+-    battleVolumeTriangle(mesh, a, b, c, ink, light, face, yaw, pitch);
+-    battleVolumeTriangle(mesh, a, c, d, ink, light, face, yaw, pitch);
++    battleVolumeTriangle(surface, scale, a, b, c, ink, light, face, yaw, pitch);
++    battleVolumeTriangle(surface, scale, a, c, d, ink, light, face, yaw, pitch);
+ }
+ 
+-static void battleVolumeBuild(struct BattleVolume* mesh, const uint8_t* art, float yaw, float pitch) {
++static void battleVolumeRaster(struct BattleVolumePixel* surface, int scale,
++        uint8_t mask[BATTLE_VOLUME_ART][BATTLE_VOLUME_ART], const uint8_t* art, float yaw, float pitch) {
+     uint8_t depths[64][64];
+-    memset(mesh, 0, sizeof(*mesh));
++    int width = BATTLE_VOLUME_SIZE * scale;
++    memset(surface, 0, (size_t)width*width*sizeof(*surface));
+     for (int y = 0; y < 64; ++y) for (int x = 0; x < 64; ++x) {
+-        mesh->mask[y][x] = (uint8_t)battleVolumeInk(art, x, y);
+-        depths[y][x] = mesh->mask[y][x] ? 5 : 0;
++        mask[y][x] = (uint8_t)battleVolumeInk(art, x, y);
++        depths[y][x] = mask[y][x] ? 5 : 0;
+     }
+     for (int y = 0; y < 64; ++y) for (int x = 0; x < 64; ++x) {
+         unsigned left = battleVolumeDistance(depths,x-1,y), above = battleVolumeDistance(depths,x,y-1);
+@@ -92,33 +109,77 @@
+         if (!depths[y][x]) continue;
+     }
+     for (int y = 0; y < 64; ++y) for (int x = 0; x < 64; ++x) {
+-        uint8_t ink = mesh->mask[y][x], size = depths[y][x];
++        uint8_t ink = mask[y][x], size = depths[y][x];
+         if (!size) continue;
+         struct BattleVolumeVertex a = {x,y,0}, b = {x+1,y,0};
+         struct BattleVolumeVertex c = {x+1,y+1,0}, d = {x,y+1,0};
+         uint8_t light = 237 + size*3;
+-        battleVolumeQuad(mesh,a,b,c,d,ink,light,1,yaw,pitch);
++        battleVolumeQuad(surface,scale,a,b,c,d,ink,light,1,yaw,pitch);
+         struct BattleVolumeVertex A={x,y,size}, B={x+1,y,size};
+         struct BattleVolumeVertex C={x+1,y+1,size}, D={x,y+1,size};
+-        battleVolumeQuad(mesh,A,B,C,D,ink,170,5,yaw,pitch);
++        battleVolumeQuad(surface,scale,A,B,C,D,ink,170,5,yaw,pitch);
+         unsigned east = battleVolumeThickness(depths,x+1,y), north = battleVolumeThickness(depths,x,y-1);
+         unsigned west = battleVolumeThickness(depths,x-1,y), south = battleVolumeThickness(depths,x,y+1);
+         if (size > east) {
+             b.z = c.z = east;
+-            battleVolumeQuad(mesh,b,c,C,B,ink,175,2,yaw,pitch);
++            battleVolumeQuad(surface,scale,b,c,C,B,ink,175,2,yaw,pitch);
+         }
+         if (size > north) {
+             a.z = b.z = north;
+-            battleVolumeQuad(mesh,a,b,B,A,ink,254,3,yaw,pitch);
++            battleVolumeQuad(surface,scale,a,b,B,A,ink,254,3,yaw,pitch);
+         }
+         if (size > west) {
+             a.z = d.z = west;
+-            battleVolumeQuad(mesh,a,d,D,A,ink,202,4,yaw,pitch);
++            battleVolumeQuad(surface,scale,a,d,D,A,ink,202,4,yaw,pitch);
+         }
+         if (size > south) {
+             c.z = d.z = south;
+-            battleVolumeQuad(mesh,c,d,D,C,ink,154,6,yaw,pitch);
++            battleVolumeQuad(surface,scale,c,d,D,C,ink,154,6,yaw,pitch);
+         }
+     }
+ }
+ 
++
++static void battleVolumeBuild(struct BattleVolume* mesh, const uint8_t* art, float yaw, float pitch) {
++    battleVolumeRaster(&mesh->pixels[0][0],1,mesh->mask,art,yaw,pitch);
++}
++
++static uint8_t battleVolumeNeighbor(const uint8_t mask[BATTLE_VOLUME_ART][BATTLE_VOLUME_ART], int x, int y) {
++    return (unsigned)x < BATTLE_VOLUME_ART && (unsigned)y < BATTLE_VOLUME_ART ? mask[y][x] : 0;
++}
++
++/* Slope a small relief ramp at the original ink boundaries. The live palette still owns
++ * every color. Four texels span a source pixel so the lighting does not step with the game grid. */
++static inline void battleVolumeDetailBuild(struct BattleVolumeDetail* detail, const uint8_t* art, float yaw, float pitch) {
++    uint8_t mask[BATTLE_VOLUME_ART][BATTLE_VOLUME_ART];
++    battleVolumeRaster(&detail->pixels[0][0],BATTLE_DETAIL_SCALE,mask,art,yaw,pitch);
++    for (int y=0; y<BATTLE_VOLUME_ART; ++y) for (int x=0; x<BATTLE_VOLUME_ART; ++x) {
++        unsigned ink=mask[y][x];
++        int left=battleVolumeNeighbor(mask,x-1,y)!=ink;
++        int right=battleVolumeNeighbor(mask,x+1,y)!=ink;
++        int top=battleVolumeNeighbor(mask,x,y-1)!=ink;
++        int bottom=battleVolumeNeighbor(mask,x,y+1)!=ink;
++        for (int v=0; v<4; ++v) for (int u=0; u<4; ++u)
++            detail->material[y*4+v][x*4+u]=(uint8_t)(128 + left*(3-u)*2 - right*u*2 +
++                                                    top*(3-v)*4 - bottom*v*4);
++    }
++}
++
++static inline bool battleVolumeDetailCovers(const struct BattleVolumeDetail* detail,int x,int y) {
++    return detail->pixels[y*2][x*2].ink || detail->pixels[y*2][x*2+1].ink ||
++           detail->pixels[y*2+1][x*2].ink || detail->pixels[y*2+1][x*2+1].ink;
++}
++
++static inline unsigned battleVolumeDetailLight(const struct BattleVolumeDetail* detail,
++        const struct BattleVolumePixel* pixel, int x, int y) {
++    int u=(x-BATTLE_VOLUME_MARGIN*BATTLE_DETAIL_SCALE)*2+1;
++    int v=(y-BATTLE_VOLUME_MARGIN*BATTLE_DETAIL_SCALE)*2+1;
++    if ((unsigned)u>=BATTLE_DETAIL_MATERIAL_SIZE || (unsigned)v>=BATTLE_DETAIL_MATERIAL_SIZE)
++        return pixel->light;
++#ifdef PK_BATTLE_RELIEF_CONTROL
++    /* Comparison build: fetch one material texel per source pixel. */
++    u=(u&~3)+1; v=(v&~3)+1;
++#endif
++    int light=(int)pixel->light + detail->material[v][u] - 128;
++    return light < 0 ? 0 : light > 255 ? 255 : (unsigned)light;
++}
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -4581,6 +4581,56 @@
+ #endif
+ }
+ 
++/* The two buffers share an allocation. The optional texture follows the ordinary
++ * frame and the caller continues using the ordinary viewport in game coordinates. */
++static struct BattleDetailOutput {
++    struct PkWideView view;
++    uint32_t* native;
++    uint32_t* detailed;
++    bool ready;
++} battleDetail;
++
++bool pk_wide_battle_detail_requested(void) {
++    return battleDetail.detailed != NULL;
++}
++
++void pk_wide_battle_detail_pixel(int x, int y, const uint32_t samples[4]) {
++    struct PkWideView view=battleDetail.view;
++    int col=x-view.x, row=y-view.y;
++    if (!battleDetail.detailed || (unsigned)col >= (unsigned)view.w ||
++        (unsigned)row >= (unsigned)view.h) return;
++    const int stride=view.w*2;
++    if (!battleDetail.ready) {
++        for (int py=0; py<view.h; ++py) {
++            uint32_t* upper=battleDetail.detailed+py*2*stride;
++            const uint32_t* src=battleDetail.native+py*view.w;
++            for (int px=0; px<view.w; ++px)
++                upper[px*2]=upper[px*2+1]=src[px];
++            memcpy(upper+stride,upper,(size_t)stride*sizeof(*upper));
++        }
++        battleDetail.ready=true;
++    }
++    uint32_t* dst=battleDetail.detailed+row*2*stride+col*2;
++    dst[0]=samples[0]; dst[1]=samples[1];
++    dst[stride]=samples[2]; dst[stride+1]=samples[3];
++}
++
++bool pk_wide_view_sprite_detail(struct mCore* core, const uint32_t* frame, uint32_t* out,
++                                struct PkWideView view, size_t capacityPixels) {
++    battleDetail=(struct BattleDetailOutput){0};
++    if (!out || view.w<=0 || view.h<=0 ||
++        view.w>PK_WIDE_MAX_VIEW_W || view.h>PK_WIDE_MAX_VIEW_H) return false;
++    size_t nativePixels=(size_t)view.w*view.h;
++    if (nativePixels>capacityPixels) return false;
++    if (view.w<=PK_WIDE_MAX_VIEW_W/2 && view.h<=PK_WIDE_MAX_VIEW_H/2 &&
++        nativePixels<=capacityPixels/5)
++        battleDetail=(struct BattleDetailOutput){view,out,out+nativePixels,false};
++    pk_wide_view(core,frame,out,view,NULL);
++    bool ready=battleDetail.ready && !pk_wide_fault();
++    battleDetail=(struct BattleDetailOutput){0};
++    return ready;
++}
++
+ void pk_wide_skip(struct mCore* core, const uint32_t* frame) {
+     struct PkWideView v = { 0, 0, 1, 1 };
+     pk_wide_view(core, frame, NULL, v, NULL);
+@@ -4990,6 +5040,10 @@
+     }
+     if (target < 0) return;
+     static struct BattleVolume mesh;
++    static struct BattleVolumeDetail detail;
++    static bool detailReady;
++    const bool detailed=solidRom==0xdd88761cu && fingerprint==0x1e472829u &&
++        pk_wide_battle_detail_requested();
+     static uint32_t cachedFingerprint;
+     static uint32_t cachedCartridge;
+     static bool meshReady;
+@@ -4998,6 +5052,11 @@
+         cachedFingerprint = fingerprint;
+         cachedCartridge = solidRom;
+         meshReady = true;
++        detailReady = false;
++    }
++    if (detailed && !detailReady) {
++        battleVolumeDetailBuild(&detail,art,.44f,-.39f);
++        detailReady=true;
+     }
+     uint8_t blocked[BATTLE_VOLUME_SIZE][BATTLE_VOLUME_SIZE] = {0};
+     battleVolumeProtect(oam,target,ox-BATTLE_VOLUME_MARGIN,oy-BATTLE_VOLUME_MARGIN,blocked);
+@@ -5017,12 +5076,12 @@
+         useLine(y);
+         for (int col = 0; col < BATTLE_VOLUME_SIZE; ++col) {
+             const struct BattleVolumePixel* pixel = &mesh.pixels[row][col];
+-            if (!pixel->ink) continue;
++            if (!pixel->ink && (!detailed || !battleVolumeDetailCovers(&detail,col,row))) continue;
+             int x = ox + col - BATTLE_VOLUME_MARGIN;
+             if (x < 0 || x >= PK_WIDE_W || x < v.x || x >= v.x+v.w) continue;
+             int sx = x-ox, sy = y-oy;
+             unsigned live = (unsigned)sx < 64 && (unsigned)sy < 64 ? mesh.mask[sy][sx] : 0;
+-            if (!live && pixel->face == 1) continue;
++            if (!detailed && !live && pixel->face == 1) continue;
+             if ((windowLayers(x,y) & 0x18) != 0x18 || blocked[row][col]) continue;
+             int pal;
+             bool covered = false;
+@@ -5034,9 +5093,23 @@
+             uint32_t expected = color(P[live ? palette + live : pal + arena],alpha);
+             const uint32_t native = frame[y*PK_WIDE_W+x];
+             if ((expected ^ native) & 0x00ffffffu) continue;
+-            uint32_t ink = color(P[palette + pixel->ink],alpha);
+-            // mGBA uses the high byte for internal pixel flags on this host.
+-            out[(y-v.y)*v.w+x-v.x] = (native & 0xff000000u) | (voxelShade(ink,pixel->light) & 0x00ffffffu);
++            uint32_t* dst=out+(y-v.y)*v.w+x-v.x;
++            if (detailed) {
++                uint32_t samples[4]={*dst,*dst,*dst,*dst};
++                for (int sy=0; sy<2; ++sy) for (int sx=0; sx<2; ++sx) {
++                    const struct BattleVolumePixel* subpixel=&detail.pixels[row*2+sy][col*2+sx];
++                    if (!subpixel->ink || (!live && subpixel->face==1)) continue;
++                    unsigned light=battleVolumeDetailLight(&detail,subpixel,col*2+sx,row*2+sy);
++                    uint32_t ink=color(P[palette+subpixel->ink],alpha);
++                    samples[sy*2+sx]=(native&0xff000000u)|(voxelShade(ink,light)&0x00ffffffu);
++                }
++                pk_wide_battle_detail_pixel(x,y,samples);
++            }
++            if (pixel->ink && (live || pixel->face!=1)) {
++                uint32_t ink = color(P[palette + pixel->ink],alpha);
++                // mGBA uses the high byte for internal pixel flags on this host.
++                *dst=(native&0xff000000u)|(voxelShade(ink,pixel->light)&0x00ffffffu);
++            }
+         }
+     }
+     useLive();
+--- a/app/src/main/cpp/pk_wide.h
++++ b/app/src/main/cpp/pk_wide.h
+@@ -2,6 +2,7 @@
+ #pragma once
+ 
+ #include <stdbool.h>
++#include <stddef.h>
+ #include <stdint.h>
+ 
+ struct mCore;
+@@ -181,6 +182,13 @@
+  */
+ int pk_wide_view(struct mCore* core, const uint32_t* frame, uint32_t* out, struct PkWideView view, uint32_t* centre);
+ 
++/* Draw the normal frame first. A true result also supplies a 2x frame immediately
++ * after it in out, within capacityPixels. Only the audited opponent gets subpixels. */
++bool pk_wide_view_sprite_detail(struct mCore* core, const uint32_t* frame, uint32_t* out,
++                                struct PkWideView view, size_t capacityPixels);
++bool pk_wide_battle_detail_requested(void);
++void pk_wide_battle_detail_pixel(int x, int y, const uint32_t samples[4]);
++
+ /** Optional projected field view for the CRC-pinned profiles. Toggle from the emulation thread. */
+ void pk_wide_voxel(int on);
+ void pk_wide_climate(int config);
+--- a/app/src/main/cpp/pk_red_battle_pilot.h
++++ b/app/src/main/cpp/pk_red_battle_pilot.h
+@@ -144,8 +144,12 @@
+         palette[0]==palette[2] || palette[0]==palette[3]) return;
+ 
+     static struct BattleVolume volume;
++    static struct BattleVolumeDetail detail;
++    static bool detailReady;
++    const bool detailed=gbGen1BattleCrc==0x9f7fdd53u && fingerprint==0x9e4c3d9au &&
++        pk_wide_battle_detail_requested();
+     static uint32_t meshFingerprint;
+-    if (meshFingerprint!=fingerprint) {
++    if (meshFingerprint!=fingerprint || (detailed && !detailReady)) {
+         // Retain the native picture's placement and color indices. The
+         // shared helper consumes 4bpp 8x8 tiles in a padded 64-square.
+         uint8_t art[2048]={0};
+@@ -155,15 +159,29 @@
+         }
+         battleVolumeBuild(&volume,art,.44f,-.39f);
+         meshFingerprint=fingerprint;
++        detailReady=detailed;
++        if (detailed) battleVolumeDetailBuild(&detail,art,.44f,-.39f);
+     }
+     for (int y=0;y<GEN1_BATTLER_SIZE;++y) for (int x=0;x<GEN1_BATTLER_SIZE;++x) {
+         int screenX=GEN1_BATTLER_X+x;
+         if (screenX<v.x || screenX>=v.x+v.w || y<v.y || y>=v.y+v.h) continue;
+-        const struct BattleVolumePixel* sample=&volume.pixels[y+BATTLE_VOLUME_MARGIN][x+BATTLE_VOLUME_MARGIN];
+-        if (!sample->ink) continue;
++        int row=y+BATTLE_VOLUME_MARGIN, col=x+BATTLE_VOLUME_MARGIN;
++        const struct BattleVolumePixel* sample=&volume.pixels[row][col];
++        if (!sample->ink && (!detailed || !battleVolumeDetailCovers(&detail,col,row))) continue;
+         unsigned live=gbGen1BattleInk[y][x];
+-        if (!live && sample->face==1) continue;
+         uint32_t native=frame[y*GBW+screenX];
+-        out[(y-v.y)*v.w+screenX-v.x]=voxelShade((native&0xff000000u)|palette[sample->ink],sample->light);
++        uint32_t* dst=out+(y-v.y)*v.w+screenX-v.x;
++        if (detailed) {
++            uint32_t samples[4]={*dst,*dst,*dst,*dst};
++            for (int sy=0; sy<2; ++sy) for (int sx=0; sx<2; ++sx) {
++                const struct BattleVolumePixel* subpixel=&detail.pixels[row*2+sy][col*2+sx];
++                if (!subpixel->ink || (!live && subpixel->face==1)) continue;
++                unsigned light=battleVolumeDetailLight(&detail,subpixel,col*2+sx,row*2+sy);
++                samples[sy*2+sx]=voxelShade((native&0xff000000u)|palette[subpixel->ink],light);
++            }
++            pk_wide_battle_detail_pixel(screenX,y,samples);
++        }
++        if (sample->ink && (live || sample->face!=1))
++            *dst=voxelShade((native&0xff000000u)|palette[sample->ink],sample->light);
+     }
+ }
+--- a/app/src/main/cpp/pk_session.c
++++ b/app/src/main/cpp/pk_session.c
+@@ -371,13 +371,27 @@
+     // WIDE: only with a game it knows and a window set. 32-bit colour, like the screen's upload.
+     struct PkWideView v = { g.viewX, g.viewY, g.viewW, g.viewH };
+     g.wideSkipped = false;
++    g.wideSpriteDetail = false;
+     if (g.wide && g.wideCrc && v.w > 0 && v.h > 0 && v.w <= PK_WIDE_MAX_VIEW_W && v.h <= PK_WIDE_MAX_VIEW_H &&
+         sizeof(color_t) == 4 && pkWideFrameFits() && g.wideSkipNext) {
+         pk_wide_skip(g.core, (const uint32_t*) g.video);
+         g.wideSkipped = true;
+     } else if (g.wide && g.wideCrc && v.w > 0 && v.h > 0 && v.w <= PK_WIDE_MAX_VIEW_W && v.h <= PK_WIDE_MAX_VIEW_H &&
+         sizeof(color_t) == 4 && pkWideFrameFits()) {
+-        pk_wide_view(g.core, (const uint32_t*) g.video, g.wide, v, NULL);
++#ifdef __ANDROID__
++        if (g.wideCrc==0x9f7fdd53u || g.wideCrc==0xdd88761cu) {
++            const size_t capacity=(size_t)PK_WIDE_MAX_VIEW_W*PK_WIDE_MAX_VIEW_H;
++            g.wideSpriteDetail=pk_wide_view_sprite_detail(g.core,(const uint32_t*)g.video,g.wide,v,capacity);
++            static uint32_t detailReported;
++            if (g.wideSpriteDetail && detailReported!=g.wideCrc) {
++                detailReported=g.wideCrc;
++                LOGI("battle sprite detail: crc=%08x source=%dx%d relief=256x256 target=%dx%d",
++                     g.wideCrc,pk_wide_frame_w()==PK_WIDE_W ? 64 : 56,
++                     pk_wide_frame_w()==PK_WIDE_W ? 64 : 56,v.w*2,v.h*2);
++            }
++        } else
++#endif
++        pk_wide_view(g.core,(const uint32_t*)g.video,g.wide,v,NULL);
+         pk_flight_draw_wide(g.wide, v.w, v.h, v.x, v.y);   // FREE FLIGHT's clouds over the whole picture
+         g.wideW = v.w;
+         g.wideH = v.h;
+--- a/app/src/main/cpp/pk_session.h
++++ b/app/src/main/cpp/pk_session.h
+@@ -42,6 +42,7 @@
+     // drawn: the screen shows `video`). The window comes from WideCamera (ZOOM, the look-around) per frame.
+     uint32_t* wide;
+     int wideW, wideH;
++    bool wideSpriteDetail;              // the optional 2x texture follows the native wide frame
+     uint32_t wideCrc;                   // the game WIDE draws (its ROM's CRC32; 0 = off)
+     volatile int viewX, viewY, viewW, viewH;
+     volatile bool wideSkipNext;         // the next frame won't be shown: only note it (pk_wide_skip); false = draw
+--- a/app/src/main/cpp/pokedaisy_jni.c
++++ b/app/src/main/cpp/pokedaisy_jni.c
+@@ -424,6 +424,11 @@
+ JNIEXPORT jint JNICALL
+ Java_com_pokedaisy_app_MgbaCore_pkWideHeight(JNIEnv* env, jobject thiz) {
+     return g.wideH;
++}
++
++JNIEXPORT jboolean JNICALL
++Java_com_pokedaisy_app_MgbaCore_pkWideHasSpriteDetail(JNIEnv* env, jobject thiz) {
++    return g.wideSpriteDetail ? JNI_TRUE : JNI_FALSE;
+ }
+ 
+ // WIDE: draw the next frame's window (true), or only keep its RAM (false: the screen won't show it). Emu thread.
+--- a/app/src/main/kotlin/com/pokedaisy/app/EmulatorView.kt
++++ b/app/src/main/kotlin/com/pokedaisy/app/EmulatorView.kt
+@@ -200,6 +200,7 @@
+         }
+ 
+     /** SHADERS > UNLIT SCREEN ([Prefs.unlitScreen], [ScreenShaders.UNLIT]): drawn between SMOOTHING and FILTER. */
++    @Volatile
+     var unlit: Boolean = false
+         set(v) {
+             if (field == v) return
+@@ -208,6 +209,7 @@
+         }
+ 
+     /** SHADERS > FILTER's effect ([Prefs.screenFilter], [ScreenShaders.effectFor]); null = none. */
++    @Volatile
+     internal var screenEffect: ScreenShaders.Effect? = null
+         set(v) {
+             if (field == v) return
+@@ -223,6 +225,7 @@
+         }
+ 
+     /** SHADERS > SMOOTHING ([com.pokedaisy.app.Prefs.smoothing]): xBRZ / xBR / ScaleFX before FILTER. */
++    @Volatile
+     var smoothing: Smoothing = Smoothing.OFF
+         set(v) {
+             if (field == v) return
+@@ -319,7 +322,14 @@
+             }
+             val w = MgbaCore.pkWideWidth()
+             val win = camera.current
+-            if (w > 0 && win != null) renderer.publish(w, MgbaCore.pkWideHeight(), win) else renderer.publish(0, 0, null)
++            if (w > 0 && win != null) {
++                val h = MgbaCore.pkWideHeight()
++                // The original window still places the scene and its HUD. Filters that
++                // depend on source texel size keep the ordinary render path.
++                if (smoothing == Smoothing.OFF && screenEffect == null && !unlit && MgbaCore.pkWideHasSpriteDetail()) {
++                    renderer.publish(w * 2, h * 2, win, wideOffset = w * h * 4)
++                } else renderer.publish(w, h, win)
++            } else renderer.publish(0, 0, null)
+         } catch (t: Exception) {
+             // Whatever went wrong with the window, the game's own frame still goes up.
+             Log.e("pokedaisy", "WIDE frame not published", t)
+@@ -518,7 +528,7 @@
+ 
+         /** Emu thread, between frames (so [buffer] is whole): copies it - or, with [win], the WIDE window
+          * [wideW] x [wideH] - into [ready]. */
+-        fun publish(wideW: Int, wideH: Int, win: WideCamera.Window?) = synchronized(frameLock) {
++        fun publish(wideW: Int, wideH: Int, win: WideCamera.Window?, wideOffset: Int = 0) = synchronized(frameLock) {
+             // A delayed Android draw must consume the previous native-clock frame
+             // before its single pending slot is reused. Bounded for paused surfaces;
+             // fast-forward and held frames retain the existing overwrite behavior.
+@@ -531,8 +541,9 @@
+             val dst = ready ?: return
+             val w = if (wideSrc != null) wideW else frameW
+             val h = if (wideSrc != null) wideH else frameH
+-            src.position(0)
+-            src.limit(minOf(src.capacity(), dst.capacity(), w * h * 4))
++            val offset = if (wideSrc != null) wideOffset else 0
++            src.position(offset)
++            src.limit(minOf(src.capacity(), offset + dst.capacity(), offset + w * h * 4))
+             dst.position(0)
+             dst.put(src)
+             src.limit(src.capacity())
+--- a/app/src/main/kotlin/com/pokedaisy/app/MgbaCore.kt
++++ b/app/src/main/kotlin/com/pokedaisy/app/MgbaCore.kt
+@@ -197,6 +197,7 @@
+     /** The last frame's window ([pkWideBuffer] holds [pkWideWidth] x [pkWideHeight]), or 0 if it wasn't drawn wide. Emu thread. */
+     external fun pkWideWidth(): Int
+     external fun pkWideHeight(): Int
++    external fun pkWideHasSpriteDetail(): Boolean
+     /** WIDE: draw the next frame's window, or (false) only keep its RAM - a frame the screen won't show. Emu thread. */
+     external fun pkWideSetDraw(draw: Boolean)
+     /** WIDE: the last frame was only noted ([pkWideSetDraw] false): nothing new to put on screen. Emu thread. */

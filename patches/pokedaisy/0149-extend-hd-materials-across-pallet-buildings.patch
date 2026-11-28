@@ -1,0 +1,165 @@
+--- a/app/src/main/cpp/pk_wide_buildings.h
++++ b/app/src/main/cpp/pk_wide_buildings.h
+@@ -5,6 +5,7 @@
+ #include "pk_scenery_buildings.h"
+ #include "pk_voxel_roof_material.h"
+ #include "pk_pallet_board_mask.h"
++#include "pk_pallet_facade_registry.h"
+ #include "pk_voxel_board_material.h"
+ #define SOLID_BUILDING_MAX_W 320
+ #define SOLID_BUILDING_MAX_H 160
+@@ -18,16 +19,21 @@
+ struct SolidBuildingContext {
+     const struct VoxelView* view;
+     const struct SolidBuilding* building;
+-    const uint8_t* boardTexture;
++    const uint8_t* facadeTexture;
++    unsigned material;
+ };
+ 
+-/* This registry entry already matches the complete 5×5 live footprint.
+- * The three exact profiles also share the offline-reviewed UV/source mask. */
+-static bool solidBuildingPalletBoards(const struct SceneryBuildingProfile* p) {
+-    if (p->width != 5 || p->height != 5 || p->cells[0] != 641 || p->shape.wallRow != 48) return false;
+-    return (p->crc == 0xdd88761cu && p->primary == 0x082d4a94u && p->secondary == 0x082d4aacu) ||
+-           (p->crc == 0xe4deb9beu && p->primary == 0x084ad600u && p->secondary == 0x084add10u) ||
+-           (p->crc == 0x964763c0u && p->primary == 0x08316a4cu && p->secondary == 0x08316a64u);
++enum { FACADE_BOARDS=1, FACADE_ASHLAR=2 };
++
++/* Building recognition has already verified the complete live footprint. */
++static unsigned solidBuildingPalletMaterial(const struct SceneryBuildingProfile* p) {
++    if (p->height != 5 || p->shape.wallRow != 48) return 0;
++    for (unsigned i=0;i<sizeof(palletFacadeProfiles)/sizeof(*palletFacadeProfiles);++i) {
++        const struct PalletFacadeProfile* row=&palletFacadeProfiles[i];
++        if (row->crc==p->crc && row->primary==p->primary && row->secondary==p->secondary &&
++            row->width==p->width && row->firstCell==p->cells[0]) return row->material;
++    }
++    return 0;
+ }
+ static void solidBuildingTriangle(void* opaque,const SceneryBuildingVertex* a,
+         const SceneryBuildingVertex* b,const SceneryBuildingVertex* c,unsigned shade) {
+@@ -54,7 +60,7 @@
+     const uint8_t* roof=fabsf(up)>.01f ? building->roofTexture : 0;
+     // The UVs for side posts, roof and gables do not use the front-wall mask.
+     const float front=building->profile->shape.depth;
+-    const uint8_t* boards=a->z==front && b->z==front && c->z==front ? ctx->boardTexture : 0;
++    const uint8_t* facade=a->z==front && b->z==front && c->z==front ? ctx->facadeTexture : 0;
+     for(int y=y0;y<=y1;y++)for(int x=x0;x<=x1;x++) {
+         float wa=((sy[1]-sy[2])*(x+.5f-sx[2])+(sx[2]-sx[1])*(y+.5f-sy[2]))/den;
+         float wb=((sy[2]-sy[0])*(x+.5f-sx[2])+(sx[0]-sx[2])*(y+.5f-sy[2]))/den;
+@@ -71,9 +77,11 @@
+             const int x8=(int)((wa*a->x+wb*b->x+wc*c->x)*8.0f);
+             const int z8=(int)((wa*a->z+wb*b->z+wc*c->z)*8.0f);
+             color=voxelShade(color,voxelRoofSample(roof,x8,z8));
+-        } else if (boards && (unsigned)(v-48)<32u &&
+-                   (voxelPalletBoardMask[v-48][u/32] & (1u<<(u&31)))) {
+-            color=voxelShade(color,voxelBoardSample(boards,(int)(sourceU*8.0f),(int)(sourceV*8.0f)));
++        } else if (facade && (unsigned)(v-48)<32u) {
++            uint32_t owned=ctx->material==FACADE_BOARDS
++                ? voxelPalletBoardMask[v-48][u/32] : voxelPalletAshlarMask[v-48][u/32];
++            if (owned & (1u<<(u&31)))
++                color=voxelShade(color,voxelFacadeSample(facade,(int)(sourceU*8.0f),(int)(sourceV*8.0f)));
+         }
+         voxelPixel(view,x,y,(int)floorf(wa*wy[0]+wb*wy[1]+wc*wy[2]),voxelShade(color,shade));
+     }
+@@ -88,7 +96,9 @@
+         if((unsigned)px<(unsigned)view->width && (unsigned)py<(unsigned)view->height)
+             voxelPixel(view,px,py,wy,voxelShade(view->out[py*view->width+px],224));
+     }
+-    const uint8_t* boards=solidBuildingPalletBoards(p) ? voxelBoardTexture() : 0;
+-    struct SolidBuildingContext ctx={view,building,boards};
++    const unsigned material=solidBuildingPalletMaterial(p);
++    const uint8_t* facade=material==FACADE_BOARDS ? voxelBoardTexture()
++        : material==FACADE_ASHLAR ? voxelAshlarTexture() : 0;
++    struct SolidBuildingContext ctx={view,building,facade,material};
+     SceneryBuilding_Emit(&ctx,solidBuildingTriangle,&p->shape);
+ }
+--- a/app/src/main/cpp/pk_voxel_board_material.h
++++ b/app/src/main/cpp/pk_voxel_board_material.h
+@@ -30,8 +30,27 @@
+     return atlas;
+ }
+ 
++/* Original shallow limestone pits. Native mortar and brick borders remain in
++ * the source art. An irregular grain only modulates the sampled stone face. */
++static const uint8_t* voxelAshlarTexture(void) {
++    enum { size = VOXEL_BOARD_TEXTURE_SIZE };
++    static uint8_t atlas[size * size];
++    static bool ready;
++    if (ready) return atlas;
++    for (unsigned y=0;y<size;++y) for (unsigned x=0;x<size;++x) {
++        const unsigned u=(x*256u+128u)/size,v=(y*256u+128u)/size;
++        const unsigned coarse=(u>>3)*13411u+(v>>3)*19013u;
++        const unsigned fine=(u*139u+v*313u)^(u*v*17u);
++        const unsigned shade=((coarse^(coarse>>4))&15u)/2u+(fine&7u)/2u;
++        const unsigned pit=(coarse^(coarse>>7))%19u == 0 && (u&7u)>1 && (v&7u)>1 ? 16u:0u;
++        atlas[y*size+x]=(uint8_t)(255u-shade-pit);
++    }
++    ready=true;
++    return atlas;
++}
++
+ /* A repeat covers 32×32 source-art units, as in the roof texture control. */
+-static unsigned voxelBoardSample(const uint8_t* atlas, int u8, int v8) {
++static unsigned voxelFacadeSample(const uint8_t* atlas, int u8, int v8) {
+     const unsigned u = ((unsigned)u8 & 255u) * VOXEL_BOARD_TEXTURE_SIZE / 256u;
+     const unsigned v = ((unsigned)v8 & 255u) * VOXEL_BOARD_TEXTURE_SIZE / 256u;
+     return atlas[v * VOXEL_BOARD_TEXTURE_SIZE + u];
+--- /dev/null
++++ b/app/src/main/cpp/pk_pallet_facade_registry.h
+@@ -0,0 +1,55 @@
++/* Pallet facade ownership from independently verified source profiles. */
++#pragma once
++
++static const uint32_t voxelPalletAshlarMask[32][4] = {
++    {0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u},
++    {0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u},
++    {0x00800080u, 0xefeff700u, 0x0100006fu, 0x00000100u},
++    {0x00000010u, 0x00000000u, 0x00000000u, 0x00000800u},
++    {0x00000010u, 0x7e7e7e00u, 0x0000007eu, 0x00000800u},
++    {0x00000000u, 0x7e7e7e00u, 0x0000007eu, 0x00000000u},
++    {0x00000000u, 0x7e7e7e00u, 0x0000007eu, 0x00000000u},
++    {0x00000010u, 0x00000000u, 0x00000000u, 0x00000800u},
++    {0x00800090u, 0xefeff700u, 0x0100006fu, 0x00000900u},
++    {0x00800080u, 0xefeff700u, 0x0100006fu, 0x00000100u},
++    {0x00800080u, 0xefeff700u, 0x0100006fu, 0x00000100u},
++    {0x00000010u, 0x00000000u, 0x00000000u, 0x00000800u},
++    {0x00000010u, 0x7e7e7e00u, 0x0000007eu, 0x00000800u},
++    {0x00000000u, 0x7e7e7e00u, 0x0000007eu, 0x00000000u},
++    {0x00003e00u, 0x7e7e7e00u, 0x0000007eu, 0x00000078u},
++    {0x00000010u, 0x00000000u, 0x00000000u, 0x00000800u},
++    {0x00002f90u, 0x00007700u, 0x0000006fu, 0x000009e8u},
++    {0x00002f80u, 0x00007700u, 0x0000006fu, 0x000001e8u},
++    {0x00002f80u, 0x00007700u, 0x0000006fu, 0x000001e8u},
++    {0x00000010u, 0x00000000u, 0x00000000u, 0x00000800u},
++    {0x00003e10u, 0x00007e00u, 0x0000007eu, 0x00000878u},
++    {0x00003e00u, 0x00007e00u, 0x0000007eu, 0x00000078u},
++    {0x00003e00u, 0x00007e00u, 0x0000007eu, 0x00000078u},
++    {0x00000010u, 0x00000000u, 0x00000000u, 0x00000800u},
++    {0x00002f90u, 0x00007700u, 0x0000006fu, 0x000009e8u},
++    {0x00002f80u, 0x00007700u, 0x0000006fu, 0x000001e8u},
++    {0x00002f80u, 0x00007700u, 0x0000006fu, 0x000001e8u},
++    {0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u},
++    {0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u},
++    {0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u},
++    {0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u},
++    {0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u},
++};
++
++static const struct PalletFacadeProfile {
++    uint32_t crc, primary, secondary;
++    uint16_t firstCell;
++    uint8_t width, material;
++} palletFacadeProfiles[] = {
++    {0x5e704d77u, 0x82d4a94u, 0x82d4aacu, 641, 5, 1},
++    {0x5e704d77u, 0x82d4a94u, 0x82d4aacu, 680, 7, 2},
++    {0xfba55dd8u, 0x82d4a94u, 0x82d4aacu, 641, 5, 1},
++    {0xfba55dd8u, 0x82d4a94u, 0x82d4aacu, 680, 7, 2},
++    {0xf2d16ebdu, 0x82d4a94u, 0x82d4aacu, 641, 5, 1},
++    {0xe4deb9beu, 0x84ad600u, 0x84add10u, 641, 5, 1},
++    {0xe4deb9beu, 0x84ad600u, 0x84add10u, 680, 7, 2},
++    {0x964763c0u, 0x8316a4cu, 0x8316a64u, 641, 5, 1},
++    {0x964763c0u, 0x8316a4cu, 0x8316a64u, 680, 7, 2},
++    {0xdd88761cu, 0x82d4a94u, 0x82d4aacu, 641, 5, 1},
++    {0xdd88761cu, 0x82d4a94u, 0x82d4aacu, 680, 7, 2},
++};

@@ -91,28 +91,41 @@ def generate_engines(profiles,output):
 
 def generate_ground_props(profiles,output):
     lines=['// Generated reviewed field props; no ROM artwork.','#pragma once',
-           'struct SceneryGroundProp { uint32_t rom,primary; uint16_t id,ground; uint8_t kind,ink[6],paletteInk[3]; };',
+           'struct SceneryGroundProp { uint32_t rom,primary,secondary; uint16_t id,ground; uint8_t kind,ink[6],paletteInk[3],clearLayer,floorClimate; };',
            'static const struct SceneryGroundProp sceneryGroundProps[] = {']
-    seen=set()
+    seen={}
     for p in profiles:
         key=(p['rom_crc32'],p['primary'],p['id'])
-        assert p['reviewed'] and key not in seen and p['kind'] in (1,3,4,13)
+        secondary=int(p.get('secondary','0'),16)
+        prior=seen.setdefault(key,set())
+        assert p['reviewed'] and secondary not in prior and 0 not in prior and (secondary or not prior)
+        assert p['kind'] in (1,3,4,13)
         if p['kind']==1:assert p.get('behavior')==2,'Encounter grass needs reviewed own-ROM tall-grass semantics'
-        assert 0<=p['id']<512 and 0<=p['ground']<512 and len(p['ink'])==6 and all(0<=n<16 for n in p['ink'])
+        floor=p.get('source_floor')
+        clear=climate=0
+        if floor:
+            assert 'ground' not in p and secondary and floor['clear_layer'] in (1,2)
+            clear=floor['clear_layer']
+            climate={'path':1,'turf':2}[floor['surface']]
+        else:
+            assert 0<=p['ground']<512
+        assert 0<=p['id']<(1024 if secondary else 512) and len(p['ink'])==6 and all(0<=n<16 for n in p['ink'])
         palette_inks=p.get('palette_inks',[0,0,0])
         if 'palette_inks' in p:
             assert p['kind']==13 and len(palette_inks)==3, 'Fixed palette inks are only for reviewed flowers'
             assert all(0<n<256 and n%16 for n in palette_inks), 'Palette inks need opaque BG colors'
-        seen.add(key)
-        lines.append('    {0x%s,%s,%d,%d,%d,{%s},{%s}},'%(p['rom_crc32'],p['primary'],p['id'],p['ground'],p['kind'],','.join(map(str,p['ink'])),','.join(map(str,palette_inks))))
-    lines+=['};','static const struct SceneryGroundProp *sceneryGroundProp(uint32_t rom,uint32_t primary,int id) {',
+        prior.add(secondary)
+        lines.append('    {0x%s,%s,%#x,%d,%d,%d,{%s},{%s},%d,%d},'%(p['rom_crc32'],p['primary'],secondary,p['id'],p.get('ground',0),p['kind'],','.join(map(str,p['ink'])),','.join(map(str,palette_inks)),clear,climate))
+    lines+=['};','static const struct SceneryGroundProp *sceneryGroundProp(uint32_t rom,uint32_t primary,uint32_t secondary,int id) {',
             '    for(unsigned i=0;i<sizeof(sceneryGroundProps)/sizeof(sceneryGroundProps[0]);i++) {',
             '        const struct SceneryGroundProp *p=&sceneryGroundProps[i];',
-            '        if(p->rom==rom && p->primary==primary && p->id==id)return p;',
+            '        if(p->rom==rom && p->primary==primary && (!p->secondary || p->secondary==secondary) && p->id==id)return p;',
             '    }','    return 0;','}',
-            'static int sceneryGroundPropsTileset(uint32_t rom,uint32_t primary) {',
-            '    for(unsigned i=0;i<sizeof(sceneryGroundProps)/sizeof(sceneryGroundProps[0]);i++)',
-            '        if(sceneryGroundProps[i].rom==rom && sceneryGroundProps[i].primary==primary)return 1;',
+            'static int sceneryGroundPropsTileset(uint32_t rom,uint32_t primary,uint32_t secondary) {',
+            '    for(unsigned i=0;i<sizeof(sceneryGroundProps)/sizeof(sceneryGroundProps[0]);i++) {',
+            '        const struct SceneryGroundProp *p=&sceneryGroundProps[i];',
+            '        if(p->rom==rom && p->primary==primary && (!p->secondary || p->secondary==secondary))return 1;',
+            '    }',
             '    return 0;','}']
     (output/'pk_scenery_ground_props.h').write_text('\n'.join(lines)+'\n')
 
@@ -216,7 +229,8 @@ def generate_small_fixtures(profiles, output):
              'static const struct SceneryFixture sceneryFixtures[] = {']
     shapes = {'steel_fence': 'SCENERY_STEEL_FENCE', 'cut_timber': 'SCENERY_CUT_TIMBER', 'sign': 'SCENERY_SIGN'}
     signs = {}
-    rails = {'none': 0, 'horizontal': 1, 'vertical': 2, 'corner_left': 3, 'corner_right': 4}
+    rails = {'none': 0, 'horizontal': 1, 'vertical': 2, 'corner_left': 3, 'corner_right': 4,
+             'north_corner_left': 5, 'north_corner_right': 6}
     groups = {}
     seen = set()
     for profile in profiles:
@@ -248,13 +262,19 @@ def generate_small_fixtures(profiles, output):
         line = '    {0x%x, %s, %d, %d, {%s}, {%s}, %d},' % (
             key[3], shapes[profile['shape']], rail, len(posts),
             ','.join(map(str, posts)), ','.join(map(str, ink)), art)
-        groups.setdefault(key[:3], {})[key[3]] = line
+        overlay = profile.get('overlay_layer', 1)
+        assert type(overlay) is int and overlay in (1, 2)
+        groups.setdefault(key[:3], {})[key[3]] = line, overlay
     assert 0 < len(seen) <= 65535
     offsets = []
+    third_layer = []
     first = 0
     for key, fixtures in sorted(groups.items()):
         count = len(fixtures)
-        lines.extend(line for tile, line in sorted(fixtures.items()))
+        for index, (_, (line, overlay)) in enumerate(sorted(fixtures.items()), first):
+            lines.append(line)
+            if overlay == 2:
+                third_layer.append(index)
         offsets.append('    {0x%08x, 0x%08x, 0x%08x, %d, %d},' % (*key, first, count))
         first += count
     lines.extend(['};', 'static const struct SceneryFixtureArt sceneryFixtureArt[] = {', '    {{0}, {0}},'])
@@ -280,6 +300,12 @@ def generate_small_fixtures(profiles, output):
         '        else last=mid;',
         '    }',
         '    return -1;',
+        '}',
+        'static int scenerySmallFixtureOverlayLayer(int index) {',
+        '    switch (index) {',
+        *(f'    case {index}: return 2;' for index in third_layer),
+        '    default: return 1;',
+        '    }',
         '}',
     ])
     (output/'pk_scenery_small_fixtures.h').write_text('\n'.join(lines)+'\n')

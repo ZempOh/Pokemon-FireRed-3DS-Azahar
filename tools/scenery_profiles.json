@@ -31,6 +31,21 @@
     }
   },
   "runtime_materials": {
+    "wall_relief": {
+      "source_size": [256, 256],
+      "control_size": [16, 16],
+      "host_sampled_english_profiles": 19,
+      "recognition": "Exact building face and source-owned palette shades, with opening and ground masks",
+      "device_evidence": "Visible atlas sample telemetry and matched 2D, Automatic and winter screenshots"
+    },
+    "pokemon_sprite_relief": {
+      "pilot_profiles": ["red-en", "firered"],
+      "source_size": [256, 256],
+      "host_control_size": [64, 64],
+      "pilot_triangle_target": [136, 136],
+      "quality_setting": "Per-game Pokémon Detail with Standard and HD in 3D mode",
+      "device_evidence": "Exact same-APK Standard and HD comparisons plus native 2D and protected HUD controls"
+    },
     "roof_relief": {
       "source_size": [256, 256],
       "control_size": [16, 16],

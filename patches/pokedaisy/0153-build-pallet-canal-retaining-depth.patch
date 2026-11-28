@@ -1,0 +1,97 @@
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -30,6 +30,7 @@
+ #include "pk_wide_voxel.h"
+ #include "pk_water_surface.h"
+ #include "pk_scenery_water_profiles.h"
++#include "pk_scenery_pallet_banks.h"
+ #include "pk_scenery_cave_contact_profiles.h"
+ #include "pk_scenery_south_ledge_profiles.h"
+ #include "pk_scenery_dresco_monument.h"
+@@ -6106,6 +6107,62 @@
+     voxelPropBox(view,backX,y+9,3,21,z+7,1,voxelShade(b->back,239u));
+ }
+ 
++/* Native collision stays at its original height. Raise only the narrow
++ * opaque north rock lip where the full road-to-water footprint still matches. */
++static void palletBankDraw(const struct Snap* s,const struct VoxelView* view,int cellX,int cellY,int href,int vref) {
++    if (s->num || s->width!=24 || s->height!=20 || !F.mapHeader) return;
++    bool registered=false;
++    for (unsigned i=0;i<sizeof(palletBankProfiles)/sizeof(*palletBankProfiles);++i) {
++        const struct PalletBankProfile* p=&palletBankProfiles[i];
++        if (p->crc==solidRom && p->group==s->group && p->primary==s->primary &&
++            p->secondary==s->secondary && p->layout==r32(F.mapHeader)) registered=true;
++    }
++    if (!registered || !solidGroundAligned(href,vref)) return;
++    static const uint16_t words[3][4]={
++        {0x3296,0x3296,0x3296,0x3296},
++        {0x12d1,0x1123,0x1123,0x12d2},
++        {0x112a,0x112b,0x112b,0x112c},
++    };
++    int mapX=MAP_OFFSET+7, mapY=MAP_OFFSET+17;
++    int col=mapX-cellX, row=mapY-cellY;
++    if (col<0 || row<1 || col+3>=view->cols || row>=view->rows ||
++        mapX+3>=s->vw || mapY+1>=s->vh) return;
++    for (int y=0;y<3;++y)
++        if (memcmp(s->vmap+(mapY-1+y)*s->vw+mapX,words[y],sizeof(words[y]))) return;
++    for (int t=0;t<4;++t) if (!sceneryCellVisible(col+t,row)) return;
++    for (int t=0;t<4;++t) {
++        int shape=t==0 ? 0 : t==3 ? 2 : 1;
++        int worldX=view->left+(col+t)*16;
++        int worldY=view->top+row*16;
++        int rise=voxelRise(view,col+t,row);
++        int bankHeight=voxelRise(view,col+t,row-1)-rise;
++        const uint32_t* art=view->texture+row*16*view->stride+(col+t)*16;
++        for (int u=0;u<16;++u) {
++            int front=palletBankFront[shape][u];
++            int lift=front>3 ? 3 : 2;
++            // The snow cap stays on the walkable grass. Texture only the
++            // exposed face underneath with the adjacent native rock ink.
++            int x=voxelX(view,worldX+u,worldY);
++            int top=voxelY(view,worldY,rise+bankHeight);
++            uint32_t grass=voxelShade(art[u-view->stride],192);
++            for (int d=1;d<bankHeight;++d) {
++                uint32_t rock=voxelShade(art[(d%3)*view->stride+u],208u-5u*(unsigned)d);
++                uint32_t face=climateMix(grass,rock,d<3 ? 67u*(unsigned)d : 210u);
++                voxelPixel(view,x,top+d,worldY,face);
++            }
++            for (int d=0;d<=front;++d) {
++                int y=worldY+d;
++                int sx=voxelX(view,worldX+u,y), sy=voxelY(view,y,rise+lift);
++                voxelPixel(view,sx,sy,y,art[d*view->stride+u]);
++                if (d==front) {
++                    uint32_t wet=voxelShade(art[d*view->stride+u],222);
++                    for (int h=1;h<=lift;++h) voxelPixel(view,sx,sy+h,y,wet);
++                }
++            }
++        }
++    }
++}
++
+ static bool drawVoxel(const struct Snap* s, int cx, int cy, int href, int vref,
+                       uint32_t* out, struct PkWideView v, uint32_t alpha) {
+     if (!voxelViewportFits(v.w, v.h)) return false;
+@@ -6249,6 +6306,7 @@
+     if (caveContact) sceneryCaveFootVolume(s,&voxel,cellX,cellY);
+     if (scenerySouthLedgeMap(s) && solidGroundAligned(href,vref))
+         scenerySouthLedgeVolume(s,&voxel,cellX,cellY);
++    palletBankDraw(s,&voxel,cellX,cellY,href,vref);
+     if (hasDrescoMonument) drescoMonumentDraw(&voxel,&drescoMonument);
+     for (int i=0;i<benchCount;++i) sceneryBenchDraw(&voxel,&benches[i]);
+     for (int i=0; i<drescoBenchCount; ++i) drescoBenchDraw(&voxel,&drescoBenches[i]);
+--- /dev/null
++++ b/app/src/main/cpp/pk_scenery_pallet_banks.h
+@@ -0,0 +1,13 @@
++// Generated from exact CRC, layouts and source opacity. No ROM art.
++#pragma once
++struct PalletBankProfile { uint32_t crc,layout,primary,secondary; uint8_t group; };
++static const struct PalletBankProfile palletBankProfiles[] = {
++    {0xe4deb9beu,0x0854dfbcu,0x084ad600u,0x084add10u,6},
++    {0x964763c0u,0x0831f520u,0x08316a4cu,0x08316a64u,3},
++    {0xdd88761cu,0x082dd4c0u,0x082d4a94u,0x082d4aacu,3},
++};
++static const uint8_t palletBankFront[3][16] = {
++    {5,5,5,5,5,4,3,3,3,3,3,3,3,3,2,2},
++    {2,2,3,3,3,3,3,3,3,3,3,3,3,3,2,2},
++    {2,2,3,3,3,3,3,3,3,3,4,5,5,5,5,5},
++};

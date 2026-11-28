@@ -1,0 +1,13 @@
+--- a/app/src/main/cpp/pk_scenery_pallet_banks.h
++++ b/app/src/main/cpp/pk_scenery_pallet_banks.h
+@@ -5,6 +5,10 @@
+     {0xe4deb9beu,0x0854dfbcu,0x084ad600u,0x084add10u,6},
+     {0x964763c0u,0x0831f520u,0x08316a4cu,0x08316a64u,3},
+     {0xdd88761cu,0x082dd4c0u,0x082d4a94u,0x082d4aacu,3},
++    {0x5e704d77u,0x082dd4c0u,0x082d4a94u,0x082d4aacu,3},
++    {0xfba55dd8u,0x082dd4c0u,0x082d4a94u,0x082d4aacu,3},
++    {0xf2d16ebdu,0x082dd4c0u,0x082d4a94u,0x082d4aacu,3},
++    {0xcec21496u,0x08864784u,0x087c0e10u,0x087c0e28u,1},
+ };
+ static const uint8_t palletBankFront[3][16] = {
+     {5,5,5,5,5,4,3,3,3,3,3,3,3,3,2,2},

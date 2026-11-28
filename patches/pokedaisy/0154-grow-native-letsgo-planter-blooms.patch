@@ -1,0 +1,158 @@
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -5541,7 +5541,7 @@
+     int unboundGreen=solidRom==0x4b3d4957 && s->primary==0x082d4a94;
+     int snow=solidRom==0x4b3d4957 && s->primary==0x08725ab4;
+     int indoor=solidPlantTileset(solidRom,s->primary);
+-    int profiled=sceneryGroundPropsTileset(solidRom,s->primary);
++    int profiled=sceneryGroundPropsTileset(solidRom,s->primary,s->secondary);
+     const struct SceneryFixtureGroup* smallFixtures=scenerySmallFixtureGroup(solidRom,s->primary,s->secondary);
+     if(!letsgo&&!radical&&!snow&&!unboundGreen&&!indoor&&!profiled&&!smallFixtures)return 0;
+     /* Only metadata resets: cached pixels are rebuilt on each snapshot's first
+@@ -5579,7 +5579,9 @@
+                 continue;
+             }
+         }
+-        const struct SceneryGroundProp *groundProp=profiled?sceneryGroundProp(solidRom,s->primary,id):NULL;
++        const struct SceneryGroundProp *groundProp=profiled?sceneryGroundProp(solidRom,s->primary,s->secondary,id):NULL;
++        if (groundProp && groundProp->secondary && conn>=0 && s->conn[conn].secondary!=s->secondary)
++            groundProp=NULL;
+         if(indoor) {
+             if(conn>=0||row+1>=v->rows||count==cap)continue;
+             int belowConn,below=blockIn(s,cellX+col,cellY+row+1,&belowConn,false);
+@@ -5657,6 +5659,14 @@
+             uint32_t c=slot ? color(P[slot],alpha)
+                 : solidMaterialPixel(s,id,groundProp->ink[ink*2],groundProp->ink[ink*2+1],alpha);
+             t->art[ink]=ink==0?climateLeafColor(c):c;
++        }
++        // A source-owned bloom can retain its own complete lower layer.
++        if (groundProp && groundProp->clearLayer) {
++            for (int y=0;y<16;++y) for (int x=0;x<16;++x) {
++                uint32_t c=solidPlantGroundPixel(s,id,x,y,alpha,groundProp->clearLayer);
++                texture[(row*16+y)*v->stride+col*16+x]=climateGround(c,groundProp->floorClimate);
++            }
++            continue;
+         }
+         // Replace the original flat drawing with its matching ground material.
+         int groundClimate=sceneryLand(solidRom,s->primary,ground)?2:1;
+--- a/app/src/main/cpp/pk_scenery_ground_props.h
++++ b/app/src/main/cpp/pk_scenery_ground_props.h
+@@ -1,63 +1,66 @@
+ // Generated reviewed field props; no ROM artwork.
+ #pragma once
+-struct SceneryGroundProp { uint32_t rom,primary; uint16_t id,ground; uint8_t kind,ink[6],paletteInk[3]; };
++struct SceneryGroundProp { uint32_t rom,primary,secondary; uint16_t id,ground; uint8_t kind,ink[6],paletteInk[3],clearLayer,floorClimate; };
+ static const struct SceneryGroundProp sceneryGroundProps[] = {
+-    {0x2be557a3,0x083df704,4,1,13,{5,2,7,2,7,3},{35,41,43}},
+-    {0x2be557a3,0x083df704,13,1,1,{0,0,0,0,0,0},{0,0,0}},
+-    {0x2be557a3,0x083df704,224,1,3,{0,0,0,0,0,0},{0,0,0}},
+-    {0x2be557a3,0x083df704,226,289,3,{0,0,0,0,0,0},{0,0,0}},
+-    {0x263a1187,0x08bb3ac8,4,1,13,{5,2,7,2,7,2},{35,41,41}},
+-    {0x263a1187,0x08bb3ac8,13,1,1,{0,0,0,0,0,0},{0,0,0}},
+-    {0x263a1187,0x08bb3ac8,224,1,3,{0,0,0,0,0,0},{0,0,0}},
+-    {0x263a1187,0x08bb3ac8,226,289,3,{0,0,0,0,0,0},{0,0,0}},
+-    {0x558ae42f,0x08e3e21c,4,1,13,{10,1,4,0,4,1},{35,43,42}},
+-    {0x558ae42f,0x08e3e21c,13,1,1,{0,0,0,0,0,0},{0,0,0}},
+-    {0x14465a33,0x08a2e6ac,4,1,13,{2,3,3,2,3,2},{35,44,44}},
+-    {0x14465a33,0x08a2e6ac,13,1,1,{0,0,0,0,0,0},{0,0,0}},
+-    {0xcec21496,0x087c0700,4,1,13,{5,2,7,2,7,3},{35,41,43}},
+-    {0xcec21496,0x087c0700,13,1,1,{0,0,0,0,0,0},{0,0,0}},
+-    {0xcec21496,0x087c0700,224,1,3,{0,0,0,0,0,0},{0,0,0}},
+-    {0xcec21496,0x087c0700,226,289,3,{0,0,0,0,0,0},{0,0,0}},
+-    {0x63478921,0x082d4a94,4,1,13,{4,8,5,1,4,4},{4,11,9}},
+-    {0x63478921,0x082d4a94,13,1,1,{0,0,0,0,0,0},{0,0,0}},
+-    {0x63478921,0x082d4a94,5,1,4,{0,0,0,0,0,0},{0,0,0}},
+-    {0x63478921,0x082d4a94,159,1,3,{0,0,0,0,0,0},{0,0,0}},
+-    {0xb9465c5a,0x082d4a94,4,1,13,{5,2,7,2,7,2},{3,9,9}},
+-    {0xb9465c5a,0x082d4a94,13,1,1,{0,0,0,0,0,0},{0,0,0}},
+-    {0xb9465c5a,0x082d4a94,5,1,4,{0,0,0,0,0,0},{0,0,0}},
+-    {0xb9465c5a,0x082d4a94,159,1,3,{0,0,0,0,0,0},{0,0,0}},
+-    {0x6c5ee1b2,0x082d4a94,4,1,13,{4,8,5,1,4,4},{4,11,9}},
+-    {0x6c5ee1b2,0x082d4a94,13,1,1,{0,0,0,0,0,0},{0,0,0}},
+-    {0x6c5ee1b2,0x082d4a94,5,1,4,{0,0,0,0,0,0},{0,0,0}},
+-    {0x6c5ee1b2,0x082d4a94,159,1,3,{0,0,0,0,0,0},{0,0,0}},
+-    {0x25c3d89f,0x082d4a94,13,8,1,{0,0,0,0,0,0},{0,0,0}},
+-    {0xfba55dd8,0x082d4a94,13,1,1,{0,0,0,0,0,0},{0,0,0}},
+-    {0x4b3d4957,0x082d4a94,13,1,1,{0,0,0,0,0,0},{0,0,0}},
+-    {0x5e704d77,0x082d4a94,13,1,1,{0,0,0,0,0,0},{0,0,0}},
+-    {0xf2d16ebd,0x082d4a94,13,1,1,{0,0,0,0,0,0},{0,0,0}},
+-    {0xcec21496,0x087c0e10,13,1,1,{0,0,0,0,0,0},{0,0,0}},
+-    {0x4b3d4957,0x082d4a94,18,1,1,{0,0,0,0,0,0},{0,0,0}},
+-    {0x558ae42f,0x08e3e21c,61,1,1,{0,0,0,0,0,0},{0,0,0}},
+-    {0xe4deb9be,0x84ad600,4,17,13,{3,10,5,1,4,4},{15,11,9}},
+-    {0xe4deb9be,0x84ad600,5,17,4,{0,0,0,0,0,0},{0,0,0}},
+-    {0x964763c0,0x8316a4c,4,17,13,{3,10,5,1,4,4},{15,11,9}},
+-    {0x964763c0,0x8316a4c,5,17,4,{0,0,0,0,0,0},{0,0,0}},
+-    {0xdd88761c,0x82d4a94,4,17,13,{3,10,5,1,4,4},{15,11,9}},
+-    {0xdd88761c,0x82d4a94,5,17,4,{0,0,0,0,0,0},{0,0,0}},
+-    {0x4b3d4957,0x08725ab4,36,0,3,{0,0,0,0,0,0},{0,0,0}},
+-    {0x4b3d4957,0x08725ab4,83,89,3,{0,0,0,0,0,0},{0,0,0}},
+-    {0xdd88761c,0x82d4a94,13,17,1,{0,0,0,0,0,0},{0,0,0}},
+-    {0x964763c0,0x8316a4c,13,17,1,{0,0,0,0,0,0},{0,0,0}},
++    {0x25c3d89f,0x082d4a94,0x82d4aac,662,0,13,{6,11,1,9,3,11},{37,43,33},1,2},
++    {0x2be557a3,0x083df704,0x0,4,1,13,{5,2,7,2,7,3},{35,41,43},0,0},
++    {0x2be557a3,0x083df704,0x0,13,1,1,{0,0,0,0,0,0},{0,0,0},0,0},
++    {0x2be557a3,0x083df704,0x0,224,1,3,{0,0,0,0,0,0},{0,0,0},0,0},
++    {0x2be557a3,0x083df704,0x0,226,289,3,{0,0,0,0,0,0},{0,0,0},0,0},
++    {0x263a1187,0x08bb3ac8,0x0,4,1,13,{5,2,7,2,7,2},{35,41,41},0,0},
++    {0x263a1187,0x08bb3ac8,0x0,13,1,1,{0,0,0,0,0,0},{0,0,0},0,0},
++    {0x263a1187,0x08bb3ac8,0x0,224,1,3,{0,0,0,0,0,0},{0,0,0},0,0},
++    {0x263a1187,0x08bb3ac8,0x0,226,289,3,{0,0,0,0,0,0},{0,0,0},0,0},
++    {0x558ae42f,0x08e3e21c,0x0,4,1,13,{10,1,4,0,4,1},{35,43,42},0,0},
++    {0x558ae42f,0x08e3e21c,0x0,13,1,1,{0,0,0,0,0,0},{0,0,0},0,0},
++    {0x14465a33,0x08a2e6ac,0x0,4,1,13,{2,3,3,2,3,2},{35,44,44},0,0},
++    {0x14465a33,0x08a2e6ac,0x0,13,1,1,{0,0,0,0,0,0},{0,0,0},0,0},
++    {0xcec21496,0x087c0700,0x0,4,1,13,{5,2,7,2,7,3},{35,41,43},0,0},
++    {0xcec21496,0x087c0700,0x0,13,1,1,{0,0,0,0,0,0},{0,0,0},0,0},
++    {0xcec21496,0x087c0700,0x0,224,1,3,{0,0,0,0,0,0},{0,0,0},0,0},
++    {0xcec21496,0x087c0700,0x0,226,289,3,{0,0,0,0,0,0},{0,0,0},0,0},
++    {0x63478921,0x082d4a94,0x0,4,1,13,{4,8,5,1,4,4},{4,11,9},0,0},
++    {0x63478921,0x082d4a94,0x0,13,1,1,{0,0,0,0,0,0},{0,0,0},0,0},
++    {0x63478921,0x082d4a94,0x0,5,1,4,{0,0,0,0,0,0},{0,0,0},0,0},
++    {0x63478921,0x082d4a94,0x0,159,1,3,{0,0,0,0,0,0},{0,0,0},0,0},
++    {0xb9465c5a,0x082d4a94,0x0,4,1,13,{5,2,7,2,7,2},{3,9,9},0,0},
++    {0xb9465c5a,0x082d4a94,0x0,13,1,1,{0,0,0,0,0,0},{0,0,0},0,0},
++    {0xb9465c5a,0x082d4a94,0x0,5,1,4,{0,0,0,0,0,0},{0,0,0},0,0},
++    {0xb9465c5a,0x082d4a94,0x0,159,1,3,{0,0,0,0,0,0},{0,0,0},0,0},
++    {0x6c5ee1b2,0x082d4a94,0x0,4,1,13,{4,8,5,1,4,4},{4,11,9},0,0},
++    {0x6c5ee1b2,0x082d4a94,0x0,13,1,1,{0,0,0,0,0,0},{0,0,0},0,0},
++    {0x6c5ee1b2,0x082d4a94,0x0,5,1,4,{0,0,0,0,0,0},{0,0,0},0,0},
++    {0x6c5ee1b2,0x082d4a94,0x0,159,1,3,{0,0,0,0,0,0},{0,0,0},0,0},
++    {0x25c3d89f,0x082d4a94,0x0,13,8,1,{0,0,0,0,0,0},{0,0,0},0,0},
++    {0xfba55dd8,0x082d4a94,0x0,13,1,1,{0,0,0,0,0,0},{0,0,0},0,0},
++    {0x4b3d4957,0x082d4a94,0x0,13,1,1,{0,0,0,0,0,0},{0,0,0},0,0},
++    {0x5e704d77,0x082d4a94,0x0,13,1,1,{0,0,0,0,0,0},{0,0,0},0,0},
++    {0xf2d16ebd,0x082d4a94,0x0,13,1,1,{0,0,0,0,0,0},{0,0,0},0,0},
++    {0xcec21496,0x087c0e10,0x0,13,1,1,{0,0,0,0,0,0},{0,0,0},0,0},
++    {0x4b3d4957,0x082d4a94,0x0,18,1,1,{0,0,0,0,0,0},{0,0,0},0,0},
++    {0x558ae42f,0x08e3e21c,0x0,61,1,1,{0,0,0,0,0,0},{0,0,0},0,0},
++    {0xe4deb9be,0x84ad600,0x0,4,17,13,{3,10,5,1,4,4},{15,11,9},0,0},
++    {0xe4deb9be,0x84ad600,0x0,5,17,4,{0,0,0,0,0,0},{0,0,0},0,0},
++    {0x964763c0,0x8316a4c,0x0,4,17,13,{3,10,5,1,4,4},{15,11,9},0,0},
++    {0x964763c0,0x8316a4c,0x0,5,17,4,{0,0,0,0,0,0},{0,0,0},0,0},
++    {0xdd88761c,0x82d4a94,0x0,4,17,13,{3,10,5,1,4,4},{15,11,9},0,0},
++    {0xdd88761c,0x82d4a94,0x0,5,17,4,{0,0,0,0,0,0},{0,0,0},0,0},
++    {0x4b3d4957,0x08725ab4,0x0,36,0,3,{0,0,0,0,0,0},{0,0,0},0,0},
++    {0x4b3d4957,0x08725ab4,0x0,83,89,3,{0,0,0,0,0,0},{0,0,0},0,0},
++    {0xdd88761c,0x82d4a94,0x0,13,17,1,{0,0,0,0,0,0},{0,0,0},0,0},
++    {0x964763c0,0x8316a4c,0x0,13,17,1,{0,0,0,0,0,0},{0,0,0},0,0},
+ };
+-static const struct SceneryGroundProp *sceneryGroundProp(uint32_t rom,uint32_t primary,int id) {
++static const struct SceneryGroundProp *sceneryGroundProp(uint32_t rom,uint32_t primary,uint32_t secondary,int id) {
+     for(unsigned i=0;i<sizeof(sceneryGroundProps)/sizeof(sceneryGroundProps[0]);i++) {
+         const struct SceneryGroundProp *p=&sceneryGroundProps[i];
+-        if(p->rom==rom && p->primary==primary && p->id==id)return p;
++        if(p->rom==rom && p->primary==primary && (!p->secondary || p->secondary==secondary) && p->id==id)return p;
+     }
+     return 0;
+ }
+-static int sceneryGroundPropsTileset(uint32_t rom,uint32_t primary) {
+-    for(unsigned i=0;i<sizeof(sceneryGroundProps)/sizeof(sceneryGroundProps[0]);i++)
+-        if(sceneryGroundProps[i].rom==rom && sceneryGroundProps[i].primary==primary)return 1;
++static int sceneryGroundPropsTileset(uint32_t rom,uint32_t primary,uint32_t secondary) {
++    for(unsigned i=0;i<sizeof(sceneryGroundProps)/sizeof(sceneryGroundProps[0]);i++) {
++        const struct SceneryGroundProp *p=&sceneryGroundProps[i];
++        if(p->rom==rom && p->primary==primary && (!p->secondary || p->secondary==secondary))return 1;
++    }
+     return 0;
+ }

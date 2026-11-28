@@ -20040,5 +20040,1522 @@
       8190
     ],
     "reviewed": true
+  },
+  {
+    "game": "ash-gray",
+    "rom_crc32": "63478921",
+    "rom_sha256": "a08055484c8366768d3e98e2dbed0998641abd2899ffbfc8d7f132925875f7a1",
+    "primary": "082d4a94",
+    "secondary": "082d4b54",
+    "id": 361,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      7,
+      13,
+      7,
+      13
+    ],
+    "source_art_sha256": "039231c8bc0746c35fbab26866d680a5cafc5cb4cacc24790657a7d5ece1244d",
+    "floor_sha256": "651944245557f1f9b1076ca17a5bb474389dc2402650253342e779f23b67b0aa",
+    "board": [
+      2,
+      0,
+      12,
+      12
+    ],
+    "board_mask": [
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "ash-gray",
+    "rom_crc32": "63478921",
+    "rom_sha256": "a08055484c8366768d3e98e2dbed0998641abd2899ffbfc8d7f132925875f7a1",
+    "primary": "082d4a94",
+    "secondary": "082d4b9c",
+    "id": 815,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      7,
+      13,
+      7,
+      13
+    ],
+    "source_art_sha256": "d8815dc2099701325c0d6635a97588349a1481a81d8668c0bffec51a26222e2b",
+    "floor_sha256": "f4d10b3de836a6045bfd99cae1a072d829327dc4a8f6ba93b7101aa3f7c9465b",
+    "board": [
+      2,
+      0,
+      12,
+      12
+    ],
+    "board_mask": [
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "ash-gray",
+    "rom_crc32": "63478921",
+    "rom_sha256": "a08055484c8366768d3e98e2dbed0998641abd2899ffbfc8d7f132925875f7a1",
+    "primary": "082d4a94",
+    "secondary": "082d4aac",
+    "id": 685,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      7,
+      13,
+      7,
+      13
+    ],
+    "source_art_sha256": "039231c8bc0746c35fbab26866d680a5cafc5cb4cacc24790657a7d5ece1244d",
+    "floor_sha256": "6a0327f1b477ab6020b00913ecd6ec4f8097adefc25df214b15faa6505f751a2",
+    "board": [
+      2,
+      0,
+      12,
+      12
+    ],
+    "board_mask": [
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "classic",
+    "rom_crc32": "e4deb9be",
+    "rom_sha256": "4ab7b1f7fb246490d798f49db1511d197d7c72376b6347d08e7c557122c6d722",
+    "primary": "084ad600",
+    "secondary": "084add10",
+    "id": 685,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      7,
+      13,
+      7,
+      13
+    ],
+    "source_art_sha256": "673034fbe572b9315a370959fe0ee3a7cc5ff0e508e7c4225dcc07a9fb9a0af7",
+    "floor_sha256": "c79ffe007cbb63260047a32030dbfea287bfb0e1d02d5c639bd71c84f9073aee",
+    "board": [
+      2,
+      0,
+      12,
+      12
+    ],
+    "board_mask": [
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "classic",
+    "rom_crc32": "e4deb9be",
+    "rom_sha256": "4ab7b1f7fb246490d798f49db1511d197d7c72376b6347d08e7c557122c6d722",
+    "primary": "084ad600",
+    "secondary": "084add58",
+    "id": 361,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      7,
+      13,
+      7,
+      13
+    ],
+    "source_art_sha256": "673034fbe572b9315a370959fe0ee3a7cc5ff0e508e7c4225dcc07a9fb9a0af7",
+    "floor_sha256": "2ac691155451152075f28c01bfd7997effbc71c367732afd39cdb35e786c9275",
+    "board": [
+      2,
+      0,
+      12,
+      12
+    ],
+    "board_mask": [
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "classic",
+    "rom_crc32": "e4deb9be",
+    "rom_sha256": "4ab7b1f7fb246490d798f49db1511d197d7c72376b6347d08e7c557122c6d722",
+    "primary": "084ad600",
+    "secondary": "084addbc",
+    "id": 361,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      7,
+      13,
+      7,
+      13
+    ],
+    "source_art_sha256": "673034fbe572b9315a370959fe0ee3a7cc5ff0e508e7c4225dcc07a9fb9a0af7",
+    "floor_sha256": "2ac691155451152075f28c01bfd7997effbc71c367732afd39cdb35e786c9275",
+    "board": [
+      2,
+      0,
+      12,
+      12
+    ],
+    "board_mask": [
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "classic",
+    "rom_crc32": "e4deb9be",
+    "rom_sha256": "4ab7b1f7fb246490d798f49db1511d197d7c72376b6347d08e7c557122c6d722",
+    "primary": "084ad600",
+    "secondary": "084ade04",
+    "id": 815,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      7,
+      13,
+      7,
+      13
+    ],
+    "source_art_sha256": "d8815dc2099701325c0d6635a97588349a1481a81d8668c0bffec51a26222e2b",
+    "floor_sha256": "f4d10b3de836a6045bfd99cae1a072d829327dc4a8f6ba93b7101aa3f7c9465b",
+    "board": [
+      2,
+      0,
+      12,
+      12
+    ],
+    "board_mask": [
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "classic",
+    "rom_crc32": "e4deb9be",
+    "rom_sha256": "4ab7b1f7fb246490d798f49db1511d197d7c72376b6347d08e7c557122c6d722",
+    "primary": "084ad600",
+    "secondary": "084ade04",
+    "id": 361,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      7,
+      13,
+      7,
+      13
+    ],
+    "source_art_sha256": "673034fbe572b9315a370959fe0ee3a7cc5ff0e508e7c4225dcc07a9fb9a0af7",
+    "floor_sha256": "2ac691155451152075f28c01bfd7997effbc71c367732afd39cdb35e786c9275",
+    "board": [
+      2,
+      0,
+      12,
+      12
+    ],
+    "board_mask": [
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "dragonsden",
+    "rom_crc32": "cec21496",
+    "rom_sha256": "6ca88c3ecd54c78bf8a8cbb80f2b9ab049d66d4b070e97849cf4073ee8d2f15c",
+    "primary": "087c0e10",
+    "secondary": "087c0e28",
+    "id": 685,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      7,
+      13,
+      7,
+      13
+    ],
+    "source_art_sha256": "673034fbe572b9315a370959fe0ee3a7cc5ff0e508e7c4225dcc07a9fb9a0af7",
+    "floor_sha256": "c79ffe007cbb63260047a32030dbfea287bfb0e1d02d5c639bd71c84f9073aee",
+    "board": [
+      2,
+      0,
+      12,
+      12
+    ],
+    "board_mask": [
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "dragonsden",
+    "rom_crc32": "cec21496",
+    "rom_sha256": "6ca88c3ecd54c78bf8a8cbb80f2b9ab049d66d4b070e97849cf4073ee8d2f15c",
+    "primary": "087c0e10",
+    "secondary": "087c0fd8",
+    "id": 361,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      7,
+      13,
+      7,
+      13
+    ],
+    "source_art_sha256": "673034fbe572b9315a370959fe0ee3a7cc5ff0e508e7c4225dcc07a9fb9a0af7",
+    "floor_sha256": "2ac691155451152075f28c01bfd7997effbc71c367732afd39cdb35e786c9275",
+    "board": [
+      2,
+      0,
+      12,
+      12
+    ],
+    "board_mask": [
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "dragonsden",
+    "rom_crc32": "cec21496",
+    "rom_sha256": "6ca88c3ecd54c78bf8a8cbb80f2b9ab049d66d4b070e97849cf4073ee8d2f15c",
+    "primary": "087c0e10",
+    "secondary": "087c1380",
+    "id": 361,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      7,
+      13,
+      7,
+      13
+    ],
+    "source_art_sha256": "673034fbe572b9315a370959fe0ee3a7cc5ff0e508e7c4225dcc07a9fb9a0af7",
+    "floor_sha256": "2ac691155451152075f28c01bfd7997effbc71c367732afd39cdb35e786c9275",
+    "board": [
+      2,
+      0,
+      12,
+      12
+    ],
+    "board_mask": [
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "dragonsden",
+    "rom_crc32": "cec21496",
+    "rom_sha256": "6ca88c3ecd54c78bf8a8cbb80f2b9ab049d66d4b070e97849cf4073ee8d2f15c",
+    "primary": "087c0e10",
+    "secondary": "087c11e8",
+    "id": 815,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      7,
+      13,
+      7,
+      13
+    ],
+    "source_art_sha256": "d8815dc2099701325c0d6635a97588349a1481a81d8668c0bffec51a26222e2b",
+    "floor_sha256": "f4d10b3de836a6045bfd99cae1a072d829327dc4a8f6ba93b7101aa3f7c9465b",
+    "board": [
+      2,
+      0,
+      12,
+      12
+    ],
+    "board_mask": [
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "dragonsden",
+    "rom_crc32": "cec21496",
+    "rom_sha256": "6ca88c3ecd54c78bf8a8cbb80f2b9ab049d66d4b070e97849cf4073ee8d2f15c",
+    "primary": "087c0e10",
+    "secondary": "087c1260",
+    "id": 361,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      7,
+      13,
+      7,
+      13
+    ],
+    "source_art_sha256": "673034fbe572b9315a370959fe0ee3a7cc5ff0e508e7c4225dcc07a9fb9a0af7",
+    "floor_sha256": "2ac691155451152075f28c01bfd7997effbc71c367732afd39cdb35e786c9275",
+    "board": [
+      2,
+      0,
+      12,
+      12
+    ],
+    "board_mask": [
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "dragonsden",
+    "rom_crc32": "cec21496",
+    "rom_sha256": "6ca88c3ecd54c78bf8a8cbb80f2b9ab049d66d4b070e97849cf4073ee8d2f15c",
+    "primary": "087c0e10",
+    "secondary": "087c1458",
+    "id": 815,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      7,
+      13,
+      7,
+      13
+    ],
+    "source_art_sha256": "d8815dc2099701325c0d6635a97588349a1481a81d8668c0bffec51a26222e2b",
+    "floor_sha256": "f4d10b3de836a6045bfd99cae1a072d829327dc4a8f6ba93b7101aa3f7c9465b",
+    "board": [
+      2,
+      0,
+      12,
+      12
+    ],
+    "board_mask": [
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "dragonsden",
+    "rom_crc32": "cec21496",
+    "rom_sha256": "6ca88c3ecd54c78bf8a8cbb80f2b9ab049d66d4b070e97849cf4073ee8d2f15c",
+    "primary": "087c0e10",
+    "secondary": "087c14e8",
+    "id": 361,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      7,
+      13,
+      7,
+      13
+    ],
+    "source_art_sha256": "673034fbe572b9315a370959fe0ee3a7cc5ff0e508e7c4225dcc07a9fb9a0af7",
+    "floor_sha256": "2ac691155451152075f28c01bfd7997effbc71c367732afd39cdb35e786c9275",
+    "board": [
+      2,
+      0,
+      12,
+      12
+    ],
+    "board_mask": [
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "fakemon",
+    "rom_crc32": "5e704d77",
+    "rom_sha256": "05572f4dfbb96a1161a284292971d50c37e521d340bcecf48b574cca3dd8b4c6",
+    "primary": "082d4a94",
+    "secondary": "082d4b54",
+    "id": 361,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      7,
+      13,
+      7,
+      13
+    ],
+    "source_art_sha256": "673034fbe572b9315a370959fe0ee3a7cc5ff0e508e7c4225dcc07a9fb9a0af7",
+    "floor_sha256": "2ac691155451152075f28c01bfd7997effbc71c367732afd39cdb35e786c9275",
+    "board": [
+      2,
+      0,
+      12,
+      12
+    ],
+    "board_mask": [
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "fakemon",
+    "rom_crc32": "5e704d77",
+    "rom_sha256": "05572f4dfbb96a1161a284292971d50c37e521d340bcecf48b574cca3dd8b4c6",
+    "primary": "082d4a94",
+    "secondary": "082d4aac",
+    "id": 685,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      7,
+      13,
+      7,
+      13
+    ],
+    "source_art_sha256": "673034fbe572b9315a370959fe0ee3a7cc5ff0e508e7c4225dcc07a9fb9a0af7",
+    "floor_sha256": "c79ffe007cbb63260047a32030dbfea287bfb0e1d02d5c639bd71c84f9073aee",
+    "board": [
+      2,
+      0,
+      12,
+      12
+    ],
+    "board_mask": [
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "fakemon",
+    "rom_crc32": "5e704d77",
+    "rom_sha256": "05572f4dfbb96a1161a284292971d50c37e521d340bcecf48b574cca3dd8b4c6",
+    "primary": "082d4a94",
+    "secondary": "082d4af4",
+    "id": 361,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      7,
+      13,
+      7,
+      13
+    ],
+    "source_art_sha256": "673034fbe572b9315a370959fe0ee3a7cc5ff0e508e7c4225dcc07a9fb9a0af7",
+    "floor_sha256": "2ac691155451152075f28c01bfd7997effbc71c367732afd39cdb35e786c9275",
+    "board": [
+      2,
+      0,
+      12,
+      12
+    ],
+    "board_mask": [
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "fakemon",
+    "rom_crc32": "5e704d77",
+    "rom_sha256": "05572f4dfbb96a1161a284292971d50c37e521d340bcecf48b574cca3dd8b4c6",
+    "primary": "082d4a94",
+    "secondary": "082d4b9c",
+    "id": 815,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      7,
+      13,
+      7,
+      13
+    ],
+    "source_art_sha256": "d8815dc2099701325c0d6635a97588349a1481a81d8668c0bffec51a26222e2b",
+    "floor_sha256": "f4d10b3de836a6045bfd99cae1a072d829327dc4a8f6ba93b7101aa3f7c9465b",
+    "board": [
+      2,
+      0,
+      12,
+      12
+    ],
+    "board_mask": [
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "fakemon",
+    "rom_crc32": "5e704d77",
+    "rom_sha256": "05572f4dfbb96a1161a284292971d50c37e521d340bcecf48b574cca3dd8b4c6",
+    "primary": "082d4a94",
+    "secondary": "082d5064",
+    "id": 361,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      7,
+      13,
+      7,
+      13
+    ],
+    "source_art_sha256": "673034fbe572b9315a370959fe0ee3a7cc5ff0e508e7c4225dcc07a9fb9a0af7",
+    "floor_sha256": "2ac691155451152075f28c01bfd7997effbc71c367732afd39cdb35e786c9275",
+    "board": [
+      2,
+      0,
+      12,
+      12
+    ],
+    "board_mask": [
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "firered",
+    "rom_crc32": "dd88761c",
+    "rom_sha256": "3d0c79f1627022e18765766f6cb5ea067f6b5bf7dca115552189ad65a5c3a8ac",
+    "primary": "082d4a94",
+    "secondary": "082d4b54",
+    "id": 361,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      7,
+      13,
+      7,
+      13
+    ],
+    "source_art_sha256": "673034fbe572b9315a370959fe0ee3a7cc5ff0e508e7c4225dcc07a9fb9a0af7",
+    "floor_sha256": "2ac691155451152075f28c01bfd7997effbc71c367732afd39cdb35e786c9275",
+    "board": [
+      2,
+      0,
+      12,
+      12
+    ],
+    "board_mask": [
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "firered",
+    "rom_crc32": "dd88761c",
+    "rom_sha256": "3d0c79f1627022e18765766f6cb5ea067f6b5bf7dca115552189ad65a5c3a8ac",
+    "primary": "082d4a94",
+    "secondary": "082d4aac",
+    "id": 685,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      7,
+      13,
+      7,
+      13
+    ],
+    "source_art_sha256": "673034fbe572b9315a370959fe0ee3a7cc5ff0e508e7c4225dcc07a9fb9a0af7",
+    "floor_sha256": "c79ffe007cbb63260047a32030dbfea287bfb0e1d02d5c639bd71c84f9073aee",
+    "board": [
+      2,
+      0,
+      12,
+      12
+    ],
+    "board_mask": [
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "firered",
+    "rom_crc32": "dd88761c",
+    "rom_sha256": "3d0c79f1627022e18765766f6cb5ea067f6b5bf7dca115552189ad65a5c3a8ac",
+    "primary": "082d4a94",
+    "secondary": "082d4af4",
+    "id": 361,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      7,
+      13,
+      7,
+      13
+    ],
+    "source_art_sha256": "673034fbe572b9315a370959fe0ee3a7cc5ff0e508e7c4225dcc07a9fb9a0af7",
+    "floor_sha256": "2ac691155451152075f28c01bfd7997effbc71c367732afd39cdb35e786c9275",
+    "board": [
+      2,
+      0,
+      12,
+      12
+    ],
+    "board_mask": [
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "firered",
+    "rom_crc32": "dd88761c",
+    "rom_sha256": "3d0c79f1627022e18765766f6cb5ea067f6b5bf7dca115552189ad65a5c3a8ac",
+    "primary": "082d4a94",
+    "secondary": "082d4b9c",
+    "id": 815,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      7,
+      13,
+      7,
+      13
+    ],
+    "source_art_sha256": "d8815dc2099701325c0d6635a97588349a1481a81d8668c0bffec51a26222e2b",
+    "floor_sha256": "f4d10b3de836a6045bfd99cae1a072d829327dc4a8f6ba93b7101aa3f7c9465b",
+    "board": [
+      2,
+      0,
+      12,
+      12
+    ],
+    "board_mask": [
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "firered",
+    "rom_crc32": "dd88761c",
+    "rom_sha256": "3d0c79f1627022e18765766f6cb5ea067f6b5bf7dca115552189ad65a5c3a8ac",
+    "primary": "082d4a94",
+    "secondary": "082d5064",
+    "id": 361,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      7,
+      13,
+      7,
+      13
+    ],
+    "source_art_sha256": "673034fbe572b9315a370959fe0ee3a7cc5ff0e508e7c4225dcc07a9fb9a0af7",
+    "floor_sha256": "2ac691155451152075f28c01bfd7997effbc71c367732afd39cdb35e786c9275",
+    "board": [
+      2,
+      0,
+      12,
+      12
+    ],
+    "board_mask": [
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "frlgplus",
+    "rom_crc32": "964763c0",
+    "rom_sha256": "41b51f4f1d0a894dbb27572d6580821c6a192231f930d85c2805af664c13bbb6",
+    "primary": "08316a4c",
+    "secondary": "08316b0c",
+    "id": 361,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      7,
+      13,
+      7,
+      13
+    ],
+    "source_art_sha256": "673034fbe572b9315a370959fe0ee3a7cc5ff0e508e7c4225dcc07a9fb9a0af7",
+    "floor_sha256": "2ac691155451152075f28c01bfd7997effbc71c367732afd39cdb35e786c9275",
+    "board": [
+      2,
+      0,
+      12,
+      12
+    ],
+    "board_mask": [
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "frlgplus",
+    "rom_crc32": "964763c0",
+    "rom_sha256": "41b51f4f1d0a894dbb27572d6580821c6a192231f930d85c2805af664c13bbb6",
+    "primary": "08316a4c",
+    "secondary": "08317034",
+    "id": 361,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      7,
+      13,
+      7,
+      13
+    ],
+    "source_art_sha256": "673034fbe572b9315a370959fe0ee3a7cc5ff0e508e7c4225dcc07a9fb9a0af7",
+    "floor_sha256": "2ac691155451152075f28c01bfd7997effbc71c367732afd39cdb35e786c9275",
+    "board": [
+      2,
+      0,
+      12,
+      12
+    ],
+    "board_mask": [
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "frlgplus",
+    "rom_crc32": "964763c0",
+    "rom_sha256": "41b51f4f1d0a894dbb27572d6580821c6a192231f930d85c2805af664c13bbb6",
+    "primary": "08316a4c",
+    "secondary": "08316a64",
+    "id": 685,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      7,
+      13,
+      7,
+      13
+    ],
+    "source_art_sha256": "673034fbe572b9315a370959fe0ee3a7cc5ff0e508e7c4225dcc07a9fb9a0af7",
+    "floor_sha256": "c79ffe007cbb63260047a32030dbfea287bfb0e1d02d5c639bd71c84f9073aee",
+    "board": [
+      2,
+      0,
+      12,
+      12
+    ],
+    "board_mask": [
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "frlgplus",
+    "rom_crc32": "964763c0",
+    "rom_sha256": "41b51f4f1d0a894dbb27572d6580821c6a192231f930d85c2805af664c13bbb6",
+    "primary": "08316a4c",
+    "secondary": "08316aac",
+    "id": 361,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      7,
+      13,
+      7,
+      13
+    ],
+    "source_art_sha256": "673034fbe572b9315a370959fe0ee3a7cc5ff0e508e7c4225dcc07a9fb9a0af7",
+    "floor_sha256": "2ac691155451152075f28c01bfd7997effbc71c367732afd39cdb35e786c9275",
+    "board": [
+      2,
+      0,
+      12,
+      12
+    ],
+    "board_mask": [
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "frlgplus",
+    "rom_crc32": "964763c0",
+    "rom_sha256": "41b51f4f1d0a894dbb27572d6580821c6a192231f930d85c2805af664c13bbb6",
+    "primary": "08316a4c",
+    "secondary": "08316b54",
+    "id": 815,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      7,
+      13,
+      7,
+      13
+    ],
+    "source_art_sha256": "d8815dc2099701325c0d6635a97588349a1481a81d8668c0bffec51a26222e2b",
+    "floor_sha256": "f4d10b3de836a6045bfd99cae1a072d829327dc4a8f6ba93b7101aa3f7c9465b",
+    "board": [
+      2,
+      0,
+      12,
+      12
+    ],
+    "board_mask": [
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "frlgplus",
+    "rom_crc32": "964763c0",
+    "rom_sha256": "41b51f4f1d0a894dbb27572d6580821c6a192231f930d85c2805af664c13bbb6",
+    "primary": "08316a4c",
+    "secondary": "0831701c",
+    "id": 914,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      7,
+      13,
+      7,
+      13
+    ],
+    "source_art_sha256": "b068782daf7c2c172b3b2ffbd3b20728a1c9b409ff97fafd1ca77a5ea7cb2c81",
+    "floor_sha256": "62b34fe4eb1396b5e3893e20a844bfc6957b75677c9705c564893019667a221d",
+    "board": [
+      2,
+      0,
+      12,
+      12
+    ],
+    "board_mask": [
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "frlgplus",
+    "rom_crc32": "964763c0",
+    "rom_sha256": "41b51f4f1d0a894dbb27572d6580821c6a192231f930d85c2805af664c13bbb6",
+    "primary": "08316a4c",
+    "secondary": "0831710c",
+    "id": 361,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      7,
+      13,
+      7,
+      13
+    ],
+    "source_art_sha256": "673034fbe572b9315a370959fe0ee3a7cc5ff0e508e7c4225dcc07a9fb9a0af7",
+    "floor_sha256": "2ac691155451152075f28c01bfd7997effbc71c367732afd39cdb35e786c9275",
+    "board": [
+      2,
+      0,
+      12,
+      12
+    ],
+    "board_mask": [
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "rocket",
+    "rom_crc32": "f2d16ebd",
+    "rom_sha256": "e6f232d0df265323c995e6025fe0ebcc532dfaf7634548a13ee9fb5673152442",
+    "primary": "082d4a94",
+    "secondary": "082d4b54",
+    "id": 361,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      7,
+      13,
+      7,
+      13
+    ],
+    "source_art_sha256": "673034fbe572b9315a370959fe0ee3a7cc5ff0e508e7c4225dcc07a9fb9a0af7",
+    "floor_sha256": "2ac691155451152075f28c01bfd7997effbc71c367732afd39cdb35e786c9275",
+    "board": [
+      2,
+      0,
+      12,
+      12
+    ],
+    "board_mask": [
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "rocket",
+    "rom_crc32": "f2d16ebd",
+    "rom_sha256": "e6f232d0df265323c995e6025fe0ebcc532dfaf7634548a13ee9fb5673152442",
+    "primary": "082d4a94",
+    "secondary": "082d4aac",
+    "id": 685,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      7,
+      13,
+      7,
+      13
+    ],
+    "source_art_sha256": "673034fbe572b9315a370959fe0ee3a7cc5ff0e508e7c4225dcc07a9fb9a0af7",
+    "floor_sha256": "c79ffe007cbb63260047a32030dbfea287bfb0e1d02d5c639bd71c84f9073aee",
+    "board": [
+      2,
+      0,
+      12,
+      12
+    ],
+    "board_mask": [
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "rocket",
+    "rom_crc32": "f2d16ebd",
+    "rom_sha256": "e6f232d0df265323c995e6025fe0ebcc532dfaf7634548a13ee9fb5673152442",
+    "primary": "082d4a94",
+    "secondary": "082d4af4",
+    "id": 361,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      7,
+      13,
+      7,
+      13
+    ],
+    "source_art_sha256": "673034fbe572b9315a370959fe0ee3a7cc5ff0e508e7c4225dcc07a9fb9a0af7",
+    "floor_sha256": "2ac691155451152075f28c01bfd7997effbc71c367732afd39cdb35e786c9275",
+    "board": [
+      2,
+      0,
+      12,
+      12
+    ],
+    "board_mask": [
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "rocket",
+    "rom_crc32": "f2d16ebd",
+    "rom_sha256": "e6f232d0df265323c995e6025fe0ebcc532dfaf7634548a13ee9fb5673152442",
+    "primary": "082d4a94",
+    "secondary": "082d4b9c",
+    "id": 815,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      7,
+      13,
+      7,
+      13
+    ],
+    "source_art_sha256": "d8815dc2099701325c0d6635a97588349a1481a81d8668c0bffec51a26222e2b",
+    "floor_sha256": "f4d10b3de836a6045bfd99cae1a072d829327dc4a8f6ba93b7101aa3f7c9465b",
+    "board": [
+      2,
+      0,
+      12,
+      12
+    ],
+    "board_mask": [
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "rocket",
+    "rom_crc32": "f2d16ebd",
+    "rom_sha256": "e6f232d0df265323c995e6025fe0ebcc532dfaf7634548a13ee9fb5673152442",
+    "primary": "082d4a94",
+    "secondary": "082d5064",
+    "id": 361,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      7,
+      13,
+      7,
+      13
+    ],
+    "source_art_sha256": "673034fbe572b9315a370959fe0ee3a7cc5ff0e508e7c4225dcc07a9fb9a0af7",
+    "floor_sha256": "2ac691155451152075f28c01bfd7997effbc71c367732afd39cdb35e786c9275",
+    "board": [
+      2,
+      0,
+      12,
+      12
+    ],
+    "board_mask": [
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095,
+      4095
+    ],
+    "reviewed": true
   }
 ]

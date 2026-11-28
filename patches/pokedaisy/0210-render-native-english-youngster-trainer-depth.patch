@@ -1,0 +1,112 @@
+diff --git a/app/src/main/cpp/pk_gen1_battle_trainer.h b/app/src/main/cpp/pk_gen1_battle_trainer.h
+new file mode 100644
+index 0000000..897b3be
+--- /dev/null
++++ b/app/src/main/cpp/pk_gen1_battle_trainer.h
+@@ -0,0 +1,48 @@
++#pragma once
++
++// The native Youngster acknowledgement uses the same picture and dialogue
++// in these three English cartridges. Each layout binds its own WRAM fields.
++struct Gen1TrainerLayout {
++    uint32_t crc;
++    uint16_t trainerClass, picPointer, currentOpponent, firstSpecies, partySlot, linkState;
++};
++
++static const struct Gen1TrainerLayout gen1YoungsterLayouts[] = {
++    {0x9f7fdd53u,0xd031,0xd033,0xd059,0xcfd8,0xcfe8,0xd12b},
++    {0xd6da8a1au,0xd031,0xd033,0xd059,0xcfd8,0xcfe8,0xd12b},
++    {0x7d527d62u,0xd030,0xd032,0xd058,0xcfd7,0xcfe7,0xd12a},
++};
++
++static const struct Gen1TrainerLayout* gbGen1TrainerLayout;
++static bool gbGen1TrainerArmed;
++static const uint32_t gen1YoungsterInk = 0x103169a8u;
++
++static void gbGen1TrainerConfigure(uint32_t crc) {
++    gbGen1TrainerLayout=NULL;
++    gbGen1TrainerArmed=false;
++    for (size_t i=0; i<sizeof gen1YoungsterLayouts/sizeof *gen1YoungsterLayouts; ++i)
++        if (gen1YoungsterLayouts[i].crc==crc) {
++            gbGen1TrainerLayout=&gen1YoungsterLayouts[i];
++            return;
++        }
++}
++
++static bool gbGen1TrainerStanding(const struct Gen1BattleOwnership* ownership) {
++    const struct Gen1TrainerLayout* layout=gbGen1TrainerLayout;
++    if (!ownership || !layout || gbR->d.sgbRenderMode || gbR->sgbBorders ||
++        gbRam(ownership->battle)!=2 ||
++        gbRam(layout->trainerClass)!=1 || gbRam(layout->currentOpponent)!=201 ||
++        gbRam16(layout->picPointer)!=0x4000 || gbRam(layout->linkState) ||
++        gbRam(layout->firstSpecies) || gbRam(layout->partySlot)!=255)
++        return false;
++
++    // These are the native text tiles for “YOUNGSTER wants / to fight!”.
++    // It is rendered after the intro slide and before the first Pokémon.
++    static const uint8_t first[] = {0x98,0x8e,0x94,0x8d,0x86,0x92,0x93,0x84,0x91,0x7f,0xb6,0xa0,0xad,0xb3,0xb2};
++    static const uint8_t second[] = {0xb3,0xae,0x7f,0xa5,0xa8,0xa6,0xa7,0xb3,0xe7};
++    for (size_t i=0; i<sizeof first; ++i)
++        if (gbRam(0xc3a0+14*20+1+i)!=first[i]) return false;
++    for (size_t i=0; i<sizeof second; ++i)
++        if (gbRam(0xc3a0+16*20+1+i)!=second[i]) return false;
++    return true;
++}
+diff --git a/app/src/main/cpp/pk_red_battle_pilot.h b/app/src/main/cpp/pk_red_battle_pilot.h
+index cdd7e6e..8f9f771 100644
+--- a/app/src/main/cpp/pk_red_battle_pilot.h
++++ b/app/src/main/cpp/pk_red_battle_pilot.h
+@@ -18,6 +18,9 @@ static void (*gbGen1BattleNativeRange)(struct GBVideoRenderer*, int, int, int);
+ #ifdef PK_BATTLE_BACK_DETAIL
+ #include "pk_gen1_battle_back.h"
+ #endif
++#ifdef PK_BATTLE_TRAINER_DETAIL
++#include "pk_gen1_battle_trainer.h"
++#endif
+ 
+ static const struct Gen1BattleOwnership* gbBattleOwnership(uint32_t crc) {
+     for (size_t i=0;i<sizeof(gen1BattleOwnership)/sizeof(*gen1BattleOwnership);++i)
+@@ -34,6 +37,9 @@ static void gbGen1BattleConfigure(uint32_t crc) {
+     gbGen1BattleBatchLayout=NULL;
+     gbGen1BattleArmed=false;
+     gbGen1BattleInvalid=true;
++#ifdef PK_BATTLE_TRAINER_DETAIL
++    gbGen1TrainerConfigure(crc);
++#endif
+ #ifdef PK_BATTLE_BACK_DETAIL
+     gbGen1BackConfigure(crc);
+ #endif
+@@ -101,7 +107,16 @@ static void gbGen1BattleArm(struct GBVideoRenderer* renderer, bool active) {
+     const struct Gen1BattleOwnership* next=NULL;
+     uint32_t front=0;
+     uint8_t species=0;
+-    if (active && gbGen1BattleBatchLayout) {
++#ifdef PK_BATTLE_TRAINER_DETAIL
++    bool trainer=active && gbGen1TrainerStanding(gbGen1BattleBatchLayout);
++    if (trainer!=gbGen1TrainerArmed) gbGen1BattleInvalid=true;
++    gbGen1TrainerArmed=trainer;
++    if (trainer) {
++        next=gbGen1BattleBatchLayout;
++        front=gen1YoungsterInk;
++    }
++#endif
++    if (active && !next && gbGen1BattleBatchLayout) {
+         species=gbRam(gbGen1BattleBatchLayout->enemy);
+         if (species<GEN1_BATTLE_SPECIES_LIMIT) front=gbGen1BattleBatch[species];
+         if (front) next=gbGen1BattleBatchLayout;
+@@ -136,8 +151,13 @@ static void gbGen1BattleArm(struct GBVideoRenderer* renderer, bool active) {
+ 
+ static void gbGen1BattleVolume(const uint32_t* frame, uint32_t* out, struct PkWideView v) {
+     const struct Gen1BattleOwnership* profile=gbGen1BattleProfile;
+-    if (gbGen1BattleInvalid || gbGen1BattleFrame+1!=gbB->video.frameCounter ||
+-        gbRam(profile->enemy)!=gbGen1BattleSpecies || gbRam(profile->battle)!=1 ||
++    if (gbGen1BattleInvalid || gbGen1BattleFrame+1!=gbB->video.frameCounter) return;
++#ifdef PK_BATTLE_TRAINER_DETAIL
++    if (gbGen1TrainerArmed) {
++        if (!gbGen1TrainerStanding(profile)) return;
++    } else
++#endif
++    if (gbRam(profile->enemy)!=gbGen1BattleSpecies || gbRam(profile->battle)!=1 ||
+         gbRam(profile->menu)!=14 || gbRam(profile->menu+1)!=profile->menuX ||
+         gbRam(profile->menu+2)!=0) return;
+ 

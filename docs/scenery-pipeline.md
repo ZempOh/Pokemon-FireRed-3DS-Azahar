@@ -1468,3 +1468,32 @@ Patch 0105 extends cartridge-clock presentation and buffered audio to supported
 Game Boy profiles. GB and GBA have the same cartridge frame period. On the
 2954bcf Thor pilot, Red stayed near 59.0 FPS when the 118 Hz display drove its
 cadence. Keep the same strict field and battle gates and retest both 2D and 3D.
+
+### Shared scenery tests for the next pass
+
+- Join only adjacent recognized Gen 1 post cells. Two depth-tested wood rails
+  connect their posts while openings and unrecognized cells keep their source
+  layout. The host comparisons cover English Red, Japanese Green, and Japanese
+  Yellow.
+- Sample 256×256 relief on known outdoor floors. The 16×16 control uses the
+  same repeating pattern. GBA ground recognition checks cartridge CRC, tileset
+  pair, reviewed source signature, and aligned source pixels. Mixed facade,
+  shoreline, and doorway cells retain the existing material. Regenerate the
+  lookup with `tools/gen_hd_gba_ground.py` and
+  `tools/scenery-profiles/android-ground-surface-source.json`.
+- FireRed's exact front Pidgey battle fixture has a depth-tested sprite
+  volume and protected native HUD. It keeps normal output when other layers,
+  clipping, or sprite changes invalidate the verified ownership checks.
+- The shared Pallet water effect shades only verified water pixels. Leave the
+  original shoreline, animations, and collision in the cartridge. Check actual
+  movement and Surf, then inspect the water at full size.
+- Keep the existing camera pitch. Three 480×271 host runs of the lower pitch
+  used 9.93–10.62 ms per FireRed frame, compared with 8.04–8.60 ms at the
+  current pitch. The lower view exposed more of the map border.
+- Both engines report the monotonic particle clock and native weather
+  suppression during successful 3D field rendering. Confirm this protocol
+  at 1× and 2× using a real weather boundary and exact device logs.
+- Generate the type-6 ocean-route climate entries from verified local
+  cartridge headers with `tools/gen_scenery_ocean_routes.py`. The runtime still
+  reads the current map's weather and checks for native weather objects.
+  Underwater, cave, and indoor map types keep their existing classification.

@@ -1,0 +1,46 @@
+--- a/app/src/main/cpp/pk_voxel_climate.h
++++ b/app/src/main/cpp/pk_voxel_climate.h
+@@ -5,8 +5,11 @@
+ #include <string.h>
+ #include "pk_scenery_grass_effects.h"
+ #include "pk_voxel_calendar.h"
++#ifdef __ANDROID__
++#include <android/log.h>
++#endif
+ 
+-struct VoxelClimate { int config, season, weather; unsigned blend, seasonBlend; uint64_t lastMs; int nativeWeather; unsigned fadeRemainder; unsigned seasonTransition; };
++struct VoxelClimate { int config, season, weather; unsigned blend, seasonBlend; uint64_t lastMs; int nativeWeather; unsigned fadeRemainder; unsigned seasonTransition; int outdoor; };
+ static struct VoxelClimate voxelClimate;
+ static uint32_t climateMix(uint32_t a, uint32_t b, unsigned f) {
+     unsigned r = ((a & 255) * (256-f) + (b & 255) * f) >> 8;
+@@ -22,6 +25,7 @@ static void climateUpdate(int outdoor, int nativeWeather) {
+     uint64_t now = climateMs();
+     unsigned dt = voxelClimate.lastMs ? (unsigned)(now-voxelClimate.lastMs) : 0;
+     voxelClimate.lastMs = now;
++    voxelClimate.outdoor = outdoor;
+     if (dt > 100) dt = 100;
+     int mode = voxelClimate.config & 3;
+     int season = (voxelClimate.config>>2)&3, weather = (voxelClimate.config>>4)&7;
+@@ -151,8 +155,21 @@ static uint32_t climateKnownWinterLeaf(uint32_t c, int groundMode) {
+ 
+ static void climateAtmosphere(uint32_t* out, const uint32_t* depth, int w, int h) {
+     unsigned f=voxelClimate.blend;
+-    if (!f || voxelClimate.nativeWeather) return;
+     int weather=voxelClimate.weather;
++#ifdef __ANDROID__
++    // Sample the same monotonic time the particle renderer uses, at a fixed
++    // real-time interval even when fast-forward changes the draw rate.
++    static uint64_t lastProbeMs;
++    if (voxelClimate.lastMs - lastProbeMs >= 2000) {
++        lastProbeMs = voxelClimate.lastMs;
++        int visible = f && !voxelClimate.nativeWeather && weather >= 2 ? weather : 0;
++        __android_log_print(ANDROID_LOG_INFO, "pokedaisy",
++            "voxel climate cfg=%d outdoors=%d native=%d season=%d season_blend=%u weather=%d blend=%u visible=%d mono_ms=%llu",
++            voxelClimate.config, voxelClimate.outdoor, voxelClimate.nativeWeather, voxelClimate.season,
++            voxelClimate.seasonBlend, weather, f, visible, (unsigned long long)lastProbeMs);
++    }
++#endif
++    if (!f || voxelClimate.nativeWeather) return;
+     if (weather==4) {
+         for(int y=0;y<h;y++) for(int x=0;x<w;x++) {
+             int at=y*w+x;

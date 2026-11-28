@@ -1,0 +1,244 @@
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -28,6 +28,7 @@
+ #include "pk_wide.h"
+ #include "pk_cheats.h"
+ #include "pk_wide_voxel.h"
++#include "pk_battle_volume.h"
+ #include "pk_wide_solid.h"
+ #include "pk_wide_props.h"
+ #include "pk_wide_buildings.h"
+@@ -4871,6 +4872,98 @@
+     flySignMove(sign, &snaps[f->bestSnap], f->bestCx, f->bestCy, f->bestH, f->bestV, f->frame, f->out, f->v, flyDx, flyDy, f->alpha);
+ }
+ 
++static void battleVolumeProtect(const uint16_t* oam, int candidate, int ox, int oy,
++        uint8_t blocked[BATTLE_VOLUME_SIZE][BATTLE_VOLUME_SIZE]) {
++    for (int k = 0; k < 128; ++k) {
++        const uint16_t* a = oam + k * 4;
++        int affine = (a[0] >> 8) & 3;
++        int shape = a[0] >> 14, size = a[1] >> 14;
++        if (k == candidate || affine == 2 || shape > 2) continue;
++        int x = a[1] & 511, y = a[0] & 255;
++        int width = OBJ_DIMS[shape][size][0], height = OBJ_DIMS[shape][size][1];
++        if (affine == 3) { width *= 2; height *= 2; }
++        if (x >= 256) x -= 512;
++        if (y >= PK_WIDE_H) y -= 256;
++        int left = clampi(x-ox,0,BATTLE_VOLUME_SIZE);
++        int right = clampi(x+width-ox,0,BATTLE_VOLUME_SIZE);
++        int top = clampi(y-oy,0,BATTLE_VOLUME_SIZE);
++        int bottom = clampi(y+height-oy,0,BATTLE_VOLUME_SIZE);
++        for (int row = top; row < bottom; ++row)
++            memset(&blocked[row][left],1,(size_t)(right-left));
++    }
++}
++
++static void battleVolumeDraw(const uint32_t* frame, uint32_t* out, struct PkWideView v, uint32_t alpha) {
++    // Only the reviewed FireRed opponent front picture is enrolled.
++    if (!voxelEnabled || solidRom != 0xdd88761cu || lineIoFrames < 2 ||
++        lineOamN != 1 || linePalN != 1 || tintShown) return;
++    const uint16_t* oam = lineOamBuf[0];
++    const uint8_t* vram = (const uint8_t*)G->video.vram;
++    const uint8_t* art = NULL;
++    int target = -1, ox = 0, oy = 0, palette = 0;
++    for (int k = 0; k < 128; ++k) {
++        const uint16_t* a = oam + k * 4;
++        if ((a[0] & 0xff00) != 0x0100 || (a[1] & 0xc000) != 0xc000) continue;
++        int x = a[1] & 511, y = a[0] & 255;
++        int p = (a[2] >> 10) & 3, tile = a[2] & 1023;
++        if (x != 144 || y != 21 || p != 2 || tile > 960) continue;
++        const uint8_t* candidate = vram + 0x10000 + tile*32;
++        if (battleVolumeFingerprint(candidate, 2048) != 0x1e472829u) continue;
++        const uint16_t* matrix = oam + ((a[1] >> 9) & 31) * 16;
++        if (matrix[3] != 256 || matrix[7] || matrix[11] || matrix[15] != 256) return;
++        if (target >= 0) return;
++        target = k; ox = x; oy = y; palette = 256 + (a[2] >> 12)*16; art = candidate;
++    }
++    if (target < 0) return;
++    static struct BattleVolume mesh;
++    static bool built;
++    if (!built) {
++        battleVolumeBuild(&mesh, art, .44f, -.39f);
++        built = true;
++    }
++    uint8_t blocked[BATTLE_VOLUME_SIZE][BATTLE_VOLUME_SIZE] = {0};
++    battleVolumeProtect(oam,target,ox-BATTLE_VOLUME_MARGIN,oy-BATTLE_VOLUME_MARGIN,blocked);
++    bool safeLine[BATTLE_VOLUME_SIZE] = {0};
++    // Require ordinary mode-0 1D sprites and palette on the source lines.
++    for (int row = 0; row < BATTLE_VOLUME_SIZE; ++row) {
++        int y = oy + row - BATTLE_VOLUME_MARGIN;
++        if (y < 0 || y >= BATTLE_TEXT_TOP) continue;
++        useLine(y);
++        if ((io(0) & 0x10c7) != 0x1040 || io(0x50) & 0x00c0 || io(0x4c)) continue;
++        if ((io(0x08)|io(0x0a)|io(0x0c)|io(0x0e)) & 0x40) continue;
++        safeLine[row] = true;
++    }
++    for (int row = 0; row < BATTLE_VOLUME_SIZE; ++row) {
++        int y = oy + row - BATTLE_VOLUME_MARGIN;
++        if (!safeLine[row] || y < v.y || y >= v.y+v.h) continue;
++        useLine(y);
++        for (int col = 0; col < BATTLE_VOLUME_SIZE; ++col) {
++            const struct BattleVolumePixel* pixel = &mesh.pixels[row][col];
++            if (!pixel->ink) continue;
++            int x = ox + col - BATTLE_VOLUME_MARGIN;
++            if (x < 0 || x >= PK_WIDE_W || x < v.x || x >= v.x+v.w) continue;
++            int sx = x-ox, sy = y-oy;
++            unsigned live = (unsigned)sx < 64 && (unsigned)sy < 64 ? mesh.mask[sy][sx] : 0;
++            if (!live && pixel->face == 1) continue;
++            if ((windowLayers(x,y) & 0x18) != 0x18 || blocked[row][col]) continue;
++            int pal;
++            bool covered = false;
++            for (int b = 0; b < 3; ++b)
++                if ((io(0) & (0x100<<b)) && bgPixel(b,x,y,&pal)) covered = true;
++            if (covered || (io(0x0e)&3) < 2) continue;
++            unsigned arena = bgPixel(3,x,y,&pal);
++            if (!live && !arena) continue;
++            uint32_t expected = color(P[live ? palette + live : pal + arena],alpha);
++            const uint32_t native = frame[y*PK_WIDE_W+x];
++            if ((expected ^ native) & 0x00ffffffu) continue;
++            uint32_t ink = color(P[palette + pixel->ink],alpha);
++            // mGBA uses the high byte for internal pixel flags on this host.
++            out[(y-v.y)*v.w+x-v.x] = (native & 0xff000000u) | (voxelShade(ink,pixel->light) & 0x00ffffffu);
++        }
++    }
++    useLive();
++}
++
+ static void fullDraw(const struct FullView* f) {
+     const uint32_t* frame = f->frame;
+     uint32_t* out = f->out;
+@@ -4996,6 +5089,7 @@
+             i += n - 1;
+         }
+     }
++    if (battle && !overlayDim && !holeLeft && !centre) battleVolumeDraw(frame,out,v,alpha);
+     if (valid && (flyDx || flyDy)) flyLabel(f);
+     PW_MARK(pw5);
+     PW_ADD(3, pw4, pw5);
+--- /dev/null
++++ b/app/src/main/cpp/pk_battle_volume.h
+@@ -0,0 +1,124 @@
++/* Private FireRed fixture pilot. The native 2D pipeline is authoritative. */
++#pragma once
++#include <math.h>
++#include <stdint.h>
++#include <string.h>
++
++enum { BATTLE_VOLUME_ART = 64, BATTLE_VOLUME_SIZE = 68, BATTLE_VOLUME_MARGIN = 2 };
++
++struct BattleVolumePixel {
++    float depth;
++    uint8_t ink, light, face;
++};
++
++struct BattleVolume {
++    struct BattleVolumePixel pixels[BATTLE_VOLUME_SIZE][BATTLE_VOLUME_SIZE];
++    uint8_t mask[BATTLE_VOLUME_ART][BATTLE_VOLUME_ART];
++};
++
++struct BattleVolumeVertex { float x, y, z; };
++
++static uint32_t battleVolumeFingerprint(const uint8_t* data, unsigned size) {
++    uint32_t hash = 2166136261u;
++    for (unsigned i = 0; i < size; ++i) hash = (hash ^ data[i]) * 16777619u;
++    return hash;
++}
++
++static unsigned battleVolumeInk(const uint8_t* art, int x, int y) {
++    unsigned off = ((y / 8) * 8 + x / 8) * 32 + y % 8 * 4 + x % 8 / 2;
++    return (art[off] >> ((x & 1) * 4)) & 15;
++}
++
++static unsigned battleVolumeThickness(uint8_t depth[64][64], int x, int y) {
++    return (unsigned)x < 64 && (unsigned)y < 64 ? depth[y][x] : 0;
++}
++
++static unsigned battleVolumeDistance(uint8_t depth[64][64], int x, int y) {
++    unsigned neighbor = battleVolumeThickness(depth,x,y);
++    return neighbor ? neighbor + 1 : 2; // A visible rim even on straight edges.
++}
++
++static void battleVolumeTriangle(struct BattleVolume* mesh, struct BattleVolumeVertex a,
++        struct BattleVolumeVertex b, struct BattleVolumeVertex c, uint8_t ink, uint8_t light,
++        uint8_t face, float yaw, float pitch) {
++    struct BattleVolumeVertex v[3] = {a, b, c};
++    for (int i = 0; i < 3; ++i) {
++        v[i].x += BATTLE_VOLUME_MARGIN + v[i].z * yaw;
++        v[i].y += BATTLE_VOLUME_MARGIN + v[i].z * pitch;
++    }
++    a = v[0]; b = v[1]; c = v[2];
++    float det = (b.y-c.y)*(a.x-c.x) + (c.x-b.x)*(a.y-c.y);
++    if (fabsf(det) < .0001f) return;
++    int x0 = (int)floorf(fminf(a.x, fminf(b.x,c.x)));
++    int y0 = (int)floorf(fminf(a.y, fminf(b.y,c.y)));
++    int x1 = (int)ceilf(fmaxf(a.x, fmaxf(b.x,c.x)));
++    int y1 = (int)ceilf(fmaxf(a.y, fmaxf(b.y,c.y)));
++    for (int y = y0; y < y1; ++y) for (int x = x0; x < x1; ++x) {
++        if ((unsigned)x >= BATTLE_VOLUME_SIZE || (unsigned)y >= BATTLE_VOLUME_SIZE) continue;
++        float u = ((b.y-c.y)*(x+.5f-c.x) + (c.x-b.x)*(y+.5f-c.y)) / det;
++        float w = ((c.y-a.y)*(x+.5f-c.x) + (a.x-c.x)*(y+.5f-c.y)) / det;
++        float r = 1.f-u-w;
++        if (u < -.0001f || w < -.0001f || r < -.0001f) continue;
++        float z = u*a.z + w*b.z + r*c.z;
++        struct BattleVolumePixel* pixel = &mesh->pixels[y][x];
++        if (!pixel->ink || z < pixel->depth)
++            *pixel = (struct BattleVolumePixel){ z, ink, light, face };
++    }
++}
++
++static void battleVolumeQuad(struct BattleVolume* mesh, struct BattleVolumeVertex a,
++        struct BattleVolumeVertex b, struct BattleVolumeVertex c, struct BattleVolumeVertex d,
++        uint8_t ink, uint8_t light, uint8_t face, float yaw, float pitch) {
++    battleVolumeTriangle(mesh, a, b, c, ink, light, face, yaw, pitch);
++    battleVolumeTriangle(mesh, a, c, d, ink, light, face, yaw, pitch);
++}
++
++static void battleVolumeBuild(struct BattleVolume* mesh, const uint8_t* art, float yaw, float pitch) {
++    uint8_t depths[64][64];
++    memset(mesh, 0, sizeof(*mesh));
++    for (int y = 0; y < 64; ++y) for (int x = 0; x < 64; ++x) {
++        mesh->mask[y][x] = (uint8_t)battleVolumeInk(art, x, y);
++        depths[y][x] = mesh->mask[y][x] ? 5 : 0;
++    }
++    for (int y = 0; y < 64; ++y) for (int x = 0; x < 64; ++x) {
++        unsigned left = battleVolumeDistance(depths,x-1,y), above = battleVolumeDistance(depths,x,y-1);
++        if (left < depths[y][x]) depths[y][x] = left;
++        if (above < depths[y][x]) depths[y][x] = above;
++    }
++    for (int y = 63; y >= 0; --y) for (int x = 63; x >= 0; --x) {
++        unsigned right = battleVolumeDistance(depths,x+1,y), below = battleVolumeDistance(depths,x,y+1);
++        if (right < depths[y][x]) depths[y][x] = right;
++        if (below < depths[y][x]) depths[y][x] = below;
++        if (!depths[y][x]) continue;
++    }
++    for (int y = 0; y < 64; ++y) for (int x = 0; x < 64; ++x) {
++        uint8_t ink = mesh->mask[y][x], size = depths[y][x];
++        if (!size) continue;
++        struct BattleVolumeVertex a = {x,y,0}, b = {x+1,y,0};
++        struct BattleVolumeVertex c = {x+1,y+1,0}, d = {x,y+1,0};
++        uint8_t light = 237 + size*3;
++        battleVolumeQuad(mesh,a,b,c,d,ink,light,1,yaw,pitch);
++        struct BattleVolumeVertex A={x,y,size}, B={x+1,y,size};
++        struct BattleVolumeVertex C={x+1,y+1,size}, D={x,y+1,size};
++        battleVolumeQuad(mesh,A,B,C,D,ink,170,5,yaw,pitch);
++        unsigned east = battleVolumeThickness(depths,x+1,y), north = battleVolumeThickness(depths,x,y-1);
++        unsigned west = battleVolumeThickness(depths,x-1,y), south = battleVolumeThickness(depths,x,y+1);
++        if (size > east) {
++            b.z = c.z = east;
++            battleVolumeQuad(mesh,b,c,C,B,ink,175,2,yaw,pitch);
++        }
++        if (size > north) {
++            a.z = b.z = north;
++            battleVolumeQuad(mesh,a,b,B,A,ink,254,3,yaw,pitch);
++        }
++        if (size > west) {
++            a.z = d.z = west;
++            battleVolumeQuad(mesh,a,d,D,A,ink,202,4,yaw,pitch);
++        }
++        if (size > south) {
++            c.z = d.z = south;
++            battleVolumeQuad(mesh,c,d,D,C,ink,154,6,yaw,pitch);
++        }
++    }
++}
++

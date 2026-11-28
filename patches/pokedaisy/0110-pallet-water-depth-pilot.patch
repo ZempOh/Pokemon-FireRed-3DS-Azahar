@@ -1,0 +1,134 @@
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -28,6 +28,7 @@
+ #include "pk_wide.h"
+ #include "pk_cheats.h"
+ #include "pk_wide_voxel.h"
++#include "pk_water_surface.h"
+ #include "pk_battle_volume.h"
+ #include "pk_wide_solid.h"
+ #include "pk_wide_props.h"
+@@ -5485,6 +5486,31 @@
+     return true;
+ }
+ 
++static void fireRedPalletWater(const struct Snap* s, const struct VoxelView* view,
++                               int cellX, int cellY, uint32_t* texture) {
++    if (solidRom!=0xdd88761cu || s->group!=3 || s->num || s->primary!=0x082d4a94u ||
++        s->secondary!=0x082d4aacu || s->width!=24 || s->height!=20) return;
++    // Confirm the complete pure-water 2x2 patch before shading. Adjacent mixed
++    // wave/shore metatiles may have foreground art and keep their original pixels.
++    const int waterX=MAP_OFFSET+8, waterY=MAP_OFFSET+18;
++    for(int y=0;y<2;++y)for(int x=0;x<2;++x) {
++        int conn;
++        if(blockIn(s,waterX+x,waterY+y,&conn,false)!=0x12b || conn>=0) return;
++    }
++    for(int y=0;y<32;++y)for(int x=0;x<32;++x) {
++        int dx=(waterX-cellX)*16+x,dy=(waterY-cellY)*16+y;
++        if((unsigned)dx>=(unsigned)view->stride || (unsigned)dy>=(unsigned)(view->rows*16))continue;
++        int edge=waterNearer(waterNearer(x,31-x),waterNearer(y,31-y));
++        // Reflect the visible north bank/town art across the intervening shore.
++        const int bankStart=(waterY-cellY-1)*16;
++        int sample=bankStart-1-y;
++        uint32_t bank=(unsigned)sample<(unsigned)(view->rows*16)
++            ? texture[sample*view->stride+dx] : 0x00aaaaaau;
++        uint32_t* pixel=&texture[dy*view->stride+dx];
++        *pixel=waterSurfacePixel(*pixel,bank,waterX*16+x,waterY*16+y,edge,y);
++    }
++}
++
+ static bool drawVoxel(const struct Snap* s, int cx, int cy, int href, int vref,
+                       uint32_t* out, struct PkWideView v, uint32_t alpha) {
+     if (!voxelViewportFits(v.w, v.h)) return false;
+@@ -5532,6 +5558,8 @@
+         memcpy(raw[y], texture + sy * w + sx, (size_t) v.w * sizeof(uint32_t));
+         memcpy(rawHole[y], holeBuf[sy] + sx, (size_t) v.w);
+     }
++    fireRedPalletWater(s,&voxel,cellX,cellY,texture);
++
+     // Header metadata and weather OAM are read from this same live session.
+     unsigned mapType = F.mapHeader ? r8(F.mapHeader + 0x17) : 0;
+     int nativeWeather = F.mapHeader ? r8(F.mapHeader + 0x16) > 2 : 1;
+--- a/app/src/main/cpp/pk_red_voxel_pilot.h
++++ b/app/src/main/cpp/pk_red_voxel_pilot.h
+@@ -1,4 +1,5 @@
+ #include "pk_voxel_roof_material.h"
++#include "pk_water_surface.h"
+ 
+ // Reviewed Pallet material cells for the exact US/EU Red cartridge.
+ // Units are 16 source pixels; the live map has a three-block border.
+@@ -238,6 +239,32 @@
+         return (struct GbVoxelHouse){0};
+     }
+     return (struct GbVoxelHouse){x,y,width+1,rows};
++}
++
++static bool gbPalletWaterTile(const struct GbSnap* snap, int tx, int ty) {
++    // This is an exact Pallet Town source window in world 8x8 tile units.
++    return tx >= 20 && tx < 28 && ty >= 40 && ty < 48 && gbTile(snap,tx,ty)==0x14;
++}
++
++static void gbPalletWater(const struct GbSnap* snap, const struct VoxelView* view,
++                          const uint32_t* art, uint32_t* floor, int width, int height) {
++    for (int top=0;top<height;top+=8) for(int left=0;left<width;left+=8) {
++        int tx=(view->left+left)/8, ty=(view->top+top)/8;
++        if (!gbPalletWaterTile(snap,tx,ty)) continue;
++        int east=1,west=1,north=1,south=1;
++        while(east<4 && gbPalletWaterTile(snap,tx+east,ty)) ++east;
++        while(west<4 && gbPalletWaterTile(snap,tx-west,ty)) ++west;
++        while(north<4 && gbPalletWaterTile(snap,tx,ty-north)) ++north;
++        while(south<4 && gbPalletWaterTile(snap,tx,ty+south)) ++south;
++        for(int y=0;y<8;++y) for(int x=0;x<8;++x) {
++            int bank=(north-1)*8+y;
++            int edge=waterNearer(waterNearer(west*8-8+x,east*8-1-x),
++                                 waterNearer(bank,south*8-1-y));
++            int at=(top+y)*width+left+x, mirror=top+y-2*bank-1;
++            uint32_t reflected=(unsigned)mirror<(unsigned)height ? art[mirror*width+left+x] : 0x00aaaaaau;
++            floor[at]=waterSurfacePixel(floor[at],reflected,tx*8+x,ty*8+y,edge,bank);
++        }
++    }
+ }
+ 
+ static bool gbVoxelDraw(const struct GbSnap* snap, int ox, int oy, struct PkWideView v, uint32_t alpha) {
+@@ -316,6 +343,7 @@
+         }
+     }
+     const struct VoxelGroundMaterial groundMaterial = {groundCells, 0, 0};
++    if (pallet) gbPalletWater(snap,&view,art,floor,w,h);
+     voxelTerrainWithGround(&view, floor, classicTiles ? &groundMaterial : 0);
+     const int border=96;
+     const uint8_t* roofTexture = pallet || houseCount ? voxelRoofTexture() : 0;
+--- /dev/null
++++ b/app/src/main/cpp/pk_water_surface.h
+@@ -0,0 +1,31 @@
++#pragma once
++#include <stdint.h>
++
++static int waterNearer(int a, int b) {
++    return a < b ? a : b;
++}
++
++static unsigned waterMix(unsigned a, unsigned b, unsigned weight) {
++    return (a * (256 - weight) + b * weight + 128) >> 8;
++}
++
++/* Water is admitted by an exact source profile before this function runs.
++ * Keep original animated wave contrast and all depth/terrain ownership. */
++static uint32_t waterSurfacePixel(uint32_t live, uint32_t bank, int x, int y,
++                                  int edge, int mirror) {
++    if (edge < 2) return live;
++    unsigned ramp = (unsigned)waterNearer(edge - 1, 8) * 16;
++    unsigned depth = (unsigned)waterNearer(edge, 18);
++    unsigned ripple = (unsigned)(y + (x >> 2)) & 15u;
++    unsigned reflected = mirror > 2 && mirror < 15 ? (unsigned)(15 - mirror) * 5u : 0;
++    reflected += ripple < 3 ? (3u - ripple) * 5u : 0;
++    unsigned lum = ((bank & 255) + 2 * ((bank >> 8) & 255) + ((bank >> 16) & 255)) >> 2;
++    unsigned r = live & 255, g = (live >> 8) & 255, b = (live >> 16) & 255;
++    unsigned deepR = r * (238 - depth * 4) >> 8;
++    unsigned deepG = g * (252 - depth * 2) >> 8;
++    unsigned deepB = waterMix(b, 162, depth * 2);
++    return (live & 0xff000000u)
++        | waterMix(r, waterMix(deepR, 86 + lum / 4, reflected), ramp)
++        | waterMix(g, waterMix(deepG, 143 + lum / 5, reflected), ramp) << 8
++        | waterMix(b, waterMix(deepB, 170 + lum / 5, reflected), ramp) << 16;
++}

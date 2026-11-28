@@ -8,6 +8,15 @@
       "gen1_recognition": "Complete Pallet Town or house block signature",
       "gba_recognition": "Exact cartridge CRC, tileset pair and registered building footprint",
       "required_evidence": "Matched runtime texture control, full-size exact signed Thor capture and protected 2D control"
+    },
+    "floor_relief": {
+      "source_size": [256, 256],
+      "control_size": [16, 16],
+      "reviewed_gba_tileset_pairs": 308,
+      "reviewed_gba_pair_metatile_entries": 5564,
+      "gba_recognition": "Exact cartridge CRC, tileset pair, pure floor signature and aligned native scene",
+      "source_allowlist": "scenery-profiles/android-ground-surface-source.json",
+      "required_evidence": "Matched runtime controls and exact signed Thor review at fence bases, plant roots and doorway thresholds"
     }
   },
   "rollout_smoke": {

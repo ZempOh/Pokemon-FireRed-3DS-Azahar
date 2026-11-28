@@ -13,9 +13,15 @@ static time_t fakeTime(time_t *out) { if(out)*out=fakeSeconds;return fakeSeconds
 #define time fakeTime
 #include "pk_voxel_climate.h"
 #include "pk_scenery_candidates.h"
+#include "pk_scenery_ocean_routes.h"
 #undef time
 #undef clock_gettime
 int main(void) {
+    assert(sceneryOceanRoute(0xe4deb9be,0,39));
+    assert(sceneryOceanRoute(0xcec21496,0,49));
+    assert(!sceneryOceanRoute(0xdd88761c,0,39));
+    assert(!sceneryOceanRoute(0xe4deb9be,0,0));
+    assert(!sceneryOceanRoute(0xe4deb9be,-1,39));
     /* Same type-zero engine metadata, different scene semantics. Route 16
      * must keep winter on crossing from Celadon; an actual room must clear it. */
     voxelClimate.config=62;

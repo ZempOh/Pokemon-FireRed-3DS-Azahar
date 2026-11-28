@@ -1,0 +1,16 @@
+--- a/app/src/main/cpp/pk_red_voxel_pilot.h
++++ b/app/src/main/cpp/pk_red_voxel_pilot.h
+@@ -336,6 +336,13 @@ static bool gbVoxelDraw(const struct GbSnap* snap, int ox, int oy, struct PkWide
+             if (material==RED_ROUND_TREE) redRoundTree(&view,x+8,y+8,alpha);
+             if (material==RED_POST) {
+                 uint32_t wood=alpha|RED_COLOR(165,126,85);
++                // Join only horizontally contiguous, recognized fence cells.
++                // End the rails before openings, paths, and any unknown art.
++                bool nextPost = col + 1 < cols && materials[row*cols+col+1] == RED_POST;
++                uint32_t rail = voxelShade(wood, 216);
++                int width = nextPost ? 16 : 8;
++                voxelPropBox(&view,x+4,y+6,width,2,1,2,rail);
++                voxelPropBox(&view,x+4,y+6,width,2,4,2,rail);
+                 for (int dx=2; dx<16; dx+=8) {
+                     voxelPropBox(&view,x+dx,y+5,4,4,0,7,wood);
+                     voxelPropBox(&view,x+dx+1,y+6,2,2,7,2,voxelShade(wood,242));

@@ -1,0 +1,114 @@
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -35,6 +35,7 @@
+ #include "pk_wide_buildings.h"
+ #include "pk_voxel_climate.h"
+ #include "pk_scenery_candidates.h"
++#include "pk_scenery_ocean_routes.h"
+ #include "pk_scenery_ground_patterns.h"
+ #include "pk_scenery_ground_surface.h"
+ #include "pk_scenery_winter_leaves.h"
+@@ -5598,7 +5599,9 @@ static bool drawVoxel(const struct Snap* s, int cx, int cy, int href, int vref,
+     int nativeWeather = F.mapHeader ? r8(F.mapHeader + 0x16) > 2 : 1;
+     for (int i=0; i<npieces[shown]; i++)
+         if (!pieces[shown][i].world) nativeWeather = 1;
+-    climateUpdate(sceneryOutdoor(solidRom,s->group,s->num,(int)mapType), nativeWeather);
++    bool outdoor = sceneryOutdoor(solidRom,s->group,s->num,(int)mapType);
++    bool oceanRoute = mapType == 6 && sceneryOceanRoute(solidRom,s->group,s->num);
++    climateUpdate(outdoor || oceanRoute, nativeWeather);
+     SCENERY_FRAME_MARK(cost1);
+     SCENERY_FRAME_ADD(0,cost0,cost1);
+     static struct SolidBuilding buildings[SOLID_BUILDING_CAP];
+--- /dev/null
++++ b/app/src/main/cpp/pk_scenery_ocean_routes.h
+@@ -0,0 +1,90 @@
++// Exact cartridge ocean-route metadata. Regenerate with gen_scenery_ocean_routes.py.
++#pragma once
++#include <stdint.h>
++
++static int sceneryOceanRoute(uint32_t crc, int group, int map) {
++    if ((unsigned)group > 255 || (unsigned)map > 255) return 0;
++    int key = group * 256 + map;
++    switch (crc) {
++    case 0x14465a33:
++        return key == 0x0027
++            || key == 0x0028
++            || key == 0x0029
++            || key == 0x002a
++            || key == 0x002b
++            || key == 0x002c
++            || key == 0x002d
++            || key == 0x002e
++            || key == 0x002f
++            || key == 0x0030
++            || key == 0x0031;
++    case 0x263a1187:
++        return key == 0x0027
++            || key == 0x0028
++            || key == 0x0029
++            || key == 0x002a
++            || key == 0x002b
++            || key == 0x002c
++            || key == 0x002d
++            || key == 0x002e
++            || key == 0x002f
++            || key == 0x0030
++            || key == 0x0031;
++    case 0x2be557a3:
++        return key == 0x0027
++            || key == 0x0028
++            || key == 0x0029
++            || key == 0x002a
++            || key == 0x002b
++            || key == 0x002c
++            || key == 0x002d
++            || key == 0x002e
++            || key == 0x002f
++            || key == 0x0030
++            || key == 0x0031;
++    case 0x558ae42f:
++        return key == 0x0027
++            || key == 0x0028
++            || key == 0x0029
++            || key == 0x002a
++            || key == 0x002b
++            || key == 0x002c
++            || key == 0x002d
++            || key == 0x002e
++            || key == 0x002f
++            || key == 0x0030
++            || key == 0x0031
++            || key == 0x004c
++            || key == 0x004e
++            || key == 0x0050
++            || key == 0x0051
++            || key == 0x006f;
++    case 0xcec21496:
++        return key == 0x0027
++            || key == 0x0028
++            || key == 0x0029
++            || key == 0x002a
++            || key == 0x002b
++            || key == 0x002c
++            || key == 0x002d
++            || key == 0x002e
++            || key == 0x002f
++            || key == 0x0030
++            || key == 0x0031
++            || key == 0x011e;
++    case 0xe4deb9be:
++        return key == 0x0027
++            || key == 0x0028
++            || key == 0x0029
++            || key == 0x002a
++            || key == 0x002b
++            || key == 0x002c
++            || key == 0x002d
++            || key == 0x002e
++            || key == 0x002f
++            || key == 0x0030
++            || key == 0x0031;
++    default:
++        return 0;
++    }
++}

@@ -1,0 +1,194 @@
+diff --git a/app/src/main/cpp/pk_red_voxel_pilot.h b/app/src/main/cpp/pk_red_voxel_pilot.h
+index c26252b..7b226a7 100644
+--- a/app/src/main/cpp/pk_red_voxel_pilot.h
++++ b/app/src/main/cpp/pk_red_voxel_pilot.h
+@@ -255,6 +255,7 @@ static bool gbVoxelDraw(const struct GbSnap* snap, int ox, int oy, struct PkWide
+     static uint32_t art[GB_BUF], floor[GB_BUF], depth[VOXEL_MAX_W*VOXEL_MAX_H];
+     static const uint8_t flat[GB_BUF/(VOXEL_TILE*VOXEL_TILE)];
+     static uint8_t materials[GB_BUF/(VOXEL_TILE*VOXEL_TILE)];
++    static uint8_t groundCells[GB_BUF/(VOXEL_TILE*VOXEL_TILE)];
+     static uint8_t flowerMasks[GB_BUF/(VOXEL_TILE*VOXEL_TILE)];
+     gbDraw(snap, ox, oy, window.left, window.top, w, h, art, w, alpha, false, true);
+     int cols = w / VOXEL_TILE, rows = h / VOXEL_TILE;
+@@ -291,6 +292,9 @@ static bool gbVoxelDraw(const struct GbSnap* snap, int ox, int oy, struct PkWide
+             materials[y*cols+x]=(uint8_t)material;
+             flowerMasks[y*cols+x]=material==RED_FLOWER ? (uint8_t)flower : 0;
+             const struct RedMaterialStyle* style = &redStyles[material];
++            // These branches supply real floor or its reconstructed underlay.
++            groundCells[y*cols+x] = material==RED_FIELD || material==RED_FLOWER ||
++                material==RED_PIPE || style->rise;
+             for (int dy = 0; dy < VOXEL_TILE; ++dy) {
+                 int at = (y*VOXEL_TILE+dy)*w + x*VOXEL_TILE;
+                 for (int dx = 0; dx < VOXEL_TILE; ++dx) {
+@@ -311,7 +315,8 @@ static bool gbVoxelDraw(const struct GbSnap* snap, int ox, int oy, struct PkWide
+             }
+         }
+     }
+-    voxelTerrainWithFloor(&view, floor);
++    const struct VoxelGroundMaterial groundMaterial = {groundCells, 0, 0};
++    voxelTerrainWithGround(&view, floor, classicTiles ? &groundMaterial : 0);
+     const int border=96;
+     const uint8_t* roofTexture = pallet || houseCount ? voxelRoofTexture() : 0;
+     if (pallet) {
+diff --git a/app/src/main/cpp/pk_voxel_ground_material.h b/app/src/main/cpp/pk_voxel_ground_material.h
+new file mode 100644
+index 0000000..d254dc6
+--- /dev/null
++++ b/app/src/main/cpp/pk_voxel_ground_material.h
+@@ -0,0 +1,43 @@
++/* Original granular surface relief for reviewed outdoor floor cells. */
++#pragma once
++
++#ifndef VOXEL_GROUND_TEXTURE_SIZE
++#define VOXEL_GROUND_TEXTURE_SIZE 256
++#endif
++
++struct VoxelGroundMaterial {
++    const uint8_t* cells;
++    int offsetX, offsetY;
++};
++
++static unsigned voxelGroundGrain(unsigned x, unsigned y) {
++    uint32_t seed = (x & 31u) + ((y & 31u) << 5);
++    seed = (seed ^ (seed >> 5)) * 0x7feb352du;
++    seed = (seed ^ (seed >> 15)) * 0x846ca68bu;
++    return (seed ^ (seed >> 16)) >> 28;
++}
++
++/* Cache one periodic material. A coarse grain lattice gives the relief
++ * broader shapes than single-pixel noise even with nearest-neighbor display. */
++static const uint8_t* voxelGroundTexture(void) {
++    enum { size = VOXEL_GROUND_TEXTURE_SIZE };
++    static uint8_t atlas[size * size];
++    static int ready;
++    if (ready) return atlas;
++    for (unsigned y = 0; y < size; ++y) {
++        unsigned v = (y * 256u + 128u) / size, row = v >> 3, fy = v & 7u;
++        for (unsigned x = 0; x < size; ++x) {
++            unsigned u = (x * 256u + 128u) / size, col = u >> 3, fx = u & 7u;
++            unsigned a = voxelGroundGrain(col, row) * (8u - fx) + voxelGroundGrain(col + 1u, row) * fx;
++            unsigned b = voxelGroundGrain(col, row + 1u) * (8u - fx) + voxelGroundGrain(col + 1u, row + 1u) * fx;
++            atlas[y * size + x] = (uint8_t)(239u + (a * (8u - fy) + b * fy) / 64u);
++        }
++    }
++    ready = 1;
++    return atlas;
++}
++
++/* The 16-texel control uses the same relief and 64-world-pixel repeat. */
++static unsigned voxelGroundTexel(int coordinate4) {
++    return ((unsigned)coordinate4 & 255u) * VOXEL_GROUND_TEXTURE_SIZE / 256u;
++}
+diff --git a/app/src/main/cpp/pk_wide.c b/app/src/main/cpp/pk_wide.c
+index 780c73f..cb36f24 100644
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -5368,6 +5368,26 @@ static int solidBuildingsPrepare(const struct Snap* s,struct VoxelView* v,int cx
+     return count;
+ }
+ 
++/* Start with the reviewed FireRed Pallet primary floor. Extend this gate
++ * from exact cartridge/tileset fixtures as additional floor art is reviewed. */
++static bool solidGroundMaterial(const struct Snap* s, int x, int y) {
++    if ((unsigned)(x - MAP_OFFSET) >= (unsigned)s->width ||
++        (unsigned)(y - MAP_OFFSET) >= (unsigned)s->height) return false;
++    int conn, id = blockIn(s,x,y,&conn,false);
++    if (conn >= 0) return false;
++    switch (id) {
++    case 0x008: case 0x009: case 0x011:
++    case 0x285: case 0x286: case 0x288: case 0x28c: case 0x28e:
++    case 0x28f: case 0x290: case 0x295: case 0x296: case 0x297:
++    case 0x29e: case 0x29f: case 0x2a6: case 0x2a7: case 0x2ae:
++    case 0x2af: case 0x2b6: case 0x2be: case 0x2bf: case 0x2c6:
++    case 0x2c7: case 0x2ce:
++        return true;
++    default:
++        return false;
++    }
++}
++
+ static bool drawVoxel(const struct Snap* s, int cx, int cy, int href, int vref,
+                       uint32_t* out, struct PkWideView v, uint32_t alpha) {
+     if (!voxelViewportFits(v.w, v.h)) return false;
+@@ -5457,7 +5477,16 @@ static bool drawVoxel(const struct Snap* s, int cx, int cy, int href, int vref,
+     int propCount=solidPropsPrepare(s,&voxel,cx,cy,texture,props,384,alpha);
+     SCENERY_FRAME_MARK(cost4);
+     SCENERY_FRAME_ADD(3,cost3,cost4);
+-    voxelTerrain(&voxel);
++    if (solidRom==0xdd88761c && s->group==3 && s->num==0 &&
++        s->primary==0x082d4a94 && s->secondary==0x082d4aac &&
++        sceneryOutdoor(solidRom,s->group,s->num,(int)mapType)) {
++        uint8_t groundCells[sizeof(rises)];
++        for (int row=0; row<rows; ++row)
++            for (int col=0; col<cols; ++col)
++                groundCells[row*cols+col] = solidGroundMaterial(s,cellX+col,cellY+row);
++        const struct VoxelGroundMaterial groundMaterial = {groundCells,cx,cy};
++        voxelTerrainWithGround(&voxel,texture,&groundMaterial);
++    } else voxelTerrain(&voxel);
+     SCENERY_FRAME_MARK(cost5);
+     SCENERY_FRAME_ADD(4,cost4,cost5);
+     for(int i=0;i<buildingCount;i++)solidBuildingDraw(&voxel,&buildings[i]);
+diff --git a/app/src/main/cpp/pk_wide_voxel.h b/app/src/main/cpp/pk_wide_voxel.h
+index 4451554..6dadca1 100644
+--- a/app/src/main/cpp/pk_wide_voxel.h
++++ b/app/src/main/cpp/pk_wide_voxel.h
+@@ -2,6 +2,7 @@
+ #pragma once
+ 
+ #include <stdint.h>
++#include "pk_voxel_ground_material.h"
+ 
+ #define VOXEL_TILE 16
+ #define VOXEL_MAX_RISE 20
+@@ -133,15 +134,24 @@ static void voxelGrassTuft(const struct VoxelView* v, int x, int y, int z,
+     voxelPropBox(v, x+1, y, 2, 2, z, 5, base);
+ }
+ 
+-static void voxelTerrainWithFloor(const struct VoxelView* v, const uint32_t* floor) {
++static void voxelTerrainWithGround(const struct VoxelView* v, const uint32_t* floor,
++                                   const struct VoxelGroundMaterial* ground) {
++    const uint8_t* atlas = ground ? voxelGroundTexture() : 0;
+     // The floor fills the output. The projection bounds in pk_wide.c include every sample.
+     for (int y = 0; y < v->height; y++) {
+         int worldY = voxelWorldY(v, y, 0);
+         int worldX = v->centreX - v->width / 2 - voxelFloor(worldY - v->centreY, 4);
+         int at = y * v->width;
+         const uint32_t* src = floor + (worldY - v->top) * v->stride + worldX - v->left;
++        const uint8_t* cells = ground
++            ? ground->cells + ((worldY - v->top) / VOXEL_TILE) * v->cols : 0;
++        const uint8_t* relief = ground
++            ? atlas + voxelGroundTexel((worldY + ground->offsetY) * 4) * VOXEL_GROUND_TEXTURE_SIZE : 0;
+         for (int x = 0; x < v->width; x++) {
+-            v->out[at + x] = src[x];
++            uint32_t ink = src[x];
++            if (cells && cells[(worldX - v->left + x) / VOXEL_TILE])
++                ink = voxelShade(ink, relief[voxelGroundTexel((worldX + ground->offsetX + x) * 4)]);
++            v->out[at + x] = ink;
+             v->depth[at + x] = (uint32_t) (worldY - v->top + 1) * 512u;
+         }
+     }
+@@ -181,12 +191,16 @@ static void voxelTerrainWithFloor(const struct VoxelView* v, const uint32_t* flo
+                 int worldY = voxelWorldY(v, y, rise);
+                 int x = voxelX(v, x0, worldY);
+                 const uint32_t* src = v->texture + (worldY - v->top) * v->stride + col * VOXEL_TILE;
++                const uint8_t* relief = ground && ground->cells[row * v->cols + col]
++                    ? atlas + voxelGroundTexel((worldY + ground->offsetY) * 4) * VOXEL_GROUND_TEXTURE_SIZE : 0;
+                 for (int i = 0; i < VOXEL_TILE; i++) {
+-                    // Small contact shadows at a higher neighbor; keep the live texel crisp.
++                    // Combine existing contact shadows with the reviewed floor's relief.
+                     unsigned shade = 256;
+                     if (i < 2 && left > rise) shade = i == 0 ? 220 : 240;
+                     if (worldY - y0 < 2 && voxelRise(v, col, row - 1) > rise)
+                         shade = shade * (worldY == y0 ? 220u : 240u) / 256u;
++                    if (relief)
++                        shade = shade * relief[voxelGroundTexel((x0 + ground->offsetX + i) * 4)] / 256u;
+                     voxelPixel(v, x + i, y, worldY, voxelShade(src[i], shade));
+                 }
+             }
+@@ -195,5 +209,5 @@ static void voxelTerrainWithFloor(const struct VoxelView* v, const uint32_t* flo
+ }
+ 
+ static void voxelTerrain(const struct VoxelView* v) {
+-    voxelTerrainWithFloor(v, v->texture);
++    voxelTerrainWithGround(v, v->texture, 0);
+ }

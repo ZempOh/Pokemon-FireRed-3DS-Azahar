@@ -1,4 +1,4 @@
-name: Build PokÃ©Daisy voxel preview
+name: Build PokéDaisy voxel preview
 
 on:
   push:

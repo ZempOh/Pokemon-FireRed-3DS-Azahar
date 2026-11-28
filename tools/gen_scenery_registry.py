@@ -206,6 +206,48 @@ def generate(profiles, plants, output):
     lines+=['};','static int solidPlantProfile(uint32_t rom,uint32_t primary,uint32_t secondary,int top,int bottom) {','    for(unsigned i=0;i<sizeof(solidPlantProfiles)/sizeof(solidPlantProfiles[0]);i++) {','        const struct SolidPlantProfile *p=&solidPlantProfiles[i];','        if(p->rom==rom&&p->primary==primary&&(!p->secondary||p->secondary==secondary)&&p->top==top&&p->bottom==bottom)return (int)i;','    }','    return -1;','}','static int solidPlantTileset(uint32_t rom,uint32_t primary) {','    for(unsigned i=0;i<sizeof(solidPlantProfiles)/sizeof(solidPlantProfiles[0]);i++)','        if(solidPlantProfiles[i].rom==rom&&solidPlantProfiles[i].primary==primary)return 1;','    return 0;','}']
     (output/'pk_scenery_plant_profiles.h').write_text('\n'.join(lines)+'\n')
 
+def generate_small_fixtures(profiles, output):
+    lines = ['// Generated from reviewed tileset pairs and source layers.',
+             '#pragma once',
+             'enum SceneryFixtureShape { SCENERY_STEEL_FENCE, SCENERY_CUT_TIMBER };',
+             'struct SceneryFixture { uint32_t rom, primary, secondary; uint16_t tile; uint8_t shape, posts, x[2], ink[4]; };',
+             'static const struct SceneryFixture sceneryFixtures[] = {']
+    shapes = {'steel_fence': 'SCENERY_STEEL_FENCE', 'cut_timber': 'SCENERY_CUT_TIMBER'}
+    seen = set()
+    for profile in profiles:
+        key = (int(profile['rom_crc32'], 16), int(profile['primary'], 16),
+               int(profile['secondary'], 16), profile['id'])
+        posts = profile['feet_x']
+        ink = profile['ink']
+        assert key not in seen and 0 <= key[3] < 1024 and profile['reviewed']
+        seen.add(key)
+        assert all(len(bytes.fromhex(profile[field])) == 32 for field in
+                   ('rom_sha256', 'source_art_sha256', 'floor_sha256'))
+        assert 1 <= len(posts) <= 2 and all(3 <= x <= 13 for x in posts)
+        assert posts == sorted(set(posts))
+        assert len(ink) == 4 and all(0 <= coordinate < 16 for coordinate in ink)
+        assert profile['shape'] != 'steel_fence' or len(posts) == 2
+        lines.append('    {0x%08x, 0x%08x, 0x%08x, 0x%x, %s, %d, {%s}, {%s}},'
+                     % (*key, shapes[profile['shape']], len(posts),
+                        ','.join(map(str, posts)), ','.join(map(str, ink))))
+    lines.extend([
+        '};',
+        'static int scenerySmallFixtureTileset(uint32_t rom, uint32_t primary) {',
+        '    for (unsigned i=0; i<sizeof(sceneryFixtures)/sizeof(sceneryFixtures[0]); ++i)',
+        '        if (sceneryFixtures[i].rom==rom && sceneryFixtures[i].primary==primary) return 1;',
+        '    return 0;',
+        '}',
+        'static int scenerySmallFixture(uint32_t rom, uint32_t primary, uint32_t secondary, int tile) {',
+        '    for (unsigned i=0; i<sizeof(sceneryFixtures)/sizeof(sceneryFixtures[0]); ++i) {',
+        '        const struct SceneryFixture* p=&sceneryFixtures[i];',
+        '        if (p->rom==rom && p->primary==primary && p->secondary==secondary && p->tile==tile) return (int)i;',
+        '    }',
+        '    return -1;',
+        '}',
+    ])
+    (output/'pk_scenery_small_fixtures.h').write_text('\n'.join(lines)+'\n')
+
+
 def generate_grass_effects(profiles,output):
     lines=['// Generated reviewed live foliage effects; exact ROM/template/image identity.', '#pragma once',
            'struct SceneryGrassEffect { uint32_t rom,template,images; };',
@@ -252,5 +294,6 @@ if __name__=='__main__':
     generate_tall_trees(json.loads((root/'android-tall-trees.json').read_text()),args.output)
     generate_ground_props(json.loads((root/'android-ground-props.json').read_text()),args.output)
     generate_grass_effects(json.loads((root/'android-grass-effects.json').read_text()),args.output)
+    generate_small_fixtures(json.loads((root/'android-small-fixtures.json').read_text()),args.output)
     from gen_scenery_ground_patterns import generate_ground_patterns
     generate_ground_patterns(json.loads((root/'android-ground-patterns.json').read_text()),args.output)

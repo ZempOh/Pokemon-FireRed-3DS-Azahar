@@ -1399,3 +1399,13 @@ pipe and encounter variants on their own fixtures. Original flat mode requires
 pixel equality. Live Cut swaps in the Red overworld replace the target with
 ground, so a stump must come from reviewed stump art rather than a synthetic
 Cut remnant. These changes have no inherited Thor passes.
+
+The FireRed follow-up records seven exact metal-fence and cut-timber metatiles
+from Pallet Town, Route 1 and Viridian Forest in
+`tools/scenery-profiles/android-small-fixtures.json`. The upper layer contains
+the modeled prop and the lower layer is complete. The renderer retains that
+live lower layer through the climate pass and samples two live colors from
+the prop. The generator requires both tileset pointers and separate source
+and floor hashes. Mixed architecture and unreviewed variants retain their
+source appearance. Include a winter close-up of the original patterned ground
+before timing this candidate.

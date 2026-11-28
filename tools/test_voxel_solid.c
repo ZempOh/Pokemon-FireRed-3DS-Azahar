@@ -11,7 +11,28 @@
 #include "pk_scenery_tall_tree_profiles.h"
 #include "pk_scenery_ui.h"
 
+static void testSmallFixtures(void) {
+    int metal=scenerySmallFixture(0xdd88761c,0x082d4a94,0x082d4aac,0x284);
+    int wood=scenerySmallFixture(0xdd88761c,0x082d4a94,0x082d4dc4,0xea);
+    assert(metal>=0 && wood>=0);
+    assert(scenerySmallFixture(0xdd88761c,0x082d4a94,0x082d4aac,0xea)<0);
+    assert(scenerySmallFixture(0xfba55dd8,0x082d4a94,0x082d4aac,0x284)<0);
+    uint32_t pixels[48*48]={0}, depth[48*48]={0};
+    struct VoxelView view={.out=pixels,.depth=depth,.width=48,.height=48,.top=-16,.rows=4};
+    struct SolidProp prop={.kind=SOLID_SMALL_FIXTURE,.fixtureProfile=metal};
+    prop.surface.art[0]=0xff829ebcu; prop.surface.art[1]=0xffdef3fbu;
+    solidPropDraw(&view,&prop);
+    assert(pixels[27*48+34]==voxelShade(prop.surface.art[0],208)); // midpoint rail
+    assert(pixels[26*48+31]!=0); // exposed rectangular post
+    memset(pixels,0,sizeof(pixels)); memset(depth,0,sizeof(depth));
+    prop.fixtureProfile=wood;
+    solidPropDraw(&view,&prop);
+    assert(pixels[27*48+29]==0); // no invented second post
+    assert(pixels[26*48+37]!=0); // tiered timber at its source x-position
+}
+
 int main(void) {
+    testSmallFixtures();
     /* Mixed grass/sand caps must not expose yellow land in winter battles. */
     assert(sceneryLandCapRows(0x25c3d89f,0x82d4a94,0xc0)==8);
     assert(!sceneryLand(0x25c3d89f,0x82d4a94,0xc0));

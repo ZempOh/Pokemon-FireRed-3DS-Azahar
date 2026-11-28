@@ -1,0 +1,138 @@
+diff --git a/app/src/main/cpp/pk_scenery_small_fixtures.h b/app/src/main/cpp/pk_scenery_small_fixtures.h
+new file mode 100644
+--- /dev/null
++++ b/app/src/main/cpp/pk_scenery_small_fixtures.h
+@@ -0,0 +1,25 @@
++// Generated from reviewed tileset pairs and source layers.
++#pragma once
++enum SceneryFixtureShape { SCENERY_STEEL_FENCE, SCENERY_CUT_TIMBER };
++struct SceneryFixture { uint32_t rom, primary, secondary; uint16_t tile; uint8_t shape, posts, x[2], ink[4]; };
++static const struct SceneryFixture sceneryFixtures[] = {
++    {0xdd88761c, 0x082d4a94, 0x082d4aac, 0x284, SCENERY_STEEL_FENCE, 2, {4,12}, {3,5,3,3}},
++    {0xdd88761c, 0x082d4a94, 0x082d4aac, 0x287, SCENERY_STEEL_FENCE, 2, {4,12}, {3,5,3,3}},
++    {0xdd88761c, 0x082d4a94, 0x082d4aac, 0xe7, SCENERY_STEEL_FENCE, 2, {4,12}, {3,5,3,3}},
++    {0xdd88761c, 0x082d4a94, 0x082d4dc4, 0xea, SCENERY_CUT_TIMBER, 1, {12}, {10,3,11,3}},
++    {0xdd88761c, 0x082d4a94, 0x082d4dc4, 0xf1, SCENERY_CUT_TIMBER, 1, {12}, {10,3,11,3}},
++    {0xdd88761c, 0x082d4a94, 0x082d4dc4, 0x2a6, SCENERY_CUT_TIMBER, 2, {4,12}, {2,7,3,3}},
++    {0xdd88761c, 0x082d4a94, 0x082d4dc4, 0x2a7, SCENERY_CUT_TIMBER, 2, {4,12}, {2,7,3,3}},
++};
++static int scenerySmallFixtureTileset(uint32_t rom, uint32_t primary) {
++    for (unsigned i=0; i<sizeof(sceneryFixtures)/sizeof(sceneryFixtures[0]); ++i)
++        if (sceneryFixtures[i].rom==rom && sceneryFixtures[i].primary==primary) return 1;
++    return 0;
++}
++static int scenerySmallFixture(uint32_t rom, uint32_t primary, uint32_t secondary, int tile) {
++    for (unsigned i=0; i<sizeof(sceneryFixtures)/sizeof(sceneryFixtures[0]); ++i) {
++        const struct SceneryFixture* p=&sceneryFixtures[i];
++        if (p->rom==rom && p->primary==primary && p->secondary==secondary && p->tile==tile) return (int)i;
++    }
++    return -1;
++}
+--- a/app/src/main/cpp/pk_wide_props.h
++++ b/app/src/main/cpp/pk_wide_props.h
+@@ -4,7 +4,8 @@
+ #include "scenery_plant_geometry.h"
+ #include "pk_scenery_plant_profiles.h"
+ #include "pk_scenery_ground_props.h"
+-struct SolidProp { struct SolidTree surface; int kind,plantProfile; };
++#include "pk_scenery_small_fixtures.h"
++struct SolidProp { struct SolidTree surface; int kind,plantProfile,fixtureProfile; };
+ struct SolidPlantContext { const struct VoxelView *view; const struct SolidProp *prop; };
+ static void solidPlantTriangle(void *opaque,const SceneryPlantVertex *a,
+                                const SceneryPlantVertex *b,const SceneryPlantVertex *c) {
+@@ -83,7 +84,33 @@
+     }
+ }
+ 
++enum { SOLID_SMALL_FIXTURE = 14 };
++
++static void solidSmallFixtureDraw(const struct VoxelView* view, const struct SolidProp* prop) {
++    const struct SceneryFixture* profile=&sceneryFixtures[prop->fixtureProfile];
++    const struct SolidTree* surface=&prop->surface;
++    const int x=surface->x, y=surface->y+9, z=surface->rise;
++    const uint32_t sides=surface->art[0], cap=surface->art[1];
++    if (profile->shape==SCENERY_STEEL_FENCE)
++        voxelPropBox(view,x,y,16,2,z+3,2,sides);
++    for (int i=0; i<profile->posts; ++i) {
++        int foot=x+profile->x[i];
++        if (profile->shape==SCENERY_STEEL_FENCE) {
++            voxelPropBox(view,foot-2,y-1,4,4,z,7,sides);
++            voxelPropBox(view,foot-1,y,2,2,z+7,1,cap);
++        } else {
++            voxelPropBox(view,foot-3,y-2,6,5,z,6,sides);
++            voxelPropBox(view,foot-2,y-2,4,4,z+6,1,cap);
++            voxelPropBox(view,foot-1,y-1,2,2,z+7,1,voxelShade(cap,224));
++        }
++    }
++}
++
+ static void solidPropDraw(const struct VoxelView* v,const struct SolidProp* p) {
++    if (p->kind==SOLID_SMALL_FIXTURE) {
++        solidSmallFixtureDraw(v,p);
++        return;
++    }
+     const struct SolidTree* t=&p->surface;
+     float x=t->x+8,y=t->y+9,z=t->rise;
+     if(p->kind==13) {
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -5192,7 +5192,8 @@
+     int snow=solidRom==0x4b3d4957 && s->primary==0x08725ab4;
+     int indoor=solidPlantTileset(solidRom,s->primary);
+     int profiled=sceneryGroundPropsTileset(solidRom,s->primary);
+-    if(!letsgo&&!radical&&!snow&&!unboundGreen&&!indoor&&!profiled)return 0;
++    int smallFixtures=scenerySmallFixtureTileset(solidRom,s->primary);
++    if(!letsgo&&!radical&&!snow&&!unboundGreen&&!indoor&&!profiled&&!smallFixtures)return 0;
+     /* Only metadata resets: cached pixels are rebuilt on each snapshot's first
+      * use, so palette animation, season switches and maps cannot retain old art. */
+     struct SceneryMaterialCache materials;
+@@ -5202,6 +5203,24 @@
+     for(int row=0;row<v->rows;row++)for(int col=0;col<v->cols;col++) {
+         int conn,id=blockIn(s,cellX+col,cellY+row,&conn,false),kind=0,ground=8;
+         if(conn>=0 && s->conn[conn].primary!=s->primary)continue;
++        if (smallFixtures && conn<0 && count<cap) {
++            int index=scenerySmallFixture(solidRom,s->primary,s->secondary,id);
++            if (index>=0) {
++                const struct SceneryFixture* profile=&sceneryFixtures[index];
++                struct SolidProp* p=&props[count++];
++                p->kind=SOLID_SMALL_FIXTURE;
++                p->fixtureProfile=index;
++                struct SolidTree* t=&p->surface;
++                t->x=v->left+col*16;t->y=v->top+row*16;t->rise=voxelRise(v,col,row);
++                for (int i=0; i<2; ++i)
++                    t->art[i]=solidMaterialPixel(s,id,profile->ink[i*2],profile->ink[i*2+1],alpha);
++                // The reviewed cells have a complete live floor under the prop.
++                for (int y=0; y<16; ++y) for (int x=0; x<16; ++x)
++                    texture[(row*16+y)*v->stride+col*16+x]=
++                        climateGround(solidPlantGroundPixel(s,id,x,y,alpha,1),2);
++                continue;
++            }
++        }
+         const struct SceneryGroundProp *groundProp=profiled?sceneryGroundProp(solidRom,s->primary,id):NULL;
+         if(indoor) {
+             if(conn>=0||row+1>=v->rows||count==cap)continue;
+--- a/app/src/main/cpp/pk_red_voxel_pilot.h
++++ b/app/src/main/cpp/pk_red_voxel_pilot.h
+@@ -167,9 +167,9 @@
+ }
+ 
+ static enum RedMaterial gbVoxelMaterial(uint32_t signature, int cx, int cy,
+-                                       bool classicTiles, bool pallet, unsigned flower) {
++                                       bool classicTiles, bool pallet, bool mapCell, unsigned flower) {
+     if (flower) return RED_FLOWER;
+-    if (classicTiles && signature==0x52525252u) return RED_GRASS;
++    if (classicTiles && signature==0x52525252u) return mapCell ? RED_GRASS : RED_FIELD;
+     if (classicTiles && gbVoxelPipe(signature)) return RED_PIPE;
+     int x=cx-6, y=cy-6;
+     if (pallet && (unsigned)x<20 && (unsigned)y<18) return redMaterialAt(x,y);
+@@ -255,7 +255,9 @@
+         for (int x = 0; x < cols; ++x) {
+             uint32_t signature=classicTiles ? gbVoxelSignature(snap,left+x,top+y) : 0;
+             unsigned flower=gbVoxelFlowerMask(signature);
+-            enum RedMaterial material=gbVoxelMaterial(signature,left+x,top+y,classicTiles,pallet,flower);
++            bool mapCell=(unsigned)(left+x-6)<(unsigned)snap->w*2 &&
++                (unsigned)(top+y-6)<(unsigned)snap->h*2;
++            enum RedMaterial material=gbVoxelMaterial(signature,left+x,top+y,classicTiles,pallet,mapCell,flower);
+             for (int i=0; i<houseCount; ++i) {
+                 const struct GbVoxelHouse* h=&houses[i];
+                 if (left+x>=h->x && left+x<h->x+h->width &&

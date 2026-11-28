@@ -1,0 +1,154 @@
+[
+  {
+    "game": "firered",
+    "rom_crc32": "dd88761c",
+    "rom_sha256": "3d0c79f1627022e18765766f6cb5ea067f6b5bf7dca115552189ad65a5c3a8ac",
+    "primary": "0x082d4a94",
+    "secondary": "0x082d4aac",
+    "id": 644,
+    "shape": "steel_fence",
+    "feet_x": [
+      4,
+      12
+    ],
+    "ink": [
+      3,
+      5,
+      3,
+      3
+    ],
+    "source_art_sha256": "ed72eb432f7efa5cebfc3184ca522b07f8552517462b537ca3bd339c9d9468f5",
+    "floor_sha256": "05d4d2b224e7f64a38d691047d9067f779600da2578faeead3e8de71975d867e",
+    "reviewed": true
+  },
+  {
+    "game": "firered",
+    "rom_crc32": "dd88761c",
+    "rom_sha256": "3d0c79f1627022e18765766f6cb5ea067f6b5bf7dca115552189ad65a5c3a8ac",
+    "primary": "0x082d4a94",
+    "secondary": "0x082d4aac",
+    "id": 647,
+    "shape": "steel_fence",
+    "feet_x": [
+      4,
+      12
+    ],
+    "ink": [
+      3,
+      5,
+      3,
+      3
+    ],
+    "source_art_sha256": "13941ae91d5b4ce9924c50f11311f877a60dc5261f15157d553ec70fe71f2870",
+    "floor_sha256": "2177dbb79498d39f9d05c44decfd7a1cf07b4804a611417a0dfaa72d0027e7f9",
+    "reviewed": true
+  },
+  {
+    "game": "firered",
+    "rom_crc32": "dd88761c",
+    "rom_sha256": "3d0c79f1627022e18765766f6cb5ea067f6b5bf7dca115552189ad65a5c3a8ac",
+    "primary": "0x082d4a94",
+    "secondary": "0x082d4aac",
+    "id": 231,
+    "shape": "steel_fence",
+    "feet_x": [
+      4,
+      12
+    ],
+    "ink": [
+      3,
+      5,
+      3,
+      3
+    ],
+    "source_art_sha256": "57fed712eeef89a8899304c1e678acf243cbeeb1a086f7d5275edbb6a8ff66ba",
+    "floor_sha256": "2ac691155451152075f28c01bfd7997effbc71c367732afd39cdb35e786c9275",
+    "reviewed": true
+  },
+  {
+    "game": "firered",
+    "rom_crc32": "dd88761c",
+    "rom_sha256": "3d0c79f1627022e18765766f6cb5ea067f6b5bf7dca115552189ad65a5c3a8ac",
+    "primary": "0x082d4a94",
+    "secondary": "0x082d4dc4",
+    "id": 234,
+    "shape": "cut_timber",
+    "feet_x": [
+      12
+    ],
+    "ink": [
+      10,
+      3,
+      11,
+      3
+    ],
+    "source_art_sha256": "2f75218965abfabf2f1772a3a25f24c28d3f488625f514a40b271dc3cd492017",
+    "floor_sha256": "015e1efefe4a6149047b8805c80a939a554a15d2039fb54881b4f4bd14544402",
+    "reviewed": true
+  },
+  {
+    "game": "firered",
+    "rom_crc32": "dd88761c",
+    "rom_sha256": "3d0c79f1627022e18765766f6cb5ea067f6b5bf7dca115552189ad65a5c3a8ac",
+    "primary": "0x082d4a94",
+    "secondary": "0x082d4dc4",
+    "id": 241,
+    "shape": "cut_timber",
+    "feet_x": [
+      12
+    ],
+    "ink": [
+      10,
+      3,
+      11,
+      3
+    ],
+    "source_art_sha256": "330556a417beb9e049483a6497bb4d34ff61351183f138ec7a24c04f10ad77f8",
+    "floor_sha256": "2ac691155451152075f28c01bfd7997effbc71c367732afd39cdb35e786c9275",
+    "reviewed": true
+  },
+  {
+    "game": "firered",
+    "rom_crc32": "dd88761c",
+    "rom_sha256": "3d0c79f1627022e18765766f6cb5ea067f6b5bf7dca115552189ad65a5c3a8ac",
+    "primary": "0x082d4a94",
+    "secondary": "0x082d4dc4",
+    "id": 678,
+    "shape": "cut_timber",
+    "feet_x": [
+      4,
+      12
+    ],
+    "ink": [
+      2,
+      7,
+      3,
+      3
+    ],
+    "source_art_sha256": "6c63758c225d19358be808a0e266848db4afee178476913e1e21b1e4997df192",
+    "floor_sha256": "015e1efefe4a6149047b8805c80a939a554a15d2039fb54881b4f4bd14544402",
+    "reviewed": true
+  },
+  {
+    "game": "firered",
+    "rom_crc32": "dd88761c",
+    "rom_sha256": "3d0c79f1627022e18765766f6cb5ea067f6b5bf7dca115552189ad65a5c3a8ac",
+    "primary": "0x082d4a94",
+    "secondary": "0x082d4dc4",
+    "id": 679,
+    "shape": "cut_timber",
+    "feet_x": [
+      4,
+      12
+    ],
+    "ink": [
+      2,
+      7,
+      3,
+      3
+    ],
+    "source_art_sha256": "40d7d9a8859a7a60ac203b6c8f81a1a9fea804c6c0b2ef046c9778bb614bd1f6",
+    "floor_sha256": "5fe0edd3056760956c10c62b4df0f786d246f51fa93c9311b918a383836e0898",
+    "reviewed": true
+  }
+]

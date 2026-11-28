@@ -1437,3 +1437,15 @@ the gate. Metatiles `0x199`, `0x28c`, and `0x293` have steel in their first
 eight rows and path or lawn in the last eight. Apply the ground mask only
 to the lower half of these exact tileset variants. The mask review stores the
 source image hashes and retains the rejected signed candidate screenshot.
+
+## Runtime roof-material pilot
+
+Patch 0102 adds a native 256×256 authored slate relief texture to the recognized
+Gen 1 Pallet roofs and the verified FireRed Pallet building volumes. World-aligned
+surface coordinates keep the material fixed during movement. The GBA path checks
+the triangle normal before sampling it, so vertical facades and gables use their
+existing art. The texture is generated once on the render thread and uses one
+byte per texel. Fixture comparisons can compile the same authored pattern at
+16×16 with `VOXEL_ROOF_TEXTURE_SIZE=16`. Keep the view and display filter matched.
+Record texture size, target size, and display filter independently. A roof pilot
+covers only the named scene and asset family.

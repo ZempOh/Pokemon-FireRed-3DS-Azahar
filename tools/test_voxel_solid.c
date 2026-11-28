@@ -37,8 +37,19 @@ static void testSmallFixtures(void) {
     assert(pixels[26*48+37]!=0); // tiered timber at its source x-position
 }
 
+static void testRoofMaterial(void) {
+    const uint8_t* atlas=voxelRoofTexture();
+    assert(VOXEL_ROOF_TEXTURE_SIZE==256);
+    assert(voxelRoofTexture()==atlas);
+    assert(voxelRoofSample(atlas,0,0)==193);
+    assert(voxelRoofSample(atlas,56,56)==255);
+    assert(voxelRoofSample(atlas,4,4)!=voxelRoofSample(atlas,6,6));
+    assert(voxelRoofSample(atlas,56,56)==voxelRoofSample(atlas,56+256,56-256));
+}
+
 int main(void) {
     testSmallFixtures();
+    testRoofMaterial();
     /* Mixed grass/sand caps must not expose yellow land in winter battles. */
     assert(sceneryLandCapRows(0x25c3d89f,0x82d4a94,0xc0)==8);
     assert(!sceneryLand(0x25c3d89f,0x82d4a94,0xc0));

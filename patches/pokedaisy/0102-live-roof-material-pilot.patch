@@ -1,0 +1,176 @@
+diff --git a/app/src/main/cpp/pk_voxel_roof_material.h b/app/src/main/cpp/pk_voxel_roof_material.h
+new file mode 100644
+--- /dev/null
++++ b/app/src/main/cpp/pk_voxel_roof_material.h
+@@ -0,0 +1,42 @@
++/* Original slate relief texture shared by the Gen 1 and GBA rasterizers. */
++#pragma once
++#include <stdint.h>
++
++#ifndef VOXEL_ROOF_TEXTURE_SIZE
++#define VOXEL_ROOF_TEXTURE_SIZE 256
++#endif
++
++/* Build the periodic material once on the field-render thread. Each shingle
++ * has a recessed joint, two bevels, and subtle grain across its exposed face.
++ * The texture stores prelit relief. The live roof supplies the color. */
++static const uint8_t* voxelRoofTexture(void) {
++    enum { size = VOXEL_ROOF_TEXTURE_SIZE };
++    static uint8_t atlas[size * size];
++    static int ready;
++    if (ready) return atlas;
++    for (unsigned y = 0; y < size; ++y) {
++        const unsigned v = (y * 256u + 128u) / size;
++        const unsigned row = v / 64u, localV = v & 63u;
++        for (unsigned x = 0; x < size; ++x) {
++            const unsigned u = ((x * 256u + 128u) / size + (row & 1u) * 32u) & 255u;
++            const unsigned column = u / 64u, localU = u & 63u;
++            unsigned light = 246u - (column * 11u + row * 17u) % 12u;
++            light -= (localU * 3u + localV / 4u) % 7u;
++            if (localV < 5u || localU < 5u) light = 193u;
++            else if (localV < 11u || localU < 10u) light = 220u;
++            else if (localV >= 55u || localU >= 58u) light = 255u;
++            atlas[y * size + x] = (uint8_t)light;
++        }
++    }
++    ready = 1;
++    return atlas;
++}
++
++/* A repeat covers 32×32 world units. Inputs have eight substeps per unit,
++ * independent of the atlas resolution; the 16-texel host control uses the
++ * same pattern and physical size as the runtime 256-texel texture. */
++static unsigned voxelRoofSample(const uint8_t* atlas, int x8, int y8) {
++    const unsigned x = ((unsigned)x8 & 255u) * VOXEL_ROOF_TEXTURE_SIZE / 256u;
++    const unsigned y = ((unsigned)y8 & 255u) * VOXEL_ROOF_TEXTURE_SIZE / 256u;
++    return atlas[y * VOXEL_ROOF_TEXTURE_SIZE + x];
++}
+--- a/app/src/main/cpp/pk_wide_buildings.h
++++ b/app/src/main/cpp/pk_wide_buildings.h
+@@ -3,12 +3,14 @@
+ #include <math.h>
+ #include "scenery_building_geometry.h"
+ #include "pk_scenery_buildings.h"
++#include "pk_voxel_roof_material.h"
+ #define SOLID_BUILDING_MAX_W 320
+ #define SOLID_BUILDING_MAX_H 160
+ #define SOLID_BUILDING_CAP 12
+ struct SolidBuilding {
+     const struct SceneryBuildingProfile* profile;
+     int x,y,rise;
++    const uint8_t* roofTexture;
+     uint32_t art[SOLID_BUILDING_MAX_W*SOLID_BUILDING_MAX_H];
+ };
+ struct SolidBuildingContext { const struct VoxelView* view; const struct SolidBuilding* building; };
+@@ -32,6 +34,9 @@
+     if(x1>=view->width)x1=view->width-1;
+     if(y1>=view->height)y1=view->height-1;
+     int width=building->profile->width*16,height=building->profile->height*16;
++    // The normal's vertical component is zero for facades and gables.
++    const float up=(b->x-a->x)*(c->z-a->z)-(c->x-a->x)*(b->z-a->z);
++    const uint8_t* roof=fabsf(up)>.01f ? building->roofTexture : 0;
+     for(int y=y0;y<=y1;y++)for(int x=x0;x<=x1;x++) {
+         float wa=((sy[1]-sy[2])*(x+.5f-sx[2])+(sx[2]-sx[1])*(y+.5f-sy[2]))/den;
+         float wb=((sy[2]-sy[0])*(x+.5f-sx[2])+(sx[0]-sx[2])*(y+.5f-sy[2]))/den;
+@@ -42,6 +47,11 @@
+         if(u>=width)u=width-1;
+         if(v>=height)v=height-1;
+         uint32_t color=building->art[v*width+u];
++        if(roof) {
++            const int x8=(int)((wa*a->x+wb*b->x+wc*c->x)*8.0f);
++            const int z8=(int)((wa*a->z+wb*b->z+wc*c->z)*8.0f);
++            color=voxelShade(color,voxelRoofSample(roof,x8,z8));
++        }
+         voxelPixel(view,x,y,(int)floorf(wa*wy[0]+wb*wy[1]+wc*wy[2]),voxelShade(color,shade));
+     }
+ }
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -5350,6 +5350,8 @@
+             }
+             if(!match)continue;
+             struct SolidBuilding* b=&buildings[count++];b->profile=p;
++            b->roofTexture=solidRom==0xdd88761c && s->group==3 && s->num==0 && conn<0
++                ? voxelRoofTexture() : 0;
+             b->x=v->left+col*16;b->y=v->top+row*16;b->rise=voxelRise(v,col,row+p->height-1);
+             int width=p->width*16,height=p->height*16;
+             for(int y=0;y<height;y++)memcpy(b->art+y*width,texture+(row*16+y)*v->stride+col*16,width*sizeof(uint32_t));
+--- a/app/src/main/cpp/pk_red_voxel_pilot.h
++++ b/app/src/main/cpp/pk_red_voxel_pilot.h
+@@ -1,3 +1,5 @@
++#include "pk_voxel_roof_material.h"
++
+ // Reviewed Pallet material cells for the exact US/EU Red cartridge.
+ // Units are 16 source pixels; the live map has a three-block border.
+ enum RedMaterial { RED_FIELD, RED_TREE, RED_ROOF, RED_WALL, RED_FLOWER, RED_POST, RED_WATER, RED_NATIVE, RED_SIGN, RED_PIPE, RED_GRASS, RED_ROUND_TREE };
+@@ -70,14 +72,19 @@
+ 
+ /* Draw the lit surfaces of an axis-aligned solid through the same depth
+  * buffer as the shared ground projection and the game's live actors. */
+-static void redBox(const struct VoxelView* v, int x, int y, int w, int h, int z, int height,
+-                   uint32_t tone) {
++static void redBoxMaterial(const struct VoxelView* v, int x, int y, int w, int h, int z, int height,
++                   uint32_t tone, const uint8_t* roof, int roofX, int roofY) {
+     int front = y+h;
+     int top = z+height;
+     if (front < v->top || y >= v->top+v->rows*VOXEL_TILE) return;
+     for (int yy=y; yy<front; ++yy) {
+         int left = voxelX(v,x,yy), sy = voxelY(v,yy,top);
+-        for (int dx=0; dx<w; ++dx) voxelPixel(v,left+dx,sy,yy,tone);
++        for (int dx=0; dx<w; ++dx) {
++            const uint32_t surface=roof
++                ? voxelShade(tone,voxelRoofSample(roof,(x+dx-roofX)*8+4,(yy-roofY)*8+4))
++                : tone;
++            voxelPixel(v,left+dx,sy,yy,surface);
++        }
+         for (int dz=z; dz<top; ++dz)
+             voxelPixel(v,left,voxelY(v,yy,dz),yy,voxelShade(tone,165));
+     }
+@@ -88,10 +95,15 @@
+     }
+ }
+ 
++static void redBox(const struct VoxelView* v, int x, int y, int w, int h, int z, int height,
++                   uint32_t tone) {
++    redBoxMaterial(v,x,y,w,h,z,height,tone,0,0,0);
++}
++
+ #define RED_COLOR(r,g,b) ((r) | ((g)<<8) | ((b)<<16))
+ 
+ static void redHouse(const struct VoxelView* v, const uint32_t* art, int x, int y,
+-                     int w, int h, int height, uint32_t alpha) {
++                     int w, int h, int height, uint32_t alpha, const uint8_t* roofTexture) {
+     int front=y+h;
+     if (front < v->top || y >= v->top+v->rows*VOXEL_TILE) return;
+     redBox(v,x,y,w,h,0,height,alpha|RED_COLOR(218,191,149));
+@@ -110,8 +122,8 @@
+     uint32_t roof=alpha|(w>70 ? RED_COLOR(104,143,156) : RED_COLOR(195,110,93));
+     for (int step=0; step<5; ++step) {
+         int inset=step*3;
+-        redBox(v,x-2+step,y-2+inset,w+4-2*step,h+4-2*inset,height+step*2,2,
+-               voxelShade(roof,228+step*7));
++        redBoxMaterial(v,x-2+step,y-2+inset,w+4-2*step,h+4-2*inset,height+step*2,2,
++                       voxelShade(roof,228+step*7),roofTexture,x-2,y-2);
+     }
+ }
+ 
+@@ -302,14 +314,15 @@
+     voxelTerrainWithFloor(&view, floor);
+     const int border=96;
+     if (pallet) {
+-        redHouse(&view,art,border+64,border+48,64,48,20,alpha);
+-        redHouse(&view,art,border+192,border+48,64,48,20,alpha);
+-        redHouse(&view,art,border+160,border+128,96,64,24,alpha);
++        const uint8_t* roofTexture=voxelRoofTexture();
++        redHouse(&view,art,border+64,border+48,64,48,20,alpha,roofTexture);
++        redHouse(&view,art,border+192,border+48,64,48,20,alpha,roofTexture);
++        redHouse(&view,art,border+160,border+128,96,64,24,alpha,roofTexture);
+     }
+     for (int i=0; i<houseCount; ++i) {
+         const struct GbVoxelHouse* h=&houses[i];
+         redHouse(&view,art,h->x*16,h->y*16,h->width*16,h->rows*16,
+-                 h->rows==4 ? 24 : 20,alpha);
++                 h->rows==4 ? 24 : 20,alpha,0);
+     }
+     for (int row=0; row<rows; ++row) {
+         for (int col=0; col<cols; ++col) {

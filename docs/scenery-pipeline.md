@@ -1680,6 +1680,12 @@ when reading the cave floor marker. Unlit cave and native 2D marker counts
 must stay zero. Keep the wall-foot geometry and floor sampling as separate
 checks.
 
+The bridge generator now admits the source-owned Route 120 span in Modern
+Emerald, Seaglass, and Better Emerald 2, plus one native Ash Gray crossing.
+Validate each deck's exact approach and shoreline words and keep its native
+movement, deck art, and water pixels intact. Lazarus needs a working native
+Continue fixture before its matching span can be enrolled.
+
 FireRed's original 151 player-side poses use the native species slot, exact
 art and palette fingerprints, and measured standing anchors. The shared batch
 compares six native, Standard, and HD replays per species, including serialized

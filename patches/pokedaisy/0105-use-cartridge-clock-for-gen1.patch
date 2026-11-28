@@ -1,0 +1,60 @@
+--- a/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt
++++ b/app/src/main/kotlin/com/pokedaisy/app/EmulatorEngine.kt
+@@ -85,7 +85,8 @@ class EmulatorEngine(
+     @Volatile var wideVoxelGame = WideScreen.OFF
+     /** Keep supported voxel profiles on the cartridge clock in both 2D and 3D. */
+     @Volatile var voxelNativeClock = false
+-    val preserveNativeVideoFrame: Boolean get() = voxelNativeClock && gba && effectiveSpeed() == 1f
++    private val usesNativeFrameClock: Boolean get() = voxelNativeClock && !nds
++    val preserveNativeVideoFrame: Boolean get() = usesNativeFrameClock && effectiveSpeed() == 1f
+     /** A Game Boy game pk_wide_gb.c knows (its [WideScreen.gameFor]), EXPAND on or not: with EXPAND off it's configured
+      * anyway with nothing drawn, for its scene (the FIELD HUD's field read: a Game Boy game has no FfMenuWatch). */
+     @Volatile var gbSceneGame = WideScreen.OFF
+@@ -1160,7 +1161,7 @@ class EmulatorEngine(
+         // the game runs without sound instead.
+         val track: AudioTrack? = runCatching { buildAudioTrack(sampleRate).also {
+             // Fill native-clock audio before play(), including resumed battle scenes.
+-            if (!(voxelNativeClock && gba && effectiveSpeed() == 1f)) it.play()
++            if (!(usesNativeFrameClock && effectiveSpeed() == 1f)) it.play()
+         } }
+             .onFailure { Log.e("pokedaisy", "audio track failed", it) }
+             .getOrNull()
+@@ -1224,8 +1225,8 @@ class EmulatorEngine(
+ 
+         val scratch = ShortArray(4096)
+         val tap = AudioTap()
+-        val frameNanos get() = if (voxelNativeClock && gba) VoxelFrameClock.FRAME_NANOS else 1_000_000_000L / 60L
+-        val nativeClockAudio get() = voxelNativeClock && gba && speed == 1f
++        val frameNanos get() = if (usesNativeFrameClock) VoxelFrameClock.FRAME_NANOS else 1_000_000_000L / 60L
++        val nativeClockAudio get() = usesNativeFrameClock && speed == 1f
+         var next = System.nanoTime()
+         var fpsFrames = 0
+         var fpsSince = System.nanoTime()
+@@ -1502,7 +1503,7 @@ class EmulatorEngine(
+             if (nds) stepDsHold()
+             // The native clock has a full frame budget regardless of whether the
+             // current scene is a cheap battle or an expensive projected field.
+-            pendingNativePresentation = voxelNativeClock && gba && effectiveSpeed() == 1f
++            pendingNativePresentation = usesNativeFrameClock && effectiveSpeed() == 1f
+             if (!pendingNativePresentation) onFrame?.invoke()
+             frameCoop?.afterFrame()
+             framesRun++
+@@ -1869,7 +1870,7 @@ class EmulatorEngine(
+             // Thor's nominal 120 Hz ticks can settle near 118 Hz. Dividing those by two
+             // slows the game, and waiting within a refresh gives projection <5 ms to finish.
+             // Use the timer/audio path at 1x; retain the existing fast-forward grouping below.
+-            perFrame = if (speed == 1f && track != null && bufferFrames > 0 && !vsyncFallback && !(voxelNativeClock && gba)) vsyncsPerFrame() else 0
++            perFrame = if (speed == 1f && track != null && bufferFrames > 0 && !vsyncFallback && !usesNativeFrameClock) vsyncsPerFrame() else 0
+             pacedPerFrame = perFrame
+             val ffPer = ffFramesPerRefresh(speed, vsyncsPerFrame())
+             if (ffPer != ffPerTick) {
+--- a/app/src/main/kotlin/com/pokedaisy/app/VoxelFrameClock.kt
++++ b/app/src/main/kotlin/com/pokedaisy/app/VoxelFrameClock.kt
+@@ -1,6 +1,6 @@
+ package com.pokedaisy.app
+ 
+-/** A GBA frame is 280896 cycles of its 16777216 Hz clock, independent of Android's refresh. */
++/** GB (70224 cycles at 4194304 Hz) and GBA have the same frame period. */
+ internal object VoxelFrameClock {
+     const val FRAME_NANOS = 280896L * 1_000_000_000L / 16777216L
+ 

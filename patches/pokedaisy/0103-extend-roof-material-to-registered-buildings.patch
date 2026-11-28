@@ -1,0 +1,33 @@
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -5350,8 +5350,7 @@
+             }
+             if(!match)continue;
+             struct SolidBuilding* b=&buildings[count++];b->profile=p;
+-            b->roofTexture=solidRom==0xdd88761c && s->group==3 && s->num==0 && conn<0
+-                ? voxelRoofTexture() : 0;
++            b->roofTexture=voxelRoofTexture();
+             b->x=v->left+col*16;b->y=v->top+row*16;b->rise=voxelRise(v,col,row+p->height-1);
+             int width=p->width*16,height=p->height*16;
+             for(int y=0;y<height;y++)memcpy(b->art+y*width,texture+(row*16+y)*v->stride+col*16,width*sizeof(uint32_t));
+--- a/app/src/main/cpp/pk_red_voxel_pilot.h
++++ b/app/src/main/cpp/pk_red_voxel_pilot.h
+@@ -313,8 +313,8 @@ static bool gbVoxelDraw(const struct GbSnap* snap, int ox, int oy, struct PkWide
+     }
+     voxelTerrainWithFloor(&view, floor);
+     const int border=96;
++    const uint8_t* roofTexture = pallet || houseCount ? voxelRoofTexture() : 0;
+     if (pallet) {
+-        const uint8_t* roofTexture=voxelRoofTexture();
+         redHouse(&view,art,border+64,border+48,64,48,20,alpha,roofTexture);
+         redHouse(&view,art,border+192,border+48,64,48,20,alpha,roofTexture);
+         redHouse(&view,art,border+160,border+128,96,64,24,alpha,roofTexture);
+@@ -322,7 +322,7 @@ static bool gbVoxelDraw(const struct GbSnap* snap, int ox, int oy, struct PkWide
+     for (int i=0; i<houseCount; ++i) {
+         const struct GbVoxelHouse* h=&houses[i];
+         redHouse(&view,art,h->x*16,h->y*16,h->width*16,h->rows*16,
+-                 h->rows==4 ? 24 : 20,alpha,0);
++                 h->rows==4 ? 24 : 20,alpha,roofTexture);
+     }
+     for (int row=0; row<rows; ++row) {
+         for (int col=0; col<cols; ++col) {

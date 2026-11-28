@@ -1,0 +1,52 @@
+--- a/app/src/main/cpp/pk_voxel_calendar.h
++++ b/app/src/main/cpp/pk_voxel_calendar.h
+@@ -28,23 +28,32 @@
+     return season == 3 ? 3 : 2;
+ }
+ 
++static int voxelCalendarSeason(unsigned month) {
++    return (int)(((month + 10u) % 12u) / 3u);
++}
++
+ /* Civil dates advance the palette fade once per day. Absolute time advances
+  * weather so repeated local hours and map reloads do not reroll a front. */
+-static struct VoxelCalendarSample voxelCalendarAt(time_t now, const struct tm* local) {
++static struct VoxelCalendarSample voxelCalendarAt(time_t now, const struct tm* local,
++                                                   const struct tm* slotLocal) {
+     struct VoxelCalendarSample sample = {0};
+-    if (now < 0 || !local || (unsigned)local->tm_mon >= 12 ||
++    if (now < 0 || !local || !slotLocal || (unsigned)local->tm_mon >= 12 ||
++        (unsigned)slotLocal->tm_mon >= 12 ||
+         local->tm_mday < 1 || local->tm_mday > 31) return sample;
+ 
+     sample.valid = 1;
+     unsigned month = (unsigned)(local->tm_mon + 10) % 12u;
+-    sample.season = (int)(month / 3u);
++    sample.season = voxelCalendarSeason((unsigned)local->tm_mon);
+     if (month % 3u == 0 && local->tm_mday <= CLIMATE_TRANSITION_DAYS) {
+         unsigned days = (unsigned)(local->tm_mday - 1);
+         sample.previousSeasonBlend = 256u - days * 256u / CLIMATE_TRANSITION_DAYS;
+     }
+ 
+     uint64_t seconds = (uint64_t)now;
+-    sample.weather = voxelCalendarWeather(seconds / CLIMATE_FRONT_SECONDS, sample.season);
++    /* A local season boundary can occur partway through this absolute slot.
++     * Keep its weather preset tied to the local date when the slot opened. */
++    sample.weather = voxelCalendarWeather(seconds / CLIMATE_FRONT_SECONDS,
++                                          voxelCalendarSeason((unsigned)slotLocal->tm_mon));
+     unsigned phase = (unsigned)(seconds % CLIMATE_FRONT_SECONDS);
+     unsigned end = CLIMATE_FRONT_SECONDS - phase;
+     unsigned edge = phase < end ? phase : end;
+@@ -55,6 +64,10 @@
+ 
+ static struct VoxelCalendarSample voxelCalendarNow(void) {
+     time_t now = time(NULL);
+-    struct tm local;
+-    return voxelCalendarAt(now, now >= 0 && localtime_r(&now, &local) ? &local : NULL);
++    if (now < 0) return (struct VoxelCalendarSample){0};
++    time_t slotStart = now - now % CLIMATE_FRONT_SECONDS;
++    struct tm local, slotLocal;
++    if (!localtime_r(&now, &local) || !localtime_r(&slotStart, &slotLocal))
++        return (struct VoxelCalendarSample){0};
++    return voxelCalendarAt(now, &local, &slotLocal);
+ }

@@ -1449,3 +1449,22 @@ byte per texel. Fixture comparisons can compile the same authored pattern at
 16×16 with `VOXEL_ROOF_TEXTURE_SIZE=16`. Keep the view and display filter matched.
 Record texture size, target size, and display filter independently. A roof pilot
 covers only the named scene and asset family.
+
+Patch 0103 extends the material to the complete Gen 1 house signatures and to
+the generated GBA building registry. The GBA path waits for the cartridge CRC,
+both tilesets, and the full building footprint before applying the material.
+The material keeps the source palette and leaves vertical wall faces alone.
+Review roof anchors in both 2D and 3D, including the cathedral and Seaglass
+house. Track full-size roof evidence separately from the earlier outdoor smoke
+captures and verify it on the exact signed APK.
+
+Patch 0104 samples the season at the start of each automatic weather slot.
+This keeps an active front stable when a calendar season begins partway through
+the slot. The seasonal palette still follows the current local date. The
+natural-front QA predictor selects the matching algorithm from the APK's
+source revision.
+
+Patch 0105 extends cartridge-clock presentation and buffered audio to supported
+Game Boy profiles. GB and GBA have the same cartridge frame period. On the
+2954bcf Thor pilot, Red stayed near 59.0 FPS when the 118 Hz display drove its
+cadence. Keep the same strict field and battle gates and retest both 2D and 3D.

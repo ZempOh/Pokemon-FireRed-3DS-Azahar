@@ -137,25 +137,36 @@ int main(void) {
     assert(out[0]==1 && out[1]==2 && out[2]==3 && out[3]==4);
     struct tm boundary = {.tm_mon=11, .tm_mday=1};
     const time_t front = (time_t)100 * CLIMATE_FRONT_SECONDS;
-    assert(voxelCalendarAt(-1,&boundary).valid==0);
-    assert(voxelCalendarAt(front,NULL).valid==0);
-    struct VoxelCalendarSample opening = voxelCalendarAt(front,&boundary);
+    assert(voxelCalendarAt(-1,&boundary,&boundary).valid==0);
+    assert(voxelCalendarAt(front,NULL,&boundary).valid==0);
+    struct VoxelCalendarSample opening = voxelCalendarAt(front,&boundary,&boundary);
     assert(opening.valid && opening.season==3 && opening.previousSeasonBlend==256);
     assert(opening.weatherBlend==0);
-    struct VoxelCalendarSample fade = voxelCalendarAt(front+CLIMATE_FRONT_FADE_SECONDS/2,&boundary);
+    struct VoxelCalendarSample fade = voxelCalendarAt(front+CLIMATE_FRONT_FADE_SECONDS/2,&boundary,&boundary);
     assert(fade.weather==opening.weather && fade.weatherBlend==128);
-    struct VoxelCalendarSample full = voxelCalendarAt(front+CLIMATE_FRONT_FADE_SECONDS,&boundary);
+    struct VoxelCalendarSample full = voxelCalendarAt(front+CLIMATE_FRONT_FADE_SECONDS,&boundary,&boundary);
     assert(full.weather==opening.weather && full.weatherBlend==256);
-    assert(voxelCalendarAt(front+CLIMATE_FRONT_SECONDS-CLIMATE_FRONT_FADE_SECONDS/2,&boundary).weatherBlend==128);
-    assert(voxelCalendarAt(front+CLIMATE_FRONT_SECONDS,&boundary).weatherBlend==0);
+    assert(voxelCalendarAt(front+CLIMATE_FRONT_SECONDS-CLIMATE_FRONT_FADE_SECONDS/2,&boundary,&boundary).weatherBlend==128);
+    assert(voxelCalendarAt(front+CLIMATE_FRONT_SECONDS,&boundary,&boundary).weatherBlend==0);
     boundary.tm_mday=8;
-    assert(voxelCalendarAt(front,&boundary).previousSeasonBlend==128);
+    assert(voxelCalendarAt(front,&boundary,&boundary).previousSeasonBlend==128);
     boundary.tm_hour=23;
-    assert(voxelCalendarAt(front,&boundary).previousSeasonBlend==128);
+    assert(voxelCalendarAt(front,&boundary,&boundary).previousSeasonBlend==128);
     boundary.tm_mday=15;
-    assert(voxelCalendarAt(front,&boundary).previousSeasonBlend==0);
+    assert(voxelCalendarAt(front,&boundary,&boundary).previousSeasonBlend==0);
     boundary.tm_mon=0; boundary.tm_mday=1;
-    assert(voxelCalendarAt(front,&boundary).previousSeasonBlend==0);
+    assert(voxelCalendarAt(front,&boundary,&boundary).previousSeasonBlend==0);
+
+    /* 2027-03-01 00:00 PST is 7200 seconds into an existing weather slot.
+     * Keep its snow through local midnight while the civil palette begins spring. */
+    const time_t springMidnight = 1803888000;
+    const struct tm winterDate = {.tm_mon=1,.tm_mday=28};
+    const struct tm springDate = {.tm_mon=2,.tm_mday=1};
+    struct VoxelCalendarSample lateWinter = voxelCalendarAt(springMidnight-1,&winterDate,&winterDate);
+    struct VoxelCalendarSample earlySpring = voxelCalendarAt(springMidnight,&springDate,&winterDate);
+    assert(lateWinter.season==3 && earlySpring.season==0 && earlySpring.previousSeasonBlend==256);
+    assert(lateWinter.weather==3 && earlySpring.weather==lateWinter.weather);
+    assert(lateWinter.weatherBlend==256 && earlySpring.weatherBlend==256);
 
     memset(&voxelClimate,0,sizeof voxelClimate);voxelClimate.config=1;
     climateUpdate(1,0);

@@ -1,6 +1,15 @@
 {
   "schema": 1,
   "scope": "Environmental scenery in the original six games and ten additional collected games",
+  "runtime_materials": {
+    "roof_relief": {
+      "source_size": [256, 256],
+      "control_size": [16, 16],
+      "gen1_recognition": "Complete Pallet Town or house block signature",
+      "gba_recognition": "Exact cartridge CRC, tileset pair and registered building footprint",
+      "required_evidence": "Matched runtime texture control, full-size exact signed Thor capture and protected 2D control"
+    }
+  },
   "rollout_smoke": {
     "commit": "a50dad7e4c8614dfaf793f82a55cbccb23f2b679",
     "gen1_cartridge_profiles": 23,

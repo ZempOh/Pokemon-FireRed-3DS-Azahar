@@ -1,6 +1,35 @@
 {
   "schema": 1,
   "scope": "Environmental scenery in the original six games and ten additional collected games",
+  "active_release_qa": {
+    "english_gba_profiles": 16,
+    "english_gen1_profiles": ["red-en", "blue-en", "yellow-en"],
+    "total_profiles": 19
+  },
+  "terrain_and_small_prop_rollout": {
+    "gba_boundary_inventory": {
+      "game_profiles": 16,
+      "validated_map_references": 8989,
+      "unresolved_map_headers": 41,
+      "tileset_pairs": 1220,
+      "raw_height_boundary_variants": 390164,
+      "status": "Exact cartridge inventory. Art classification, geometry coverage and Thor review are tracked separately."
+    },
+    "gen1_source_groups": {
+      "cartridge_profiles": 23,
+      "verified_route12_boardwalk_spans_per_profile": 2,
+      "verified_sign_placements_per_profile": 92,
+      "verified_cut_tree_placements_per_profile": 32,
+      "status": "Shared geometry keyed by exact source and native behavior. Host fixtures and signed Thor walkthroughs stay separate."
+    },
+    "rock_tunnel_cliff_feet": {
+      "game_profiles": 5,
+      "flash_controlled_maps": 10,
+      "source_foot_masks": 3,
+      "geometry_depth": 4,
+      "status": "Tested in exact native lit and unlit host controls. Thor pacing and interaction review are pending."
+    }
+  },
   "runtime_materials": {
     "roof_relief": {
       "source_size": [256, 256],

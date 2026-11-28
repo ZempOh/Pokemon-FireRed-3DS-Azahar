@@ -1,0 +1,124 @@
+diff --git a/app/src/main/cpp/pk_gen1_home_furniture_profiles.h b/app/src/main/cpp/pk_gen1_home_furniture_profiles.h
+index 64d449f..231d23f 100644
+--- a/app/src/main/cpp/pk_gen1_home_furniture_profiles.h
++++ b/app/src/main/cpp/pk_gen1_home_furniture_profiles.h
+@@ -1,4 +1,4 @@
+-// Exact Gen 1 Red's house furniture footprints. Generated from verified cartridge art.
++// Exact Gen 1 interior furniture footprints. Generated from verified cartridge art.
+ #pragma once
+ 
+ static const struct RedFurnitureProfile redHomeFurniture[] = {
+@@ -10,4 +10,14 @@ static const struct RedFurnitureProfile redHomeFurniture[] = {
+     {37, 1, 5, 5, 1, 1, RED_FURNITURE_CHAIR, {0x13120302u}},
+     {37, 1, 3, 4, 2, 2, RED_FURNITURE_TABLE, {0x37362726u, 0x39382928u, 0x3a3c2a2cu, 0x3b3a2b2au}},
+     {38, 4, 0, 6, 1, 2, RED_FURNITURE_BED, {0x3e3d2e2du, 0x2f3f3e3du}},
++    {42, 2, 1, 4, 1, 3, RED_FURNITURE_COUNTER, {0x29105928u, 0x1f1e0f0eu, 0x18192910u}},
++    {56, 2, 1, 4, 1, 3, RED_FURNITURE_COUNTER, {0x29105928u, 0x1f1e0f0eu, 0x18192910u}},
++    {67, 2, 1, 4, 1, 3, RED_FURNITURE_COUNTER, {0x29105928u, 0x1f1e0f0eu, 0x18192910u}},
++    {91, 2, 1, 4, 1, 3, RED_FURNITURE_COUNTER, {0x29105928u, 0x1f1e0f0eu, 0x18192910u}},
++    {150, 2, 1, 4, 1, 3, RED_FURNITURE_COUNTER, {0x29105928u, 0x1f1e0f0eu, 0x18192910u}},
++    {152, 2, 1, 4, 1, 3, RED_FURNITURE_COUNTER, {0x29105928u, 0x1f1e0f0eu, 0x18192910u}},
++    {172, 2, 1, 4, 1, 3, RED_FURNITURE_COUNTER, {0x29105928u, 0x1f1e0f0eu, 0x18192910u}},
++    {173, 2, 1, 4, 1, 3, RED_FURNITURE_COUNTER, {0x29105928u, 0x1f1e0f0eu, 0x18192910u}},
++    {174, 2, 1, 4, 1, 3, RED_FURNITURE_COUNTER, {0x29105928u, 0x1f1e0f0eu, 0x18192910u}},
++    {180, 2, 1, 4, 1, 3, RED_FURNITURE_COUNTER, {0x29105928u, 0x1f1e0f0eu, 0x18192910u}},
+ };
+diff --git a/app/src/main/cpp/pk_red_voxel_pilot.h b/app/src/main/cpp/pk_red_voxel_pilot.h
+index 0512317..60f7422 100644
+--- a/app/src/main/cpp/pk_red_voxel_pilot.h
++++ b/app/src/main/cpp/pk_red_voxel_pilot.h
+@@ -154,16 +154,17 @@ static uint32_t gbVoxelSignature(const struct GbSnap* s, int cx, int cy) {
+ }
+ 
+ enum RedFurnitureKind { RED_FURNITURE_BOOKCASE, RED_FURNITURE_CHAIR,
+-                        RED_FURNITURE_TABLE, RED_FURNITURE_BED };
++                        RED_FURNITURE_TABLE, RED_FURNITURE_BED, RED_FURNITURE_COUNTER };
+ struct RedFurnitureProfile {
+     uint8_t map, tileset, x, y, width, height, kind;
+     uint32_t cells[4];
+ };
+ #include "pk_gen1_home_furniture_profiles.h"
+ 
+-static int redHomeFurnitureAt(const struct GbSnap* snap, int map,
++static int redInteriorFurnitureAt(const struct GbSnap* snap, int map,
+                               const struct RedFurnitureProfile** props) {
+-    if (snap->w!=4 || snap->h!=4 || (map!=37 && map!=38)) return 0;
++    if (snap->tileset!=2 && map!=37 && map!=38) return 0;
++    if (snap->w!=(map==174 ? 8 : 4) || snap->h!=(map==174 ? 6 : 4)) return 0;
+     int count=0;
+     for (unsigned i=0; i<sizeof(redHomeFurniture)/sizeof(*redHomeFurniture); ++i) {
+         const struct RedFurnitureProfile* row=&redHomeFurniture[i];
+@@ -186,8 +187,9 @@ static int redFurnitureBackground(const struct RedFurnitureProfile* const* props
+                                   int x, int y) {
+     for (int i=0; i<count; ++i) {
+         const struct RedFurnitureProfile* row=props[i];
+-        if ((unsigned)(x-row->x)<row->width && (unsigned)(y-row->y)<row->height)
+-            return row->kind==RED_FURNITURE_BOOKCASE && y==row->y ? 0 : 1;
++        if ((unsigned)(x-row->x)>=row->width || (unsigned)(y-row->y)>=row->height) continue;
++        if (row->kind==RED_FURNITURE_COUNTER) return 2;
++        return row->kind==RED_FURNITURE_BOOKCASE && y==row->y ? 0 : 1;
+     }
+     return -1;
+ }
+@@ -242,6 +244,25 @@ static void redFurnitureBed(const struct VoxelView* view, int x, int y, uint32_t
+     voxelPropBox(view,x+1,y+27,14,3,0,6,wood);
+ }
+ 
++static void redFurnitureCounter(const struct VoxelView* view, int x, int y, uint32_t alpha) {
++    uint32_t stone=alpha|RED_COLOR(156,152,135);
++    uint32_t trim=alpha|RED_COLOR(213,208,190);
++    voxelPropBox(view,x+3,y+2,10,43,0,6,stone);
++    voxelPropBox(view,x+2,y+1,12,45,6,2,trim);
++
++    // Preserve the recognizable front of the native till on its raised housing.
++    int tillX=x+4, front=y+30;
++    uint32_t caseColor=redFurnitureInk(view,tillX+3,y+23,stone);
++    voxelPropBox(view,tillX,y+22,7,8,8,4,caseColor);
++    if (front<view->top || front>=view->top+view->rows*VOXEL_TILE) return;
++    int sx=voxelX(view,tillX,front), top=voxelY(view,front,12);
++    for (int row=0; row<4; ++row)
++        for (int col=0; col<7; ++col) {
++            uint32_t ink=redFurnitureInk(view,tillX+col,y+23+row,caseColor);
++            voxelPixel(view,sx+col,top+row,front,voxelShade(ink,229));
++        }
++}
++
+ static void redRenderFurniture(const struct VoxelView* view, const struct RedFurnitureProfile* prop,
+                                uint32_t alpha) {
+     int x=(6+prop->x)*VOXEL_TILE, y=(6+prop->y)*VOXEL_TILE;
+@@ -251,6 +272,7 @@ static void redRenderFurniture(const struct VoxelView* view, const struct RedFur
+     case RED_FURNITURE_CHAIR: redFurnitureChair(view,x,y,wood); break;
+     case RED_FURNITURE_TABLE: redFurnitureTable(view,x,y,wood); break;
+     case RED_FURNITURE_BED: redFurnitureBed(view,x,y,wood,alpha); break;
++    case RED_FURNITURE_COUNTER: redFurnitureCounter(view,x,y,alpha); break;
+     }
+ }
+ 
+@@ -531,9 +553,12 @@ static bool gbVoxelDraw(const struct GbSnap* snap, int ox, int oy, struct PkWide
+     bool cutTreeFloorReady=false;
+     int map=gbRam(gbCfg[GB_YCOORD]-3);
+     const struct RedFurnitureProfile* furniture[sizeof(redHomeFurniture)/sizeof(*redHomeFurniture)];
+-    int furnitureCount=redHomeFurnitureAt(snap,map,furniture);
+-    uint32_t furnitureUnderlay[2][64];
+-    if (furnitureCount) {
++    int furnitureCount=redInteriorFurnitureAt(snap,map,furniture);
++    uint32_t furnitureUnderlay[4][64];
++    if (furnitureCount && snap->tileset==2) {
++        static const uint8_t martFloor[] = {0x01,0x0b,0x11,0x1b};
++        for (int i=0; i<4; ++i) redLiveTile(furnitureUnderlay[i],martFloor[i],alpha);
++    } else if (furnitureCount) {
+         redLiveTile(furnitureUnderlay[0],0,alpha);
+         redLiveTile(furnitureUnderlay[1],1,alpha);
+     }
+@@ -573,7 +598,10 @@ static bool gbVoxelDraw(const struct GbSnap* snap, int ox, int oy, struct PkWide
+                 int at = (y*VOXEL_TILE+dy)*w + x*VOXEL_TILE;
+                 for (int dx = 0; dx < VOXEL_TILE; ++dx) {
+                     uint32_t color = art[at+dx];
+-                    if (furnitureBg>=0) floor[at+dx]=furnitureUnderlay[furnitureBg][(dy&7)*8+(dx&7)];
++                    if (furnitureBg>=0) {
++                        int tile=furnitureBg==2 ? (dy/8)*2+dx/8 : furnitureBg;
++                        floor[at+dx]=furnitureUnderlay[tile][(dy&7)*8+(dx&7)];
++                    }
+                     else if (material == RED_NATIVE) floor[at+dx]=color;
+                     else if (material==RED_CUT_TREE) floor[at+dx]=cutTreeFloor[(dy&7)*8+(dx&7)];
+                     else if (material == RED_FLOWER) {

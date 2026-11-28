@@ -1,0 +1,145 @@
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -32,6 +32,7 @@
+ #include "pk_scenery_water_profiles.h"
+ #include "pk_scenery_cave_contact_profiles.h"
+ #include "pk_scenery_south_ledge_profiles.h"
++#include "pk_scenery_dresco_monument.h"
+ #include "pk_battle_volume.h"
+ #include "pk_battle_front_family.h"
+ #include "pk_wide_solid.h"
+@@ -5914,6 +5915,86 @@
+ }
+ 
+ 
++struct DrescoMonument {
++    int col, row;
++    uint32_t ink[64*64];
++};
++
++static bool drescoMonumentPrepare(const struct Snap* s, const struct VoxelView* view,
++                                  int cellX, int cellY, int href, int vref, uint32_t alpha,
++                                  uint32_t* texture, struct DrescoMonument* monument) {
++    if (solidRom!=0x4b3d4957u || s->group!=3 || s->num!=71 ||
++        s->primary!=0x082d4a94u || s->secondary!=0x082d4af4u ||
++        s->width!=55 || s->height!=47 || !F.mapHeader || r32(F.mapHeader)!=0x08779994u ||
++        r8(F.mapHeader+0x17)!=1 || !solidGroundAligned(href,vref)) return false;
++    const int gridX=MAP_OFFSET+32, gridY=MAP_OFFSET+20;
++    int col=gridX-cellX,row=gridY-cellY;
++    if (col<0 || row<0 || col+4>view->cols || row+4>view->rows ||
++        gridX+4>s->vw || gridY+4>s->vh) return false;
++    for (int ty=0; ty<4; ++ty) for (int tx=0; tx<4; ++tx) {
++        if (s->vmap[(gridY+ty)*s->vw+gridX+tx]!=drescoMonumentCells[ty*4+tx]) return false;
++    }
++    for (int y=0; y<64; ++y)
++        if (memchr(holeBuf[row*16+y]+col*16,1,64)) return false;
++    monument->col=col; monument->row=row;
++    for (int y=0; y<64; ++y) {
++        uint64_t bits=drescoMonumentMasks[y];
++        while (bits) {
++            unsigned x=(unsigned)__builtin_ctzll(bits);
++            bits&=bits-1;
++            uint32_t* surface=texture+(row*16+y)*view->stride+col*16+x;
++            monument->ink[y*64+x]=*surface;
++            int tile=drescoMonumentCells[(y/16)*4+(x/16)]&1023;
++            uint32_t ground=solidPlantGroundPixel(s,tile,(int)(x&15u),y&15,alpha,1);
++            // All admitted lower-layer texels are owned ground, including
++            // path under the open wings and turf under the masonry base.
++            *surface=climateGround(ground,2);
++        }
++    }
++    return true;
++}
++
++static void drescoMonumentDraw(const struct VoxelView* view, const struct DrescoMonument* shape) {
++    enum { maskWidth=92, maskHeight=76 };
++    uint8_t stencil[maskWidth*maskHeight]={0};
++    int originX=view->left+16*shape->col, originY=view->top+16*shape->row;
++    int maskX=voxelX(view,originX,originY)-4,maskY=voxelY(view,originY,8)-16;
++    for (int pass=0; pass<2; ++pass) for (int y=0; y<64; ++y) {
++        uint64_t bits=drescoMonumentMasks[y];
++        while (bits) {
++            unsigned x=(unsigned)__builtin_ctzll(bits);
++            bits&=bits-1;
++            int rx=originX+(int)x,ry=originY+y;
++            int base=voxelRise(view,shape->col+(int)(x/16),shape->row+y/16);
++            int center=(int)x-32;
++            if (center<0) center=-center;
++            bool pedestal=y>=43;
++            int depth=pedestal ? 6 : center<9 ? 7 : center<20 ? 5 : 4;
++            int lift=pedestal ? 0 : 1+(43-y)/19;
++            int sx=voxelX(view,rx,ry),sy=voxelY(view,ry,base)-lift;
++            uint32_t stone=shape->ink[y*64+x];
++            if (!pass) {
++                // Keep every native-facing stone texel in front of the side
++                // shell, without pushing its depth past a native-visible NPC.
++                int a=sx-maskX,b=sy-maskY;
++                if ((unsigned)a<maskWidth && (unsigned)b<maskHeight) stencil[b*maskWidth+a]=1;
++                voxelPixel(view,sx,sy,ry,stone);
++                continue;
++            }
++            for (int z=depth; z>0; --z) {
++                int behind=ry-z;
++                int a=sx+voxelX(view,rx,behind)-voxelX(view,rx,ry);
++                int b=sy+voxelY(view,behind,0)-voxelY(view,ry,0);
++                int mx=a-maskX,my=b-maskY;
++                if ((unsigned)mx>=maskWidth || (unsigned)my>=maskHeight || stencil[my*maskWidth+mx])
++                    continue;
++                voxelPixel(view,a,b,behind,voxelShade(stone,205u+4u*(unsigned)(depth-z)));
++            }
++        }
++    }
++}
++
++
+ static bool drawVoxel(const struct Snap* s, int cx, int cy, int href, int vref,
+                       uint32_t* out, struct PkWideView v, uint32_t alpha) {
+     if (!voxelViewportFits(v.w, v.h)) return false;
+@@ -6017,6 +6098,9 @@
+             }
+         }
+     }
++    struct DrescoMonument drescoMonument;
++    bool hasDrescoMonument=drescoMonumentPrepare(s,&voxel,cellX,cellY,href,vref,alpha,texture,&drescoMonument);
++
+     SCENERY_FRAME_MARK(cost3);
+     SCENERY_FRAME_ADD(2,cost2,cost3);
+     static struct SolidTree trees[256];
+@@ -6045,6 +6129,7 @@
+     if (caveContact) sceneryCaveFootVolume(s,&voxel,cellX,cellY);
+     if (scenerySouthLedgeMap(s) && solidGroundAligned(href,vref))
+         scenerySouthLedgeVolume(s,&voxel,cellX,cellY);
++    if (hasDrescoMonument) drescoMonumentDraw(&voxel,&drescoMonument);
+     SCENERY_FRAME_MARK(cost5);
+     SCENERY_FRAME_ADD(4,cost4,cost5);
+     for(int i=0;i<buildingCount;i++)solidBuildingDraw(&voxel,&buildings[i]);
+--- /dev/null
++++ b/app/src/main/cpp/pk_scenery_dresco_monument.h
+@@ -0,0 +1,27 @@
++#pragma once
++#include <stdint.h>
++/* Unbound Dresco, a 4x4 source-owned monument footprint. */
++static const uint16_t drescoMonumentCells[16] = {
++    0x333au, 0x333bu, 0x333cu, 0x333du,
++    0x3342u, 0x3343u, 0x3344u, 0x3345u,
++    0x334au, 0x334bu, 0x334cu, 0x334du,
++    0x30ddu, 0x0752u, 0x0753u, 0x30dbu,
++};
++static const uint64_t drescoMonumentMasks[64] = {
++    0x0000000000000000ull, 0x0000000000000000ull, 0x0000000000000000ull, 0x0000000000000000ull,
++    0x0000000000000000ull, 0x0000000000000000ull, 0x0000000000000000ull, 0x0000000000000000ull,
++    0x03800000000000e0ull, 0x0fd00000000005f8ull, 0x1ff8000000000ffcull, 0x21fc000000001fc2ull,
++    0x03f8000000000fe0ull, 0x05fc000000001fd0ull, 0x01ff80000000ffc0ull, 0x07ffc0000001fff0ull,
++    0x0fffc0000001fff8ull, 0x1fffe0000003fffcull, 0x1c7fe0000003ff1cull, 0x183ff0010007fe0cull,
++    0x007ff0010007ff00ull, 0x003ff803200ffe00ull, 0x001ff803600ffc00ull, 0x003ffc03e01ffe00ull,
++    0x001ffe03c03ffc00ull, 0x007ffe03c03fff00ull, 0x003fff03e07ffe00ull, 0x006fff03e07ffb00ull,
++    0x000fff87e0fff800ull, 0x001fffc7f1fffc00ull, 0x000fffe7f3fff800ull, 0x0007fffffffff000ull,
++    0x000ffffffffff800ull, 0x0007fffffffff000ull, 0x0003ffffffffe000ull, 0x0001bffffffec000ull,
++    0x00001ffffffc0000ull, 0x00007fffffff0000ull, 0x00007dffffdf0000ull, 0x000073ffffe70000ull,
++    0x0000431ffc610000ull, 0x0000023ffe200000ull, 0x0000003ffe000000ull, 0x0000003ffe000000ull,
++    0x00000ffffff00000ull, 0x00003ffffffc0000ull, 0x00007ffffffe0000ull, 0x00007ffffffe0000ull,
++    0x0000ffffffff0000ull, 0x0000ffffffff0000ull, 0x0000ffffffff0000ull, 0x0000ffffffff0000ull,
++    0x0000ffffffff0000ull, 0x0000ffffffff0000ull, 0x0000ffffffff0000ull, 0x0000ffffffff0000ull,
++    0x0000ffffffff0000ull, 0x0000ffffffff0000ull, 0x0000ffffffff0000ull, 0x0000ffffffff0000ull,
++    0x0000ffffffff0000ull, 0x0000ffffffff0000ull, 0x00007ffffffe0000ull, 0x00001ffffff80000ull,
++};

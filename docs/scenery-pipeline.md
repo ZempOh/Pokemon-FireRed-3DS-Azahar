@@ -1551,3 +1551,35 @@ posts, fences and decorative props each need source variant counts and
 representative play evidence. A roof, field or cave sample leaves other
 variants open. Map-owned and live interactive variants must be checked
 separately so removed objects do not reappear in the projected view.
+
+### Terrain and small props after the first library pass
+
+- Active release QA covers 19 English-playable profiles. Test the 16 GBA
+  titles and English Red, Blue, and Yellow. Historical localized measurements
+  remain separate from this matrix and carry no release qualification.
+- `tools/audit_scenery_terrain_transitions.py --workspace work --runtime <snapshot> --output <private-folder>`
+  records exact map references, native map words, and the renderer's height
+  delta for each east or south boundary family. The first 16-profile scan
+  validated 8,989 map references, with 41 map headers still held. Classify
+  the underlying art before adding geometry. A height boundary can be a
+  footprint, bridge, or special movement layer.
+- The shared Gen 1 sign and Cut-tree profiles use exact live metatiles.
+  Red and Yellow host replays used the native Pokémon menu to clear the
+  tree and cross its former tile. Source audit covers all 23 revisions.
+  The two Route 12 boardwalk spans also match all 23 exact sources.
+- Five exact GBA Route 1 layouts admit only recorded south-jump ledge
+  signatures with the original collision flags. Tested native movement
+  jumps two tiles south and blocks the reverse traversal. Five GBA games
+  also have physical cliff-foot relief in their two Flash-lit Rock Tunnel
+  maps. The unlit cave remains under its original darkness mask.
+- Reviewed GBA flower profiles use layered cupped petals and two closed
+  leaf shapes with original live palette colors. Matched host replays show
+  the revised bloom in Classic, FRLG+, FireRed and Emerald-derived fixtures.
+  The native 2D renders stay byte-identical.
+- Red, Blue and Yellow home and Viridian Mart replays verify source-matched
+  doors, stair landings, beds, tables and the counter. The original routes,
+  collision, and clerk sequence stay intact.
+- The Acrisia cathedral benches and the Dresco monument use source-owned
+  four-cell and sixteen-cell footprints respectively. Restore their native
+  ground before drawing depth and keep palette, material classes, and live
+  actors intact. Inspect winter at full size after restoring the underlay.

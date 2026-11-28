@@ -1,0 +1,121 @@
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -34,4 +34,5 @@
+ #include "pk_scenery_south_ledge_profiles.h"
+ #include "pk_scenery_dresco_monument.h"
++#include "pk_scenery_dresco_bench.h"
+ #include "pk_battle_volume.h"
+ #include "pk_battle_front_family.h"
+@@ -6047,4 +6048,63 @@
+ }
+ 
++struct DrescoBench {
++    uint32_t seat, back, leg;
++    int col, row;
++    bool leftBack;
++};
++
++static int drescoBenchPrepare(const struct Snap* s, const struct VoxelView* view,
++                              int cellX, int cellY, int href, int vref, uint32_t alpha,
++                              uint32_t* texture, struct DrescoBench* benches) {
++    if (solidRom!=0x4b3d4957u || s->group!=3 || s->num!=71 ||
++        s->primary!=0x082d4a94u || s->secondary!=0x082d4af4u ||
++        s->width!=55 || s->height!=47 || !F.mapHeader || r32(F.mapHeader)!=0x08779994u ||
++        r8(F.mapHeader+0x17)!=1 || !solidGroundAligned(href,vref)) return 0;
++    int count=0;
++    for (size_t i=0; i<sizeof(drescoBenchPlacements)/sizeof(*drescoBenchPlacements); ++i) {
++        const struct DrescoBenchPlacement* place=&drescoBenchPlacements[i];
++        int x=MAP_OFFSET+place->x,y=MAP_OFFSET+place->y;
++        int col=x-cellX,row=y-cellY;
++        if (col<0 || row<0 || col>=view->cols || row+1>=view->rows ||
++            x>=s->vw || y+1>=s->vh || !sceneryCellVisible(col,row) || !sceneryCellVisible(col,row+1)) continue;
++        if (s->vmap[y*s->vw+x]!=place->upper || s->vmap[(y+1)*s->vw+x]!=place->lower) continue;
++        struct DrescoBench* b=&benches[count++];
++        b->col=col; b->row=row; b->leftBack=place->leftBack;
++        uint32_t* top=texture+row*16*view->stride+col*16;
++        b->seat=top[9*view->stride+(b->leftBack?7:6)];
++        b->back=top[4*view->stride+(b->leftBack?3:12)];
++        b->leg=top[28*view->stride+(b->leftBack?6:4)];
++        for (int py=0; py<32; ++py) {
++            unsigned bits=drescoBenchMasks[b->leftBack][py];
++            int id=(py<16?place->upper:place->lower)&1023;
++            while (bits) {
++                int px=__builtin_ctz(bits);
++                bits&=bits-1;
++                uint32_t floor=solidPlantGroundPixel(s,id,px,py&15,alpha,1);
++                top[py*view->stride+px]=climateGround(floor,2);
++            }
++        }
++    }
++    return count;
++}
++
++static void drescoBenchDraw(const struct VoxelView* view, const struct DrescoBench* b) {
++    int x=view->left+16*b->col, y=view->top+16*b->row;
++    int seatX=x+(b->leftBack?5:1), backX=x+(b->leftBack?2:11);
++    int z=voxelRise(view,b->col,b->row+1);
++    // Low frame, open legs, separate seat slats and a taller backrest.
++    for (int legY=y+10; legY<=y+28; legY+=18) {
++        voxelPropBox(view,seatX,legY,2,3,z,4,b->leg);
++        voxelPropBox(view,seatX+7,legY,2,3,z,4,b->leg);
++        voxelPropBox(view,backX,legY,2,3,z,7,b->leg);
++    }
++    voxelPropBox(view,seatX,y+8,9,23,z+3,1,b->leg);
++    for (int slat=0; slat<3; ++slat)
++        voxelPropBox(view,seatX+slat*3,y+8,2,23,z+4,1,
++                     voxelShade(b->seat,slat==1?225u:256u));
++    voxelPropBox(view,backX,y+9,3,21,z+5,2,b->back);
++    voxelPropBox(view,backX,y+9,3,21,z+7,1,voxelShade(b->back,239u));
++}
++
+ static bool drawVoxel(const struct Snap* s, int cx, int cy, int href, int vref,
+                       uint32_t* out, struct PkWideView v, uint32_t alpha) {
+@@ -6171,4 +6231,6 @@
+     int benchCount=solidGroundAligned(href,vref)
+         ?sceneryAcrisiaBenches(s,&voxel,cellX,cellY,texture,alpha,benches):0;
++    struct DrescoBench drescoBenches[sizeof(drescoBenchPlacements)/sizeof(*drescoBenchPlacements)];
++    int drescoBenchCount=drescoBenchPrepare(s,&voxel,cellX,cellY,href,vref,alpha,texture,drescoBenches);
+     if (groundMask && aligned) {
+         uint8_t groundCells[sizeof(rises)];
+@@ -6178,4 +6240,6 @@
+         for (int k=0;k<benchCount;++k) for (int row=0;row<2;++row) for (int col=0;col<2;++col)
+             groundCells[(benches[k].row+row)*cols+benches[k].col+col]=1;
++        for (int k=0;k<drescoBenchCount;++k) for (int row=0;row<2;++row)
++            groundCells[(drescoBenches[k].row+row)*cols+drescoBenches[k].col]=1;
+         solidActorContactShadows(&voxel,groundCells,texture);
+         const struct VoxelGroundMaterial groundMaterial = {groundCells,cx,cy};
+@@ -6188,4 +6252,5 @@
+     if (hasDrescoMonument) drescoMonumentDraw(&voxel,&drescoMonument);
+     for (int i=0;i<benchCount;++i) sceneryBenchDraw(&voxel,&benches[i]);
++    for (int i=0; i<drescoBenchCount; ++i) drescoBenchDraw(&voxel,&drescoBenches[i]);
+     SCENERY_FRAME_MARK(cost5);
+     SCENERY_FRAME_ADD(4,cost4,cost5);
+--- /dev/null
++++ b/app/src/main/cpp/pk_scenery_dresco_bench.h
+@@ -0,0 +1,26 @@
++#pragma once
++#include <stdint.h>
++
++struct DrescoBenchPlacement { uint8_t x,y,leftBack; uint16_t upper,lower; };
++static const struct DrescoBenchPlacement drescoBenchPlacements[] = {
++    {27,14,1,0x42f4,0x2fc},
++    {38,14,0,0x32f5,0x32fd},
++    {38,25,0,0x32f5,0x32fd},
++    {23,27,0,0x32f5,0x330c},
++    {23,30,0,0x32f5,0x32fd},
++};
++
++static const uint16_t drescoBenchMasks[2][32] = {
++    {
++        0x3c00, 0x3c00, 0x3c00, 0x3c00, 0x3c00, 0x3ffe, 0x3ffe, 0x3ffe,
++        0x3ffe, 0x3ffe, 0x3ffe, 0x3ffe, 0x3ffe, 0x3ffe, 0x3ffe, 0x3ffe,
++        0x3ffe, 0x3ffe, 0x3ffe, 0x3ffe, 0x3ffe, 0x3ffe, 0x3ffe, 0x3ffe,
++        0x3ffe, 0x3ffe, 0x3ffe, 0x3ffe, 0x3ffe, 0x3ffe, 0xe0e, 0xe0e,
++    },
++    {
++        0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x7ffc, 0x7ffc, 0x7ffc,
++        0x7ffc, 0x7ffc, 0x7ffc, 0x7ffc, 0x7ffc, 0x7ffc, 0x7ffc, 0x7ffc,
++        0x7ffc, 0x7ffc, 0x7ffc, 0x7ffc, 0x7ffc, 0x7ffc, 0x7ffc, 0x7ffc,
++        0x7ffc, 0x7ffc, 0x7ffc, 0x7ffc, 0x7ffc, 0x7ffc, 0x7070, 0x7070,
++    },
++};

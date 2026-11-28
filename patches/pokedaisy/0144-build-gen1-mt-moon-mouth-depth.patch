@@ -1,0 +1,72 @@
+diff --git a/app/src/main/cpp/pk_red_voxel_pilot.h b/app/src/main/cpp/pk_red_voxel_pilot.h
+index 60f7422..0a3f2ad 100644
+--- a/app/src/main/cpp/pk_red_voxel_pilot.h
++++ b/app/src/main/cpp/pk_red_voxel_pilot.h
+@@ -277,7 +277,7 @@ static void redRenderFurniture(const struct VoxelView* view, const struct RedFur
+ }
+ 
+ enum RedTerrainDetail { RED_DETAIL_NONE, RED_DETAIL_DOOR, RED_LEDGE_SOUTH, RED_LEDGE_WEST, RED_LEDGE_EAST,
+-                        RED_STAIR_UP, RED_STAIR_DOWN };
++                        RED_STAIR_UP, RED_STAIR_DOWN, RED_CAVE_MOUTH };
+ 
+ /* Only native Overworld jump signatures with a matching approach get relief.
+  * The standing tile is the bottom-left quadrant of the source cell. */
+@@ -289,6 +289,14 @@ static enum RedTerrainDetail redTerrainDetail(const struct GbSnap* snap, uint32_
+     }
+     unsigned stand;
+     switch (signature) {
++    case 0x59584948u:
++        /* The reviewed Route 4 entrance to Mt. Moon, with its surrounding cliff. */
++        if (map==15 && snap->w==45 && snap->h==9 && cx==24 && cy==11 &&
++            gbVoxelSignature(snap,cx,cy-1)==0x11111111u &&
++            gbVoxelSignature(snap,cx-1,cy)==0x37373737u &&
++            gbVoxelSignature(snap,cx+1,cy)==0x37373737u)
++            return RED_CAVE_MOUTH;
++        return RED_DETAIL_NONE;
+     case 0x37372c2cu: case 0x34372c2cu: case 0x37373939u: case 0x37363939u:
+         stand=(gbVoxelSignature(snap,cx,cy-1)>>16)&0xffu;
+         return (stand==0x39 || (stand==0x2c && ((signature>>16)&0xffu)==0x37))
+@@ -324,6 +332,35 @@ static void redStairTreads(const struct VoxelView* view, int x, int y, bool goin
+     }
+ }
+ 
++/* Keep the projected native opening and the dirt approach available to the
++ * depth buffer. Added rock is clipped to the rim and adjacent cliff art. */
++static void redCaveRimPixel(const struct VoxelView* view, int sx, int sy, int depth,
++                            int x, int y, uint32_t color) {
++    int wy=voxelWorldY(view,sy,0), dy=wy-y;
++    int dx=sx-voxelX(view,x,wy);
++    if ((unsigned)dx>=16u || dy < -5 || dy>=16 || (dy>=2 && dx>=2 && dx<14)) return;
++    voxelPixel(view,sx,sy,depth,color);
++}
++
++static void redCaveMouth(const struct VoxelView* view, int x, int y, uint32_t alpha) {
++    uint32_t stone=alpha|RED_COLOR(126,133,126);
++    uint32_t light=alpha|RED_COLOR(176,177,157);
++    uint32_t rockTop=voxelShade(light,224);
++    uint32_t crest=climateMix(rockTop,climateGround(rockTop,2),96);
++    for (int row=0; row<15; ++row) {
++        int wy=y+row, sx=voxelX(view,x,wy);
++        int rise=row<4 ? 4 : row<9 ? 3 : 2;
++        uint32_t cap=row<3 ? crest : (row/3)%2 ? voxelShade(light,219) : stone;
++        int inset=row<4 ? 4-row : 0;
++        for (int col=inset; col<16-inset; ++col) {
++            if (row>=4 && col>=3 && col<13) continue;
++            int sy=voxelY(view,wy,rise);
++            redCaveRimPixel(view,sx+col,sy,wy,x,y,cap);
++            redCaveRimPixel(view,sx+col,sy+1,wy,x,y,voxelShade(cap,188));
++        }
++    }
++}
++
+ static void redDoorSill(const struct VoxelView* view, const uint32_t* art, int x, int y) {
+     const uint32_t* source=art+(y+12-view->top)*view->stride+x-view->left;
+     int front=y+16;
+@@ -640,6 +677,7 @@ static bool gbVoxelDraw(const struct GbSnap* snap, int ox, int oy, struct PkWide
+             enum RedMaterial material=(enum RedMaterial)materials[row*cols+col];
+             enum RedTerrainDetail detail=terrainDetails[row*cols+col];
+             if (detail==RED_DETAIL_DOOR) redDoorSill(&view,art,x,y);
++            else if (detail==RED_CAVE_MOUTH) redCaveMouth(&view,x,y,alpha);
+             else if (detail==RED_STAIR_UP || detail==RED_STAIR_DOWN)
+                 redStairTreads(&view,x,y,detail==RED_STAIR_UP);
+             else if (detail!=RED_DETAIL_NONE) redLedgeRiser(&view,floor,x,y,detail);

@@ -1,0 +1,112 @@
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -5795,7 +5795,7 @@
+     return true;
+ }
+ 
+-static bool sceneryCaveClearCell(int col, int row) {
++static bool sceneryCellVisible(int col, int row) {
+     for (int sy=0; sy<16; ++sy)
+         if (memchr(holeBuf[row*16+sy]+col*16,1,16)) return false;
+     return true;
+@@ -5811,7 +5811,7 @@
+         int floor=blockIn(s,x,y,&conn,false), north=blockIn(s,x,y-1,&northConn,false);
+         if (conn >= 0 || northConn >= 0 || floor != 0x281 || north < 0x298 || north > 0x29a)
+             continue;
+-        if (!sceneryCaveClearCell(col,row)) continue;
++        if (!sceneryCellVisible(col,row)) continue;
+         for (int py=0; py<7; ++py) {
+             unsigned gain=256-7*(7-py);
+             for (int px=0; px<16; ++px) {
+@@ -5837,7 +5837,7 @@
+         int footConn, floorConn;
+         int foot=blockIn(s,x,y,&footConn,false), floor=blockIn(s,x,y+1,&floorConn,false);
+         if (footConn>=0 || floorConn>=0 || foot<0x298 || foot>0x29a || floor!=0x281 ||
+-            !sceneryCaveClearCell(col,row) || !sceneryCaveClearCell(col,row+1)) continue;
++            !sceneryCellVisible(col,row) || !sceneryCellVisible(col,row+1)) continue;
+         const int8_t* fronts=sceneryCaveFootFront[foot-0x298];
+         int z=voxelRise(view,col,row);
+         for (int u=0; u<16; ++u) {
+@@ -5994,6 +5994,57 @@
+     }
+ }
+ 
++
++struct SceneryBench { int col, row, rise; uint32_t seat, frame, foot; };
++
++/* Exact two Acrisia Cathedral benches. Their full lower source layer is
++ * byte-identical to the original grass underneath the bench palette. */
++static int sceneryAcrisiaBenches(const struct Snap* s,const struct VoxelView* view,
++                                int cellX,int cellY,uint32_t* texture,uint32_t alpha,
++                                struct SceneryBench* benches) {
++    if (solidRom!=0x558ae42fu || s->group!=0 || s->num!=57 || s->width!=50 || s->height!=36 ||
++        s->primary!=0x08e3e21cu || s->secondary!=0x08e3e92cu || !F.mapHeader ||
++        r32(F.mapHeader)!=0x08f638a4u) return 0;
++    const int columns[]={25,40};
++    int count=0;
++    for (int i=0;i<2;++i) {
++        int x=MAP_OFFSET+columns[i], y=MAP_OFFSET+8;
++        int col=x-cellX, row=y-cellY;
++        if (col<0 || row<0 || col+1>=view->cols || row+1>=view->rows ||
++            x+1>=s->vw || y+1>=s->vh) continue;
++        const uint16_t* cells=s->vmap+y*s->vw+x;
++        if (cells[0]!=0x305e || cells[1]!=0x305f || cells[s->vw]!=0x3066 ||
++            cells[s->vw+1]!=0x3067 || !sceneryCellVisible(col,row) ||
++            !sceneryCellVisible(col+1,row) || !sceneryCellVisible(col,row+1) ||
++            !sceneryCellVisible(col+1,row+1)) continue;
++        int z=voxelRise(view,col,row+1);
++        if (z!=voxelRise(view,col+1,row+1) || z!=voxelRise(view,col,row) ||
++            z!=voxelRise(view,col+1,row)) continue;
++        benches[count++]=(struct SceneryBench){col,row,z,
++            solidMaterialPixel(s,0x66,2,4,alpha),solidMaterialPixel(s,0x5e,2,13,alpha),
++            solidMaterialPixel(s,0x66,3,11,alpha)};
++        int material=sceneryLand(solidRom,s->primary,1) ? 2 : 1;
++        uint32_t grass[16][16];
++        for (int py=0;py<16;++py) for (int px=0;px<16;++px)
++            grass[py][px]=climateGround(solidMaterialPixel(s,1,px,py,alpha),material);
++        for (int py=0;py<32;++py) for (int px=0;px<32;++px)
++            texture[(row*16+py)*view->stride+col*16+px]=grass[py&15][px&15];
++    }
++    return count;
++}
++
++static void sceneryBenchDraw(const struct VoxelView* view,const struct SceneryBench* bench) {
++    int x=view->left+bench->col*16, y=view->top+bench->row*16, z=bench->rise;
++    for (int foot=x+3;foot<x+30;foot+=23) {
++        voxelPropBox(view,foot,y+25,3,4,z,5,bench->foot);
++        voxelPropBox(view,foot,y+21,3,4,z,9,bench->foot);
++        voxelPropBox(view,foot,y+21,3,2,z+9,3,bench->frame);
++        voxelPropBox(view,foot,y+22,3,7,z+7,2,bench->frame);
++    }
++    voxelPropBox(view,x+3,y+21,26,9,z+5,2,bench->seat);
++    voxelPropBox(view,x+3,y+21,26,2,z+8,2,bench->frame);
++    voxelPropBox(view,x+3,y+21,26,2,z+11,2,bench->frame);
++}
+ 
+ static bool drawVoxel(const struct Snap* s, int cx, int cy, int href, int vref,
+                       uint32_t* out, struct PkWideView v, uint32_t alpha) {
+@@ -6116,11 +6167,16 @@
+     struct VoxelBridgeSpan bridge;
+     const struct VoxelBridgeSpan* span=profile && aligned
+         ? solidBridgePrepare(s,profile,cx,cy,alpha,&bridge) : NULL;
++    struct SceneryBench benches[2];
++    int benchCount=solidGroundAligned(href,vref)
++        ?sceneryAcrisiaBenches(s,&voxel,cellX,cellY,texture,alpha,benches):0;
+     if (groundMask && aligned) {
+         uint8_t groundCells[sizeof(rises)];
+         for (int row=0; row<rows; ++row)
+             for (int col=0; col<cols; ++col)
+                 groundCells[row*cols+col] = solidGroundMaterial(s,groundMask,cellX+col,cellY+row,col,row);
++        for (int k=0;k<benchCount;++k) for (int row=0;row<2;++row) for (int col=0;col<2;++col)
++            groundCells[(benches[k].row+row)*cols+benches[k].col+col]=1;
+         solidActorContactShadows(&voxel,groundCells,texture);
+         const struct VoxelGroundMaterial groundMaterial = {groundCells,cx,cy};
+         voxelTerrainSurfaces(&voxel,texture,&groundMaterial,span);
+@@ -6130,6 +6186,7 @@
+     if (scenerySouthLedgeMap(s) && solidGroundAligned(href,vref))
+         scenerySouthLedgeVolume(s,&voxel,cellX,cellY);
+     if (hasDrescoMonument) drescoMonumentDraw(&voxel,&drescoMonument);
++    for (int i=0;i<benchCount;++i) sceneryBenchDraw(&voxel,&benches[i]);
+     SCENERY_FRAME_MARK(cost5);
+     SCENERY_FRAME_ADD(4,cost4,cost5);
+     for(int i=0;i<buildingCount;i++)solidBuildingDraw(&voxel,&buildings[i]);

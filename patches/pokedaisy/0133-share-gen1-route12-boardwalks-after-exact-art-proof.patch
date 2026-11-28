@@ -1,0 +1,63 @@
+diff --git a/app/src/main/cpp/pk_gen1_boardwalks.h b/app/src/main/cpp/pk_gen1_boardwalks.h
+index dd0ec2f..61ca5a1 100644
+--- a/app/src/main/cpp/pk_gen1_boardwalks.h
++++ b/app/src/main/cpp/pk_gen1_boardwalks.h
+@@ -1,7 +1,38 @@
+-// Source-audited Route 12 spans shared by English Red and Yellow.
++// Source-audited Route 12 spans shared by the tracked Gen 1 cartridges.
+ #pragma once
+ struct Gen1Boardwalk { uint8_t x, deck, width; uint32_t rows[3][6]; };
+ static const struct Gen1Boardwalk gen1Route12Boardwalks[] = {
+     {6, 11, 4, {{0x3c3c3c3cu, 0x3c3c3c3cu, 0x2c30302cu, 0x2c30302cu}, {0x14143131u, 0x14143131u, 0x14143131u, 0x14143131u}, {0x14141414u, 0x14141414u, 0x14141414u, 0x14141414u}}},
+     {12, 13, 6, {{0x30303030u, 0x57564746u, 0x3c3c3c3cu, 0x3c3c3c3cu, 0x3c3c3c3cu, 0x3c3c3c3cu}, {0x14143131u, 0x14143131u, 0x14143131u, 0x14143131u, 0x14143131u, 0x14143131u}, {0x14141414u, 0x14141414u, 0x14141414u, 0x14141414u, 0x14141414u, 0x14141414u}}},
+ };
++
++static bool gen1Route12BoardwalkKnown(uint32_t crc) {
++    switch (crc) {
++    case 0x13652705u:
++    case 0x2945acebu:
++    case 0x337fce11u:
++    case 0x4d0984a9u:
++    case 0x4ec85504u:
++    case 0x50e2fc1du:
++    case 0x7a01e45au:
++    case 0x7d527d62u:
++    case 0x89197825u:
++    case 0x8b56fe33u:
++    case 0x964b7a10u:
++    case 0x9c336307u:
++    case 0x9f7fdd53u:
++    case 0xa2545d33u:
++    case 0xb77be1e0u:
++    case 0xbaeacd2bu:
++    case 0xd03426e9u:
++    case 0xd6da8a1au:
++    case 0xd8507d8au:
++    case 0xd95416f9u:
++    case 0xe4468d14u:
++    case 0xe9e6483au:
++    case 0xfd3da7ffu:
++        return true;
++    default:
++        return false;
++    }
++}
+--- a/app/src/main/cpp/pk_wide_gb.c
++++ b/app/src/main/cpp/pk_wide_gb.c
+@@ -1044,6 +1044,7 @@
+ static uint8_t gbObjMask[GB_BUF];    // an object already took this pixel
+ static struct PkWideView gbRawView;
+ static bool gbVoxelProfile;
++#include "pk_gen1_boardwalks.h"
+ static bool gbRoute12BoardwalkProfile;
+ static uint32_t gbOver[GB_MAX_OBJS * 64];   // gbRaw's pixels (an `over` object's) that go over the game's own picture
+ static int gbNOver;
+@@ -1385,7 +1386,7 @@
+ 
+ int pk_wide_gb_configure(uint32_t crc) {
+     gbVoxelProfile = pk_wide_gb_voxel_knows(crc);
+-    gbRoute12BoardwalkProfile = crc==0x9f7fdd53u || crc==0x7d527d62u;
++    gbRoute12BoardwalkProfile = gen1Route12BoardwalkKnown(crc);
+     gbGen1BattleConfigure(crc);
+ #ifdef __ANDROID__
+     gbSceneProbeFrames = 0;

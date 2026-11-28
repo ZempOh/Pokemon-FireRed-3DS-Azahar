@@ -1,0 +1,99 @@
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -33,6 +33,7 @@
+ #include "pk_scenery_cave_contact_profiles.h"
+ #include "pk_scenery_south_ledge_profiles.h"
+ #include "pk_battle_volume.h"
++#include "pk_battle_front_family.h"
+ #include "pk_wide_solid.h"
+ #include "pk_wide_props.h"
+ #include "pk_wide_buildings.h"
+@@ -4923,6 +4924,21 @@
+     {0xdd88761cu, 0x1e472829u, 21}, // firered
+ };
+ 
++static bool battleUsesSharedFireRedFronts(uint32_t crc) {
++    return crc == 0xdd88761cu || crc == 0x964763c0u || crc == 0x63478921u || crc == 0xf2d16ebdu;
++}
++
++static bool battleSharedFireRedFront(uint32_t art, int y, const uint16_t* colors) {
++    for (unsigned i = 0; i < sizeof(battleFamilyFronts) / sizeof(*battleFamilyFronts); ++i) {
++        const struct BattleFamilyFront* row = &battleFamilyFronts[i];
++        if (row->art != art || row->y != y) continue;
++        // Color zero is transparent. The visible palette must be one of the native source palettes.
++        uint32_t palette = battleVolumeFingerprint((const uint8_t*)(colors + 1), 30);
++        return palette == row->normalPalette || palette == row->shinyPalette;
++    }
++    return false;
++}
++
+ static void battleVolumeDraw(const uint32_t* frame, uint32_t* out, struct PkWideView v, uint32_t alpha) {
+     if (!voxelEnabled || lineIoFrames < 2 || lineOamN != 1 || linePalN != 1 || tintShown) return;
+     const struct BattleFrontProfile* profile = NULL;
+@@ -4932,30 +4948,41 @@
+             break;
+         }
+     }
+-    if (!profile) return;
++    bool sharedFronts = battleUsesSharedFireRedFronts(solidRom);
++    if (!sharedFronts && !profile) return;
+     const uint16_t* oam = lineOamBuf[0];
+     const uint8_t* vram = (const uint8_t*)G->video.vram;
+     const uint8_t* art = NULL;
++    uint32_t fingerprint = 0;
+     int target = -1, ox = 0, oy = 0, palette = 0;
+     for (int k = 0; k < 128; ++k) {
+         const uint16_t* a = oam + k * 4;
+         if ((a[0] & 0xff00) != 0x0100 || (a[1] & 0xc000) != 0xc000) continue;
+         int x = a[1] & 511, y = a[0] & 255;
+         int p = (a[2] >> 10) & 3, tile = a[2] & 1023;
+-        if (x != 144 || y != profile->y || p != 2 || tile > 960) continue;
++        if (x != 144 || p != 2 || tile > 960 || y >= BATTLE_TEXT_TOP) continue;
+         const uint8_t* candidate = vram + 0x10000 + tile*32;
+-        if (battleVolumeFingerprint(candidate, 2048) != profile->fingerprint) continue;
++        uint32_t candidateFingerprint = battleVolumeFingerprint(candidate, 2048);
++        int paletteBase = 256 + (a[2] >> 12)*16;
++        if (sharedFronts) {
++            if (!battleSharedFireRedFront(candidateFingerprint, y, linePalBuf[0] + paletteBase)) continue;
++        } else if (y != profile->y || candidateFingerprint != profile->fingerprint) continue;
+         const uint16_t* matrix = oam + ((a[1] >> 9) & 31) * 16;
+         if (matrix[3] != 256 || matrix[7] || matrix[11] || matrix[15] != 256) return;
+         if (target >= 0) return;
+-        target = k; ox = x; oy = y; palette = 256 + (a[2] >> 12)*16; art = candidate;
++        target = k; ox = x; oy = y; palette = paletteBase; art = candidate;
++        fingerprint = candidateFingerprint;
+     }
+     if (target < 0) return;
+     static struct BattleVolume mesh;
+-    static const struct BattleFrontProfile* cachedProfile;
+-    if (cachedProfile != profile) {
++    static uint32_t cachedFingerprint;
++    static uint32_t cachedCartridge;
++    static bool meshReady;
++    if (!meshReady || cachedFingerprint != fingerprint || cachedCartridge != solidRom) {
+         battleVolumeBuild(&mesh, art, .44f, -.39f);
+-        cachedProfile = profile;
++        cachedFingerprint = fingerprint;
++        cachedCartridge = solidRom;
++        meshReady = true;
+     }
+     uint8_t blocked[BATTLE_VOLUME_SIZE][BATTLE_VOLUME_SIZE] = {0};
+     battleVolumeProtect(oam,target,ox-BATTLE_VOLUME_MARGIN,oy-BATTLE_VOLUME_MARGIN,blocked);
+--- /dev/null
++++ b/app/src/main/cpp/pk_battle_front_family.h
+@@ -0,0 +1,15 @@
++/* Fingerprints from the matching FireRed-family cartridge sprite, palette and placement tables. */
++#pragma once
++
++static const struct BattleFamilyFront {
++    uint32_t art, normalPalette, shinyPalette;
++    uint8_t y;
++} battleFamilyFronts[] = {
++    {0xa6c8b7c9u, 0x52817034u, 0x0588ac92u, 24}, // species 1
++    {0x25f73d05u, 0x2993798cu, 0x07f05069u, 24}, // species 10
++    {0x1e472829u, 0x52af0c5fu, 0xcda61aecu, 21}, // species 16
++    {0x94d81a08u, 0x39fe1729u, 0x3b611f25u, 22}, // species 19
++    {0xe220c4cfu, 0x7e39fa2bu, 0xd94ba610u, 17}, // species 25
++    {0xf2105245u, 0x3d2aab95u, 0xff77f508u, 23}, // species 69
++    {0xf5e70f4au, 0xd2da0a76u, 0x80ce68c4u, 17}, // species 94
++};

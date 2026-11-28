@@ -1,0 +1,64 @@
+diff --git a/app/src/main/cpp/pk_red_voxel_pilot.h b/app/src/main/cpp/pk_red_voxel_pilot.h
+index db87514..1f9e213 100644
+--- a/app/src/main/cpp/pk_red_voxel_pilot.h
++++ b/app/src/main/cpp/pk_red_voxel_pilot.h
+@@ -153,7 +153,8 @@ static uint32_t gbVoxelSignature(const struct GbSnap* s, int cx, int cy) {
+         | ((uint32_t)gbTile(s,tx,ty+1)<<16) | ((uint32_t)gbTile(s,tx+1,ty+1)<<24);
+ }
+ 
+-enum RedTerrainDetail { RED_DETAIL_NONE, RED_DETAIL_DOOR, RED_LEDGE_SOUTH, RED_LEDGE_WEST, RED_LEDGE_EAST };
++enum RedTerrainDetail { RED_DETAIL_NONE, RED_DETAIL_DOOR, RED_LEDGE_SOUTH, RED_LEDGE_WEST, RED_LEDGE_EAST,
++                        RED_STAIR_UP, RED_STAIR_DOWN };
+ 
+ /* Only native Overworld jump signatures with a matching approach get relief.
+  * The standing tile is the bottom-left quadrant of the source cell. */
+@@ -181,6 +182,25 @@ static enum RedTerrainDetail redTerrainDetail(const struct GbSnap* snap, uint32_
+     }
+ }
+ 
++static enum RedTerrainDetail redHomeStair(const struct GbSnap* snap, int map, int cx, int cy) {
++    if (snap->w!=4 || snap->h!=4 || cx!=13 || cy!=7) return RED_DETAIL_NONE;
++    if (map==37 && snap->tileset==1 && gbVoxelSignature(snap,cx,cy)==0x1d1c0d0cu)
++        return RED_STAIR_UP;
++    if (map==38 && snap->tileset==4 && gbVoxelSignature(snap,cx,cy)==0x1b1a0b0au)
++        return RED_STAIR_DOWN;
++    return RED_DETAIL_NONE;
++}
++
++static void redStairTreads(const struct VoxelView* view, int x, int y, bool goingUp) {
++    /* The stock stairs run diagonally, with a distinct rail around the
++     * treads. Keep each projected tread inside the existing staircase. */
++    for (int step=0; step<4; ++step) {
++        int tx=x+2+step*3, ty=y+11-step*3;
++        const uint32_t tone=view->texture[(ty+1-view->top)*view->stride+tx+1-view->left];
++        voxelPropBox(view,tx,ty,3,3,0,goingUp ? step+1 : 4-step,voxelShade(tone,225));
++    }
++}
++
+ static void redDoorSill(const struct VoxelView* view, const uint32_t* art, int x, int y) {
+     const uint32_t* source=art+(y+12-view->top)*view->stride+x-view->left;
+     int front=y+16;
+@@ -420,8 +440,12 @@ static bool gbVoxelDraw(const struct GbSnap* snap, int ox, int oy, struct PkWide
+                 }
+             }
+             materials[y*cols+x]=(uint8_t)material;
+-            terrainDetails[y*cols+x]=classicTiles && mapCell
+-                ? redTerrainDetail(snap,signature,map,left+x,top+y) : RED_DETAIL_NONE;
++            enum RedTerrainDetail detail=RED_DETAIL_NONE;
++            if (mapCell) {
++                detail=classicTiles ? redTerrainDetail(snap,signature,map,left+x,top+y)
++                    : redHomeStair(snap,map,left+x,top+y);
++            }
++            terrainDetails[y*cols+x]=(uint8_t)detail;
+             flowerMasks[y*cols+x]=material==RED_FLOWER ? (uint8_t)flower : 0;
+             if (material==RED_CUT_TREE && !cutTreeFloorReady) {
+                 redCutTreeFloor(cutTreeFloor,alpha);
+@@ -473,6 +497,8 @@ static bool gbVoxelDraw(const struct GbSnap* snap, int ox, int oy, struct PkWide
+             enum RedMaterial material=(enum RedMaterial)materials[row*cols+col];
+             enum RedTerrainDetail detail=terrainDetails[row*cols+col];
+             if (detail==RED_DETAIL_DOOR) redDoorSill(&view,art,x,y);
++            else if (detail==RED_STAIR_UP || detail==RED_STAIR_DOWN)
++                redStairTreads(&view,x,y,detail==RED_STAIR_UP);
+             else if (detail!=RED_DETAIL_NONE) redLedgeRiser(&view,floor,x,y,detail);
+             if (material==RED_SIGN) redLiveSign(&view,x,y,alpha);
+             if (material==RED_CUT_TREE) redCutTree(&view,x,y,alpha);

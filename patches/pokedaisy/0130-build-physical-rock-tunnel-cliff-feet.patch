@@ -1,0 +1,117 @@
+--- a/app/src/main/cpp/pk_scenery_cave_contact_profiles.h
++++ b/app/src/main/cpp/pk_scenery_cave_contact_profiles.h
+@@ -19,3 +19,10 @@
+     {0xfba55dd8u,0x83130e4u,0x82d4a94u,0x82d4df4u,48,40,1,81}, // radical
+     {0xfba55dd8u,0x8314008u,0x82d4a94u,0x82d4df4u,48,40,1,82}, // radical
+ };
++
++/* Last source rock texel in each column with three contiguous rock rows. */
++static const int8_t sceneryCaveFootFront[3][16] = {
++    {-1, 13, 14, 14, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 14},
++    {14, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 14, 14, 14},
++    {15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 14, 14, 13},
++};
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -5644,15 +5644,25 @@
+ }
+ 
+ /* Shade bare, walkable cave floor beside a source-verified north rock foot. */
+-static void sceneryCaveContact(const struct Snap* s, const struct VoxelView* view,
+-                                      int cellX, int cellY, int href, int vref, uint32_t* texture) {
++static bool sceneryCaveContactReady(const struct Snap* s, int href, int vref) {
+     if (!F.mapHeader || r8(F.mapHeader+0x15)!=1 || r8(F.mapHeader+0x16)!=0 ||
+         r8(F.mapHeader+0x17)!=4 || !F.saveBlock1 || F.saveStatic || !sceneryCaveContactMap(s))
+-        return;
++        return false;
+     uint32_t sb1 = r32(F.saveBlock1);
+     if (!mem(sb1, 0xf00) || r8(sb1+4)!=s->group || r8(sb1+5)!=s->num ||
+         r8(sb1+0x30)!=0 || !flagSet(sb1,0x806) || !solidGroundAligned(href,vref))
+-        return;
++        return false;
++    return true;
++}
++
++static bool sceneryCaveClearCell(int col, int row) {
++    for (int sy=0; sy<16; ++sy)
++        if (memchr(holeBuf[row*16+sy]+col*16,1,16)) return false;
++    return true;
++}
++
++static void sceneryCaveContact(const struct Snap* s, const struct VoxelView* view,
++                                      int cellX, int cellY, uint32_t* texture) {
+     for (int row=0; row<view->rows; ++row) for (int col=0; col<view->cols; ++col) {
+         int x=cellX+col, y=cellY+row;
+         if ((unsigned)(x-MAP_OFFSET) >= (unsigned)s->width || y <= MAP_OFFSET || y >= MAP_OFFSET+s->height)
+@@ -5661,10 +5671,7 @@
+         int floor=blockIn(s,x,y,&conn,false), north=blockIn(s,x,y-1,&northConn,false);
+         if (conn >= 0 || northConn >= 0 || floor != 0x281 || north < 0x298 || north > 0x29a)
+             continue;
+-        bool visible=true;
+-        for (int py=0; py<16 && visible; ++py)
+-            visible = !memchr(holeBuf[row*16+py]+col*16, 1, 16);
+-        if (!visible) continue;
++        if (!sceneryCaveClearCell(col,row)) continue;
+         for (int py=0; py<7; ++py) {
+             unsigned gain=256-7*(7-py);
+             for (int px=0; px<16; ++px) {
+@@ -5673,6 +5680,41 @@
+                 *pixel=(c&0xff000000u) | ((c&0x0000ffu)*gain>>8) |
+                     (((c&0x00ff00u)*gain>>8)&0x00ff00u) |
+                     (((c&0xff0000u)*gain>>8)&0xff0000u);
++            }
++        }
++    }
++}
++
++/* A depth-written rock bevel runs inside the reviewed foreground mask,
++ * retaining the native rock outline and the floor between cliff faces. */
++static void sceneryCaveFootVolume(const struct Snap* s, const struct VoxelView* view,
++                                  int cellX, int cellY) {
++    const int height=4;
++    for (int row=0; row+1<view->rows; ++row) for (int col=0; col<view->cols; ++col) {
++        int x=cellX+col, y=cellY+row;
++        if ((unsigned)(x-MAP_OFFSET)>=(unsigned)s->width ||
++            (unsigned)(y-MAP_OFFSET)>=(unsigned)(s->height-1)) continue;
++        int footConn, floorConn;
++        int foot=blockIn(s,x,y,&footConn,false), floor=blockIn(s,x,y+1,&floorConn,false);
++        if (footConn>=0 || floorConn>=0 || foot<0x298 || foot>0x29a || floor!=0x281 ||
++            !sceneryCaveClearCell(col,row) || !sceneryCaveClearCell(col,row+1)) continue;
++        const int8_t* fronts=sceneryCaveFootFront[foot-0x298];
++        int z=voxelRise(view,col,row);
++        for (int u=0; u<16; ++u) {
++            int front=fronts[u];
++            if (front<0) continue;
++            int worldX=view->left+col*16+u;
++            const uint32_t* texel=view->texture+(row*16+front)*view->stride+col*16+u;
++            for (int inset=2; inset>=0; --inset) {
++                int worldY=view->top+row*16+front-inset;
++                int sx=voxelX(view,worldX,worldY);
++                int sy=voxelY(view,worldY,z+height);
++                uint32_t material=texel[-inset*view->stride];
++                voxelPixel(view,sx,sy,worldY,material);
++                if (!inset) for (int v=1; v<=height; ++v) {
++                    uint32_t face=climateMix(texel[-2*view->stride],material,40u*(unsigned)v);
++                    voxelPixel(view,sx,sy+v,worldY,voxelShade(face,235u));
++                }
+             }
+         }
+     }
+@@ -5726,7 +5768,8 @@
+         memcpy(rawHole[y], holeBuf[sy] + sx, (size_t) v.w);
+     }
+     fireRedPalletWater(s,&voxel,cellX,cellY,texture);
+-    sceneryCaveContact(s,&voxel,cellX,cellY,href,vref,texture);
++    bool caveContact=sceneryCaveContactReady(s,href,vref);
++    if (caveContact) sceneryCaveContact(s,&voxel,cellX,cellY,texture);
+ 
+     // Header metadata and weather OAM are read from this same live session.
+     unsigned mapType = F.mapHeader ? r8(F.mapHeader + 0x17) : 0;
+@@ -5905,6 +5905,7 @@
+         voxelTerrainSurfaces(&voxel,texture,&groundMaterial,span);
+     } else voxelTerrainSurfaces(&voxel,texture,NULL,span);
+     if (span) voxelBridgeDraw(&voxel,span);
++    if (caveContact) sceneryCaveFootVolume(s,&voxel,cellX,cellY);
+     SCENERY_FRAME_MARK(cost5);
+     SCENERY_FRAME_ADD(4,cost4,cost5);
+     for(int i=0;i<buildingCount;i++)solidBuildingDraw(&voxel,&buildings[i]);

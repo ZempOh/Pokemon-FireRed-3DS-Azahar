@@ -1,0 +1,9 @@
+--- a/app/src/main/cpp/pk_scenery_cave_contact_profiles.h
++++ b/app/src/main/cpp/pk_scenery_cave_contact_profiles.h
+@@ -16,4 +16,6 @@
+     {0x5e704d77u,0x8314008u,0x82d4a94u,0x82d4df4u,48,40,1,82}, // fakemon
+     {0xf2d16ebdu,0x83130e4u,0x82d4a94u,0x82d4df4u,48,40,1,81}, // rocket
+     {0xf2d16ebdu,0x8314008u,0x82d4a94u,0x82d4df4u,48,40,1,82}, // rocket
++    {0xfba55dd8u,0x83130e4u,0x82d4a94u,0x82d4df4u,48,40,1,81}, // radical
++    {0xfba55dd8u,0x8314008u,0x82d4a94u,0x82d4df4u,48,40,1,82}, // radical
+ };

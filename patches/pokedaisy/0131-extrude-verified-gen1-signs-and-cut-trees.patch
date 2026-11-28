@@ -1,0 +1,119 @@
+diff --git a/app/src/main/cpp/pk_red_voxel_pilot.h b/app/src/main/cpp/pk_red_voxel_pilot.h
+index 86ca811..60f152e 100644
+--- a/app/src/main/cpp/pk_red_voxel_pilot.h
++++ b/app/src/main/cpp/pk_red_voxel_pilot.h
+@@ -3,7 +3,7 @@
+ 
+ // Reviewed Pallet material cells for the exact US/EU Red cartridge.
+ // Units are 16 source pixels; the live map has a three-block border.
+-enum RedMaterial { RED_FIELD, RED_TREE, RED_ROOF, RED_WALL, RED_FLOWER, RED_POST, RED_WATER, RED_NATIVE, RED_SIGN, RED_PIPE, RED_GRASS, RED_ROUND_TREE };
++enum RedMaterial { RED_FIELD, RED_TREE, RED_ROOF, RED_WALL, RED_FLOWER, RED_POST, RED_WATER, RED_NATIVE, RED_SIGN, RED_PIPE, RED_GRASS, RED_ROUND_TREE, RED_CUT_TREE };
+ static enum RedMaterial redMaterialAt(int cx, int cy) {
+     if ((unsigned)cx >= 20 || (unsigned)cy >= 18) return RED_FIELD;
+     if ((cy == 1 && cx != 9) || (cy == 0 && (cx == 3 || cx == 8 || cx == 10 || cx == 17)) ||
+@@ -34,6 +34,7 @@ static const struct RedMaterialStyle {
+     [RED_SIGN]   = {5, 192, 164, 122},
+     [RED_PIPE]   = {5, 167, 156, 135},
+     [RED_GRASS]  = {7, 91, 155, 101},
++    [RED_CUT_TREE] = {12, 117, 164, 106},
+ 
+ };
+ 
+@@ -188,9 +189,48 @@ static void redPipe(const struct VoxelView* v, int x, int y, uint32_t signature,
+     }
+ }
+ 
++/* The board's face uses the original field artwork. Only its backing
++ * and support use new geometry. */
++static void redLiveSign(const struct VoxelView* view, int x, int y, uint32_t alpha) {
++    int front=y+10;
++    voxelPropBox(view,x+7,y+7,3,3,0,8,alpha|RED_COLOR(107,82,60));
++    voxelPropBox(view,x+1,y+7,14,3,5,9,alpha|RED_COLOR(177,147,104));
++    int sx=voxelX(view,x+1,front), sy=voxelY(view,front,14);
++    for (int row=0; row<9; ++row) {
++        const uint32_t* glyph=view->texture+(y+row+3-view->top)*view->stride+x+1-view->left;
++        for (int col=0; col<14; ++col)
++            voxelPixel(view,sx+col,sy+row,front,redTint(glyph[col],&redStyles[RED_SIGN]));
++    }
++}
++
++static void redCutTree(const struct VoxelView* view, int x, int y, uint32_t alpha) {
++    uint32_t bark=alpha|RED_COLOR(117,91,61);
++    uint32_t leaves=climateLeafColor(alpha|RED_COLOR(95,147,89));
++    uint32_t tips=climateLeafColor(alpha|RED_COLOR(133,180,104));
++    voxelPropBox(view,x+7,y+9,3,4,0,10,bark);
++    voxelPropBox(view,x+2,y+7,6,5,6,4,leaves);
++    voxelPropBox(view,x+8,y+7,6,5,6,4,leaves);
++    voxelPropBox(view,x+5,y+5,7,6,8,4,tips);
++    voxelPropBox(view,x+7,y+6,3,3,12,2,tips);
++}
++
++/* These cuttable tree blocks all reveal tile 0x2c in the native Cut table.
++ * Sample the same live pattern and palette used by an already-cut cell. */
++static void redCutTreeFloor(uint32_t floor[64], uint32_t alpha) {
++    uint8_t attr=gbAttrSeen[0x2c] ? gbTileAttr[0x2c] : gbAttrDefault;
++    uint32_t base=gbBgTileBase(0x2c,attr);
++    for (int y=0; y<8; ++y) for (int x=0; x<8; ++x) {
++        int pixel=gbTilePixel(base,(attr&0x20) ? 7-x : x,(attr&0x40) ? 7-y : y);
++        uint32_t source=gbBgColor(attr,pixel,alpha,true);
++        floor[y*8+x]=climateGround(redTint(source,&redStyles[RED_FIELD]),2);
++    }
++}
++
+ static enum RedMaterial gbVoxelMaterial(uint32_t signature, int cx, int cy,
+                                        bool classicTiles, bool pallet, bool mapCell, unsigned flower) {
+     if (flower) return RED_FLOWER;
++    if (classicTiles && signature==0x57564746u) return RED_SIGN;
++    if (classicTiles && signature==0x3e3d2e2du) return RED_CUT_TREE;
+     if (classicTiles && signature==0x52525252u) return mapCell ? RED_GRASS : RED_FIELD;
+     if (classicTiles && gbVoxelPipe(signature)) return RED_PIPE;
+     int x=cx-6, y=cy-6;
+@@ -200,7 +240,6 @@ static enum RedMaterial gbVoxelMaterial(uint32_t signature, int cx, int cy,
+     case 0x3b3a2b2au: return RED_TREE;
+     case 0x51504140u: return RED_ROUND_TREE;
+     case 0x55550e0eu: return RED_POST;
+-    case 0x57564746u: return RED_SIGN;
+     case 0x14141414u: case 0x54141414u: case 0x14141432u: return RED_WATER;
+     case 0x23232323u: case 0x39393939u:
+     case 0x23232339u: case 0x23392323u: case 0x23233923u:
+@@ -301,6 +340,8 @@ static bool gbVoxelDraw(const struct GbSnap* snap, int ox, int oy, struct PkWide
+             }
+         }
+     }
++    uint32_t cutTreeFloor[64];
++    bool cutTreeFloorReady=false;
+     for (int y = 0; y < rows; ++y) {
+         for (int x = 0; x < cols; ++x) {
+             uint32_t signature=classicTiles ? gbVoxelSignature(snap,left+x,top+y) : 0;
+@@ -318,6 +359,10 @@ static bool gbVoxelDraw(const struct GbSnap* snap, int ox, int oy, struct PkWide
+             }
+             materials[y*cols+x]=(uint8_t)material;
+             flowerMasks[y*cols+x]=material==RED_FLOWER ? (uint8_t)flower : 0;
++            if (material==RED_CUT_TREE && !cutTreeFloorReady) {
++                redCutTreeFloor(cutTreeFloor,alpha);
++                cutTreeFloorReady=true;
++            }
+             const struct RedMaterialStyle* style = &redStyles[material];
+             // These branches supply real floor or its reconstructed underlay.
+             groundCells[y*cols+x] = material==RED_FIELD || material==RED_FLOWER ||
+@@ -327,6 +372,7 @@ static bool gbVoxelDraw(const struct GbSnap* snap, int ox, int oy, struct PkWide
+                 for (int dx = 0; dx < VOXEL_TILE; ++dx) {
+                     uint32_t color = art[at+dx];
+                     if (material == RED_NATIVE) floor[at+dx]=color;
++                    else if (material==RED_CUT_TREE) floor[at+dx]=cutTreeFloor[(dy&7)*8+(dx&7)];
+                     else if (material == RED_FLOWER) {
+                         unsigned bit=1u << ((dy/8)*2+dx/8);
+                         floor[at+dx] = (flower & bit) ? ground :
+@@ -361,10 +407,8 @@ static bool gbVoxelDraw(const struct GbSnap* snap, int ox, int oy, struct PkWide
+         for (int col=0; col<cols; ++col) {
+             int x=view.left+col*16, y=view.top+row*16;
+             enum RedMaterial material=(enum RedMaterial)materials[row*cols+col];
+-            if (material==RED_SIGN) {
+-                redBox(&view,x+6,y+8,3,3,0,6,alpha|RED_COLOR(107,82,60));
+-                redBox(&view,x+2,y+7,12,4,5,6,alpha|RED_COLOR(196,170,124));
+-            }
++            if (material==RED_SIGN) redLiveSign(&view,x,y,alpha);
++            if (material==RED_CUT_TREE) redCutTree(&view,x,y,alpha);
+             if (material==RED_TREE) redTree(&view,x+8,y+8,alpha);
+             if (material==RED_ROUND_TREE) redRoundTree(&view,x+8,y+8,alpha);
+             if (material==RED_POST) {

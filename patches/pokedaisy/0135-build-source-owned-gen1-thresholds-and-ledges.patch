@@ -1,0 +1,106 @@
+diff --git a/app/src/main/cpp/pk_red_voxel_pilot.h b/app/src/main/cpp/pk_red_voxel_pilot.h
+index 60f152e..db87514 100644
+--- a/app/src/main/cpp/pk_red_voxel_pilot.h
++++ b/app/src/main/cpp/pk_red_voxel_pilot.h
+@@ -153,6 +153,66 @@ static uint32_t gbVoxelSignature(const struct GbSnap* s, int cx, int cy) {
+         | ((uint32_t)gbTile(s,tx,ty+1)<<16) | ((uint32_t)gbTile(s,tx+1,ty+1)<<24);
+ }
+ 
++enum RedTerrainDetail { RED_DETAIL_NONE, RED_DETAIL_DOOR, RED_LEDGE_SOUTH, RED_LEDGE_WEST, RED_LEDGE_EAST };
++
++/* Only native Overworld jump signatures with a matching approach get relief.
++ * The standing tile is the bottom-left quadrant of the source cell. */
++static enum RedTerrainDetail redTerrainDetail(const struct GbSnap* snap, uint32_t signature,
++                                              int map, int cx, int cy) {
++    if (signature==0x1c1b0c0bu) {
++        /* One imitation of this door on Route 2 has no native warp. */
++        return map==13 && cx==9 && cy==21 ? RED_DETAIL_NONE : RED_DETAIL_DOOR;
++    }
++    unsigned stand;
++    switch (signature) {
++    case 0x37372c2cu: case 0x34372c2cu: case 0x37373939u: case 0x37363939u:
++        stand=(gbVoxelSignature(snap,cx,cy-1)>>16)&0xffu;
++        return (stand==0x39 || (stand==0x2c && ((signature>>16)&0xffu)==0x37))
++            ? RED_LEDGE_SOUTH : RED_DETAIL_NONE;
++    case 0x2c272c27u:
++        stand=(gbVoxelSignature(snap,cx+1,cy)>>16)&0xffu;
++        return stand==0x2c || stand==0x39 ? RED_LEDGE_WEST : RED_DETAIL_NONE;
++    case 0x241d241du: case 0x240d240du:
++        stand=(gbVoxelSignature(snap,cx-1,cy)>>16)&0xffu;
++        return (stand==0x2c || (stand==0x39 && signature==0x240d240du))
++            ? RED_LEDGE_EAST : RED_DETAIL_NONE;
++    default:
++        return RED_DETAIL_NONE;
++    }
++}
++
++static void redDoorSill(const struct VoxelView* view, const uint32_t* art, int x, int y) {
++    const uint32_t* source=art+(y+12-view->top)*view->stride+x-view->left;
++    int front=y+16;
++    for (int dx=2; dx<14; ++dx) {
++        uint32_t color=redTint(source[dx],&redStyles[RED_WALL]);
++        voxelPixel(view,voxelX(view,x+dx,front),voxelY(view,front,2),front,voxelShade(color,244));
++        voxelPixel(view,voxelX(view,x+dx,front),voxelY(view,front,1),front,voxelShade(color,181));
++    }
++}
++
++/* Use the same live terrain colors for the raised lip and exposed face.
++ * Depth remains in the source cell, independent of the jump animation. */
++static void redLedgeRiser(const struct VoxelView* view, const uint32_t* floor, int x, int y,
++                          enum RedTerrainDetail detail) {
++    int start=detail==RED_LEDGE_SOUTH ? 0 : detail==RED_LEDGE_WEST ? 2 : 7;
++    int width=detail==RED_LEDGE_SOUTH ? 16 : 3;
++    int firstRow=detail==RED_LEDGE_SOUTH ? 11 : 2;
++    int lastRow=detail==RED_LEDGE_SOUTH ? 12 : 14;
++    for (int row=firstRow; row<lastRow; ++row) {
++        int worldY=y+row;
++        const uint32_t* source=floor+(worldY-view->top)*view->stride+x-view->left;
++        int left=voxelX(view,x+start,worldY);
++        int top=voxelY(view,worldY,3);
++        int face=voxelY(view,worldY,1);
++        for (int col=0; col<width; ++col) {
++            uint32_t color=source[start+col];
++            voxelPixel(view,left+col,top,worldY,voxelShade(color,241));
++            voxelPixel(view,left+col,face,worldY,voxelShade(color,183));
++        }
++    }
++}
++
+ /* A recognized flower cell consists of one live 8x8 flower and three
+  * ordinary grass tiles. Its bit identifies the source quadrant to replace. */
+ static unsigned gbVoxelFlowerMask(uint32_t signature) {
+@@ -323,6 +383,7 @@ static bool gbVoxelDraw(const struct GbSnap* snap, int ox, int oy, struct PkWide
+     static uint8_t materials[GB_BUF/(VOXEL_TILE*VOXEL_TILE)];
+     static uint8_t groundCells[GB_BUF/(VOXEL_TILE*VOXEL_TILE)];
+     static uint8_t flowerMasks[GB_BUF/(VOXEL_TILE*VOXEL_TILE)];
++    static uint8_t terrainDetails[GB_BUF/(VOXEL_TILE*VOXEL_TILE)];
+     gbDraw(snap, ox, oy, window.left, window.top, w, h, art, w, alpha, false, true);
+     int cols = w / VOXEL_TILE, rows = h / VOXEL_TILE;
+     struct VoxelView view = {
+@@ -342,6 +403,7 @@ static bool gbVoxelDraw(const struct GbSnap* snap, int ox, int oy, struct PkWide
+     }
+     uint32_t cutTreeFloor[64];
+     bool cutTreeFloorReady=false;
++    int map=gbRam(gbCfg[GB_YCOORD]-3);
+     for (int y = 0; y < rows; ++y) {
+         for (int x = 0; x < cols; ++x) {
+             uint32_t signature=classicTiles ? gbVoxelSignature(snap,left+x,top+y) : 0;
+@@ -358,6 +420,8 @@ static bool gbVoxelDraw(const struct GbSnap* snap, int ox, int oy, struct PkWide
+                 }
+             }
+             materials[y*cols+x]=(uint8_t)material;
++            terrainDetails[y*cols+x]=classicTiles && mapCell
++                ? redTerrainDetail(snap,signature,map,left+x,top+y) : RED_DETAIL_NONE;
+             flowerMasks[y*cols+x]=material==RED_FLOWER ? (uint8_t)flower : 0;
+             if (material==RED_CUT_TREE && !cutTreeFloorReady) {
+                 redCutTreeFloor(cutTreeFloor,alpha);
+@@ -407,6 +471,9 @@ static bool gbVoxelDraw(const struct GbSnap* snap, int ox, int oy, struct PkWide
+         for (int col=0; col<cols; ++col) {
+             int x=view.left+col*16, y=view.top+row*16;
+             enum RedMaterial material=(enum RedMaterial)materials[row*cols+col];
++            enum RedTerrainDetail detail=terrainDetails[row*cols+col];
++            if (detail==RED_DETAIL_DOOR) redDoorSill(&view,art,x,y);
++            else if (detail!=RED_DETAIL_NONE) redLedgeRiser(&view,floor,x,y,detail);
+             if (material==RED_SIGN) redLiveSign(&view,x,y,alpha);
+             if (material==RED_CUT_TREE) redCutTree(&view,x,y,alpha);
+             if (material==RED_TREE) redTree(&view,x+8,y+8,alpha);

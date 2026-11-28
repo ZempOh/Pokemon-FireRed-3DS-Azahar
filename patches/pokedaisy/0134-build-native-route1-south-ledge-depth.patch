@@ -1,0 +1,111 @@
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -31,6 +31,7 @@
+ #include "pk_water_surface.h"
+ #include "pk_scenery_water_profiles.h"
+ #include "pk_scenery_cave_contact_profiles.h"
++#include "pk_scenery_south_ledge_profiles.h"
+ #include "pk_battle_volume.h"
+ #include "pk_wide_solid.h"
+ #include "pk_wide_props.h"
+@@ -5832,6 +5833,60 @@
+ }
+ 
+ 
++static bool scenerySouthLedgeMap(const struct Snap* s) {
++    if (!F.mapHeader || r8(F.mapHeader+0x17)!=3 || r8(F.mapHeader+0x16)!=2) return false;
++    for (size_t n=0; n<sizeof(scenerySouthLedgeMaps)/sizeof(*scenerySouthLedgeMaps); ++n) {
++        const struct ScenerySouthLedgeMap* m=&scenerySouthLedgeMaps[n];
++        if (m->rom==solidRom && m->group==s->group && m->map==s->num &&
++            m->primary==s->primary && m->secondary==s->secondary &&
++            m->width==s->width && m->height==s->height && m->layout==r32(F.mapHeader)) return true;
++    }
++    return false;
++}
++
++static void scenerySouthLedgeVolume(const struct Snap* s, const struct VoxelView* view, int cellX, int cellY) {
++    for (int row=0; row<view->rows; ++row) for (int col=0; col<view->cols; ++col) {
++        int x=cellX+col, y=cellY+row;
++        if ((unsigned)(x-MAP_OFFSET)>=(unsigned)s->width ||
++            y<=MAP_OFFSET || y>=MAP_OFFSET+s->height-1 ||
++            (unsigned)x>=(unsigned)s->vw || y+1>=s->vh) continue;
++        const uint16_t* block=s->vmap+y*s->vw+x;
++        if ((*block>>10)!=1 || (block[-s->vw]>>10)!=12 || (block[s->vw]>>10)!=12) continue;
++        const struct ScenerySouthLedgeShape* shape=NULL;
++        for (size_t n=0; n<sizeof(scenerySouthLedgeShapes)/sizeof(*scenerySouthLedgeShapes); ++n) {
++            if ((*block&1023)==scenerySouthLedgeShapes[n].tile) {
++                shape=&scenerySouthLedgeShapes[n];
++                break;
++            }
++        }
++        if (!shape) continue;
++        bool covered=false;
++        for (int dy=0; dy<16 && !covered; ++dy)
++            covered=memchr(holeBuf[row*16+dy]+col*16,1,16)!=NULL;
++        if (covered) continue;
++        int z=voxelRise(view,col,row);
++        for (int u=0; u<16; ++u) {
++            int front=shape->fronts[u];
++            if (front<0) continue;
++            int height=shape->heights[u];
++            int worldX=view->left+col*16+u;
++            const uint32_t* texel=view->texture+(row*16+front)*view->stride+col*16+u;
++            for (int inset=2; inset>=0; --inset) {
++                int worldY=view->top+row*16+front-inset;
++                int sx=voxelX(view,worldX,worldY);
++                int sy=voxelY(view,worldY,z+height);
++                uint32_t material=texel[-inset*view->stride];
++                voxelPixel(view,sx,sy,worldY,material);
++                if (!inset) for (int v=1; v<=height; ++v) {
++                    uint32_t face=climateMix(texel[-2*view->stride],material,40u*(unsigned)v);
++                    voxelPixel(view,sx,sy+v,worldY,voxelShade(face,235u));
++                }
++            }
++        }
++    }
++}
++
++
+ static bool drawVoxel(const struct Snap* s, int cx, int cy, int href, int vref,
+                       uint32_t* out, struct PkWideView v, uint32_t alpha) {
+     if (!voxelViewportFits(v.w, v.h)) return false;
+@@ -5961,6 +6016,8 @@
+     } else voxelTerrainSurfaces(&voxel,texture,NULL,span);
+     if (span) voxelBridgeDraw(&voxel,span);
+     if (caveContact) sceneryCaveFootVolume(s,&voxel,cellX,cellY);
++    if (scenerySouthLedgeMap(s) && solidGroundAligned(href,vref))
++        scenerySouthLedgeVolume(s,&voxel,cellX,cellY);
+     SCENERY_FRAME_MARK(cost5);
+     SCENERY_FRAME_ADD(4,cost4,cost5);
+     for(int i=0;i<buildingCount;i++)solidBuildingDraw(&voxel,&buildings[i]);
+--- /dev/null
++++ b/app/src/main/cpp/pk_scenery_south_ledge_profiles.h
+@@ -0,0 +1,28 @@
++#pragma once
++#include <stdint.h>
++
++struct ScenerySouthLedgeMap {
++    uint32_t rom, layout, primary, secondary;
++    uint16_t width, height;
++    uint8_t group, map;
++};
++static const struct ScenerySouthLedgeMap scenerySouthLedgeMaps[] = {
++    {0xfba55dd8u,0x82e55ccu,0x82d4a94u,0x82d4aacu,24,40,3,19}, // radical
++    {0xf2d16ebdu,0x82e55ccu,0x82d4a94u,0x82d4aacu,24,40,3,19}, // rocket
++    {0x964763c0u,0x832765cu,0x8316a4cu,0x8316a64u,24,40,3,19}, // frlgplus
++    {0xdd88761cu,0x82e55ccu,0x82d4a94u,0x82d4aacu,24,40,3,19}, // firered
++    {0x5e704d77u,0x82e55ccu,0x82d4a94u,0x82d4aacu,24,40,3,19}, // fakemon
++};
++
++/* Front and thickness inherit the verified opacity outline of the rock layer. */
++struct ScenerySouthLedgeShape { int tile; int8_t fronts[16]; uint8_t heights[16]; };
++static const struct ScenerySouthLedgeShape scenerySouthLedgeShapes[] = {
++    {0x87,{15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15},{3, 3, 2, 2, 2, 2, 3, 3, 3, 3, 2, 2, 2, 2, 2, 3}},
++    {0x97,{15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15},{3, 3, 2, 2, 2, 2, 3, 3, 3, 3, 2, 2, 2, 2, 2, 3}},
++    {0xb0,{11, 13, 14, 14, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15},{1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 2, 2, 2, 2, 3, 3}},
++    {0xb1,{15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 14, 14, 13, 11},{3, 3, 2, 2, 2, 2, 2, 3, 3, 3, 2, 2, 1, 1, 1, 1}},
++    {0xc0,{11, 13, 14, 14, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15},{1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 2, 2, 2, 2, 3, 3}},
++    {0xc1,{15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 14, 14, 13, 11},{3, 3, 2, 2, 2, 2, 2, 3, 3, 3, 2, 2, 1, 1, 1, 1}},
++    {0xc8,{15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15},{3, 3, 2, 2, 2, 2, 2, 3, 3, 3, 2, 2, 2, 2, 3, 3}},
++    {0xc9,{15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15},{3, 3, 2, 2, 2, 2, 2, 3, 3, 3, 2, 2, 2, 2, 3, 3}},
++};

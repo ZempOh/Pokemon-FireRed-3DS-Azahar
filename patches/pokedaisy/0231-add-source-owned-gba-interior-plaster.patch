@@ -1,0 +1,138 @@
+diff --git a/app/src/main/cpp/pk_wide.c b/app/src/main/cpp/pk_wide.c
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -5984,6 +5984,7 @@
+ }
+ 
+ #include "pk_scenery_indoor_parquet.h"
++#include "pk_scenery_indoor_walls.h"
+ 
+ static bool solidGroundMaterial(const struct Snap* s, const uint32_t* mask,
+                                  int x, int y, int col, int row) {
+@@ -6941,6 +6942,9 @@
+     unsigned mapType = F.mapHeader ? r8(F.mapHeader + 0x17) : 0;
+ #if VOXEL_PARQUET_TEXTURE_SIZE > 0
+     sceneryIndoorParquet(s,&voxel,cellX,cellY,href,vref,mapType,texture);
++#endif
++#if VOXEL_INDOOR_WALL_TEXTURE_SIZE && VOXEL_GROUND_TEXTURE_SIZE == 256
++    sceneryIndoorWallPanels(s,&voxel,cellX,cellY,href,vref,mapType,texture);
+ #endif
+     if (sceneryWaterMap(s,mapType) && solidGroundAligned(href,vref))
+         sceneryWaterDraw(s,&voxel,cellX,cellY,texture);
+diff --git a/app/src/main/cpp/pk_scenery_indoor_walls.h b/app/src/main/cpp/pk_scenery_indoor_walls.h
+new file mode 100644
+--- /dev/null
++++ b/app/src/main/cpp/pk_scenery_indoor_walls.h
+@@ -0,0 +1,77 @@
++/* Material detail for exact native north-wall panels in reviewed interiors. */
++#pragma once
++
++#ifndef VOXEL_INDOOR_WALL_TEXTURE_SIZE
++#define VOXEL_INDOOR_WALL_TEXTURE_SIZE 256
++#endif
++
++#if VOXEL_INDOOR_WALL_TEXTURE_SIZE && VOXEL_GROUND_TEXTURE_SIZE == 256
++#include "pk_scenery_indoor_wall_profiles.h"
++
++static unsigned indoorWallTexel(unsigned coordinate) {
++    enum { step=256 / VOXEL_INDOOR_WALL_TEXTURE_SIZE };
++    return (coordinate&255u)/step*step+step/2;
++}
++
++static void sceneryIndoorWallPanels(const struct Snap* s,const struct VoxelView* v,
++                                    int cellX,int cellY,int href,int vref,unsigned mapType,
++                                    uint32_t* texture) {
++    if (mapType!=8 || !F.mapHeader || !solidGroundAligned(href,vref)) return;
++    const struct IndoorWallProfile* profile=NULL;
++    uint32_t layout=r32(F.mapHeader);
++    for (size_t i=0;i<sizeof(indoorWallProfiles)/sizeof(*indoorWallProfiles);++i) {
++        const struct IndoorWallProfile* p=&indoorWallProfiles[i];
++        if (p->rom==solidRom && p->layout==layout && p->primary==s->primary &&
++            p->secondary==s->secondary && p->group==s->group && p->map==s->num &&
++            p->width==s->width && p->height==s->height) {
++            profile=p;
++            break;
++        }
++    }
++    if (!profile) return;
++
++    const uint8_t* atlas=voxelGroundTexture();
++#ifdef __ANDROID__
++    unsigned sampled=0;
++#endif
++    for (unsigned i=0;i<profile->count;++i) {
++        const struct IndoorWallPanel* panel=&profile->panels[i];
++        int my=MAP_OFFSET+panel->row,row=my-cellY;
++        if ((unsigned)row>=(unsigned)v->rows || my>=s->vh) continue;
++        for (int x=0;x<s->width;++x) {
++            if (!(panel->columns&(1u<<x))) continue;
++            int mx=MAP_OFFSET+x,col=mx-cellX;
++            if ((unsigned)col>=(unsigned)v->cols || mx>=s->vw ||
++                s->vmap[my*s->vw+mx]!=panel->word) continue;
++            for (int y=panel->first;y<=panel->last;++y) {
++                int sy=row*16+y;
++                unsigned texY=indoorWallTexel((panel->row*16u+(unsigned)y)*profile->vPitch);
++                const uint8_t* strip=atlas+256u*texY;
++                for (int u=0;u<16;++u) {
++                    int sx=col*16+u;
++                    if (holeBuf[sy][sx]) continue;
++                    unsigned texX=indoorWallTexel((unsigned)(x*16+u)*5u);
++                    uint32_t* base=&texture[sy*v->stride+sx];
++                    *base=voxelShade(*base,2u*strip[texX]-256u);
++#ifdef __ANDROID__
++                    ++sampled;
++#endif
++                }
++            }
++        }
++    }
++#ifdef __ANDROID__
++    static const struct IndoorWallProfile* previous;
++    static unsigned draws;
++    if (previous!=profile) {
++        previous=profile;
++        draws=0;
++    }
++    if (sampled && !(draws++ & 255u))
++        __android_log_print(ANDROID_LOG_INFO,"pokedaisy",
++            "voxel indoor wall atlas crc=%08x map=%u/%u source=%ux%u target=%dx%d samples=%u",
++            solidRom,(unsigned)s->group,(unsigned)s->num,(unsigned)VOXEL_INDOOR_WALL_TEXTURE_SIZE,
++            (unsigned)VOXEL_INDOOR_WALL_TEXTURE_SIZE,v->width,v->height,sampled);
++#endif
++}
++#endif
+diff --git a/app/src/main/cpp/pk_scenery_indoor_wall_profiles.h b/app/src/main/cpp/pk_scenery_indoor_wall_profiles.h
+new file mode 100644
+--- /dev/null
++++ b/app/src/main/cpp/pk_scenery_indoor_wall_profiles.h
+@@ -0,0 +1,30 @@
++/* Generated from the exact north-wall source panels. */
++struct IndoorWallPanel { uint32_t columns; uint16_t word; uint8_t row, first, last; };
++struct IndoorWallProfile {
++    uint32_t rom, layout, primary, secondary;
++    uint8_t group, map, width, height, count, vPitch;
++    const struct IndoorWallPanel* panels;
++};
++static const struct IndoorWallPanel panels_modern_emerald[] = {
++    {0x000003d0u,0x0605u,0,8,15},
++    {0x000000d0u,0x060du,1,0,8},
++};
++static const struct IndoorWallPanel panels_seaglass[] = {
++    {0x000003d0u,0x0605u,0,8,15},
++    {0x000000d0u,0x060du,1,0,8},
++};
++static const struct IndoorWallPanel panels_better_emerald_2[] = {
++    {0x00001f37u,0x0738u,0,8,15},
++    {0x00000130u,0x0740u,1,0,7},
++};
++static const struct IndoorWallPanel panels_unbound[] = {
++    {0x00049249u,0x0468u,0,2,5},
++    {0x00092492u,0x049bu,0,2,5},
++    {0x00124924u,0x046au,0,2,5},
++};
++static const struct IndoorWallProfile indoorWallProfiles[] = {
++    {0x263a1187u,0x8c74f24u,0x8bb3c48u,0x8bb3f30u,2,0,10,9,2,9,panels_modern_emerald},
++    {0x14465a33u,0x8ae387cu,0x8a2e82cu,0x8a2eb14u,2,0,10,9,2,9,panels_seaglass},
++    {0x2be557a3u,0x842a8d4u,0x83df884u,0x83dfb6cu,11,10,13,8,2,9,panels_better_emerald_2},
++    {0x4b3d4957u,0x8731a50u,0x82d4bb4u,0x82d4c74u,4,8,21,11,3,17,panels_unbound},
++};

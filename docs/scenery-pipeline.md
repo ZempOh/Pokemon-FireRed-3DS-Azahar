@@ -1685,6 +1685,8 @@ Emerald, Seaglass, and Better Emerald 2, plus one native Ash Gray crossing.
 Validate each deck's exact approach and shoreline words and keep its native
 movement, deck art, and water pixels intact. Lazarus needs a working native
 Continue fixture before its matching span can be enrolled.
+Modern Emerald and Seaglass also share the independently matched Route 119
+deck and ocean underlay. Test the two route fixtures separately.
 
 FireRed's original 151 player-side poses use the native species slot, exact
 art and palette fingerprints, and measured standing anchors. The shared batch
@@ -1697,3 +1699,18 @@ English Red, Blue, and Yellow share source-owned field actor relief. The live
 object must match a native source pose before the renderer adds edge depth.
 Check the walking player and moving Pallet Girl in each game, plus Yellow's
 Vermilion Gambler and native dialogue. Actor relief uses the native palette.
+
+Native GBA player and NPC relief shares owner checks across thirteen reviewed
+cartridges. Gate it on a live palette and pose match, window visibility, and
+native object ownership. Check the walking indices that each source exposes
+and retain unresolved multipart or hidden poses. Test same-ROM darkness and
+another cartridge as fallback controls. The parquet-room exit mats use a separate
+256×256 textile material for the exact red-pile footprint, keeping cream
+borders, exit behavior, and indoor climate unchanged across nine games.
+
+Interior plaster detail uses per-room north-wall masks on four cartridges.
+Keep alternate trims, menu overlays, and native door exits under control. The
+shared dry sand cliff profile samples the authored rock face and 256×256
+ledge material across five cartridges. Match exact height, direction, map,
+and metatile data. Trace Ash Gray's upper canal wall separately and preserve
+the authored caps and waterbed through both automatic and winter captures.

@@ -1,0 +1,24 @@
+diff --git a/app/src/main/cpp/pk_scenery_field_actor_profiles.h b/app/src/main/cpp/pk_scenery_field_actor_profiles.h
+index c4a9e29..dcfb1d7 100644
+--- a/app/src/main/cpp/pk_scenery_field_actor_profiles.h
++++ b/app/src/main/cpp/pk_scenery_field_actor_profiles.h
+@@ -27,6 +27,9 @@ static const struct NativeFieldActorProfile nativeFieldActors[] = {
+     {0x25c3d89fu,0x08810b9cu,0x046u,1,23,3,0,32,1}, // letsgo npc
+     {0x25c3d89fu,0x0881335cu,0x12fu,10,174,3,0,32,5}, // letsgo npc
+     {0xfba55dd8u,0x08eb3810u,0x1ffu,255,0,0,0,16,0}, // radical player
++    {0x63478921u,0x083a1b40u,0xfffu,255,0,0,0,32,0}, // ash-gray player
++    {0xf2d16ebdu,0x083a1b40u,0xfffu,255,0,0,0,32,0}, // rocket player
++    {0xf2d16ebdu,0x083a1750u,0x001u,3,75,3,0,16,2}, // rocket npc
+ };
+ 
+ static uint8_t nativeFieldActorSource(const struct Snap* snap,const uint8_t* event,uint32_t images) {
+@@ -82,7 +85,8 @@ static int nativeFieldActorPose(const struct Piece* p,const uint8_t* vram,const
+     if (p->w!=bind->width || p->pal!=bind->palette || offset+bytes>0x8000u ||
+         !nativeFieldActorOam(p,oam) || !nativeFieldActorWindow(p)) return -1;
+     const uint8_t* live=vram+0x10000u+offset;
+-    for (unsigned i=0;i<9;++i) {
++    // Extended original walking cycles are admitted only by the per-object ROM mask.
++    for (unsigned i=0;i<12;++i) {
+         if (!(bind->poses&(1u<<i))) continue;
+         const uint8_t* frame=mem(bind->images+i*8u,8);
+         if (!frame || le16(frame+4)!=bytes) continue;

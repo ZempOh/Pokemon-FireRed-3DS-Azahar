@@ -1,0 +1,186 @@
+diff --git a/app/src/main/cpp/pk_scenery_field_actor_profiles.h b/app/src/main/cpp/pk_scenery_field_actor_profiles.h
+new file mode 100644
+index 0000000..c02492a
+--- /dev/null
++++ b/app/src/main/cpp/pk_scenery_field_actor_profiles.h
+@@ -0,0 +1,83 @@
++#pragma once
++
++/* Exact cartridge object owners and ordinary, verified field poses. The ROM
++ * frame table remains the authority for every tile. No graphics are bundled. */
++struct NativeFieldActorProfile {
++    uint32_t crc, images;
++    uint16_t poses;
++    uint8_t local, graphics, group, map, width, palette;
++};
++
++static const struct NativeFieldActorProfile nativeFieldActors[] = {
++    {0xdd88761cu,0x083a00a0u,0x1ffu,255,0,0,0,16,0}, // FireRed player
++    {0xdd88761cu,0x083a07c0u,0x086u,2,27,3,0,16,5},  // Pallet NPC
++    {0xe4deb9beu,0x088669f4u,0x1ffu,255,0,0,0,32,1}, // Classic player
++    {0xe4deb9beu,0x0885e86cu,0x084u,3,1,6,0,32,4},   // Pallet NPC
++    {0x263a1187u,0x08801f78u,0x1ffu,255,0,0,0,16,1}, // Modern Emerald player
++    {0x263a1187u,0x08802818u,0x126u,1,0,0,0,16,2},   // Petalburg NPC
++};
++
++static uint8_t nativeFieldActorSource(const struct Snap* snap,const uint8_t* event,uint32_t images) {
++    for (unsigned i=0;i<sizeof nativeFieldActors/sizeof *nativeFieldActors;++i) {
++        const struct NativeFieldActorProfile* p=&nativeFieldActors[i];
++        if (p->crc==solidRom && p->images==images &&
++            p->local==event[8] && p->graphics==event[5] &&
++            (p->local==255 || (p->group==snap->group && p->map==snap->num)))
++            return (uint8_t)(i+1);
++    }
++    return 0;
++}
++
++static bool nativeFieldActorOam(const struct Piece* p,const uint16_t* oam) {
++    int matches=0;
++    for (int k=0;k<128;++k) {
++        const uint16_t* o=&oam[k*4];
++        unsigned shape=o[0]>>14, size=o[1]>>14;
++        if (shape>2 || (o[0]&0x3f00) || (o[1]&0x2000) ||
++            (o[0]&255)!=(unsigned)p->y || (o[1]&511)!=(unsigned)p->x ||
++            ((o[1]&0x1000)!=0)!=p->hflip ||
++            OBJ_DIMS[shape][size][0]!=p->w || OBJ_DIMS[shape][size][1]!=p->h ||
++            o[2]!=(p->tile | p->prio<<10 | p->pal<<12)) continue;
++        ++matches;
++    }
++    return matches==1;
++}
++
++static bool nativeFieldActorWindow(const struct Piece* p) {
++    const int top=p->y>6 ? p->y-6 : 0;
++    int layers=-1;
++    bool open=true;
++    for (int y=top;y<p->y+p->h;++y) {
++        useLine(y);
++        const int at=windowLayers(p->x-3,y);
++        if ((io(0)&0x9000)!=0x1000 || !(at&0x10) ||
++            (layers>=0 && at!=layers) || !windowsUniform(p->x-3,p->w+6)) {
++            open=false;
++            break;
++        }
++        layers=at;
++    }
++    useLive();
++    return open;
++}
++
++
++static int nativeFieldActorPose(const struct Piece* p,const uint8_t* vram,const uint16_t* oam) {
++    if (!p->nativeActor || p->h!=32 || p->vflip ||
++        p->x<0 || p->y<0 || p->x+p->w>PK_WIDE_W || p->y+p->h>PK_WIDE_H) return -1;
++    const struct NativeFieldActorProfile* bind=&nativeFieldActors[p->nativeActor-1];
++    unsigned bytes=bind->width*16u, offset=p->tile*32u;
++    if (p->w!=bind->width || p->pal!=bind->palette || offset+bytes>0x8000u ||
++        !nativeFieldActorOam(p,oam) || !nativeFieldActorWindow(p)) return -1;
++    const uint8_t* live=vram+0x10000u+offset;
++    for (unsigned i=0;i<9;++i) {
++        if (!(bind->poses&(1u<<i))) continue;
++        const uint8_t* frame=mem(bind->images+i*8u,8);
++        if (!frame || le16(frame+4)!=bytes) continue;
++        uint32_t art=le32(frame);
++        if (art<0x08000000u || art+bytes>0x0a000000u) continue;
++        const uint8_t* ink=mem(art,bytes);
++        if (ink && !memcmp(live,ink,bytes)) return (int)i;
++    }
++    return -1;
++}
+diff --git a/app/src/main/cpp/pk_wide.c b/app/src/main/cpp/pk_wide.c
+index cf65f53..6317a3d 100644
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -1493,7 +1493,7 @@ static uint32_t solidRom;
+ struct Piece {
+     int solidKind,solidLeaf,solidBark;
+     bool vegetation, actor, roundedFollower, winterBerry, rockMaterial;
+-    uint8_t flyerDepth;
++    uint8_t flyerDepth, nativeActor;
+     int x, y, w, h, tile, prio, pal, mode;   // mode: OAM objMode (0 normal, 1 semi-transparent, 2 OBJ window)
+     bool hflip, vflip;
+     bool copy;                               // a weather sprite repeated past the screen: margins only
+@@ -1514,6 +1514,8 @@ static const uint8_t OBJ_DIMS[3][4][2] = {
+     { { 8, 16 }, { 8, 32 }, { 16, 32 }, { 32, 64 } },
+ };
+ 
++#include "pk_scenery_field_actor_profiles.h"
++
+ static struct Piece pieces[2][256];
+ static int npieces[2] = { 0, 0 };
+ static int shown = 0;   // pieces[shown]: the list drawn (the last one the frame's OAM agreed with)
+@@ -1537,6 +1539,7 @@ static int buildPieces(const struct Snap* s, struct Piece* out) {
+     bool actor[SPRITES_CAP] = { false };
+     bool winterBerry[SPRITES_CAP] = { false };
+     uint8_t flyerDepth[SPRITES_CAP] = { 0 };
++    uint8_t nativeActors[SPRITES_CAP] = { 0 };
+     int classicFollower = -1;
+     bool letsGoPallet = solidRom == 0x25c3d89f && s->group == 3 && s->num == 0 &&
+                        s->primary == 0x082d4a94 && s->secondary == 0x082d4aac;
+@@ -1566,6 +1569,10 @@ static int buildPieces(const struct Snap* s, struct Piece* out) {
+         if ((flags&1) && !(flags&(1<<13)) && id<nspr) {
+             actor[id] = true;
+             uint32_t imageTable=le32(s->sprites+0x44*id+0x0c);
++            if (!(flags&(1<<14))) {
++                uint8_t source=nativeFieldActorSource(s,oe,imageTable);
++                if (source) nativeActors[id]=nativeActors[id] ? 255 : source;
++            }
+             if (route212Plot && oe[9]==30 && oe[10]==0 && (oe[8]==13 || oe[8]==14) &&
+                 oe[5]==62 && oe[6]==12 && imageTable==0x0850c0c8u)
+                 winterBerry[id]=true;
+@@ -1618,6 +1625,7 @@ static int buildPieces(const struct Snap* s, struct Piece* out) {
+                               .solidKind=propKind[id],.solidLeaf=propLeaf[id],.solidBark=propBark[id],
+                               .actor=actor[id] && !propKind[id], .rockMaterial=rockMaterial[id],
+                               .flyerDepth=flyerDepth[id],
++                              .nativeActor=nativeActors[id]==255 ? 0 : nativeActors[id],
+                               .winterBerry=winterBerry[id],
+                               .vegetation=climateGrassEffect(solidRom,le32(sp+0x14),le32(sp+0x0c)),
+                               .mode = (int) ((a0 >> 10) & 3), .hflip = !(rot & 1) && (a1 & 0x1000), .vflip = !(rot & 1) && (a1 & 0x2000),
+@@ -1667,6 +1675,7 @@ static int buildPieces(const struct Snap* s, struct Piece* out) {
+             out[n].y = by + sy;
+             out[n].w = w;
+             out[n].h = h;
++            if (cnt!=1) out[n].nativeActor=0;
+             out[n].roundedFollower = id==classicFollower && cnt==1 && h==32 &&
+                 ((w==32 && subs==0x0886a2f0u) || (w==16 && subs==0x0886a29cu));
+             out[n].tile = base.tile + (int) ((v >> 4) & 0x3FF);
+@@ -2190,14 +2199,28 @@ static void drawObjects(const struct Snap* s, int cx, int cy, int x0, int y0, in
+         int pc = (int16_t) oam[(4 * m + 2) * 4 + 3], pd = (int16_t) oam[(4 * m + 3) * 4 + 3];
+         int foot = p[i].y + bh - 1;
+         bool solidActor = p[i].actor && !p[i].vegetation && p[i].mode == 0 && !(p[i].rot & 1);
+-        bool roundFollower = voxel && p[i].world && solidActor && p[i].roundedFollower;
++        const bool mayRound=voxel && p[i].world && solidActor;
++        const int nativePose=mayRound ? nativeFieldActorPose(&p[i],vram,oam) : -1;
++        const bool roundActor=mayRound && (p[i].roundedFollower || nativePose>=0);
+         struct FieldActorShell shell;
+         int vx = 0, vy = 0;
+         if (voxel && p[i].world) {
+             int z = voxelRiseAt(voxel, p[i].x + bw / 2, foot);
+             vx = voxelX(voxel, p[i].x, foot);
+             vy = voxelY(voxel, foot, z) - bh + 1;
+-            if (roundFollower) fieldActorShell(&p[i],voxel,vram,foot,z,&shell);
++            if (roundActor) fieldActorShell(&p[i],voxel,vram,foot,z,&shell);
++#ifdef PK_FIELD_ACTOR_HOST_WITNESS
++            if (nativePose>=0) {
++                int minX=vx-1,minY=vy-3,maxX=vx+bw,maxY=vy+bh;
++                for (int d=0;d<3;++d) {
++                    if (vx+shell.dx[d]<minX) minX=vx+shell.dx[d];
++                    if (vy+shell.dy[d]<minY) minY=vy+shell.dy[d];
++                    if (vx+shell.dx[d]+bw>maxX) maxX=vx+shell.dx[d]+bw;
++                    if (vy+shell.dy[d]+bh>maxY) maxY=vy+shell.dy[d]+bh;
++                }
++                fprintf(stderr,"FIELD_DEPTH %u %d %d %d %d %d\n",p[i].nativeActor,nativePose,minX,minY,maxX,maxY);
++            }
++#endif
+         }
+         if(voxel && p[i].world && (p[i].solidKind==7 || p[i].solidKind==8 || p[i].solidKind==9 || p[i].solidKind==12) &&
+            !(p[i].rot&1) && p[i].mode==0 && sw>=16 && sh>=16) {
+@@ -2311,7 +2334,7 @@ static void drawObjects(const struct Snap* s, int cx, int cy, int x0, int y0, in
+                     dst[J * stride + X] = c;
+                     holeBuf[J][X] = 0;
+                 } else if (p[i].world) {
+-                    if (roundFollower) fieldActorPixel(voxel,&shell,vx+xx,vy+yy,foot,i,px,py,c);
++                    if (roundActor) fieldActorPixel(voxel,&shell,vx+xx,vy+yy,foot,i,px,py,c);
+                     else if (solidActor) voxelActorPixel(voxel, vx + xx, vy + yy, foot, i, c);
+                     else voxelSpritePixel(voxel, vx + xx, vy + yy, foot, i, c);
+                     if (solidActor && p[i].flyerDepth) {

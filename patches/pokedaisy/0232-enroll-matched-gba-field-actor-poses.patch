@@ -1,0 +1,19 @@
+diff --git a/app/src/main/cpp/pk_scenery_field_actor_profiles.h b/app/src/main/cpp/pk_scenery_field_actor_profiles.h
+index c02492a..423af5f 100644
+--- a/app/src/main/cpp/pk_scenery_field_actor_profiles.h
++++ b/app/src/main/cpp/pk_scenery_field_actor_profiles.h
+@@ -15,6 +15,14 @@ static const struct NativeFieldActorProfile nativeFieldActors[] = {
+     {0xe4deb9beu,0x0885e86cu,0x084u,3,1,6,0,32,4},   // Pallet NPC
+     {0x263a1187u,0x08801f78u,0x1ffu,255,0,0,0,16,1}, // Modern Emerald player
+     {0x263a1187u,0x08802818u,0x126u,1,0,0,0,16,2},   // Petalburg NPC
++    {0x964763c0u,0x08416318u,0x1ffu,255,0,0,0,16,0}, // frlgplus player
++    {0x964763c0u,0x08416b68u,0x00bu,2,27,3,0,16,5}, // frlgplus npc
++    {0x5e704d77u,0x083a00a0u,0x1ffu,255,0,0,0,16,0}, // fakemon player
++    {0x5e704d77u,0x083a07c0u,0x006u,2,27,3,0,16,5}, // fakemon npc
++    {0xb9465c5au,0x083a00a0u,0x1ffu,255,0,0,0,16,0}, // gaia player
++    {0xb9465c5au,0x09858a6cu,0x007u,1,135,3,0,16,1}, // gaia npc
++    {0x2be557a3u,0x08505a8cu,0x1ffu,255,0,0,0,16,0}, // better-emerald-2 player
++    {0x2be557a3u,0x08505dd4u,0x001u,3,7,0,0,16,4}, // better-emerald-2 npc
+ };
+ 
+ static uint8_t nativeFieldActorSource(const struct Snap* snap,const uint8_t* event,uint32_t images) {

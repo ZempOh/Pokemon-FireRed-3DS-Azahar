@@ -1,0 +1,130 @@
+diff --git a/app/src/main/cpp/pk_wide.c b/app/src/main/cpp/pk_wide.c
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -6299,5 +6299,7 @@
+ #include "pk_scenery_cave_floor_material.h"
+ 
++#include "pk_scenery_dry_cliffs.h"
++
+ static void sceneryRoute212GardenFrost(const struct Snap* s,const struct VoxelView* v,
+                                       int cellX,int cellY,uint32_t* texture,uint32_t alpha) {
+     if (solidRom!=0x2be557a3u || s->group!=0 || s->num!=30 || s->width!=40 || s->height!=80 ||
+@@ -7059,6 +7061,9 @@
+         const struct VoxelGroundMaterial groundMaterial = {groundCells,cx,cy};
+         voxelTerrainSurfaces(&voxel,texture,&groundMaterial,span);
+     } else voxelTerrainSurfaces(&voxel,texture,NULL,span);
++#if VOXEL_DRY_CLIFF_TEXTURE_SIZE && VOXEL_LEDGE_TEXTURE_SIZE == 256
++    if (solidGroundAligned(href,vref)) sceneryDryCliffFaces(s,&voxel,cellX,cellY,mapType,alpha);
++#endif
+     for (int i=0; i<stoneCount; ++i) sceneryStoneDraw(s,&voxel,&stones[i],alpha);
+ #if SCENERY_GAIA_MARINE_ROCKS
+     for (int i=0; i<marineCount; ++i) sceneryMarineRockDraw(s,&voxel,&marineRocks[i],alpha);
+diff --git a/app/src/main/cpp/pk_scenery_dry_cliffs.h b/app/src/main/cpp/pk_scenery_dry_cliffs.h
+new file mode 100644
+--- /dev/null
++++ b/app/src/main/cpp/pk_scenery_dry_cliffs.h
+@@ -0,0 +1,86 @@
++/* A dry rock material on an existing authored sand-to-rock cliff face. */
++#pragma once
++
++#ifndef VOXEL_DRY_CLIFF_TEXTURE_SIZE
++#define VOXEL_DRY_CLIFF_TEXTURE_SIZE 256
++#endif
++
++#if VOXEL_DRY_CLIFF_TEXTURE_SIZE && VOXEL_LEDGE_TEXTURE_SIZE == 256
++#include "pk_scenery_dry_cliff_profiles.h"
++
++static inline unsigned dryCliffTexel(unsigned value) {
++    enum { step=256u/VOXEL_DRY_CLIFF_TEXTURE_SIZE };
++    return (value&255u)/step*step+step/2u;
++}
++
++static void sceneryDryCliffFaces(const struct Snap* s,const struct VoxelView* view,
++                                 int cellX,int cellY,unsigned mapType,uint32_t alpha) {
++    if (mapType!=3 || !F.mapHeader) return;
++    const struct DryCliffMap* profile=NULL;
++    uint32_t layout=r32(F.mapHeader);
++    for (size_t i=0;i<sizeof(dryCliffMaps)/sizeof(*dryCliffMaps);++i) {
++        const struct DryCliffMap* p=&dryCliffMaps[i];
++        if (p->rom==solidRom && p->layout==layout && p->primary==s->primary &&
++            p->secondary==s->secondary && p->group==s->group && p->map==s->num &&
++            p->width==s->width && p->height==s->height) {
++            profile=p;
++            break;
++        }
++    }
++    if (!profile) return;
++
++    const uint8_t* atlas=voxelLedgeTexture();
++    uint32_t nativeInk[4][16];
++    bool inkReady=false;
++#ifdef __ANDROID__
++    unsigned samples=0;
++#endif
++    for (int row=0;row+1<view->rows;++row) for (int col=0;col<view->cols;++col) {
++        int mx=cellX+col,my=cellY+row;
++        unsigned x=(unsigned)(mx-MAP_OFFSET),y=(unsigned)(my-MAP_OFFSET);
++        if (x>=profile->width || y+1u>=profile->height ||
++            y>=profile->height || mx>=s->vw || my+1>=s->vh) continue;
++        const uint16_t* cells=s->vmap+my*s->vw+mx;
++        if (cells[0]!=profile->upper || cells[s->vw]!=0x0479u ||
++            voxelRise(view,col,row)!=12 || voxelRise(view,col,row+1)!=8 ||
++            !sceneryCellVisible(col,row) || !sceneryCellVisible(col,row+1)) continue;
++        int wy=view->top+(row+1)*16, wx=view->left+col*16;
++        int screenX=voxelX(view,wx,wy),screenY=voxelY(view,wy,12);
++        if (screenX>=view->width || screenX+16<=0 || screenY>=view->height || screenY+4<=0) continue;
++#ifdef DRY_CLIFF_HOST_PROBE
++        dryCliffHostFace(x,y,screenX,screenY);
++#endif
++        if (!inkReady) {
++            const int nativeId=cells[s->vw]&1023;
++            for (int dy=0;dy<4;++dy) for (int dx=0;dx<16;++dx)
++                nativeInk[dy][dx]=solidMaterialPixel(s,nativeId,dx,dy,alpha);
++            inkReady=true;
++        }
++        for (unsigned layer=0;layer<4;++layer) {
++            const uint8_t* strip=atlas+256u*dryCliffTexel(layer*24u);
++            for (int u=0;u<16;++u) {
++                // In the native lower tile the exposed first four rows are rock.
++                uint32_t ink=nativeInk[layer][u];
++                unsigned tint=(231u-layer*7u)*strip[dryCliffTexel((x*16u+(unsigned)u)*8u)]/256u;
++                voxelPixel(view,screenX+u,screenY+(int)layer,wy,voxelShade(ink,tint));
++#ifdef __ANDROID__
++                ++samples;
++#endif
++            }
++        }
++    }
++#ifdef __ANDROID__
++    static const struct DryCliffMap* previous;
++    static unsigned frames;
++    if (previous!=profile) {
++        previous=profile;
++        frames=0;
++    }
++    if (samples && !(frames++ & 255u))
++        __android_log_print(ANDROID_LOG_INFO,"pokedaisy",
++            "voxel dry cliff atlas crc=%08x map=%u/%u source=%ux%u target=%dx%d samples=%u",
++            solidRom,(unsigned)s->group,(unsigned)s->num,(unsigned)VOXEL_DRY_CLIFF_TEXTURE_SIZE,
++            (unsigned)VOXEL_DRY_CLIFF_TEXTURE_SIZE,view->width,view->height,samples);
++#endif
++}
++#endif
+diff --git a/app/src/main/cpp/pk_scenery_dry_cliff_profiles.h b/app/src/main/cpp/pk_scenery_dry_cliff_profiles.h
+new file mode 100644
+--- /dev/null
++++ b/app/src/main/cpp/pk_scenery_dry_cliff_profiles.h
+@@ -0,0 +1,13 @@
++/* Native sand plateau and rock-floor pairs with identical art. */
++struct DryCliffMap {
++    uint32_t rom, layout, primary, secondary;
++    uint16_t width, height, upper;
++    uint8_t group, map;
++};
++static const struct DryCliffMap dryCliffMaps[] = {
++    {0xfba55dd8u,0x8325d70u,0x82d4a94u,0x82d504cu,24,140,0x4385u,3,45}, // radical
++    {0x5e704d77u,0x830ec24u,0x82d4a94u,0x82d4b54u,54,35,0x40d9u,1,64}, // fakemon
++    {0xf2d16ebdu,0x830ec24u,0x82d4a94u,0x82d4b54u,54,35,0x40d9u,1,64}, // rocket
++    {0x964763c0u,0x83509dcu,0x8316a4cu,0x8316b0cu,54,35,0x40d9u,1,64}, // frlgplus
++    {0xdd88761cu,0x830ec24u,0x82d4a94u,0x82d4b54u,54,35,0x40d9u,1,64}, // firered
++};

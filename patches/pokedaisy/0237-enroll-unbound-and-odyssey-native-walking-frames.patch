@@ -1,0 +1,34 @@
+diff --git a/app/src/main/cpp/pk_scenery_field_actor_profiles.h b/app/src/main/cpp/pk_scenery_field_actor_profiles.h
+index dcfb1d7..4f0152b 100644
+--- a/app/src/main/cpp/pk_scenery_field_actor_profiles.h
++++ b/app/src/main/cpp/pk_scenery_field_actor_profiles.h
+@@ -3,8 +3,7 @@
+ /* Exact cartridge object owners and ordinary, verified field poses. The ROM
+  * frame table remains the authority for every tile. No graphics are bundled. */
+ struct NativeFieldActorProfile {
+-    uint32_t crc, images;
+-    uint16_t poses;
++    uint32_t crc, images, poses;
+     uint8_t local, graphics, group, map, width, palette;
+ };
+ 
+@@ -30,6 +29,10 @@ static const struct NativeFieldActorProfile nativeFieldActors[] = {
+     {0x63478921u,0x083a1b40u,0xfffu,255,0,0,0,32,0}, // ash-gray player
+     {0xf2d16ebdu,0x083a1b40u,0xfffu,255,0,0,0,32,0}, // rocket player
+     {0xf2d16ebdu,0x083a1750u,0x001u,3,75,3,0,16,2}, // rocket npc
++    {0x4b3d4957u,0x08ec0ff0u,0x3ffb7u,255,0,0,0,32,0}, // unbound player
++    {0x4b3d4957u,0x083a0688u,0x104u,6,23,3,71,32,2}, // unbound npc
++    {0x6c5ee1b2u,0x083a00a0u,0x3feb7u,255,0,0,0,16,0}, // odyssey player
++    {0x6c5ee1b2u,0x083a0988u,0x033u,6,29,3,1,16,1}, // odyssey npc
+ };
+ 
+ static uint8_t nativeFieldActorSource(const struct Snap* snap,const uint8_t* event,uint32_t images) {
+@@ -86,7 +89,7 @@ static int nativeFieldActorPose(const struct Piece* p,const uint8_t* vram,const
+         !nativeFieldActorOam(p,oam) || !nativeFieldActorWindow(p)) return -1;
+     const uint8_t* live=vram+0x10000u+offset;
+     // Extended original walking cycles are admitted only by the per-object ROM mask.
+-    for (unsigned i=0;i<12;++i) {
++    for (unsigned i=0;i<18;++i) {
+         if (!(bind->poses&(1u<<i))) continue;
+         const uint8_t* frame=mem(bind->images+i*8u,8);
+         if (!frame || le16(frame+4)!=bytes) continue;

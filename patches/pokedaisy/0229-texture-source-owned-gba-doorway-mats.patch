@@ -1,0 +1,101 @@
+diff --git a/app/src/main/cpp/pk_scenery_indoor_parquet.h b/app/src/main/cpp/pk_scenery_indoor_parquet.h
+--- a/app/src/main/cpp/pk_scenery_indoor_parquet.h
++++ b/app/src/main/cpp/pk_scenery_indoor_parquet.h
+@@ -32,6 +32,7 @@
+ }
+ 
+ #include "pk_scenery_parquet_profiles.h"
++#include "pk_scenery_doorway_mats.h"
+ 
+ static const struct ParquetProfile* parquetProfile(const struct Snap* s) {
+     uint32_t layout = r32(F.mapHeader);
+@@ -51,6 +52,10 @@
+     if (mapType!=8 || !F.mapHeader || !solidGroundAligned(href,vref)) return;
+     const struct ParquetProfile* p = parquetProfile(s);
+     if (!p) return;
++#if VOXEL_DOOR_MAT_TEXTURE_SIZE
++    sceneryDoorwayMat(s,v,cellX,cellY,texture);
++#endif
++
+ 
+     /* Only open native board faces receive relief. Keep the native seams,
+      * thresholds, furniture, and the underlay of mixed tiles as drawn. */
+diff --git a/app/src/main/cpp/pk_scenery_doorway_mats.h b/app/src/main/cpp/pk_scenery_doorway_mats.h
+new file mode 100644
+--- /dev/null
++++ b/app/src/main/cpp/pk_scenery_doorway_mats.h
+@@ -0,0 +1,74 @@
++/* Woven relief for the exact red interior of the three authored exit-mat tiles. */
++#pragma once
++
++#ifndef VOXEL_DOOR_MAT_TEXTURE_SIZE
++#define VOXEL_DOOR_MAT_TEXTURE_SIZE 256
++#endif
++
++#if VOXEL_DOOR_MAT_TEXTURE_SIZE
++static const uint8_t* doorwayMatTexture(void) {
++    enum { size=VOXEL_DOOR_MAT_TEXTURE_SIZE };
++    static uint8_t atlas[size*size];
++    static bool ready;
++    if (ready) return atlas;
++    for (unsigned y=0;y<size;++y) for (unsigned x=0;x<size;++x) {
++        unsigned u=(x*256u+128u)/size, v=(y*256u+128u)/size;
++        unsigned warp=(u+(v>>5))&7u, weft=(v+(u>>5))&7u;
++        unsigned band=((u>>3)^(v>>3))&1u;
++        unsigned crest=band?warp:weft;
++        unsigned knot=((u*101u+v*83u)^(u*v*13u))&3u;
++        atlas[y*size+x]=(uint8_t)(254u-crest*3u-knot);
++    }
++    ready=true;
++    return atlas;
++}
++
++static void sceneryDoorwayMat(const struct Snap* s,const struct VoxelView* v,
++                              int cellX,int cellY,uint32_t* texture) {
++    enum { size=VOXEL_DOOR_MAT_TEXTURE_SIZE, west=3, span=3 };
++    const int mx=MAP_OFFSET+west,my=MAP_OFFSET+s->height-2;
++    const int col=mx-cellX,row=my-cellY;
++    if ((unsigned)row>=(unsigned)v->rows || col>=v->cols || col+span<=0 ||
++        mx+span>s->vw || my>=s->vh) return;
++    for (int x=0;x<span;++x)
++        if (s->vmap[my*s->vw+mx+x]!=0x3012u+(unsigned)x) return;
++
++    const uint8_t* atlas=doorwayMatTexture();
++#ifdef __ANDROID__
++    unsigned sampled=0;
++#endif
++    // Local source x=15..32 and y=8..15 is red pile. Leave the cream
++    // doorway cue, outer binding and the floor between the mats untouched.
++    for (int u=15;u<=32;++u) {
++        int tile=col+u/16;
++        if ((unsigned)tile>=(unsigned)v->cols || voxelRise(v,tile,row)!=8) continue;
++        int x=col*16+u;
++        unsigned weaveX=((unsigned)u*11u&255u)*size/256u;
++        for (int y=8;y<16;++y) {
++            int sy=row*16+y;
++            if (holeBuf[sy][x]) continue;
++            unsigned weaveY=((unsigned)y*13u&255u)*size/256u;
++            uint32_t* sample=&texture[sy*v->stride+x];
++            *sample=voxelShade(*sample,atlas[weaveY*size+weaveX]);
++#ifdef __ANDROID__
++            ++sampled;
++#endif
++        }
++    }
++#ifdef __ANDROID__
++    static uint32_t prevRom,prevLayout;
++    static unsigned frames;
++    uint32_t layout=r32(F.mapHeader);
++    if (prevRom!=solidRom || prevLayout!=layout) {
++        prevRom=solidRom;
++        prevLayout=layout;
++        frames=0;
++    }
++    if (sampled && !(frames++ & 255u))
++        __android_log_print(ANDROID_LOG_INFO,"pokedaisy",
++            "voxel doorway mat atlas crc=%08x map=%u/%u source=%ux%u target=%dx%d samples=%u",
++            solidRom,(unsigned)s->group,(unsigned)s->num,(unsigned)size,(unsigned)size,
++            v->width,v->height,sampled);
++#endif
++}
++#endif

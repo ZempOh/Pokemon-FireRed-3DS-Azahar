@@ -1,0 +1,244 @@
+diff --git a/app/src/main/cpp/pk_scenery_turf_south_faces.h b/app/src/main/cpp/pk_scenery_turf_south_faces.h
+--- a/app/src/main/cpp/pk_scenery_turf_south_faces.h
++++ b/app/src/main/cpp/pk_scenery_turf_south_faces.h
+@@ -1,35 +1,50 @@
+ #pragma once
+ 
+-struct SceneryTurfFaceRun {
+-    uint16_t y,first,last;
++struct SceneryTerrainFaceRun {
++    int16_t y;
++    uint16_t first,last;
+     uint16_t upper,lower[3];
++    uint8_t kind;
++    uint16_t resolved;
++    uint32_t connectionLayout;
+ };
+-struct SceneryTurfFaceMap {
++struct SceneryTerrainFaceMap {
+     uint32_t rom,layout,primary,secondary;
+     uint16_t width,height;
+     uint8_t group,map;
+-    const struct SceneryTurfFaceRun* runs;
++    const struct SceneryTerrainFaceRun* runs;
+     unsigned count;
++    uint16_t rockTile;
+ };
+ 
+-static const struct SceneryTurfFaceRun sceneryFeriemanPondTurf[] = {
+-    {22,2,11,0x3001,{0x10b0,0x10b1,0x10b2}},
++static const struct SceneryTerrainFaceRun sceneryFeriemanPondTurf[] = {
++    {22,2,11,0x3001,{0x10b0,0x10b1,0x10b2},VOXEL_FACE_SOUTH_TURF,0,0},
+ };
+ 
+-static const struct SceneryTurfFaceRun sceneryDrescoTurf[] = {
+-    {22,28,28,0x4132,{0x00d4,0x00d4,0x00d4}},
+-    {22,29,29,0x4008,{0x00d5,0x00d5,0x00d5}},
+-    {29,29,29,0x4132,{0x0004,0x0004,0x0004}},
+-    {29,30,30,0x4133,{0x00d3,0x00d3,0x00d3}},
+-    {22,39,39,0x40d4,{0x00dc,0x00dc,0x00dc}},
+-    {32,28,28,0x4008,{0x0008,0x0008,0x0008}},
+-    {29,38,38,0x4133,{0x00d5,0x00d5,0x00d5}},
+-    {30,39,39,0x4008,{0x00d4,0x00d4,0x00d4}},
++static const struct SceneryTerrainFaceRun sceneryDrescoTurf[] = {
++    {22,28,28,0x4132,{0x00d4,0x00d4,0x00d4},VOXEL_FACE_SOUTH_TURF,0,0},
++    {22,29,29,0x4008,{0x00d5,0x00d5,0x00d5},VOXEL_FACE_SOUTH_TURF,0,0},
++    {29,29,29,0x4132,{0x0004,0x0004,0x0004},VOXEL_FACE_SOUTH_TURF,0,0},
++    {29,30,30,0x4133,{0x00d3,0x00d3,0x00d3},VOXEL_FACE_SOUTH_TURF,0,0},
++    {22,39,39,0x40d4,{0x00dc,0x00dc,0x00dc},VOXEL_FACE_SOUTH_TURF,0,0},
++    {32,28,28,0x4008,{0x0008,0x0008,0x0008},VOXEL_FACE_SOUTH_TURF,0,0},
++    {29,38,38,0x4133,{0x00d5,0x00d5,0x00d5},VOXEL_FACE_SOUTH_TURF,0,0},
++    {30,39,39,0x4008,{0x00d4,0x00d4,0x00d4},VOXEL_FACE_SOUTH_TURF,0,0},
+ };
+ 
+-static const struct SceneryTurfFaceMap sceneryTurfFaceMaps[] = {
++static const struct SceneryTerrainFaceRun sceneryAshCanalRock[] = {
++    {-1,19,27,0x03ff,{0x1120,0x1123,0x1123},VOXEL_FACE_SOUTH_ROCK,0x071,0},
++    {-2,32,32,0x0470,{0x112c,0x112c,0x112c},VOXEL_FACE_WEST_ROCK,0x070,0x08307840},
++    {-1,32,32,0x0470,{0x112c,0x112c,0x112c},VOXEL_FACE_WEST_ROCK,0x070,0x08307840},
++    {0,32,32,0x0470,{0x112c,0x112c,0x112c},VOXEL_FACE_WEST_ROCK,0x070,0},
++    {1,32,32,0x0470,{0x112c,0x112c,0x112c},VOXEL_FACE_WEST_ROCK,0x070,0},
++};
++
++static const struct SceneryTerrainFaceMap sceneryTerrainFaceMaps[] = {
+     {0x2be557a3,0x089eabf8,0x083df704,0x083df734,30,30,0,0,
+-     sceneryFeriemanPondTurf,sizeof(sceneryFeriemanPondTurf)/sizeof(*sceneryFeriemanPondTurf)},
++     sceneryFeriemanPondTurf,sizeof(sceneryFeriemanPondTurf)/sizeof(*sceneryFeriemanPondTurf),0},
+     {0x4b3d4957,0x08779994,0x082d4a94,0x082d4af4,55,47,3,71,
+-     sceneryDrescoTurf,sizeof(sceneryDrescoTurf)/sizeof(*sceneryDrescoTurf)},
++     sceneryDrescoTurf,sizeof(sceneryDrescoTurf)/sizeof(*sceneryDrescoTurf),0},
++    {0x63478921,0x082f5598,0x082d4a94,0x082d4b6c,120,20,3,38,
++     sceneryAshCanalRock,sizeof(sceneryAshCanalRock)/sizeof(*sceneryAshCanalRock),0x079},
+ };
+diff --git a/app/src/main/cpp/pk_wide.c b/app/src/main/cpp/pk_wide.c
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -5537,31 +5537,43 @@
+ }
+ #endif
+ 
+-/* The vertical extrusion belongs to the upper turf cell, independently of
+- * the authored shore/rim on the lower tile. Match both full metatile words. */
+-static const uint8_t* sceneryTurfSouthFaces(const struct Snap* s,int cellX,int cellY,
+-                                           int cols,int rows,uint8_t* cells) {
++/* Vertical faces belong to their upper native cells. Keep authored shore/rim
++ * art outside the face and match both complete metatile words. */
++static const uint8_t* sceneryTerrainFaces(const struct Snap* s,int cellX,int cellY,
++                                         int cols,int rows,uint8_t* cells,int* rockTile) {
+     if (!F.mapHeader) return NULL;
+-    for (size_t m=0; m<sizeof(sceneryTurfFaceMaps)/sizeof(*sceneryTurfFaceMaps); ++m) {
+-        const struct SceneryTurfFaceMap* map=&sceneryTurfFaceMaps[m];
++    for (size_t m=0; m<sizeof(sceneryTerrainFaceMaps)/sizeof(*sceneryTerrainFaceMaps); ++m) {
++        const struct SceneryTerrainFaceMap* map=&sceneryTerrainFaceMaps[m];
+         if (map->rom!=solidRom || map->group!=s->group || map->map!=s->num ||
+             map->layout!=r32(F.mapHeader) || map->primary!=s->primary ||
+             map->secondary!=s->secondary || map->width!=s->width || map->height!=s->height)
+             continue;
+         memset(cells,0,(size_t)cols*rows);
++        bool matched=false;
+         for (unsigned n=0; n<map->count; ++n) {
+-            const struct SceneryTurfFaceRun* run=&map->runs[n];
++            const struct SceneryTerrainFaceRun* run=&map->runs[n];
++            const bool west=run->kind==VOXEL_FACE_WEST_ROCK;
+             const int y=MAP_OFFSET+run->y, row=y-cellY;
+-            if ((unsigned)row>=(unsigned)(rows-1) || (unsigned)(y+1)>=(unsigned)s->vh) continue;
++            if ((unsigned)row>=(unsigned)(rows-!west) || (unsigned)(y+!west)>=(unsigned)s->vh) continue;
+             for (int x=run->first; x<=run->last; ++x) {
+                 const int mx=MAP_OFFSET+x, col=mx-cellX;
+-                if ((unsigned)col>=(unsigned)cols || (unsigned)mx>=(unsigned)s->vw) continue;
++                if ((unsigned)col>=(unsigned)cols || (unsigned)mx>=(unsigned)s->vw || (west && !mx)) continue;
+                 const unsigned end=x==run->first ? 0u : x==run->last ? 2u : 1u;
+                 const uint16_t* upper=s->vmap+y*s->vw+mx;
+-                if (*upper==run->upper && upper[s->vw]==run->lower[end])
+-                    cells[row*cols+col]=1;
+-            }
+-        }
++                if (*upper!=run->upper || upper[west?-1:s->vw]!=run->lower[end]) continue;
++                if (run->resolved) {
++                    int conn;
++                    if (blockIn(s,mx,y,&conn,false)!=run->resolved) continue;
++                    if (run->connectionLayout) {
++                        if (conn<0 || r32(s->conn[conn].header)!=run->connectionLayout) continue;
++                    } else if (conn>=0) continue;
++                }
++                cells[row*cols+col]=run->kind;
++                matched=true;
++            }
++        }
++        if (!matched) return NULL;
++        *rockTile=map->rockTile;
+         return cells;
+     }
+     return NULL;
+@@ -6916,14 +6928,18 @@
+         for (int x = 0; x < cols; x++)
+             rises[y * cols + x] = (uint8_t) terrainRise(s, cellX + x, cellY + y);
+ 
+-    uint8_t hiddenSouthFaces[sizeof(rises)], turfSouthCells[sizeof(rises)];
+-    const struct VoxelTurfSouthFaces turfFaces = {
+-        sceneryTurfSouthFaces(s,cellX,cellY,cols,rows,turfSouthCells), cx
+-    };
++    uint8_t hiddenSouthFaces[sizeof(rises)], terrainFaceCells[sizeof(rises)];
++    int rockTile=0;
++    const uint8_t* faceCells=sceneryTerrainFaces(s,cellX,cellY,cols,rows,terrainFaceCells,&rockTile);
++    uint32_t faceRock[VOXEL_TILE*VOXEL_TILE];
++    if (rockTile)
++        for (int y=0; y<VOXEL_TILE; ++y) for (int x=0; x<VOXEL_TILE; ++x)
++            faceRock[y*VOXEL_TILE+x]=solidMaterialPixel(s,rockTile,x,y,alpha);
++    const struct VoxelTerrainFaces terrainFaces = {faceCells,rockTile?faceRock:NULL,cx,cy};
+     struct VoxelView voxel = { out, depth, texture, v.w, v.h, v.x + v.w / 2, v.y + v.h / 2,
+                                left, top, cols, rows, w, rises,
+                                sceneryRoute212SouthFaces(s,cellX,cellY,cols,rows,hiddenSouthFaces),
+-                               turfFaces.cells ? &turfFaces : NULL };
++                               faceCells ? &terrainFaces : NULL };
+     SCENERY_FRAME_MARK(cost0);
+     drawRegion(s, cx, cy, href, vref, left, top, right, bottom, false, texture, w, alpha, true);
+     rawView = v;
+diff --git a/app/src/main/cpp/pk_wide_voxel.h b/app/src/main/cpp/pk_wide_voxel.h
+--- a/app/src/main/cpp/pk_wide_voxel.h
++++ b/app/src/main/cpp/pk_wide_voxel.h
+@@ -18,9 +18,15 @@
+     return width >= 120 && height >= 80 && width <= VOXEL_MAX_W && height <= VOXEL_MAX_H;
+ }
+ 
+-struct VoxelTurfSouthFaces {
++enum {
++    VOXEL_FACE_SOUTH_TURF = 1,
++    VOXEL_FACE_SOUTH_ROCK = 2,
++    VOXEL_FACE_WEST_ROCK = 4,
++};
++struct VoxelTerrainFaces {
+     const uint8_t* cells;
+-    int offsetX;
++    const uint32_t* rock;
++    int offsetX, offsetY;
+ };
+ 
+ struct VoxelView {
+@@ -32,7 +38,7 @@
+     int left, top, cols, rows, stride;
+     const uint8_t* rises;
+     const uint8_t* hiddenSouthFaces;
+-    const struct VoxelTurfSouthFaces* turfSouthFaces;
++    const struct VoxelTerrainFaces* terrainFaces;
+ };
+ 
+ static int voxelFloor(int n, int d) {
+@@ -161,7 +167,7 @@
+                                  const struct VoxelBridgeSpan* bridge) {
+     const uint8_t* atlas = ground ? voxelGroundTexture() : 0;
+ #if VOXEL_LEDGE_TEXTURE_SIZE
+-    const uint8_t* turfAtlas = v->turfSouthFaces ? voxelLedgeTexture() : NULL;
++    const uint8_t* faceAtlas = v->terrainFaces ? voxelLedgeTexture() : NULL;
+ #endif
+     // The floor fills the output. The projection bounds in pk_wide.c include every sample.
+     for (int y = 0; y < v->height; y++) {
+@@ -194,6 +200,9 @@
+             int x0 = v->left + col * VOXEL_TILE;
+             int left = voxelRise(v, col - 1, row), front = voxelRise(v, col, row + 1);
+             int base = voxelY(v, y0, rise);
++#if VOXEL_LEDGE_TEXTURE_SIZE
++            const uint8_t face = faceAtlas ? v->terrainFaces->cells[row * v->cols + col] : 0;
++#endif
+             // West wall, seen along the slanted grid lines.
+             if (rise > left) {
+                 int xStart = voxelX(v, x0, y0), xEnd = voxelX(v, x0, y1 - 1);
+@@ -204,6 +213,17 @@
+                     int bottom = voxelY(v, worldY, left);
+                     uint32_t color = v->texture[(worldY - v->top) * v->stride + col * VOXEL_TILE];
+                     color = voxelShade(color, 155);
++#if VOXEL_LEDGE_TEXTURE_SIZE
++                    if ((face & VOXEL_FACE_WEST_ROCK) && v->terrainFaces->rock) {
++                        const int height=bottom-top+1, across=v->terrainFaces->offsetY+worldY;
++                        for (int layer=0; layer<height; ++layer) {
++                            unsigned shade=voxelLedgeFaceShade(faceAtlas,across,layer+1,194);
++                            uint32_t rock=v->terrainFaces->rock[(layer*VOXEL_TILE/height)*VOXEL_TILE+(across&15)];
++                            voxelPixel(v,x,top+layer,worldY,voxelShade(rock,shade));
++                        }
++                        continue;
++                    }
++#endif
+                     for (int y = top; y <= bottom; y++) voxelPixel(v, x, y, worldY, color);
+                 }
+             }
+@@ -215,13 +235,16 @@
+                 int x = voxelX(v, x0, y1), top = voxelY(v, y1, rise);
+                 const uint32_t* src = v->texture + (row * VOXEL_TILE + VOXEL_TILE - 1) * v->stride + col * VOXEL_TILE;
+ #if VOXEL_LEDGE_TEXTURE_SIZE
+-                if (turfAtlas && v->turfSouthFaces->cells[row*v->cols+col]) {
+-                    const int height=rise-front, across=v->turfSouthFaces->offsetX+x0;
++                if (face & (VOXEL_FACE_SOUTH_TURF|VOXEL_FACE_SOUTH_ROCK)) {
++                    const int height=rise-front, across=v->terrainFaces->offsetX+x0;
+                     for (int layer=0; layer<height; ++layer) {
++                        const uint32_t* material=src;
++                        if ((face & VOXEL_FACE_SOUTH_ROCK) && v->terrainFaces->rock)
++                            material=v->terrainFaces->rock+(layer*VOXEL_TILE/height)*VOXEL_TILE;
+                         unsigned light=228u-34u*(unsigned)layer/(unsigned)height;
+                         for (int i=0; i<VOXEL_TILE; ++i) {
+-                            unsigned shade=voxelLedgeFaceShade(turfAtlas,across+i,layer+1,light);
+-                            voxelPixel(v,x+i,top+layer,y1,voxelShade(src[i],shade));
++                            unsigned shade=voxelLedgeFaceShade(faceAtlas,across+i,layer+1,light);
++                            voxelPixel(v,x+i,top+layer,y1,voxelShade(material[i],shade));
+                         }
+                     }
+                 } else

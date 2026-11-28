@@ -1,0 +1,15 @@
+diff --git a/app/src/main/cpp/pk_scenery_field_actor_profiles.h b/app/src/main/cpp/pk_scenery_field_actor_profiles.h
+index 423af5f..c4a9e29 100644
+--- a/app/src/main/cpp/pk_scenery_field_actor_profiles.h
++++ b/app/src/main/cpp/pk_scenery_field_actor_profiles.h
+@@ -23,6 +23,10 @@ static const struct NativeFieldActorProfile nativeFieldActors[] = {
+     {0xb9465c5au,0x09858a6cu,0x007u,1,135,3,0,16,1}, // gaia npc
+     {0x2be557a3u,0x08505a8cu,0x1ffu,255,0,0,0,16,0}, // better-emerald-2 player
+     {0x2be557a3u,0x08505dd4u,0x001u,3,7,0,0,16,4}, // better-emerald-2 npc
++    {0x25c3d89fu,0x0881042cu,0x1ffu,255,0,0,0,32,0}, // letsgo player
++    {0x25c3d89fu,0x08810b9cu,0x046u,1,23,3,0,32,1}, // letsgo npc
++    {0x25c3d89fu,0x0881335cu,0x12fu,10,174,3,0,32,5}, // letsgo npc
++    {0xfba55dd8u,0x08eb3810u,0x1ffu,255,0,0,0,16,0}, // radical player
+ };
+ 
+ static uint8_t nativeFieldActorSource(const struct Snap* snap,const uint8_t* event,uint32_t images) {

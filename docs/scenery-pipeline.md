@@ -1475,6 +1475,11 @@ cadence. Keep the same strict field and battle gates and retest both 2D and 3D.
   connect their posts while openings and unrecognized cells keep their source
   layout. The host comparisons cover English Red, Japanese Green, and Japanese
   Yellow.
+- The GBA small-fixture registry adds 526 exact tileset and metatile matches
+  across the ten expansion titles. Preserve a sign's live face and opaque
+  footprint. Keep fence joins and stump clearances tied to reviewed art masks.
+  Re-run the source generator and inspect the resulting geometry before using
+  an unrecognized variation.
 - Sample 256×256 relief on known outdoor floors. The 16×16 control uses the
   same repeating pattern. GBA ground recognition checks cartridge CRC, tileset
   pair, reviewed source signature, and aligned source pixels. Mixed facade,

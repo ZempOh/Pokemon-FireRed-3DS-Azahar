@@ -209,11 +209,13 @@ def generate(profiles, plants, output):
 def generate_small_fixtures(profiles, output):
     lines = ['// Generated from reviewed tileset pairs and source layers.',
              '#pragma once',
-             'enum SceneryFixtureShape { SCENERY_STEEL_FENCE, SCENERY_CUT_TIMBER };',
-             'struct SceneryFixture { uint16_t tile; uint8_t shape, rail, posts, x[2], ink[4]; };',
+             'enum SceneryFixtureShape { SCENERY_STEEL_FENCE, SCENERY_CUT_TIMBER, SCENERY_SIGN };',
+             'struct SceneryFixture { uint16_t tile; uint8_t shape, rail, posts, x[2], ink[4], art; };',
              'struct SceneryFixtureGroup { uint32_t rom, primary, secondary; uint16_t first, count; };',
+             'struct SceneryFixtureArt { uint8_t box[4]; uint16_t mask[16]; };',
              'static const struct SceneryFixture sceneryFixtures[] = {']
-    shapes = {'steel_fence': 'SCENERY_STEEL_FENCE', 'cut_timber': 'SCENERY_CUT_TIMBER'}
+    shapes = {'steel_fence': 'SCENERY_STEEL_FENCE', 'cut_timber': 'SCENERY_CUT_TIMBER', 'sign': 'SCENERY_SIGN'}
+    signs = {}
     rails = {'none': 0, 'horizontal': 1, 'vertical': 2, 'corner_left': 3, 'corner_right': 4}
     groups = {}
     seen = set()
@@ -233,9 +235,19 @@ def generate_small_fixtures(profiles, output):
         rail = rails[profile.get('rail', 'horizontal' if steel else 'none')]
         assert (rail != 0) == steel
         assert not steel or len(posts) == (1 if rail == rails['vertical'] else 2)
-        line = '    {0x%x, %s, %d, %d, {%s}, {%s}},' % (
+        art = 0
+        if profile['shape'] == 'sign':
+            box = tuple(profile['board'])
+            mask = tuple(profile['board_mask'])
+            x, y, w, h = box
+            assert len(posts) == 1 and 0 <= x < 16 and 0 <= y < 16
+            assert 1 <= w <= 16 - x and 1 <= h <= 16 - y and len(mask) == h
+            assert all(0 <= row < 1 << w for row in mask) and any(mask)
+            art = signs.setdefault((box, mask), len(signs) + 1)
+            assert art <= 255
+        line = '    {0x%x, %s, %d, %d, {%s}, {%s}, %d},' % (
             key[3], shapes[profile['shape']], rail, len(posts),
-            ','.join(map(str, posts)), ','.join(map(str, ink)))
+            ','.join(map(str, posts)), ','.join(map(str, ink)), art)
         groups.setdefault(key[:3], {})[key[3]] = line
     assert 0 < len(seen) <= 65535
     offsets = []
@@ -245,6 +257,9 @@ def generate_small_fixtures(profiles, output):
         lines.extend(line for tile, line in sorted(fixtures.items()))
         offsets.append('    {0x%08x, 0x%08x, 0x%08x, %d, %d},' % (*key, first, count))
         first += count
+    lines.extend(['};', 'static const struct SceneryFixtureArt sceneryFixtureArt[] = {', '    {{0}, {0}},'])
+    for box, mask in signs:
+        lines.append('    {{%s}, {%s}},' % (', '.join(map(str, box)), ', '.join(hex(row) for row in mask)))
     lines.extend(['};', 'static const struct SceneryFixtureGroup sceneryFixtureGroups[] = {', *offsets])
     lines.extend([
         '};',
@@ -257,8 +272,13 @@ def generate_small_fixtures(profiles, output):
         '}',
         'static int scenerySmallFixture(const struct SceneryFixtureGroup* group, int tile) {',
         '    if (!group) return -1;',
-        '    for (int i=group->first; i<group->first+group->count; ++i)',
-        '        if (sceneryFixtures[i].tile==tile) return i;',
+        '    int first=group->first, last=first+group->count;',
+        '    while (first<last) {',
+        '        int mid=first+(last-first)/2;',
+        '        if (sceneryFixtures[mid].tile==tile) return mid;',
+        '        if (sceneryFixtures[mid].tile<tile) first=mid+1;',
+        '        else last=mid;',
+        '    }',
         '    return -1;',
         '}',
     ])

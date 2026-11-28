@@ -2,6 +2,26 @@
 import argparse,json,math
 from pathlib import Path
 
+def hip_roof_texels(shape, width):
+ """Source texels touched by the hip roof UVs in SceneryBuilding_Emit."""
+ ridge_v=shape['roof_top']+.5
+ eave_v=shape['wall_row']-.5
+ ridge_left=shape['hip_inset']
+ ridge_right=width-ridge_left
+ eave_left=shape.get('roof_left',0)+.5
+ eave_right=shape.get('roof_right',width)-.5
+ # The front and rear share a UV trapezoid. The side hips sample its edges.
+ top,bottom=sorted((ridge_v,eave_v))
+ for y in range(math.floor(top),math.floor(bottom)+1):
+  start,end=0,1
+  if eave_v!=ridge_v:
+   start=(max(y,top)-ridge_v)/(eave_v-ridge_v)
+   end=(min(y+1,bottom)-ridge_v)/(eave_v-ridge_v)
+  left=min(ridge_left+(eave_left-ridge_left)*t for t in (start,end))
+  right=max(ridge_right+(eave_right-ridge_right)*t for t in (start,end))
+  for x in range(math.floor(left),min(width-1,math.floor(right))+1):
+   yield x,y
+
 def validate(rows):
  seen=set()
  for row in rows:

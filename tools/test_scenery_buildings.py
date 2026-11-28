@@ -1,7 +1,6 @@
 import copy,json,unittest
 from pathlib import Path
-from audit_building_wall_materials import hip_roof_texels
-from scenery_buildings import validate
+from scenery_buildings import hip_roof_texels, validate
 ROWS=json.loads((Path(__file__).parent/'scenery-profiles/android-buildings.json').read_text())
 class BuildingsTest(unittest.TestCase):
  def test_reviewed_profiles(self):validate(ROWS)

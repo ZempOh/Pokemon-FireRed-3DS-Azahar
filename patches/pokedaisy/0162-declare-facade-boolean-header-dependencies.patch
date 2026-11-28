@@ -1,0 +1,18 @@
+--- a/app/src/main/cpp/pk_voxel_board_material.h
++++ b/app/src/main/cpp/pk_voxel_board_material.h
+@@ -1,5 +1,6 @@
+ /* Original painted timber relief. The exact live facade supplies the color. */
+ #pragma once
++#include <stdbool.h>
+ #include <stdint.h>
+ #ifdef __ANDROID__
+ #include <android/log.h>
+--- a/app/src/main/cpp/pk_wide_buildings.h
++++ b/app/src/main/cpp/pk_wide_buildings.h
+@@ -1,5 +1,6 @@
+ /* Source-textured building volume; no ROM artwork is compiled into the APK. */
+ #pragma once
+ #include <math.h>
++#include <stdbool.h>
+ #include "scenery_building_geometry.h"
+ #include "pk_scenery_buildings.h"

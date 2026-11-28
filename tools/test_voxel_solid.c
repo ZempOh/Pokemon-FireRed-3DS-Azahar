@@ -16,7 +16,7 @@ static void testSmallFixtures(void) {
     int wood=scenerySmallFixture(scenerySmallFixtureGroup(0xdd88761c,0x082d4a94,0x082d4dc4),0xea);
     assert(metal>=0 && wood>=0);
     assert(scenerySmallFixture(scenerySmallFixtureGroup(0x25c3d89f,0x082d4a94,0x082d4aac),0xe6)>=0);
-    const struct SceneryGroundProp* grass=sceneryGroundProp(0xdd88761c,0x082d4a94,13);
+    const struct SceneryGroundProp* grass=sceneryGroundProp(0xdd88761c,0x082d4a94,0,13);
     assert(grass && grass->kind==1 && grass->ground==17);
     const uint16_t* gate=scenerySecondaryLandMask(0xdd88761c,0x082d4a94,0x082d4dc4,0x199);
     assert(gate);
@@ -88,11 +88,15 @@ int main(void) {
     unsigned stableCount=0;
     for(unsigned i=0;i<sizeof(sceneryGroundProps)/sizeof(sceneryGroundProps[0]);i++) {
         const struct SceneryGroundProp *p=&sceneryGroundProps[i];
-        assert(sceneryGroundProp(p->rom,p->primary,p->id)==p);
-        assert(!sceneryGroundProp(p->rom^1,p->primary,p->id));
-        assert(!sceneryGroundProp(p->rom,p->primary^4,p->id));
+        assert(sceneryGroundProp(p->rom,p->primary,p->secondary,p->id)==p);
+        assert(!sceneryGroundProp(p->rom^1,p->primary,p->secondary,p->id));
+        assert(!sceneryGroundProp(p->rom,p->primary^4,p->secondary,p->id));
+        if(p->secondary)assert(!sceneryGroundProp(p->rom,p->primary,p->secondary^4,p->id));
         const uint8_t fallback[]={0,0,0};
         const uint8_t* expected=fallback;
+        const uint8_t palletPlanter[]={37,43,33};
+        if(p->rom==0x25c3d89f && p->primary==0x082d4a94 && p->secondary==0x082d4aac && p->id==0x296)
+            expected=palletPlanter;
         if(p->id==4)for(unsigned j=0;j<sizeof(stableFlowers)/sizeof(stableFlowers[0]);j++) {
             if(p->rom!=stableFlowers[j].rom || p->primary!=stableFlowers[j].primary)continue;
             assert(p->kind==13);
@@ -104,12 +108,12 @@ int main(void) {
     }
     assert(stableCount==sizeof(stableFlowers)/sizeof(stableFlowers[0]));
     // Native snow and striped ice carry different terrain under identical rocks.
-    const struct SceneryGroundProp* snowRock=sceneryGroundProp(0x4b3d4957,0x08725ab4,0x24);
-    const struct SceneryGroundProp* iceRock=sceneryGroundProp(0x4b3d4957,0x08725ab4,0x53);
+    const struct SceneryGroundProp* snowRock=sceneryGroundProp(0x4b3d4957,0x08725ab4,0,0x24);
+    const struct SceneryGroundProp* iceRock=sceneryGroundProp(0x4b3d4957,0x08725ab4,0,0x53);
     assert(snowRock && snowRock->kind==3 && snowRock->ground==0x0);
     assert(iceRock && iceRock->kind==3 && iceRock->ground==0x59);
-    assert(!sceneryGroundProp(0xb9465c5a,0x082d4a94,0x12)); /* Gaia tree/cliff, not grass */
-    assert(!sceneryGroundProp(0x558ae42f,0x08e3e21c,5)); /* Lazarus window, not shrub */
+    assert(!sceneryGroundProp(0xb9465c5a,0x082d4a94,0,0x12)); /* Gaia tree/cliff, not grass */
+    assert(!sceneryGroundProp(0x558ae42f,0x08e3e21c,0,5)); /* Lazarus window, not shrub */
     assert(sceneryOutdoor(0xcec21496,1,6,0));
     assert(sceneryOutdoor(0xcec21496,1,7,0)); /* Reviewed outdoor city. */
     assert(!sceneryOutdoor(0xcec21496,13,83,0)); /* Actual furnished room. */

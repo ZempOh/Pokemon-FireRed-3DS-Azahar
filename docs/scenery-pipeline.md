@@ -1431,3 +1431,9 @@ That art includes the blades in its lower layer. The replacement floor uses
 the compatible local lawn material `0x11`, with matching base palette and
 its own hash. The grass blade model and the original encounter mechanics
 share that placement. Retest dense grass before any release.
+
+The full-size FireRed Viridian winter comparison exposed a bare dirt strip at
+the gate. Metatiles `0x199`, `0x28c`, and `0x293` have steel in their first
+eight rows and path or lawn in the last eight. Apply the ground mask only
+to the lower half of these exact tileset variants. The mask review stores the
+source image hashes and retains the rejected signed candidate screenshot.

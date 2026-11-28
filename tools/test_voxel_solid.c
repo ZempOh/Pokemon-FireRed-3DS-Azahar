@@ -18,6 +18,9 @@ static void testSmallFixtures(void) {
     assert(scenerySmallFixture(scenerySmallFixtureGroup(0x25c3d89f,0x082d4a94,0x082d4aac),0xe6)>=0);
     const struct SceneryGroundProp* grass=sceneryGroundProp(0xdd88761c,0x082d4a94,13);
     assert(grass && grass->kind==1 && grass->ground==17);
+    const uint16_t* gate=scenerySecondaryLandMask(0xdd88761c,0x082d4a94,0x082d4dc4,0x199);
+    assert(gate);
+    for (int row=0; row<16; ++row) assert(gate[row]==(row<8 ? 0 : 0xffff));
     assert(scenerySmallFixture(scenerySmallFixtureGroup(0xdd88761c,0x082d4a94,0x082d4aac),0xea)<0);
     assert(scenerySmallFixture(scenerySmallFixtureGroup(0x4b3d4957,0x082d4a94,0x082d4aac),0x284)<0);
     uint32_t pixels[48*48]={0}, depth[48*48]={0};

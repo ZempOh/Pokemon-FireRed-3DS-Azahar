@@ -1,8 +1,10 @@
 # Reusable scenery pipeline
 
 Start with `tools/scenery_profiles.json`, not a fresh line-by-line code survey.
-The rollout covers the original six games and the ten additional games in the
-expansion manifest. Actors and battle Pokémon are a separate pass.
+The active English library has sixteen GBA cartridges and English Pokémon Red,
+Blue, and Yellow. Historical localized cartridge reports remain evidence for
+their original builds. Use the active inventory for new counts. Track actors
+and battle Pokémon alongside environmental scenery.
 
 ## Repeatable sequence
 
@@ -28,6 +30,30 @@ expansion manifest. Actors and battle Pokémon are a separate pass.
    the same qualification manifest, preserving each game's previous passing build.
 
 ## Shared geometry rules
+
+Projecting an elevation change can create a flat wall from the upper tile's
+last row. Trace the projected pixels back to the exact upper and lower native
+cells before changing the face. The Ferieman and Dresco turf cases share a
+world-aligned vertical material. The authored pond lip and moving water keep
+their existing geometry. Ash Gray's lower Route 12 path edge reuses the existing
+source-checked ledge path. Retain the native 2D and seasonal controls for each.
+
+HD admission records the texture dimensions, internal target dimensions and
+display filtering independently. Use a coarse effective sampler as well as a
+disabled control during host replays. Sparse Android logs record actual board,
+rock or waterbed atlas sampling. A nonzero sample can come from a hidden or
+overscan surface, so inspect the matched device still and verify that the
+material is visible. A camera that misses the source art needs a closer native
+fixture. Motion replays compare gameplay state and protect pixels outside each
+asset's verified ownership region.
+
+Parquet profiles bind the exact room layout and both tilesets as well as reviewed
+floor masks. Keep doorway cells and foreground furniture outside the mask.
+For live interactable rocks, bind the current object image table. Verify the
+native Strength push and follow-through separately from Rock Smash removal and
+any resulting encounter. For battle trainers, bind the live owner's exact tile
+and palette identity. Review the same standing pose on the Thor and retain
+native throw, slide, HUD, and opponent controls.
 
 The initial Red/FireRed pilot was separate from the sixteen-game rollout.
 The local Pallet Town proof

@@ -1,0 +1,227 @@
+diff --git a/app/src/main/cpp/pk_wide.c b/app/src/main/cpp/pk_wide.c
+index 0e218ae..b9465d1 100644
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -55,6 +55,7 @@
+ #include "pk_scenery_winter_leaves.h"
+ #include "pk_scenery_radical_leaves.h"
+ #include "pk_scenery_object_profiles.h"
++#include "pk_scenery_rock_material_profiles.h"
+ #include "pk_scenery_tree_profiles.h"
+ #include "pk_scenery_tall_tree_profiles.h"
+ #include "pk_scenery_ui.h"
+@@ -1490,7 +1491,7 @@ static void mapSpan(const struct Snap* s, int mx, int my, int n, int enabled, ui
+ static uint32_t solidRom;
+ struct Piece {
+     int solidKind,solidLeaf,solidBark;
+-    bool vegetation, actor, roundedFollower, winterBerry;
++    bool vegetation, actor, roundedFollower, winterBerry, rockMaterial;
+     uint8_t flyerDepth;
+     int x, y, w, h, tile, prio, pal, mode;   // mode: OAM objMode (0 normal, 1 semi-transparent, 2 OBJ window)
+     bool hflip, vflip;
+@@ -1554,6 +1555,7 @@ static int buildPieces(const struct Snap* s, struct Piece* out) {
+     };
+     bool offscreen[SPRITES_CAP] = { false };   // sprites the game hid only for being off screen
+     int propKind[SPRITES_CAP]={0},propLeaf[SPRITES_CAP]={0},propBark[SPRITES_CAP]={0};
++    bool rockMaterial[SPRITES_CAP]={false};
+     for (int i = 0; i < 16; i++) {
+         const uint8_t* oe = s->objects + C[PK_WIDE_OBJECT_SIZE] * i;
+         uint32_t flags = (uint32_t) oe[0] | (uint32_t) oe[1] << 8;
+@@ -1579,7 +1581,11 @@ static int buildPieces(const struct Snap* s, struct Piece* out) {
+             }
+             // Match the live image table, not an engine-dependent graphics byte.
+             const struct SceneryObjectProfile *profile=sceneryObjectProfile(solidRom,imageTable);
+-            if(profile) { propKind[id]=profile->kind; propLeaf[id]=profile->leaf; propBark[id]=profile->bark; }
++            if (profile) {
++                propKind[id]=profile->kind; propLeaf[id]=profile->leaf; propBark[id]=profile->bark;
++                rockMaterial[id]=(profile->kind==7 || profile->kind==8) &&
++                    sceneryFireRedRockMaterial(solidRom,imageTable);
++            }
+         }
+     }
+     int n = 0;
+@@ -1609,7 +1615,7 @@ static int buildPieces(const struct Snap* s, struct Piece* out) {
+         }
+         struct Piece base = { .tile = (int) (a2 & 0x3FF), .prio = (int) ((a2 >> 10) & 3), .pal = (int) (a2 >> 12),
+                               .solidKind=propKind[id],.solidLeaf=propLeaf[id],.solidBark=propBark[id],
+-                              .actor=actor[id] && !propKind[id],
++                              .actor=actor[id] && !propKind[id], .rockMaterial=rockMaterial[id],
+                               .flyerDepth=flyerDepth[id],
+                               .winterBerry=winterBerry[id],
+                               .vegetation=climateGrassEffect(solidRom,le32(sp+0x14),le32(sp+0x0c)),
+@@ -2194,7 +2200,7 @@ static void drawObjects(const struct Snap* s, int cx, int cy, int x0, int y0, in
+         }
+         if(voxel && p[i].world && (p[i].solidKind==7 || p[i].solidKind==8 || p[i].solidKind==9 || p[i].solidKind==12) &&
+            !(p[i].rot&1) && p[i].mode==0 && sw>=16 && sh>=16) {
+-            struct SolidProp prop={.kind=p[i].solidKind};
++            struct SolidProp prop={.kind=p[i].solidKind,.rockMaterial=p[i].rockMaterial};
+             struct SolidTree* t=&prop.surface;
+             t->x=p[i].x+bw/2-8; t->y=foot-9;
+             t->rise=voxelRiseAt(voxel,p[i].x+bw/2,foot);
+diff --git a/app/src/main/cpp/pk_wide_props.h b/app/src/main/cpp/pk_wide_props.h
+index 1175705..aaf1102 100644
+--- a/app/src/main/cpp/pk_wide_props.h
++++ b/app/src/main/cpp/pk_wide_props.h
+@@ -5,7 +5,7 @@
+ #include "pk_scenery_plant_profiles.h"
+ #include "pk_scenery_ground_props.h"
+ #include "pk_scenery_small_fixtures.h"
+-struct SolidProp { struct SolidTree surface; int kind,plantProfile,fixtureProfile; };
++struct SolidProp { struct SolidTree surface; int kind,plantProfile,fixtureProfile; bool rockMaterial; };
+ struct SolidPlantContext { const struct VoxelView *view; const struct SolidProp *prop; };
+ static void solidPlantTriangle(void *opaque,const SceneryPlantVertex *a,
+                                const SceneryPlantVertex *b,const SceneryPlantVertex *c) {
+@@ -43,7 +43,8 @@ static void propFace(const struct VoxelView* v,const struct SolidTree* t,
+ }
+ 
+ static void propMound(const struct VoxelView* v,const struct SolidTree* t,
+-                      float x,float y,float z,float radius,float height,int rock,int inkX,int inkY) {
++                      float x,float y,float z,float radius,float height,int rock,int inkX,int inkY,
++                      const uint8_t* relief) {
+     static const float dx[8]={1,.707107f,0,-.707107f,-1,-.707107f,0,.707107f};
+     static const float dy[8]={0,.707107f,1,.707107f,0,-.707107f,-1,-.707107f};
+     const float rr[4]={.72f,1,.68f,0},hh[4]={0,.32f,.78f,1};
+@@ -66,7 +67,11 @@ static void propMound(const struct VoxelView* v,const struct SolidTree* t,
+             c.v=d.v=rockV[band+1];
+         }
+         if(inkX>=0){a.u=b.u=c.u=d.u=inkX+.5f;a.v=b.v=c.v=d.v=inkY+.5f;}
+-        propFace(v,t,a,b,c,d,170+band*22+(e<4?15:0));
++        unsigned shade=170+band*22+(e<4?15:0);
++        if (relief) {
++            solidTriangleMaterial(v,t,a,b,c,shade,0,relief);
++            solidTriangleMaterial(v,t,a,c,d,shade,0,relief);
++        } else propFace(v,t,a,b,c,d,shade);
+     }
+ }
+ 
+@@ -118,7 +123,7 @@ static void flowerBloom(const struct VoxelView* v,const struct SolidTree* t,
+         flowerPetal(v,t,x+tilt,y+.6f,z+height-.5f,dx[i]*direction,dy[i],
+                     4.0f,1.86f,curl,1,light[i]);
+     }
+-    propMound(v,t,x+tilt,y+.6f,z+height-.35f,1.43f,1.40f,0,2,0);
++    propMound(v,t,x+tilt,y+.6f,z+height-.35f,1.43f,1.40f,0,2,0,NULL);
+ }
+ 
+ enum { SOLID_SMALL_FIXTURE = 14 };
+@@ -294,10 +299,14 @@ static void solidPropDraw(const struct VoxelView* v,const struct SolidProp* p) {
+             voxelPixel(v,px,py,(int)y+dy,voxelShade(v->out[py*v->width+px],225));
+     }
+     if(p->kind==3 || p->kind==7 || p->kind==8) {
+-        propMound(v,t,x,y,z,p->kind==8?6.2f:7.2f,p->kind==7?13.0f:p->kind==8?8.5f:10.5f,1,-1,0);
++        const uint8_t* relief=NULL;
++#if VOXEL_LEDGE_TEXTURE_SIZE && SCENERY_ROCK_SAMPLE_TEXELS
++        if (p->rockMaterial) relief=voxelLedgeTexture();
++#endif
++        propMound(v,t,x,y,z,p->kind==8?6.2f:7.2f,p->kind==7?13.0f:p->kind==8?8.5f:10.5f,1,-1,0,relief);
+         return;
+     }
+-    if(p->kind==4) { propMound(v,t,x,y,z,6.2f,12,0,-1,0); return; }
++    if(p->kind==4) { propMound(v,t,x,y,z,6.2f,12,0,-1,0,NULL); return; }
+     for(int i=0;i<7;i++) {
+         float px=x+(i%3-1)*3.5f,py=y+(i/3-1)*3;
+         propBlade(v,t,px,py,z,6.5f+(i%3)*1.3f,(i&1)?1.5f:-1.5f,5+(i%3)*3,36);
+@@ -309,9 +318,9 @@ static void solidPropDraw(const struct VoxelView* v,const struct SolidProp* p) {
+             propBlade(v,t,px,py,z,7,0,8,18);
+             for(int petal=0;petal<5;petal++) {
+                 float angle=petal*1.256637f;
+-                propMound(v,t,px+cosf(angle)*2.2f,py+sinf(angle)*2.2f,z+7,1.8f,1.4f,0,p->kind==5?6:(i?4:2),p->kind==5?12:(i?9:6));
++                propMound(v,t,px+cosf(angle)*2.2f,py+sinf(angle)*2.2f,z+7,1.8f,1.4f,0,p->kind==5?6:(i?4:2),p->kind==5?12:(i?9:6),NULL);
+             }
+-            propMound(v,t,px,py,z+7.7f,1.4f,1.2f,0,i?2:4,i?6:9);
++            propMound(v,t,px,py,z+7.7f,1.4f,1.2f,0,i?2:4,i?6:9,NULL);
+         }
+     }
+ }
+diff --git a/app/src/main/cpp/pk_wide_solid.h b/app/src/main/cpp/pk_wide_solid.h
+index 047098b..48eef24 100644
+--- a/app/src/main/cpp/pk_wide_solid.h
++++ b/app/src/main/cpp/pk_wide_solid.h
+@@ -1,6 +1,9 @@
+ // Solid common trees, textured from the current ROM frame (including palette fades).
+ #pragma once
+ #include <math.h>
++#ifndef SCENERY_ROCK_SAMPLE_TEXELS
++#define SCENERY_ROCK_SAMPLE_TEXELS VOXEL_LEDGE_TEXTURE_SIZE
++#endif
+ 
+ struct SolidTree {
+     int x, y, rise;
+@@ -8,9 +11,9 @@ struct SolidTree {
+ };
+ struct SolidVertex { float x, y, z, u, v; };
+ 
+-static void solidTriangle(const struct VoxelView* view, const struct SolidTree* tree,
+-                          struct SolidVertex a, struct SolidVertex b, struct SolidVertex c,
+-                          unsigned shade, int bark) {
++static void solidTriangleMaterial(const struct VoxelView* view, const struct SolidTree* tree,
++                                  struct SolidVertex a, struct SolidVertex b, struct SolidVertex c,
++                                  unsigned shade, int bark, const uint8_t* relief) {
+     struct SolidVertex p[3] = {a,b,c};
+     float sx[3], sy[3];
+     for (int i=0;i<3;i++) {
+@@ -30,16 +33,35 @@ static void solidTriangle(const struct VoxelView* view, const struct SolidTree*
+         float wb=((sy[2]-sy[0])*(x+.5f-sx[2])+(sx[0]-sx[2])*(y+.5f-sy[2]))/den;
+         float wc=1-wa-wb;
+         if(wa<-.0001f||wb<-.0001f||wc<-.0001f)continue;
+-        int u=(int)(wa*a.u+wb*b.u+wc*c.u), v=(int)(wa*a.v+wb*b.v+wc*c.v);
++        float tu=wa*a.u+wb*b.u+wc*c.u, tv=wa*a.v+wb*b.v+wc*c.v;
++        int u=(int)tu, v=(int)tv;
+         if(u<0)u=0;
+         if(u>31)u=31;
+         if(v<0)v=0;
+         if(v>47)v=47;
+         uint32_t color=tree->art[(bark?43:v)*32+(bark?15:u)];
+-        voxelPixel(view,x,y,(int)floorf(wa*a.y+wb*b.y+wc*c.y),voxelShade(color,shade));
++        unsigned lit=shade;
++#if VOXEL_LEDGE_TEXTURE_SIZE && SCENERY_ROCK_SAMPLE_TEXELS
++        if (relief) {
++            /* Material follows the native sprite's face UVs through pushes. */
++            enum { size=VOXEL_LEDGE_TEXTURE_SIZE, samples=SCENERY_ROCK_SAMPLE_TEXELS };
++            unsigned sx=((unsigned)(tu*37.f)&255u)*samples/256u*(size/samples);
++            unsigned sy=((unsigned)(tv*11.f)&255u)*samples/256u*(size/samples);
++            lit=(lit*relief[sy*size+sx]+128u)/256u;
++        }
++#else
++        (void)relief;
++#endif
++        voxelPixel(view,x,y,(int)floorf(wa*a.y+wb*b.y+wc*c.y),voxelShade(color,lit));
+     }
+ }
+ 
++static void solidTriangle(const struct VoxelView* view, const struct SolidTree* tree,
++                          struct SolidVertex a, struct SolidVertex b, struct SolidVertex c,
++                          unsigned shade, int bark) {
++    solidTriangleMaterial(view,tree,a,b,c,shade,bark,NULL);
++}
++
+ static void solidTreeDraw(const struct VoxelView* view,const struct SolidTree* t) {
+     static const float dx[8]={1,.70710678f,0,-.70710678f,-1,-.70710678f,0,.70710678f};
+     static const float dy[8]={0,.70710678f,1,.70710678f,0,-.70710678f,-1,-.70710678f};
+diff --git a/app/src/main/cpp/pk_scenery_rock_material_profiles.h b/app/src/main/cpp/pk_scenery_rock_material_profiles.h
+new file mode 100644
+index 0000000..c8da2e0
+--- /dev/null
++++ b/app/src/main/cpp/pk_scenery_rock_material_profiles.h
+@@ -0,0 +1,22 @@
++// Exact native frames with verified FireRed rock artwork and palette.
++#pragma once
++
++static bool sceneryFireRedRockMaterial(uint32_t rom,uint32_t images) {
++    switch (rom) {
++    case 0x63478921u: // ash-gray
++        return images==0x83a1698u || images==0x83a16b8u;
++    case 0x5e704d77u: // fakemon
++        return images==0x83a1698u || images==0x83a16b8u;
++    case 0xdd88761cu: // firered
++        return images==0x83a1698u || images==0x83a16b8u;
++    case 0x964763c0u: // frlgplus
++        return images==0x8417f88u || images==0x8417fa8u;
++    case 0xb9465c5au: // gaia
++        return images==0x83a1698u || images==0x83a16b8u;
++    case 0x25c3d89fu: // letsgo
++        return images==0x8812094u;
++    case 0xf2d16ebdu: // rocket
++        return images==0x83a1698u;
++    default: return false;
++    }
++}

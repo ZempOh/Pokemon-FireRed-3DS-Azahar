@@ -1,0 +1,172 @@
+diff --git a/app/src/main/cpp/pk_wide_props.h b/app/src/main/cpp/pk_wide_props.h
+--- a/app/src/main/cpp/pk_wide_props.h
++++ b/app/src/main/cpp/pk_wide_props.h
+@@ -1,11 +1,14 @@
+ // Closed low-poly field props; source colors remain tied to the live ROM palette.
+ // Coordinates and depth use the same world space as terrain, actors and trees.
+ #pragma once
++#ifdef __ANDROID__
++#include <android/log.h>
++#endif
+ #include "scenery_plant_geometry.h"
+ #include "pk_scenery_plant_profiles.h"
+ #include "pk_scenery_ground_props.h"
+ #include "pk_scenery_small_fixtures.h"
+-struct SolidProp { struct SolidTree surface; int kind,plantProfile,fixtureProfile; bool rockMaterial; };
++struct SolidProp { struct SolidTree surface; int kind,plantProfile,fixtureProfile; uint32_t rockRom; };
+ struct SolidPlantContext { const struct VoxelView *view; const struct SolidProp *prop; };
+ static void solidPlantTriangle(void *opaque,const SceneryPlantVertex *a,
+                                const SceneryPlantVertex *b,const SceneryPlantVertex *c) {
+@@ -42,12 +45,13 @@
+     solidTriangle(v,t,a,b,c,shade,0); solidTriangle(v,t,a,c,d,shade,0);
+ }
+ 
+-static void propMound(const struct VoxelView* v,const struct SolidTree* t,
++static unsigned propMound(const struct VoxelView* v,const struct SolidTree* t,
+                       float x,float y,float z,float radius,float height,int rock,int inkX,int inkY,
+                       const uint8_t* relief) {
+     static const float dx[8]={1,.707107f,0,-.707107f,-1,-.707107f,0,.707107f};
+     static const float dy[8]={0,.707107f,1,.707107f,0,-.707107f,-1,-.707107f};
+     const float rr[4]={.72f,1,.68f,0},hh[4]={0,.32f,.78f,1};
++    unsigned sampled=0;
+     for(int band=0;band<3;band++)for(int e=0;e<8;e++) {
+         int j=(e+1)&7;
+         float ra=radius*rr[band],rb=radius*rr[band+1];
+@@ -69,10 +73,11 @@
+         if(inkX>=0){a.u=b.u=c.u=d.u=inkX+.5f;a.v=b.v=c.v=d.v=inkY+.5f;}
+         unsigned shade=170+band*22+(e<4?15:0);
+         if (relief) {
+-            solidTriangleMaterial(v,t,a,b,c,shade,0,relief);
+-            solidTriangleMaterial(v,t,a,c,d,shade,0,relief);
++            sampled+=solidTriangleMaterial(v,t,a,b,c,shade,0,relief);
++            sampled+=solidTriangleMaterial(v,t,a,c,d,shade,0,relief);
+         } else propFace(v,t,a,b,c,d,shade);
+     }
++    return sampled;
+ }
+ 
+ // Four-sided tapered stalks, with a leaned tip: volume remains visible from
+@@ -301,9 +306,28 @@
+     if(p->kind==3 || p->kind==7 || p->kind==8) {
+         const uint8_t* relief=NULL;
+ #if VOXEL_LEDGE_TEXTURE_SIZE && SCENERY_ROCK_SAMPLE_TEXELS
+-        if (p->rockMaterial) relief=voxelLedgeTexture();
++        if (p->rockRom) relief=voxelLedgeTexture();
+ #endif
+-        propMound(v,t,x,y,z,p->kind==8?6.2f:7.2f,p->kind==7?13.0f:p->kind==8?8.5f:10.5f,1,-1,0,relief);
++        unsigned sampled=propMound(v,t,x,y,z,p->kind==8?6.2f:7.2f,
++            p->kind==7?13.0f:p->kind==8?8.5f:10.5f,1,-1,0,relief);
++#ifdef __ANDROID__
++        if (sampled && (p->kind==7 || p->kind==8)) {
++            static uint32_t previous[2];
++            static unsigned draws[2];
++            unsigned kind=(unsigned)p->kind-7u;
++            if (previous[kind]!=p->rockRom) {
++                previous[kind]=p->rockRom;
++                draws[kind]=0;
++            }
++            if (!(draws[kind]++ & 255u))
++                __android_log_print(ANDROID_LOG_INFO,"pokedaisy",
++                    "voxel rock atlas crc=%08x kind=%u source=%ux%u target=%dx%d samples=%u",
++                    p->rockRom,(unsigned)p->kind,(unsigned)VOXEL_LEDGE_TEXTURE_SIZE,
++                    (unsigned)VOXEL_LEDGE_TEXTURE_SIZE,v->width,v->height,sampled);
++        }
++#else
++        (void)sampled;
++#endif
+         return;
+     }
+     if(p->kind==4) { propMound(v,t,x,y,z,6.2f,12,0,-1,0,NULL); return; }
+diff --git a/app/src/main/cpp/pk_wide_solid.h b/app/src/main/cpp/pk_wide_solid.h
+--- a/app/src/main/cpp/pk_wide_solid.h
++++ b/app/src/main/cpp/pk_wide_solid.h
+@@ -11,7 +11,7 @@
+ };
+ struct SolidVertex { float x, y, z, u, v; };
+ 
+-static void solidTriangleMaterial(const struct VoxelView* view, const struct SolidTree* tree,
++static unsigned solidTriangleMaterial(const struct VoxelView* view, const struct SolidTree* tree,
+                                   struct SolidVertex a, struct SolidVertex b, struct SolidVertex c,
+                                   unsigned shade, int bark, const uint8_t* relief) {
+     struct SolidVertex p[3] = {a,b,c};
+@@ -21,13 +21,14 @@
+         sy[i]=view->height*.5f+(p[i].y-view->centreY)*.75f-p[i].z;
+     }
+     float den=(sy[1]-sy[2])*(sx[0]-sx[2])+(sx[2]-sx[1])*(sy[0]-sy[2]);
+-    if (fabsf(den)<.001f) return;
++    if (fabsf(den)<.001f) return 0;
+     int x0=(int)floorf(fminf(sx[0],fminf(sx[1],sx[2]))), x1=(int)ceilf(fmaxf(sx[0],fmaxf(sx[1],sx[2])));
+     int y0=(int)floorf(fminf(sy[0],fminf(sy[1],sy[2]))), y1=(int)ceilf(fmaxf(sy[0],fmaxf(sy[1],sy[2])));
+     if(x0<0)x0=0;
+     if(y0<0)y0=0;
+     if(x1>=view->width)x1=view->width-1;
+     if(y1>=view->height)y1=view->height-1;
++    unsigned sampled=0;
+     for(int y=y0;y<=y1;y++) for(int x=x0;x<=x1;x++) {
+         float wa=((sy[1]-sy[2])*(x+.5f-sx[2])+(sx[2]-sx[1])*(y+.5f-sy[2]))/den;
+         float wb=((sy[2]-sy[0])*(x+.5f-sx[2])+(sx[0]-sx[2])*(y+.5f-sy[2]))/den;
+@@ -48,12 +49,14 @@
+             unsigned sx=((unsigned)(tu*37.f)&255u)*samples/256u*(size/samples);
+             unsigned sy=((unsigned)(tv*11.f)&255u)*samples/256u*(size/samples);
+             lit=(lit*relief[sy*size+sx]+128u)/256u;
++            ++sampled;
+         }
+ #else
+         (void)relief;
+ #endif
+         voxelPixel(view,x,y,(int)floorf(wa*a.y+wb*b.y+wc*c.y),voxelShade(color,lit));
+     }
++    return sampled;
+ }
+ 
+ static void solidTriangle(const struct VoxelView* view, const struct SolidTree* tree,
+diff --git a/app/src/main/cpp/pk_scenery_indoor_parquet.h b/app/src/main/cpp/pk_scenery_indoor_parquet.h
+--- a/app/src/main/cpp/pk_scenery_indoor_parquet.h
++++ b/app/src/main/cpp/pk_scenery_indoor_parquet.h
+@@ -57,6 +57,9 @@
+     /* Native elevation 3 is the shared terrain renderer's ordinary rise 8. */
+     static const uint16_t faces[16] = {0x0000, 0xeefe, 0xeefe, 0xeefe, 0xee00, 0xeefe, 0xeefe, 0xeefe, 0x0000, 0xfeee, 0xfeee, 0xfeee, 0x00ee, 0xfeee, 0xfeee, 0xfeee};
+     const uint8_t* samples=parquetTexture();
++#ifdef __ANDROID__
++    unsigned sampled=0;
++#endif
+     for (int row=0;row<v->rows;++row) for (int col=0;col<v->cols;++col) {
+         int mx=cellX+col,my=cellY+row;
+         unsigned x=(unsigned)(mx-MAP_OFFSET), y=(unsigned)(my-MAP_OFFSET);
+@@ -75,8 +78,24 @@
+                 size_t index=(size_t)sy*v->stride+sx;
+                 bool transverse=((x^y)&8)!=0;
+                 texture[index]=parquetShade(samples,texture[index],transverse?b:u,transverse?u:b);
++#ifdef __ANDROID__
++                ++sampled;
++#endif
+             }
+         }
+     }
++#ifdef __ANDROID__
++    static const struct ParquetProfile* previous;
++    static unsigned draws;
++    if (previous!=p) {
++        previous=p;
++        draws=0;
++    }
++    if (sampled && !(draws++ & 255u))
++        __android_log_print(ANDROID_LOG_INFO,"pokedaisy",
++            "voxel parquet atlas crc=%08x map=%u/%u source=%ux%u target=%dx%d samples=%u",
++            solidRom,(unsigned)p->group,(unsigned)p->map,(unsigned)VOXEL_PARQUET_TEXTURE_SIZE,
++            (unsigned)VOXEL_PARQUET_TEXTURE_SIZE,v->width,v->height,sampled);
++#endif
+ }
+ #endif
+diff --git a/app/src/main/cpp/pk_wide.c b/app/src/main/cpp/pk_wide.c
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -2200,7 +2200,7 @@
+         }
+         if(voxel && p[i].world && (p[i].solidKind==7 || p[i].solidKind==8 || p[i].solidKind==9 || p[i].solidKind==12) &&
+            !(p[i].rot&1) && p[i].mode==0 && sw>=16 && sh>=16) {
+-            struct SolidProp prop={.kind=p[i].solidKind,.rockMaterial=p[i].rockMaterial};
++            struct SolidProp prop={.kind=p[i].solidKind,.rockRom=p[i].rockMaterial?solidRom:0};
+             struct SolidTree* t=&prop.surface;
+             t->x=p[i].x+bw/2-8; t->y=foot-9;
+             t->rise=voxelRiseAt(voxel,p[i].x+bw/2,foot);

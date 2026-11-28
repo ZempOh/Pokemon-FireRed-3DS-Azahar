@@ -1,0 +1,92 @@
+diff --git a/app/src/main/cpp/pk_wide.c b/app/src/main/cpp/pk_wide.c
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -6797,7 +6797,7 @@
+     // Header metadata and weather OAM are read from this same live session.
+     unsigned mapType = F.mapHeader ? r8(F.mapHeader + 0x17) : 0;
+ #if VOXEL_PARQUET_TEXTURE_SIZE > 0
+-    sceneryPalletParquet(s,&voxel,cellX,cellY,href,vref,mapType,texture);
++    sceneryIndoorParquet(s,&voxel,cellX,cellY,href,vref,mapType,texture);
+ #endif
+     if (sceneryWaterMap(s,mapType) && solidGroundAligned(href,vref))
+         sceneryWaterDraw(s,&voxel,cellX,cellY,texture);
+diff --git a/app/src/main/cpp/pk_scenery_indoor_parquet.h b/app/src/main/cpp/pk_scenery_indoor_parquet.h
+--- a/app/src/main/cpp/pk_scenery_indoor_parquet.h
++++ b/app/src/main/cpp/pk_scenery_indoor_parquet.h
+@@ -1,4 +1,4 @@
+-/* Original wood-face relief for the verified Pallet house parquet. */
++/* Original wood-face relief for the verified native indoor parquet. */
+ #pragma once
+ 
+ #ifndef VOXEL_PARQUET_TEXTURE_SIZE
+@@ -31,14 +31,26 @@
+     return voxelShade(base,samples[y * size + x]);
+ }
+ 
+-static void sceneryPalletParquet(const struct Snap* s,const struct VoxelView* v,
+-                                int cellX,int cellY,int href,int vref,unsigned mapType,
+-                                uint32_t* texture) {
+-    if (solidRom != 0xdd88761cu || mapType != 8 || s->group != 4 || s->num != 0 ||
+-        s->primary != 0x082d4bb4u || s->secondary != 0x082d4c74u ||
+-        s->width != 13 || s->height != 10 || r32(F.mapHeader) != 0x082d5200u ||
+-        !solidGroundAligned(href,vref))
+-        return;
++#include "pk_scenery_parquet_profiles.h"
++
++static const struct ParquetProfile* parquetProfile(const struct Snap* s) {
++    uint32_t layout = r32(F.mapHeader);
++    for (size_t i=0;i<sizeof(parquet_profiles)/sizeof(parquet_profiles[0]);++i) {
++        const struct ParquetProfile* p = &parquet_profiles[i];
++        if (p->rom==solidRom && p->group==s->group && p->map==s->num &&
++            p->primary==s->primary && p->secondary==s->secondary &&
++            p->layout==layout && p->width==s->width && p->height==s->height)
++            return p;
++    }
++    return NULL;
++}
++
++static void sceneryIndoorParquet(const struct Snap* s,const struct VoxelView* v,
++                                  int cellX,int cellY,int href,int vref,unsigned mapType,
++                                  uint32_t* texture) {
++    if (mapType!=8 || !F.mapHeader || !solidGroundAligned(href,vref)) return;
++    const struct ParquetProfile* p = parquetProfile(s);
++    if (!p) return;
+ 
+     /* Only open native board faces receive relief. Keep the native seams,
+      * thresholds, furniture, and the underlay of mixed tiles as drawn. */
+@@ -47,8 +59,8 @@
+     const uint8_t* samples=parquetTexture();
+     for (int row=0;row<v->rows;++row) for (int col=0;col<v->cols;++col) {
+         int mx=cellX+col,my=cellY+row;
+-        if ((unsigned)(mx-MAP_OFFSET) >= (unsigned)s->width ||
+-            (unsigned)(my-MAP_OFFSET) >= (unsigned)s->height || voxelRise(v,col,row) != 8)
++        unsigned x=(unsigned)(mx-MAP_OFFSET), y=(unsigned)(my-MAP_OFFSET);
++        if (x>=p->width || y>=p->height || !(p->floor[y]&(1u<<x)) || voxelRise(v,col,row)!=8)
+             continue;
+         int connection;
+         int id=blockIn(s,mx,my,&connection,false);
+diff --git a/app/src/main/cpp/pk_scenery_parquet_profiles.h b/app/src/main/cpp/pk_scenery_parquet_profiles.h
+new file mode 100644
+--- /dev/null
++++ b/app/src/main/cpp/pk_scenery_parquet_profiles.h
+@@ -0,0 +1,20 @@
++/* Generated from exact GBA parquet rooms and their native warp exclusions. */
++struct ParquetProfile {
++    uint32_t rom, primary, secondary, layout;
++    uint8_t group, map, width, height;
++    const uint32_t* floor;
++};
++static const uint32_t parquet_floor_0[] = {0x00000000u, 0x00000000u, 0x000007d0u, 0x00001c0fu, 0x00001c0fu, 0x00001c0fu, 0x00001c0fu, 0x00000ffeu, 0x00000fc6u, 0x00000000u};
++static const uint32_t parquet_floor_1[] = {0x00000000u, 0x00000000u, 0x000003a0u, 0x0000000eu, 0x00001c0eu, 0x00001c0eu, 0x00000c0cu, 0x00000ffcu, 0x00001fc6u, 0x00000000u};
++static const uint32_t parquet_floor_2[] = {0x00000000u, 0x00000000u, 0x000007d0u, 0x00000607u, 0x00000607u, 0x00000607u, 0x00000206u, 0x000003c6u, 0x00000000u};
++static const struct ParquetProfile parquet_profiles[] = {
++    {0x25c3d89fu, 0x82d4bb4u, 0x82d4e84u, 0x82d5424u, 4, 2, 13, 10, parquet_floor_0},
++    {0x5e704d77u, 0x82d4bb4u, 0x82d4c74u, 0x82d5200u, 4, 0, 13, 10, parquet_floor_1},
++    {0x63478921u, 0x82d4bb4u, 0x82d4e84u, 0x8728c80u, 0, 0, 13, 10, parquet_floor_0},
++    {0x6c5ee1b2u, 0x82d4bb4u, 0x82d4e84u, 0x82d5840u, 6, 4, 11, 9, parquet_floor_2},
++    {0x964763c0u, 0x8316b6cu, 0x8316c2cu, 0x8317260u, 4, 0, 13, 10, parquet_floor_1},
++    {0xb9465c5au, 0x82d4bb4u, 0x82d4bccu, 0x82d5200u, 4, 0, 13, 10, parquet_floor_1},
++    {0xdd88761cu, 0x82d4bb4u, 0x82d4c74u, 0x82d5200u, 4, 0, 13, 10, parquet_floor_1},
++    {0xf2d16ebdu, 0x82d4bb4u, 0x82d4c74u, 0x82d5200u, 4, 0, 13, 10, parquet_floor_1},
++    {0xfba55dd8u, 0x82d4bb4u, 0x82d4c74u, 0x82d5200u, 4, 0, 13, 10, parquet_floor_1},
++};

@@ -1,0 +1,10 @@
+diff --git a/app/src/main/cpp/pk_voxel_ledge_material.h b/app/src/main/cpp/pk_voxel_ledge_material.h
+--- a/app/src/main/cpp/pk_voxel_ledge_material.h
++++ b/app/src/main/cpp/pk_voxel_ledge_material.h
+@@ -1,5 +1,6 @@
+ /* Original shallow sediment and chips for source-owned ledge faces. */
+ #pragma once
++#include <stdbool.h>
+ #include <stdint.h>
+ 
+ #ifndef VOXEL_LEDGE_TEXTURE_SIZE

@@ -1,0 +1,162 @@
+diff --git a/app/src/main/cpp/pk_wide.c b/app/src/main/cpp/pk_wide.c
+index 0e218ae..d746782 100644
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -34,6 +34,7 @@
+ #include "pk_scenery_pallet_banks.h"
+ #include "pk_scenery_cave_contact_profiles.h"
+ #include "pk_scenery_south_ledge_profiles.h"
++#include "pk_scenery_turf_south_faces.h"
+ #include "pk_scenery_odyssey_stairs.h"
+ #include "pk_voxel_ledge_material.h"
+ #include "pk_scenery_berry_soil.h"
+@@ -5482,6 +5483,36 @@ void pk_wide_finish(void) {
+ }
+ #endif
+ 
++/* The vertical extrusion belongs to the upper turf cell, independently of
++ * the authored shore/rim on the lower tile. Match both full metatile words. */
++static const uint8_t* sceneryTurfSouthFaces(const struct Snap* s,int cellX,int cellY,
++                                           int cols,int rows,uint8_t* cells) {
++    if (!F.mapHeader) return NULL;
++    for (size_t m=0; m<sizeof(sceneryTurfFaceMaps)/sizeof(*sceneryTurfFaceMaps); ++m) {
++        const struct SceneryTurfFaceMap* map=&sceneryTurfFaceMaps[m];
++        if (map->rom!=solidRom || map->group!=s->group || map->map!=s->num ||
++            map->layout!=r32(F.mapHeader) || map->primary!=s->primary ||
++            map->secondary!=s->secondary || map->width!=s->width || map->height!=s->height)
++            continue;
++        memset(cells,0,(size_t)cols*rows);
++        for (unsigned n=0; n<map->count; ++n) {
++            const struct SceneryTurfFaceRun* run=&map->runs[n];
++            const int y=MAP_OFFSET+run->y, row=y-cellY;
++            if ((unsigned)row>=(unsigned)(rows-1) || (unsigned)(y+1)>=(unsigned)s->vh) continue;
++            for (int x=run->first; x<=run->last; ++x) {
++                const int mx=MAP_OFFSET+x, col=mx-cellX;
++                if ((unsigned)col>=(unsigned)cols || (unsigned)mx>=(unsigned)s->vw) continue;
++                const unsigned end=x==run->first ? 0u : x==run->last ? 2u : 1u;
++                const uint16_t* upper=s->vmap+y*s->vw+mx;
++                if (*upper==run->upper && upper[s->vw]==run->lower[end])
++                    cells[row*cols+col]=1;
++            }
++        }
++        return cells;
++    }
++    return NULL;
++}
++
+ static int terrainRise(const struct Snap* s, int x, int y) {
+     // The FireRed map cell's upper nibble is its elevation. 0 (any) and 15 (bridge) are
+     // special movement layers. Keep these and the border at the ordinary ground level.
+@@ -6777,10 +6808,14 @@ static bool drawVoxel(const struct Snap* s, int cx, int cy, int href, int vref,
+         for (int x = 0; x < cols; x++)
+             rises[y * cols + x] = (uint8_t) terrainRise(s, cellX + x, cellY + y);
+ 
+-    uint8_t hiddenSouthFaces[sizeof(rises)];
++    uint8_t hiddenSouthFaces[sizeof(rises)], turfSouthCells[sizeof(rises)];
++    const struct VoxelTurfSouthFaces turfFaces = {
++        sceneryTurfSouthFaces(s,cellX,cellY,cols,rows,turfSouthCells), cx
++    };
+     struct VoxelView voxel = { out, depth, texture, v.w, v.h, v.x + v.w / 2, v.y + v.h / 2,
+                                left, top, cols, rows, w, rises,
+-                               sceneryRoute212SouthFaces(s,cellX,cellY,cols,rows,hiddenSouthFaces) };
++                               sceneryRoute212SouthFaces(s,cellX,cellY,cols,rows,hiddenSouthFaces),
++                               turfFaces.cells ? &turfFaces : NULL };
+     SCENERY_FRAME_MARK(cost0);
+     drawRegion(s, cx, cy, href, vref, left, top, right, bottom, false, texture, w, alpha, true);
+     rawView = v;
+diff --git a/app/src/main/cpp/pk_wide_voxel.h b/app/src/main/cpp/pk_wide_voxel.h
+index 29ee344..f41caf3 100644
+--- a/app/src/main/cpp/pk_wide_voxel.h
++++ b/app/src/main/cpp/pk_wide_voxel.h
+@@ -3,6 +3,7 @@
+ 
+ #include <stdint.h>
+ #include "pk_voxel_ground_material.h"
++#include "pk_voxel_ledge_material.h"
+ 
+ #define VOXEL_TILE 16
+ #define VOXEL_MAX_RISE 20
+@@ -17,6 +18,11 @@ static int voxelViewportFits(int width, int height) {
+     return width >= 120 && height >= 80 && width <= VOXEL_MAX_W && height <= VOXEL_MAX_H;
+ }
+ 
++struct VoxelTurfSouthFaces {
++    const uint8_t* cells;
++    int offsetX;
++};
++
+ struct VoxelView {
+     uint32_t* out;
+     uint32_t* depth;
+@@ -26,6 +32,7 @@ struct VoxelView {
+     int left, top, cols, rows, stride;
+     const uint8_t* rises;
+     const uint8_t* hiddenSouthFaces;
++    const struct VoxelTurfSouthFaces* turfSouthFaces;
+ };
+ 
+ static int voxelFloor(int n, int d) {
+@@ -153,6 +160,9 @@ static void voxelTerrainSurfaces(const struct VoxelView* v, const uint32_t* floo
+                                  const struct VoxelGroundMaterial* ground,
+                                  const struct VoxelBridgeSpan* bridge) {
+     const uint8_t* atlas = ground ? voxelGroundTexture() : 0;
++#if VOXEL_LEDGE_TEXTURE_SIZE
++    const uint8_t* turfAtlas = v->turfSouthFaces ? voxelLedgeTexture() : NULL;
++#endif
+     // The floor fills the output. The projection bounds in pk_wide.c include every sample.
+     for (int y = 0; y < v->height; y++) {
+         int worldY = voxelWorldY(v, y, 0);
+@@ -204,6 +214,18 @@ static void voxelTerrainSurfaces(const struct VoxelView* v, const uint32_t* floo
+                 (!v->hiddenSouthFaces || !v->hiddenSouthFaces[row*v->cols+col])) {
+                 int x = voxelX(v, x0, y1), top = voxelY(v, y1, rise);
+                 const uint32_t* src = v->texture + (row * VOXEL_TILE + VOXEL_TILE - 1) * v->stride + col * VOXEL_TILE;
++#if VOXEL_LEDGE_TEXTURE_SIZE
++                if (turfAtlas && v->turfSouthFaces->cells[row*v->cols+col]) {
++                    const int height=rise-front, across=v->turfSouthFaces->offsetX+x0;
++                    for (int layer=0; layer<height; ++layer) {
++                        unsigned light=228u-34u*(unsigned)layer/(unsigned)height;
++                        for (int i=0; i<VOXEL_TILE; ++i) {
++                            unsigned shade=voxelLedgeFaceShade(turfAtlas,across+i,layer+1,light);
++                            voxelPixel(v,x+i,top+layer,y1,voxelShade(src[i],shade));
++                        }
++                    }
++                } else
++#endif
+                 for (int i = 0; i < VOXEL_TILE; i++) {
+                     uint32_t color = voxelShade(src[i], 192);
+                     for (int y = top; y < top + rise - front; y++) voxelPixel(v, x + i, y, y1, color);
+diff --git a/app/src/main/cpp/pk_scenery_turf_south_faces.h b/app/src/main/cpp/pk_scenery_turf_south_faces.h
+new file mode 100644
+index 0000000..e6a3e38
+--- /dev/null
++++ b/app/src/main/cpp/pk_scenery_turf_south_faces.h
+@@ -0,0 +1,29 @@
++#pragma once
++
++struct SceneryTurfFaceRun {
++    uint16_t y,first,last;
++    uint16_t upper,lower[3];
++};
++struct SceneryTurfFaceMap {
++    uint32_t rom,layout,primary,secondary;
++    uint16_t width,height;
++    uint8_t group,map;
++    const struct SceneryTurfFaceRun* runs;
++    unsigned count;
++};
++
++static const struct SceneryTurfFaceRun sceneryFeriemanPondTurf[] = {
++    {22,2,11,0x3001,{0x10b0,0x10b1,0x10b2}},
++};
++
++static const struct SceneryTurfFaceRun sceneryDrescoTurf[] = {
++    {22,28,28,0x4132,{0x00d4,0x00d4,0x00d4}},
++    {22,29,29,0x4008,{0x00d5,0x00d5,0x00d5}},
++};
++
++static const struct SceneryTurfFaceMap sceneryTurfFaceMaps[] = {
++    {0x2be557a3,0x089eabf8,0x083df704,0x083df734,30,30,0,0,
++     sceneryFeriemanPondTurf,sizeof(sceneryFeriemanPondTurf)/sizeof(*sceneryFeriemanPondTurf)},
++    {0x4b3d4957,0x08779994,0x082d4a94,0x082d4af4,55,47,3,71,
++     sceneryDrescoTurf,sizeof(sceneryDrescoTurf)/sizeof(*sceneryDrescoTurf)},
++};

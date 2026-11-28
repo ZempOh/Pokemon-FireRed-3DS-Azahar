@@ -1,0 +1,60 @@
+diff --git a/app/src/main/cpp/pk_battle_trainer_family.h b/app/src/main/cpp/pk_battle_trainer_family.h
+new file mode 100644
+index 0000000..3b5f9f7
+--- /dev/null
++++ b/app/src/main/cpp/pk_battle_trainer_family.h
+@@ -0,0 +1,10 @@
++#pragma once
++
++/* These exact native layouts share Red's stationary source cut at (48,48). */
++static const struct BattleTrainerProfile {
++    uint32_t crc, count, positions, playerSlot, sprites, image, callback, palette;
++} battleTrainerProfiles[] = {
++    {0xdd88761cu,0x02023bccu,0x02023bd6u,0x02023d44u,0x0202063cu,0x08234718u,0x0800760du,0xd6fc427fu},
++    {0x964763c0u,0x02023b4cu,0x02023b56u,0x02023cc4u,0x0202063cu,0x0825849cu,0x0800759du,0xd6fc427fu},
++    {0xe4deb9beu,0x020230e0u,0x020230eau,0x02023268u,0x02020630u,0x083354f0u,0x080078d9u,0x09d79482u}
++};
+diff --git a/app/src/main/cpp/pk_wide.c b/app/src/main/cpp/pk_wide.c
+index b9b018b..ed11741 100644
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -5213,15 +5213,23 @@ static void battleBackVolumeDraw(const uint32_t* frame, uint32_t* out, struct Pk
+ #endif
+ 
+ #ifdef PK_BATTLE_TRAINER_DETAIL
+-/* FireRed Rev 0's stationary player trainer before the native ball throw.
+- * The logical battler sprite and the final OAM entry must own the same image. */
++#include "pk_battle_trainer_family.h"
++
++/* The logical battler sprite and the final OAM entry must own the same image. */
+ static void battleTrainerVolumeDraw(const uint32_t* frame, uint32_t* out, struct PkWideView v, uint32_t alpha) {
+-    if (solidRom!=0xdd88761cu || !pk_wide_battle_detail_requested() || !battleVolumeReady() ||
+-        r8(0x02023bccu)!=2 || r8(0x02023bd6u)!=0 || r8(0x02023bd7u)!=1) return;
+-    unsigned actor=r8(0x02023d44u);
++    if (!pk_wide_battle_detail_requested() || !battleVolumeReady()) return;
++    const struct BattleTrainerProfile* profile=NULL;
++    for (size_t i=0;i<sizeof(battleTrainerProfiles)/sizeof(*battleTrainerProfiles);++i)
++        if (battleTrainerProfiles[i].crc==solidRom) {
++            profile=&battleTrainerProfiles[i];
++            break;
++        }
++    if (!profile || r8(profile->count)!=2 || r8(profile->positions)!=0 ||
++        r8(profile->positions+1)!=1) return;
++    unsigned actor=r8(profile->playerSlot);
+     if (actor>=64) return;
+-    const uint32_t sprite=0x0202063cu+0x44u*actor;
+-    if (r32(sprite+0x0c)!=0x08234718u || r32(sprite+0x1c)!=0x0800760du ||
++    const uint32_t sprite=profile->sprites+0x44u*actor;
++    if (r32(sprite+0x0c)!=profile->image || r32(sprite+0x1c)!=profile->callback ||
+         r8(sprite+0x3e)!=1 || r16(sprite+0x2a)!=0 ||
+         s16(sprite+0x20)!=80 || s16(sprite+0x22)!=80 || r32(sprite+0x24)!=0 ||
+         r16(sprite+0x28)!=0xe0e0u) return;
+@@ -5237,7 +5245,7 @@ static void battleTrainerVolumeDraw(const uint32_t* frame, uint32_t* out, struct
+         const uint8_t* art=tiles+tile*32;
+         const int palette=256+(a[2]>>12)*16;
+         if (battleVolumeFingerprint(art,2048)!=0x6bf9af0au ||
+-            battleVolumeFingerprint((const uint8_t*)(linePalBuf[0]+palette+1),30)!=0xd6fc427fu) continue;
++            battleVolumeFingerprint((const uint8_t*)(linePalBuf[0]+palette+1),30)!=profile->palette) continue;
+         const uint16_t* matrix=oam+((a[1]>>9)&31)*16;
+         if (matrix[3]!=256 || matrix[7] || matrix[11] || matrix[15]!=256 || trainer.object>=0) return;
+         trainer=(struct BattleVolumeTarget){art,0x6bf9af0au,k,48,48,palette,true};

@@ -1,0 +1,69 @@
+diff --git a/app/src/main/cpp/pk_wide.c b/app/src/main/cpp/pk_wide.c
+index 86c2db3..b9b018b 100644
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -5172,6 +5172,10 @@ static void battleVolumeDraw(const uint32_t* frame, uint32_t* out, struct PkWide
+     battleVolumePaint(frame,out,v,alpha,&front,&cache);
+ }
+ 
++#if defined(PK_BATTLE_BACK_DETAIL) || defined(PK_BATTLE_TRAINER_DETAIL)
++static struct BattleVolumeCache battlePlayerSideCache;
++#endif
++
+ #ifdef PK_BATTLE_BACK_DETAIL
+ #include "pk_battle_back_family.h"
+ 
+@@ -5204,8 +5208,41 @@ static void battleBackVolumeDraw(const uint32_t* frame, uint32_t* out, struct Pk
+         back=(struct BattleVolumeTarget){art,profile->art,k,40,y,palette,true};
+     }
+     if (back.object<0) return;
+-    static struct BattleVolumeCache cache;
+-    battleVolumePaint(frame,out,v,alpha,&back,&cache);
++    battleVolumePaint(frame,out,v,alpha,&back,&battlePlayerSideCache);
++}
++#endif
++
++#ifdef PK_BATTLE_TRAINER_DETAIL
++/* FireRed Rev 0's stationary player trainer before the native ball throw.
++ * The logical battler sprite and the final OAM entry must own the same image. */
++static void battleTrainerVolumeDraw(const uint32_t* frame, uint32_t* out, struct PkWideView v, uint32_t alpha) {
++    if (solidRom!=0xdd88761cu || !pk_wide_battle_detail_requested() || !battleVolumeReady() ||
++        r8(0x02023bccu)!=2 || r8(0x02023bd6u)!=0 || r8(0x02023bd7u)!=1) return;
++    unsigned actor=r8(0x02023d44u);
++    if (actor>=64) return;
++    const uint32_t sprite=0x0202063cu+0x44u*actor;
++    if (r32(sprite+0x0c)!=0x08234718u || r32(sprite+0x1c)!=0x0800760du ||
++        r8(sprite+0x3e)!=1 || r16(sprite+0x2a)!=0 ||
++        s16(sprite+0x20)!=80 || s16(sprite+0x22)!=80 || r32(sprite+0x24)!=0 ||
++        r16(sprite+0x28)!=0xe0e0u) return;
++
++    const uint16_t* oam=lineOamBuf[0];
++    const uint8_t* tiles=(const uint8_t*)G->video.vram+0x10000;
++    const uint16_t expected=r16(sprite+4);
++    struct BattleVolumeTarget trainer={.object=-1};
++    for (int k=0;k<128;++k) {
++        const uint16_t* a=oam+k*4;
++        const int tile=a[2]&1023;
++        if (a[0]!=0x0130u || a[1]!=0xc030u || a[2]!=expected || ((a[2]>>10)&3)!=2 || tile>960) continue;
++        const uint8_t* art=tiles+tile*32;
++        const int palette=256+(a[2]>>12)*16;
++        if (battleVolumeFingerprint(art,2048)!=0x6bf9af0au ||
++            battleVolumeFingerprint((const uint8_t*)(linePalBuf[0]+palette+1),30)!=0xd6fc427fu) continue;
++        const uint16_t* matrix=oam+((a[1]>>9)&31)*16;
++        if (matrix[3]!=256 || matrix[7] || matrix[11] || matrix[15]!=256 || trainer.object>=0) return;
++        trainer=(struct BattleVolumeTarget){art,0x6bf9af0au,k,48,48,palette,true};
++    }
++    if (trainer.object>=0) battleVolumePaint(frame,out,v,alpha,&trainer,&battlePlayerSideCache);
+ }
+ #endif
+ 
+@@ -5338,6 +5375,9 @@ static void fullDraw(const struct FullView* f) {
+         battleVolumeDraw(frame,out,v,alpha);
+ #ifdef PK_BATTLE_BACK_DETAIL
+         battleBackVolumeDraw(frame,out,v,alpha);
++#endif
++#ifdef PK_BATTLE_TRAINER_DETAIL
++        battleTrainerVolumeDraw(frame,out,v,alpha);
+ #endif
+     }
+     if (valid && (flyDx || flyDy)) flyLabel(f);

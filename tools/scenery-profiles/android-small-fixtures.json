@@ -18523,5 +18523,1522 @@
     "source_art_sha256": "d51cfb959d8d41094cac010eabf3b9e57472f80cae7585429c5042a874ca55c4",
     "floor_sha256": "015e1efefe4a6149047b8805c80a939a554a15d2039fb54881b4f4bd14544402",
     "reviewed": true
+  },
+  {
+    "game": "classic",
+    "rom_crc32": "e4deb9be",
+    "rom_sha256": "4ab7b1f7fb246490d798f49db1511d197d7c72376b6347d08e7c557122c6d722",
+    "primary": "084ad600",
+    "secondary": "084add10",
+    "id": 3,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      8,
+      13,
+      2,
+      2
+    ],
+    "source_art_sha256": "53ea2641697412fa731ba2103ea2c7658a320db4162e810acccd774c41e13739",
+    "floor_sha256": "c79ffe007cbb63260047a32030dbfea287bfb0e1d02d5c639bd71c84f9073aee",
+    "board": [
+      1,
+      0,
+      14,
+      12
+    ],
+    "board_mask": [
+      192,
+      8190,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      8190
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "classic",
+    "rom_crc32": "e4deb9be",
+    "rom_sha256": "4ab7b1f7fb246490d798f49db1511d197d7c72376b6347d08e7c557122c6d722",
+    "primary": "084ad600",
+    "secondary": "084add28",
+    "id": 3,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      8,
+      13,
+      2,
+      2
+    ],
+    "source_art_sha256": "53ea2641697412fa731ba2103ea2c7658a320db4162e810acccd774c41e13739",
+    "floor_sha256": "c79ffe007cbb63260047a32030dbfea287bfb0e1d02d5c639bd71c84f9073aee",
+    "board": [
+      1,
+      0,
+      14,
+      12
+    ],
+    "board_mask": [
+      192,
+      8190,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      8190
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "classic",
+    "rom_crc32": "e4deb9be",
+    "rom_sha256": "4ab7b1f7fb246490d798f49db1511d197d7c72376b6347d08e7c557122c6d722",
+    "primary": "084ad600",
+    "secondary": "084add40",
+    "id": 3,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      8,
+      13,
+      2,
+      2
+    ],
+    "source_art_sha256": "53ea2641697412fa731ba2103ea2c7658a320db4162e810acccd774c41e13739",
+    "floor_sha256": "c79ffe007cbb63260047a32030dbfea287bfb0e1d02d5c639bd71c84f9073aee",
+    "board": [
+      1,
+      0,
+      14,
+      12
+    ],
+    "board_mask": [
+      192,
+      8190,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      8190
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "classic",
+    "rom_crc32": "e4deb9be",
+    "rom_sha256": "4ab7b1f7fb246490d798f49db1511d197d7c72376b6347d08e7c557122c6d722",
+    "primary": "084ad600",
+    "secondary": "084add58",
+    "id": 3,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      8,
+      13,
+      2,
+      2
+    ],
+    "source_art_sha256": "53ea2641697412fa731ba2103ea2c7658a320db4162e810acccd774c41e13739",
+    "floor_sha256": "c79ffe007cbb63260047a32030dbfea287bfb0e1d02d5c639bd71c84f9073aee",
+    "board": [
+      1,
+      0,
+      14,
+      12
+    ],
+    "board_mask": [
+      192,
+      8190,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      8190
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "classic",
+    "rom_crc32": "e4deb9be",
+    "rom_sha256": "4ab7b1f7fb246490d798f49db1511d197d7c72376b6347d08e7c557122c6d722",
+    "primary": "084ad600",
+    "secondary": "084add70",
+    "id": 3,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      8,
+      13,
+      2,
+      2
+    ],
+    "source_art_sha256": "53ea2641697412fa731ba2103ea2c7658a320db4162e810acccd774c41e13739",
+    "floor_sha256": "c79ffe007cbb63260047a32030dbfea287bfb0e1d02d5c639bd71c84f9073aee",
+    "board": [
+      1,
+      0,
+      14,
+      12
+    ],
+    "board_mask": [
+      192,
+      8190,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      8190
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "classic",
+    "rom_crc32": "e4deb9be",
+    "rom_sha256": "4ab7b1f7fb246490d798f49db1511d197d7c72376b6347d08e7c557122c6d722",
+    "primary": "084ad600",
+    "secondary": "084add88",
+    "id": 3,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      8,
+      13,
+      2,
+      2
+    ],
+    "source_art_sha256": "53ea2641697412fa731ba2103ea2c7658a320db4162e810acccd774c41e13739",
+    "floor_sha256": "c79ffe007cbb63260047a32030dbfea287bfb0e1d02d5c639bd71c84f9073aee",
+    "board": [
+      1,
+      0,
+      14,
+      12
+    ],
+    "board_mask": [
+      192,
+      8190,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      8190
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "classic",
+    "rom_crc32": "e4deb9be",
+    "rom_sha256": "4ab7b1f7fb246490d798f49db1511d197d7c72376b6347d08e7c557122c6d722",
+    "primary": "084ad600",
+    "secondary": "084adda0",
+    "id": 3,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      8,
+      13,
+      2,
+      2
+    ],
+    "source_art_sha256": "53ea2641697412fa731ba2103ea2c7658a320db4162e810acccd774c41e13739",
+    "floor_sha256": "c79ffe007cbb63260047a32030dbfea287bfb0e1d02d5c639bd71c84f9073aee",
+    "board": [
+      1,
+      0,
+      14,
+      12
+    ],
+    "board_mask": [
+      192,
+      8190,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      8190
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "classic",
+    "rom_crc32": "e4deb9be",
+    "rom_sha256": "4ab7b1f7fb246490d798f49db1511d197d7c72376b6347d08e7c557122c6d722",
+    "primary": "084ad600",
+    "secondary": "084addbc",
+    "id": 3,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      8,
+      13,
+      2,
+      2
+    ],
+    "source_art_sha256": "53ea2641697412fa731ba2103ea2c7658a320db4162e810acccd774c41e13739",
+    "floor_sha256": "c79ffe007cbb63260047a32030dbfea287bfb0e1d02d5c639bd71c84f9073aee",
+    "board": [
+      1,
+      0,
+      14,
+      12
+    ],
+    "board_mask": [
+      192,
+      8190,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      8190
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "classic",
+    "rom_crc32": "e4deb9be",
+    "rom_sha256": "4ab7b1f7fb246490d798f49db1511d197d7c72376b6347d08e7c557122c6d722",
+    "primary": "084ad600",
+    "secondary": "084ade04",
+    "id": 3,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      8,
+      13,
+      2,
+      2
+    ],
+    "source_art_sha256": "53ea2641697412fa731ba2103ea2c7658a320db4162e810acccd774c41e13739",
+    "floor_sha256": "c79ffe007cbb63260047a32030dbfea287bfb0e1d02d5c639bd71c84f9073aee",
+    "board": [
+      1,
+      0,
+      14,
+      12
+    ],
+    "board_mask": [
+      192,
+      8190,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      8190
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "classic",
+    "rom_crc32": "e4deb9be",
+    "rom_sha256": "4ab7b1f7fb246490d798f49db1511d197d7c72376b6347d08e7c557122c6d722",
+    "primary": "084ad600",
+    "secondary": "084ade04",
+    "id": 828,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      8,
+      13,
+      2,
+      2
+    ],
+    "source_art_sha256": "62d2b402135e1a526d3e1c3f17c839ecc951bcee130111ecbc64a354d6fcf25a",
+    "floor_sha256": "f4d10b3de836a6045bfd99cae1a072d829327dc4a8f6ba93b7101aa3f7c9465b",
+    "board": [
+      1,
+      0,
+      14,
+      12
+    ],
+    "board_mask": [
+      192,
+      8190,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      8190
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "classic",
+    "rom_crc32": "e4deb9be",
+    "rom_sha256": "4ab7b1f7fb246490d798f49db1511d197d7c72376b6347d08e7c557122c6d722",
+    "primary": "084ad600",
+    "secondary": "084adf9c",
+    "id": 3,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      8,
+      13,
+      2,
+      2
+    ],
+    "source_art_sha256": "53ea2641697412fa731ba2103ea2c7658a320db4162e810acccd774c41e13739",
+    "floor_sha256": "c79ffe007cbb63260047a32030dbfea287bfb0e1d02d5c639bd71c84f9073aee",
+    "board": [
+      1,
+      0,
+      14,
+      12
+    ],
+    "board_mask": [
+      192,
+      8190,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      8190
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "classic",
+    "rom_crc32": "e4deb9be",
+    "rom_sha256": "4ab7b1f7fb246490d798f49db1511d197d7c72376b6347d08e7c557122c6d722",
+    "primary": "084ad600",
+    "secondary": "084ad750",
+    "id": 3,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      8,
+      13,
+      2,
+      2
+    ],
+    "source_art_sha256": "53ea2641697412fa731ba2103ea2c7658a320db4162e810acccd774c41e13739",
+    "floor_sha256": "c79ffe007cbb63260047a32030dbfea287bfb0e1d02d5c639bd71c84f9073aee",
+    "board": [
+      1,
+      0,
+      14,
+      12
+    ],
+    "board_mask": [
+      192,
+      8190,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      8190
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "classic",
+    "rom_crc32": "e4deb9be",
+    "rom_sha256": "4ab7b1f7fb246490d798f49db1511d197d7c72376b6347d08e7c557122c6d722",
+    "primary": "084ad600",
+    "secondary": "084ad768",
+    "id": 3,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      8,
+      13,
+      2,
+      2
+    ],
+    "source_art_sha256": "53ea2641697412fa731ba2103ea2c7658a320db4162e810acccd774c41e13739",
+    "floor_sha256": "c79ffe007cbb63260047a32030dbfea287bfb0e1d02d5c639bd71c84f9073aee",
+    "board": [
+      1,
+      0,
+      14,
+      12
+    ],
+    "board_mask": [
+      192,
+      8190,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      8190
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "firered",
+    "rom_crc32": "dd88761c",
+    "rom_sha256": "3d0c79f1627022e18765766f6cb5ea067f6b5bf7dca115552189ad65a5c3a8ac",
+    "primary": "082d4a94",
+    "secondary": "082d4dc4",
+    "id": 3,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      8,
+      13,
+      2,
+      2
+    ],
+    "source_art_sha256": "53ea2641697412fa731ba2103ea2c7658a320db4162e810acccd774c41e13739",
+    "floor_sha256": "c79ffe007cbb63260047a32030dbfea287bfb0e1d02d5c639bd71c84f9073aee",
+    "board": [
+      1,
+      0,
+      14,
+      12
+    ],
+    "board_mask": [
+      192,
+      8190,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      8190
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "firered",
+    "rom_crc32": "dd88761c",
+    "rom_sha256": "3d0c79f1627022e18765766f6cb5ea067f6b5bf7dca115552189ad65a5c3a8ac",
+    "primary": "082d4a94",
+    "secondary": "082d4b24",
+    "id": 3,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      8,
+      13,
+      2,
+      2
+    ],
+    "source_art_sha256": "53ea2641697412fa731ba2103ea2c7658a320db4162e810acccd774c41e13739",
+    "floor_sha256": "c79ffe007cbb63260047a32030dbfea287bfb0e1d02d5c639bd71c84f9073aee",
+    "board": [
+      1,
+      0,
+      14,
+      12
+    ],
+    "board_mask": [
+      192,
+      8190,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      8190
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "firered",
+    "rom_crc32": "dd88761c",
+    "rom_sha256": "3d0c79f1627022e18765766f6cb5ea067f6b5bf7dca115552189ad65a5c3a8ac",
+    "primary": "082d4a94",
+    "secondary": "082d4b54",
+    "id": 3,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      8,
+      13,
+      2,
+      2
+    ],
+    "source_art_sha256": "53ea2641697412fa731ba2103ea2c7658a320db4162e810acccd774c41e13739",
+    "floor_sha256": "c79ffe007cbb63260047a32030dbfea287bfb0e1d02d5c639bd71c84f9073aee",
+    "board": [
+      1,
+      0,
+      14,
+      12
+    ],
+    "board_mask": [
+      192,
+      8190,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      8190
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "firered",
+    "rom_crc32": "dd88761c",
+    "rom_sha256": "3d0c79f1627022e18765766f6cb5ea067f6b5bf7dca115552189ad65a5c3a8ac",
+    "primary": "082d4a94",
+    "secondary": "082d4aac",
+    "id": 3,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      8,
+      13,
+      2,
+      2
+    ],
+    "source_art_sha256": "53ea2641697412fa731ba2103ea2c7658a320db4162e810acccd774c41e13739",
+    "floor_sha256": "c79ffe007cbb63260047a32030dbfea287bfb0e1d02d5c639bd71c84f9073aee",
+    "board": [
+      1,
+      0,
+      14,
+      12
+    ],
+    "board_mask": [
+      192,
+      8190,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      8190
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "firered",
+    "rom_crc32": "dd88761c",
+    "rom_sha256": "3d0c79f1627022e18765766f6cb5ea067f6b5bf7dca115552189ad65a5c3a8ac",
+    "primary": "082d4a94",
+    "secondary": "082d4ac4",
+    "id": 3,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      8,
+      13,
+      2,
+      2
+    ],
+    "source_art_sha256": "53ea2641697412fa731ba2103ea2c7658a320db4162e810acccd774c41e13739",
+    "floor_sha256": "c79ffe007cbb63260047a32030dbfea287bfb0e1d02d5c639bd71c84f9073aee",
+    "board": [
+      1,
+      0,
+      14,
+      12
+    ],
+    "board_mask": [
+      192,
+      8190,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      8190
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "firered",
+    "rom_crc32": "dd88761c",
+    "rom_sha256": "3d0c79f1627022e18765766f6cb5ea067f6b5bf7dca115552189ad65a5c3a8ac",
+    "primary": "082d4a94",
+    "secondary": "082d4adc",
+    "id": 3,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      8,
+      13,
+      2,
+      2
+    ],
+    "source_art_sha256": "53ea2641697412fa731ba2103ea2c7658a320db4162e810acccd774c41e13739",
+    "floor_sha256": "c79ffe007cbb63260047a32030dbfea287bfb0e1d02d5c639bd71c84f9073aee",
+    "board": [
+      1,
+      0,
+      14,
+      12
+    ],
+    "board_mask": [
+      192,
+      8190,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      8190
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "firered",
+    "rom_crc32": "dd88761c",
+    "rom_sha256": "3d0c79f1627022e18765766f6cb5ea067f6b5bf7dca115552189ad65a5c3a8ac",
+    "primary": "082d4a94",
+    "secondary": "082d4af4",
+    "id": 3,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      8,
+      13,
+      2,
+      2
+    ],
+    "source_art_sha256": "53ea2641697412fa731ba2103ea2c7658a320db4162e810acccd774c41e13739",
+    "floor_sha256": "c79ffe007cbb63260047a32030dbfea287bfb0e1d02d5c639bd71c84f9073aee",
+    "board": [
+      1,
+      0,
+      14,
+      12
+    ],
+    "board_mask": [
+      192,
+      8190,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      8190
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "firered",
+    "rom_crc32": "dd88761c",
+    "rom_sha256": "3d0c79f1627022e18765766f6cb5ea067f6b5bf7dca115552189ad65a5c3a8ac",
+    "primary": "082d4a94",
+    "secondary": "082d4b0c",
+    "id": 3,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      8,
+      13,
+      2,
+      2
+    ],
+    "source_art_sha256": "53ea2641697412fa731ba2103ea2c7658a320db4162e810acccd774c41e13739",
+    "floor_sha256": "c79ffe007cbb63260047a32030dbfea287bfb0e1d02d5c639bd71c84f9073aee",
+    "board": [
+      1,
+      0,
+      14,
+      12
+    ],
+    "board_mask": [
+      192,
+      8190,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      8190
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "firered",
+    "rom_crc32": "dd88761c",
+    "rom_sha256": "3d0c79f1627022e18765766f6cb5ea067f6b5bf7dca115552189ad65a5c3a8ac",
+    "primary": "082d4a94",
+    "secondary": "082d4b3c",
+    "id": 3,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      8,
+      13,
+      2,
+      2
+    ],
+    "source_art_sha256": "53ea2641697412fa731ba2103ea2c7658a320db4162e810acccd774c41e13739",
+    "floor_sha256": "c79ffe007cbb63260047a32030dbfea287bfb0e1d02d5c639bd71c84f9073aee",
+    "board": [
+      1,
+      0,
+      14,
+      12
+    ],
+    "board_mask": [
+      192,
+      8190,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      8190
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "firered",
+    "rom_crc32": "dd88761c",
+    "rom_sha256": "3d0c79f1627022e18765766f6cb5ea067f6b5bf7dca115552189ad65a5c3a8ac",
+    "primary": "082d4a94",
+    "secondary": "082d4b9c",
+    "id": 3,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      8,
+      13,
+      2,
+      2
+    ],
+    "source_art_sha256": "53ea2641697412fa731ba2103ea2c7658a320db4162e810acccd774c41e13739",
+    "floor_sha256": "c79ffe007cbb63260047a32030dbfea287bfb0e1d02d5c639bd71c84f9073aee",
+    "board": [
+      1,
+      0,
+      14,
+      12
+    ],
+    "board_mask": [
+      192,
+      8190,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      8190
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "firered",
+    "rom_crc32": "dd88761c",
+    "rom_sha256": "3d0c79f1627022e18765766f6cb5ea067f6b5bf7dca115552189ad65a5c3a8ac",
+    "primary": "082d4a94",
+    "secondary": "082d4b9c",
+    "id": 828,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      8,
+      13,
+      2,
+      2
+    ],
+    "source_art_sha256": "62d2b402135e1a526d3e1c3f17c839ecc951bcee130111ecbc64a354d6fcf25a",
+    "floor_sha256": "f4d10b3de836a6045bfd99cae1a072d829327dc4a8f6ba93b7101aa3f7c9465b",
+    "board": [
+      1,
+      0,
+      14,
+      12
+    ],
+    "board_mask": [
+      192,
+      8190,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      8190
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "frlgplus",
+    "rom_crc32": "964763c0",
+    "rom_sha256": "41b51f4f1d0a894dbb27572d6580821c6a192231f930d85c2805af664c13bbb6",
+    "primary": "08316a4c",
+    "secondary": "08316d7c",
+    "id": 3,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      8,
+      13,
+      2,
+      2
+    ],
+    "source_art_sha256": "53ea2641697412fa731ba2103ea2c7658a320db4162e810acccd774c41e13739",
+    "floor_sha256": "c79ffe007cbb63260047a32030dbfea287bfb0e1d02d5c639bd71c84f9073aee",
+    "board": [
+      1,
+      0,
+      14,
+      12
+    ],
+    "board_mask": [
+      192,
+      8190,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      8190
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "frlgplus",
+    "rom_crc32": "964763c0",
+    "rom_sha256": "41b51f4f1d0a894dbb27572d6580821c6a192231f930d85c2805af664c13bbb6",
+    "primary": "08316a4c",
+    "secondary": "08316adc",
+    "id": 3,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      8,
+      13,
+      2,
+      2
+    ],
+    "source_art_sha256": "53ea2641697412fa731ba2103ea2c7658a320db4162e810acccd774c41e13739",
+    "floor_sha256": "c79ffe007cbb63260047a32030dbfea287bfb0e1d02d5c639bd71c84f9073aee",
+    "board": [
+      1,
+      0,
+      14,
+      12
+    ],
+    "board_mask": [
+      192,
+      8190,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      8190
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "frlgplus",
+    "rom_crc32": "964763c0",
+    "rom_sha256": "41b51f4f1d0a894dbb27572d6580821c6a192231f930d85c2805af664c13bbb6",
+    "primary": "08316a4c",
+    "secondary": "08316b0c",
+    "id": 3,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      8,
+      13,
+      2,
+      2
+    ],
+    "source_art_sha256": "53ea2641697412fa731ba2103ea2c7658a320db4162e810acccd774c41e13739",
+    "floor_sha256": "c79ffe007cbb63260047a32030dbfea287bfb0e1d02d5c639bd71c84f9073aee",
+    "board": [
+      1,
+      0,
+      14,
+      12
+    ],
+    "board_mask": [
+      192,
+      8190,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      8190
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "frlgplus",
+    "rom_crc32": "964763c0",
+    "rom_sha256": "41b51f4f1d0a894dbb27572d6580821c6a192231f930d85c2805af664c13bbb6",
+    "primary": "08316a4c",
+    "secondary": "08316b0c",
+    "id": 798,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      8,
+      13,
+      2,
+      2
+    ],
+    "source_art_sha256": "00ce98d024c6363b11d5ae6ddce73555dba6a6389ce779d612564864bbb435bf",
+    "floor_sha256": "e30572ece80327acab6f6aafe60c16e952b4aee1f886781005da204497988ff9",
+    "board": [
+      1,
+      0,
+      14,
+      12
+    ],
+    "board_mask": [
+      192,
+      8190,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      8190
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "frlgplus",
+    "rom_crc32": "964763c0",
+    "rom_sha256": "41b51f4f1d0a894dbb27572d6580821c6a192231f930d85c2805af664c13bbb6",
+    "primary": "08316a4c",
+    "secondary": "08317034",
+    "id": 601,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      8,
+      13,
+      2,
+      2
+    ],
+    "source_art_sha256": "2aa41d9f3be0a1fa94cabec560c14388c63185a1fb2f6f0c4cafbc03e741e8e9",
+    "floor_sha256": "a3e5775535a1aac2b03981655bdb04e8ca713edd93fb17a93d507c9c018bb5e0",
+    "board": [
+      1,
+      0,
+      14,
+      12
+    ],
+    "board_mask": [
+      192,
+      8190,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      8190
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "frlgplus",
+    "rom_crc32": "964763c0",
+    "rom_sha256": "41b51f4f1d0a894dbb27572d6580821c6a192231f930d85c2805af664c13bbb6",
+    "primary": "08316a4c",
+    "secondary": "08316a64",
+    "id": 3,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      8,
+      13,
+      2,
+      2
+    ],
+    "source_art_sha256": "53ea2641697412fa731ba2103ea2c7658a320db4162e810acccd774c41e13739",
+    "floor_sha256": "c79ffe007cbb63260047a32030dbfea287bfb0e1d02d5c639bd71c84f9073aee",
+    "board": [
+      1,
+      0,
+      14,
+      12
+    ],
+    "board_mask": [
+      192,
+      8190,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      8190
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "frlgplus",
+    "rom_crc32": "964763c0",
+    "rom_sha256": "41b51f4f1d0a894dbb27572d6580821c6a192231f930d85c2805af664c13bbb6",
+    "primary": "08316a4c",
+    "secondary": "08316a7c",
+    "id": 3,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      8,
+      13,
+      2,
+      2
+    ],
+    "source_art_sha256": "53ea2641697412fa731ba2103ea2c7658a320db4162e810acccd774c41e13739",
+    "floor_sha256": "c79ffe007cbb63260047a32030dbfea287bfb0e1d02d5c639bd71c84f9073aee",
+    "board": [
+      1,
+      0,
+      14,
+      12
+    ],
+    "board_mask": [
+      192,
+      8190,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      8190
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "frlgplus",
+    "rom_crc32": "964763c0",
+    "rom_sha256": "41b51f4f1d0a894dbb27572d6580821c6a192231f930d85c2805af664c13bbb6",
+    "primary": "08316a4c",
+    "secondary": "08316a94",
+    "id": 3,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      8,
+      13,
+      2,
+      2
+    ],
+    "source_art_sha256": "53ea2641697412fa731ba2103ea2c7658a320db4162e810acccd774c41e13739",
+    "floor_sha256": "c79ffe007cbb63260047a32030dbfea287bfb0e1d02d5c639bd71c84f9073aee",
+    "board": [
+      1,
+      0,
+      14,
+      12
+    ],
+    "board_mask": [
+      192,
+      8190,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      8190
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "frlgplus",
+    "rom_crc32": "964763c0",
+    "rom_sha256": "41b51f4f1d0a894dbb27572d6580821c6a192231f930d85c2805af664c13bbb6",
+    "primary": "08316a4c",
+    "secondary": "08316aac",
+    "id": 3,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      8,
+      13,
+      2,
+      2
+    ],
+    "source_art_sha256": "53ea2641697412fa731ba2103ea2c7658a320db4162e810acccd774c41e13739",
+    "floor_sha256": "c79ffe007cbb63260047a32030dbfea287bfb0e1d02d5c639bd71c84f9073aee",
+    "board": [
+      1,
+      0,
+      14,
+      12
+    ],
+    "board_mask": [
+      192,
+      8190,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      8190
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "frlgplus",
+    "rom_crc32": "964763c0",
+    "rom_sha256": "41b51f4f1d0a894dbb27572d6580821c6a192231f930d85c2805af664c13bbb6",
+    "primary": "08316a4c",
+    "secondary": "08316ac4",
+    "id": 3,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      8,
+      13,
+      2,
+      2
+    ],
+    "source_art_sha256": "53ea2641697412fa731ba2103ea2c7658a320db4162e810acccd774c41e13739",
+    "floor_sha256": "c79ffe007cbb63260047a32030dbfea287bfb0e1d02d5c639bd71c84f9073aee",
+    "board": [
+      1,
+      0,
+      14,
+      12
+    ],
+    "board_mask": [
+      192,
+      8190,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      8190
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "frlgplus",
+    "rom_crc32": "964763c0",
+    "rom_sha256": "41b51f4f1d0a894dbb27572d6580821c6a192231f930d85c2805af664c13bbb6",
+    "primary": "08316a4c",
+    "secondary": "08316af4",
+    "id": 3,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      8,
+      13,
+      2,
+      2
+    ],
+    "source_art_sha256": "53ea2641697412fa731ba2103ea2c7658a320db4162e810acccd774c41e13739",
+    "floor_sha256": "c79ffe007cbb63260047a32030dbfea287bfb0e1d02d5c639bd71c84f9073aee",
+    "board": [
+      1,
+      0,
+      14,
+      12
+    ],
+    "board_mask": [
+      192,
+      8190,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      8190
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "frlgplus",
+    "rom_crc32": "964763c0",
+    "rom_sha256": "41b51f4f1d0a894dbb27572d6580821c6a192231f930d85c2805af664c13bbb6",
+    "primary": "08316a4c",
+    "secondary": "08316b54",
+    "id": 3,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      8,
+      13,
+      2,
+      2
+    ],
+    "source_art_sha256": "53ea2641697412fa731ba2103ea2c7658a320db4162e810acccd774c41e13739",
+    "floor_sha256": "c79ffe007cbb63260047a32030dbfea287bfb0e1d02d5c639bd71c84f9073aee",
+    "board": [
+      1,
+      0,
+      14,
+      12
+    ],
+    "board_mask": [
+      192,
+      8190,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      8190
+    ],
+    "reviewed": true
+  },
+  {
+    "game": "frlgplus",
+    "rom_crc32": "964763c0",
+    "rom_sha256": "41b51f4f1d0a894dbb27572d6580821c6a192231f930d85c2805af664c13bbb6",
+    "primary": "08316a4c",
+    "secondary": "08316b54",
+    "id": 828,
+    "shape": "sign",
+    "feet_x": [
+      8
+    ],
+    "ink": [
+      8,
+      13,
+      2,
+      2
+    ],
+    "source_art_sha256": "62d2b402135e1a526d3e1c3f17c839ecc951bcee130111ecbc64a354d6fcf25a",
+    "floor_sha256": "f4d10b3de836a6045bfd99cae1a072d829327dc4a8f6ba93b7101aa3f7c9465b",
+    "board": [
+      1,
+      0,
+      14,
+      12
+    ],
+    "board_mask": [
+      192,
+      8190,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      16383,
+      8190
+    ],
+    "reviewed": true
   }
 ]

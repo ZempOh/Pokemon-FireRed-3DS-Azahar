@@ -1,0 +1,79 @@
+diff --git a/app/src/main/cpp/pk_wide.c b/app/src/main/cpp/pk_wide.c
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -6008,10 +6008,31 @@
+         *pixel=(*pixel&0xff000000u)|value->rgb;
+     }
+ }
++#if defined(__ANDROID__) && VOXEL_WATERBED_TEXTURE_SIZE
++static void waterbedSampleProbe(const struct Snap* s,const struct VoxelView* view,unsigned samples) {
++    static uint32_t previousRom;
++    static unsigned previousMap, draws;
++    unsigned map=(unsigned)s->group*256u+(unsigned)s->num;
++    if (previousRom!=solidRom || previousMap!=map) {
++        previousRom=solidRom;
++        previousMap=map;
++        draws=0;
++    }
++    if (samples && !(draws++ & 255u))
++        __android_log_print(ANDROID_LOG_INFO,"pokedaisy",
++            "voxel waterbed atlas crc=%08x map=%u/%u source=%ux%u target=%dx%d samples=%u",
++            solidRom,(unsigned)s->group,(unsigned)s->num,(unsigned)VOXEL_WATERBED_TEXTURE_SIZE,
++            (unsigned)VOXEL_WATERBED_TEXTURE_SIZE,view->width,view->height,samples);
++}
++#endif
++
+ static void sceneryWaterDraw(const struct Snap* s, const struct VoxelView* view,
+                              int cellX, int cellY, uint32_t* texture) {
+ #if VOXEL_WATERBED_TEXTURE_SIZE
+     const uint8_t* waterbed=voxelWaterbedTexture();
++#ifdef __ANDROID__
++    unsigned sampled=0;
++#endif
+ #endif
+     struct WaterDeepTint deep[128]={0};
+     for (int row=0;row<view->rows;++row) for (int col=0;col<view->cols;++col) {
+@@ -6045,9 +6066,15 @@
+             *pixel=waterSurfacePixel(*pixel,bank,x*16+px,y*16+py,edge,upper);
+ #if VOXEL_WATERBED_TEXTURE_SIZE
+             *pixel=voxelWaterbedPixel(waterbed,*pixel,x*16+px,y*16+py,edge);
++#ifdef __ANDROID__
++            sampled+=(unsigned)(edge-3)<13u;
+ #endif
+-        }
+-    }
++#endif
++        }
++    }
++#if defined(__ANDROID__) && VOXEL_WATERBED_TEXTURE_SIZE
++    waterbedSampleProbe(s,view,sampled);
++#endif
+ }
+ 
+ static void fireRedPalletWater(const struct Snap* s, const struct VoxelView* view,
+@@ -6063,6 +6090,9 @@
+     }
+ #if VOXEL_WATERBED_TEXTURE_SIZE
+     const uint8_t* waterbed=voxelWaterbedTexture();
++#ifdef __ANDROID__
++    unsigned sampled=0;
++#endif
+ #endif
+     for(int y=0;y<32;++y)for(int x=0;x<32;++x) {
+         int dx=(waterX-cellX)*16+x,dy=(waterY-cellY)*16+y;
+@@ -6077,8 +6107,14 @@
+         *pixel=waterSurfacePixel(*pixel,bank,waterX*16+x,waterY*16+y,edge,y);
+ #if VOXEL_WATERBED_TEXTURE_SIZE
+         *pixel=voxelWaterbedPixel(waterbed,*pixel,waterX*16+x,waterY*16+y,edge);
++#ifdef __ANDROID__
++        sampled+=(unsigned)(edge-3)<13u;
+ #endif
+-    }
++#endif
++    }
++#if defined(__ANDROID__) && VOXEL_WATERBED_TEXTURE_SIZE
++    waterbedSampleProbe(s,view,sampled);
++#endif
+ }
+ 
+ /* Cast a soft contact shadow in the same grounded surface coordinates

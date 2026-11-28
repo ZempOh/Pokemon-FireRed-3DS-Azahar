@@ -1,0 +1,40 @@
+diff --git a/app/src/main/cpp/pk_battle_trainer_family.h b/app/src/main/cpp/pk_battle_trainer_family.h
+index 3b5f9f7..88044ce 100644
+--- a/app/src/main/cpp/pk_battle_trainer_family.h
++++ b/app/src/main/cpp/pk_battle_trainer_family.h
+@@ -1,10 +1,12 @@
+ #pragma once
+ 
+-/* These exact native layouts share Red's stationary source cut at (48,48). */
++/* Each exact native layout owns one stationary 64×64 source cut at (48,48). */
+ static const struct BattleTrainerProfile {
+-    uint32_t crc, count, positions, playerSlot, sprites, image, callback, palette;
++    uint32_t crc, count, positions, playerSlot, sprites, image, callback, palette, art;
+ } battleTrainerProfiles[] = {
+-    {0xdd88761cu,0x02023bccu,0x02023bd6u,0x02023d44u,0x0202063cu,0x08234718u,0x0800760du,0xd6fc427fu},
+-    {0x964763c0u,0x02023b4cu,0x02023b56u,0x02023cc4u,0x0202063cu,0x0825849cu,0x0800759du,0xd6fc427fu},
+-    {0xe4deb9beu,0x020230e0u,0x020230eau,0x02023268u,0x02020630u,0x083354f0u,0x080078d9u,0x09d79482u}
++    {0xdd88761cu,0x02023bccu,0x02023bd6u,0x02023d44u,0x0202063cu,0x08234718u,0x0800760du,0xd6fc427fu,0x6bf9af0au},
++    {0x964763c0u,0x02023b4cu,0x02023b56u,0x02023cc4u,0x0202063cu,0x0825849cu,0x0800759du,0xd6fc427fu,0x6bf9af0au},
++    {0xe4deb9beu,0x020230e0u,0x020230eau,0x02023268u,0x02020630u,0x083354f0u,0x080078d9u,0x09d79482u,0x6bf9af0au},
++    {0x5e704d77u,0x02023bccu,0x02023bd6u,0x02023d44u,0x0202063cu,0x08234718u,0x0800760du,0xd6fc427fu,0x6bf9af0au}, // fakemon
++    {0xb9465c5au,0x02023bccu,0x02023bd6u,0x02023d44u,0x0202063cu,0x08234718u,0x0800760du,0x9edf1a24u,0x2b4f41fdu}, // gaia
+ };
+diff --git a/app/src/main/cpp/pk_wide.c b/app/src/main/cpp/pk_wide.c
+index e0ae116..d8d4273 100644
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -5356,11 +5356,11 @@ static void battleTrainerVolumeDraw(const uint32_t* frame, uint32_t* out, struct
+         if (a[0]!=0x0130u || a[1]!=0xc030u || a[2]!=expected || ((a[2]>>10)&3)!=2 || tile>960) continue;
+         const uint8_t* art=tiles+tile*32;
+         const int palette=256+(a[2]>>12)*16;
+-        if (battleVolumeFingerprint(art,2048)!=0x6bf9af0au ||
++        if (battleVolumeFingerprint(art,2048)!=profile->art ||
+             battleVolumeFingerprint((const uint8_t*)(linePalBuf[0]+palette+1),30)!=profile->palette) continue;
+         const uint16_t* matrix=oam+((a[1]>>9)&31)*16;
+         if (matrix[3]!=256 || matrix[7] || matrix[11] || matrix[15]!=256 || trainer.object>=0) return;
+-        trainer=(struct BattleVolumeTarget){art,0x6bf9af0au,k,48,48,palette,true};
++        trainer=(struct BattleVolumeTarget){art,profile->art,k,48,48,palette,true};
+     }
+     if (trainer.object>=0) battleVolumePaint(frame,out,v,alpha,&trainer,&battlePlayerSideCache);
+ }

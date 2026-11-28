@@ -1,0 +1,11 @@
+--- a/app/src/main/cpp/CMakeLists.txt
++++ b/app/src/main/cpp/CMakeLists.txt
+@@ -6,7 +6,7 @@
+ # shared with the other hosts (the iPad app, the host test).
+ # ---------------------------------------------------------------------------
+ include("${CMAKE_CURRENT_SOURCE_DIR}/pk_api.cmake")
+-target_compile_definitions(pk_api PRIVATE PK_BATTLE_BACK_DETAIL=1)
++target_compile_definitions(pk_api PRIVATE PK_BATTLE_BACK_DETAIL=1 PK_BATTLE_TRAINER_DETAIL=1)
+ 
+ # ---------------------------------------------------------------------------
+ # Vendored rcheevos (git submodule, pinned to v12.5.0) — RetroAchievements'

@@ -1382,3 +1382,20 @@ Let’s Go house AND laboratory plus Dragon’s Den roof at full size before lon
 timing. Flat-roof audits do not certify sloped roof/gable UV interiors.
 Exact75 is rejected despite passing Radical/Unbound pacing; no new build
 inherits those tests. The original Thor APK and data were hash-restored.
+
+## Gen 1 rail and grass pilot
+
+The standard overworld blockset probe still gates conversion. Full
+`52 52 52 52` cells match the cartridge's encounter-grass tile. Four free-standing
+tufts now replace the projected grass pattern with three shaded blade columns
+at staggered depths. The game's original movement and encounter logic remains
+the source of gameplay state.
+
+Rail cells use only the reviewed `10` vertical rail, `20` horizontal rail,
+`21` post, and `23` base tile. The complete 2×2 signature must match that
+family, with at least one rail or post tile. Existing timber posts now have
+a broad solid base and a narrower cap. Validate wood posts at Pallet and the
+pipe and encounter variants on their own fixtures. Original flat mode requires
+pixel equality. Live Cut swaps in the Red overworld replace the target with
+ground, so a stump must come from reviewed stump art rather than a synthetic
+Cut remnant. These changes have no inherited Thor passes.

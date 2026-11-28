@@ -29,6 +29,21 @@ static void testActorDepth(void) {
     for (unsigned i=1;i<64;i++) assert(frame[i]==0);
 }
 
+static void testSmallPropDepth(void) {
+    uint32_t frame[32*32] = {0}, depth[32*32] = {0};
+    struct VoxelView view = {.out=frame,.depth=depth,.width=32,.height=32,.top=-16,.rows=2};
+    const uint32_t tips = 0xff82aed4u, leaves = 0xff46753bu, front = 0xff444444u;
+    voxelGrassTuft(&view, 0, 0, 0, leaves, tips);
+    assert(frame[9*32+15]==voxelShade(tips,208));
+    assert(frame[14*32+17]==voxelShade(leaves,208));
+    voxelPixel(&view,15,9,3,front);
+    voxelGrassTuft(&view,0,0,0,leaves,tips);
+    assert(frame[9*32+15]==front);
+    voxelPropBox(&view,0,-17,2,3,0,4,leaves);
+    voxelPropBox(&view,0,-21,2,2,0,4,leaves);
+    voxelPropBox(&view,0,15,2,2,0,4,leaves);
+}
+
 int main(void) {
     // Exact76 Thor right-stick pan: ceil(right)-floor(left) is 481,
     // although the selected zoom spans 480 pixels. Exercise runtime guard.
@@ -65,5 +80,6 @@ int main(void) {
     voxelPixel(&v,0,0,6,6); assert(out[0]==6); // nearer terrain occludes
     voxelSpritePixel(&v,-1,0,99,0,8); assert(out[0]==6);
     testActorDepth();
+    testSmallPropDepth();
     puts("voxel projection depth tests passed");
 }

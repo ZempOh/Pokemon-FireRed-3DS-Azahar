@@ -1,0 +1,133 @@
+--- a/app/src/main/cpp/pk_wide_voxel.h
++++ b/app/src/main/cpp/pk_wide_voxel.h
+@@ -104,6 +104,35 @@
+     voxelSpritePixel(v, x, y, foot, order, color);
+ }
+ 
++// Small opaque props share the field projection and terrain depth buffer.
++static void voxelPropBox(const struct VoxelView* v, int x, int y, int w, int d,
++                         int z, int h, uint32_t material) {
++    int front = y + d;
++    int limit = v->top + v->rows * VOXEL_TILE;
++    if (front < v->top || front >= limit) return;
++    int back = y < v->top ? v->top : y;
++    uint32_t side = voxelShade(material, 170);
++    uint32_t face = voxelShade(material, 208);
++    for (int wy = back; wy < front; ++wy) {
++        int sx = voxelX(v, x, wy);
++        int sy = voxelY(v, wy, z+h);
++        for (int i = 0; i < w; ++i) voxelPixel(v, sx+i, sy, wy, material);
++        for (int i = 1; i <= h; ++i) voxelPixel(v, sx, sy+i, wy, side);
++    }
++    int sx = voxelX(v, x, front);
++    int sy = voxelY(v, front, z+h);
++    for (int row = 0; row < h; ++row)
++        for (int col = 0; col < w; ++col)
++            voxelPixel(v, sx+col, sy+row, front, face);
++}
++
++static void voxelGrassTuft(const struct VoxelView* v, int x, int y, int z,
++                           uint32_t base, uint32_t tip) {
++    voxelPropBox(v, x-2, y-1, 2, 2, z, 4, base);
++    voxelPropBox(v, x-1, y-2, 2, 2, z, 7, tip);
++    voxelPropBox(v, x+1, y, 2, 2, z, 5, base);
++}
++
+ static void voxelTerrainWithFloor(const struct VoxelView* v, const uint32_t* floor) {
+     // The floor fills the output. The projection bounds in pk_wide.c include every sample.
+     for (int y = 0; y < v->height; y++) {
+--- a/app/src/main/cpp/pk_red_voxel_pilot.h
++++ b/app/src/main/cpp/pk_red_voxel_pilot.h
+@@ -1,6 +1,6 @@
+ // Reviewed Pallet material cells for the exact US/EU Red cartridge.
+ // Units are 16 source pixels; the live map has a three-block border.
+-enum RedMaterial { RED_FIELD, RED_TREE, RED_ROOF, RED_WALL, RED_FLOWER, RED_POST, RED_WATER, RED_NATIVE, RED_SIGN };
++enum RedMaterial { RED_FIELD, RED_TREE, RED_ROOF, RED_WALL, RED_FLOWER, RED_POST, RED_WATER, RED_NATIVE, RED_SIGN, RED_PIPE, RED_GRASS };
+ static enum RedMaterial redMaterialAt(int cx, int cy) {
+     if ((unsigned)cx >= 20 || (unsigned)cy >= 18) return RED_FIELD;
+     if ((cy == 1 && cx != 9) || (cy == 0 && (cx == 3 || cx == 8 || cx == 10 || cx == 17)) ||
+@@ -28,6 +28,8 @@
+     [RED_WATER]  = {0, 108, 173, 180},
+     [RED_NATIVE] = {0, 0, 0, 0},
+     [RED_SIGN]   = {5, 192, 164, 122},
++    [RED_PIPE]   = {5, 167, 156, 135},
++    [RED_GRASS]  = {7, 91, 155, 101},
+ 
+ };
+ 
+@@ -140,9 +142,35 @@
+     }
+ }
+ 
++/* Each pipe cell is made entirely from rail, joint and clear base art.
++ * Require the complete four-tile pattern so roofs and terrain stay intact. */
++static bool gbVoxelPipe(uint32_t signature) {
++    if (signature==0x23232323u) return false;
++    for (int i=0; i<4; ++i, signature>>=8) {
++        unsigned tile=signature & 255u;
++        if (tile!=0x10 && tile!=0x20 && tile!=0x21 && tile!=0x23) return false;
++    }
++    return true;
++}
++
++static void redPipe(const struct VoxelView* v, int x, int y, uint32_t signature, uint32_t color) {
++    for (int i=0; i<4; ++i, signature>>=8) {
++        int qx=x+(i%2)*8, qy=y+(i/2)*8;
++        unsigned tile=signature & 255u;
++        if (tile==0x10) voxelPropBox(v,qx+3,qy,2,8,4,2,color);
++        if (tile==0x20) voxelPropBox(v,qx,qy+3,8,2,4,2,color);
++        if (tile==0x21) {
++            voxelPropBox(v,qx+2,qy+2,4,4,0,7,color);
++            voxelPropBox(v,qx+3,qy+3,2,2,7,1,color);
++        }
++    }
++}
++
+ static enum RedMaterial gbVoxelMaterial(uint32_t signature, int cx, int cy,
+                                        bool classicTiles, bool pallet, unsigned flower) {
+     if (flower) return RED_FLOWER;
++    if (classicTiles && signature==0x52525252u) return RED_GRASS;
++    if (classicTiles && gbVoxelPipe(signature)) return RED_PIPE;
+     int x=cx-6, y=cy-6;
+     if (pallet && (unsigned)x<20 && (unsigned)y<18) return redMaterialAt(x,y);
+     if (!classicTiles) return RED_NATIVE;
+@@ -151,7 +179,7 @@
+     case 0x55550e0eu: return RED_POST;
+     case 0x57564746u: return RED_SIGN;
+     case 0x14141414u: case 0x54141414u: case 0x14141432u: return RED_WATER;
+-    case 0x23232323u: case 0x39393939u: case 0x52525252u:
++    case 0x23232323u: case 0x39393939u:
+     case 0x23232339u: case 0x23392323u: case 0x23233923u:
+     case 0x2c2c2c2cu: return RED_FIELD;
+     default: return RED_NATIVE;
+@@ -248,6 +276,8 @@
+                         unsigned bit=1u << ((dy/8)*2+dx/8);
+                         floor[at+dx] = (flower & bit) ? ground :
+                             climateGround(redTint(color,&redStyles[RED_FIELD]),2);
++                    } else if (material==RED_PIPE) {
++                        floor[at+dx]=climateGround(redTint(alpha|0x00ffffffu,&redStyles[RED_FIELD]),1);
+                     } else if (style->rise) floor[at+dx]=ground;
+                     else {
+                         uint32_t ink=redTint(color,style);
+@@ -279,8 +309,19 @@
+             }
+             if (material==RED_TREE) redTree(&view,x+8,y+8,alpha);
+             if (material==RED_POST) {
+-                for (int dx=2; dx<16; dx+=8)
+-                    redBox(&view,x+dx,y+6,4,3,0,7,alpha|RED_COLOR(165,126,85));
++                uint32_t wood=alpha|RED_COLOR(165,126,85);
++                for (int dx=2; dx<16; dx+=8) {
++                    voxelPropBox(&view,x+dx,y+5,4,4,0,7,wood);
++                    voxelPropBox(&view,x+dx+1,y+6,2,2,7,2,voxelShade(wood,242));
++                }
++            }
++            if (material==RED_PIPE)
++                redPipe(&view,x,y,gbVoxelSignature(snap,left+col,top+row),alpha|RED_COLOR(172,163,145));
++            if (material==RED_GRASS) {
++                uint32_t base=climateLeafColor(alpha|RED_COLOR(77,133,79));
++                uint32_t tip=climateLeafColor(alpha|RED_COLOR(128,177,99));
++                for (int i=0; i<4; ++i)
++                    voxelGrassTuft(&view,x+4+(i%2)*8,y+3+(i/2)*8+(i%2),0,base,tip);
+             }
+             unsigned flower=flowerMasks[row*cols+col];
+             for (int tile=0; tile<4; ++tile) {

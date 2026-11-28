@@ -1781,7 +1781,7 @@
       "wall_height": 20,
       "ridge_height": 40,
       "hip_inset": 8,
-      "roof_top": 1,
+      "roof_top": 2,
       "wall_row": 28,
       "flat_roof": false,
       "wall_left": 1,
@@ -1791,6 +1791,10 @@
     "wall_crop_review": {
       "source_art_sha256": "b336f125d5ebacb8deff0a4434a743a76f9104c926b16054258f402ae5299336",
       "scope": "Own Route12 source reviewed at full size: wall below roof, outer ground corners excluded. Exact Thor geometry review pending."
+    },
+    "roof_crop_review": {
+      "source_art_sha256": "b336f125d5ebacb8deff0a4434a743a76f9104c926b16054258f402ae5299336",
+      "scope": "Route 12 hip roof starts at source row 2. Row 1 carries grass at both ridge corners in the exact 459873f Thor capture."
     }
   }
 ]

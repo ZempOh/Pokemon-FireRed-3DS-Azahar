@@ -1,5 +1,6 @@
 import copy,json,unittest
 from pathlib import Path
+from audit_building_wall_materials import hip_roof_texels
 from scenery_buildings import validate
 ROWS=json.loads((Path(__file__).parent/'scenery-profiles/android-buildings.json').read_text())
 class BuildingsTest(unittest.TestCase):
@@ -35,4 +36,14 @@ class BuildingsTest(unittest.TestCase):
   rows=copy.deepcopy(ROWS);row=next(r for r in rows if r.get('roof_crop_review'))
   row['roof_crop_review']['source_art_sha256']='0'*64
   with self.assertRaises(AssertionError):validate(rows)
+ def test_hip_roof_keeps_native_grass_outside_ash_ridge(self):
+  row=next(r for r in ROWS if r['game']=='ash-gray' and r['name']=='route12-gatehouse')
+  width=row['width']*16
+  original=set(hip_roof_texels(dict(row['shape'],roof_top=1),width))
+  reviewed=set(hip_roof_texels(row['shape'],width))
+  grass={(8,1),(56,1)}
+  self.assertTrue(grass <= original)
+  self.assertFalse(grass & reviewed)
+  self.assertTrue({(8,2),(56,2),(32,18),(32,27)} <= reviewed)
+  self.assertFalse({(0,2),(63,2)} & reviewed)
 if __name__=='__main__':unittest.main()

@@ -146,6 +146,13 @@ triangles against synthetic exterior grass columns. Repeat the whole Pallet
 house winter preflight before long timing runs; facade-rectangle audits alone
 cannot prove every emitted triangle uses the crop.
 
+Exact `459873f` projected two grass texels onto the rear ridge of Ash Gray's
+Route 12 gatehouse. Source row 1 narrows the native blue roof inside the hip
+corners at x8 and x56. Start this profile's roof crop at source row 2, keeping
+its original wall and world geometry. The material auditor checks the sampled
+UV trapezoid of reviewed hip roofs, including the sides. Review both rear
+corners in full-size clear and winter Thor captures before timing.
+
 Exact73 exposed a native-snow material mismatch in Unbound's Frozen Heights:
 tree footprint reconstruction applied full-land winter whitening to existing
 blue, night-lit snow. Preserve the original ground for verified native-snow

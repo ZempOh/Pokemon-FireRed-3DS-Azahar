@@ -1489,6 +1489,10 @@ cadence. Keep the same strict field and battle gates and retest both 2D and 3D.
 - FireRed's exact front Pidgey battle fixture has a depth-tested sprite
   volume and protected native HUD. It keeps normal output when other layers,
   clipping, or sprite changes invalidate the verified ownership checks.
+- English Red's verified Charmander Fight scene uses the same volume mesh.
+  Its Game Boy path verifies the final native window rows and sprite ink
+  before applying the volume. Verify move selection, the attack transition,
+  and return to field on the signed APK.
 - The shared Pallet water effect shades only verified water pixels. Leave the
   original shoreline, animations, and collision in the cartridge. Check actual
   movement and Surf, then inspect the water at full size.

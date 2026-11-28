@@ -1,0 +1,141 @@
+--- a/app/src/main/cpp/pk_wide_gb.c
++++ b/app/src/main/cpp/pk_wide_gb.c
+@@ -1374,10 +1374,15 @@
+   return 0;
+ }
+ 
++#include "pk_red_battle_pilot.h"
++
+ static int pk_wide_gb_configure_polished(const uint32_t addresses[GB_CONFIG], pk_wide_gb_decode_fn decode);
+ 
+ int pk_wide_gb_configure(uint32_t crc) {
+     gbVoxelProfile = pk_wide_gb_voxel_knows(crc);
++    gbRedBattleProfile = crc == 0x9f7fdd53u;
++    gbRedBattleArmed = false;
++    gbRedBattleInvalid = true;
+     memset(&voxelClimate, 0, sizeof(voxelClimate));
+     // Polished Crystal 3.2.3 (normal): its own structs and LZ, a profile of its own (pk_wide_gb_polished.inc)
+     if (crc && crc == PC_WIDE_CRC) return pk_wide_gb_configure_polished(pcWideConfig, pcLz);
+@@ -1520,6 +1525,7 @@
+     int cur = gbPrev == 0 ? 1 : 0;
+     gbTake(&gbSnaps[cur]);
+     gbCopyLive();
++    gbRedBattleArm(&gbR->d, voxel && out && gbSnaps[cur].battle);
+     if (!out) {   // pk_wide_skip: only the RAM after this frame, for the next one drawn
+         gbPrev = cur;
+         return gbMix;
+@@ -1725,6 +1731,7 @@
+         gbMix = 256;
+     } else {
+         gbCompose(frame, out, v, alpha, valid && gbLastScene == PK_WIDE_SCENE_FIELD);
++        if (gbRedBattleArmed && battle && !valid && !centre) gbRedBattleVolume(frame,out,v);
+     }
+     gbPrev = cur;
+     return gbMix;
+--- /dev/null
++++ b/app/src/main/cpp/pk_red_battle_pilot.h
+@@ -0,0 +1,104 @@
++#pragma once
++#include "pk_battle_volume.h"
++
++enum { RED_BATTLER_X=96, RED_BATTLER_Y=0, RED_BATTLER_SIZE=56 };
++static bool gbRedBattleProfile, gbRedBattleArmed, gbRedBattleInvalid;
++static uint32_t gbRedBattleFrame;
++static uint8_t gbRedBattleInk[RED_BATTLER_SIZE][RED_BATTLER_SIZE];
++static void (*gbRedBattleNativeRange)(struct GBVideoRenderer*, int, int, int);
++
++static void gbRedBattleRange(struct GBVideoRenderer* renderer, int start, int end, int y) {
++    gbRedBattleNativeRange(renderer,start,end,y);
++    if (!gbRedBattleArmed || y < RED_BATTLER_Y || y >= RED_BATTLER_SIZE) return;
++    if (y==0 && start==0) {
++        gbRedBattleFrame=gbB->video.frameCounter;
++        gbRedBattleInvalid=false;
++        memset(gbRedBattleInk,0xff,sizeof(gbRedBattleInk));
++    }
++    if (end<=RED_BATTLER_X || start>=RED_BATTLER_X+RED_BATTLER_SIZE) return;
++    if (gbRedBattleInvalid || gbRedBattleFrame!=gbB->video.frameCounter) return;
++
++    const struct GBVideoSoftwareRenderer* r=(const struct GBVideoSoftwareRenderer*)renderer;
++    // The proven fight menu draws the full-screen, signed-address window.
++    // Final native row indices above 3 belong to OBJ/highlight, not this art.
++    if (r->model!=GB_MODEL_SGB || r->sgbBorders || renderer->sgbRenderMode ||
++        r->lcdc!=0xe3 || !r->hasWindow || renderer->disableWIN || renderer->highlightWIN ||
++        r->wx+r->currentWx!=7 || r->wy+r->currentWy!=0 || r->offsetWx || r->offsetWy) {
++        gbRedBattleInvalid=true;
++        return;
++    }
++    int from=start<RED_BATTLER_X?RED_BATTLER_X:start;
++    int to=end>RED_BATTLER_X+RED_BATTLER_SIZE?RED_BATTLER_X+RED_BATTLER_SIZE:end;
++    for (int x=from;x<to;++x) {
++        int px=x-RED_BATTLER_X;
++        unsigned expected=(unsigned)(px/8*7+y/8);
++        unsigned tile=renderer->vram[0x1c00+(y/8)*32+x/8];
++        if (tile!=expected || r->row[x]>3) {
++            gbRedBattleInvalid=true;
++            return;
++        }
++        gbRedBattleInk[y][px]=(uint8_t)r->row[x];
++    }
++}
++
++static void gbRedBattleArm(struct GBVideoRenderer* renderer, bool active) {
++    gbRedBattleArmed=gbRedBattleProfile && active;
++    if (!gbRedBattleArmed) {
++        gbRedBattleInvalid=true;
++        if (renderer->drawRange==gbRedBattleRange) renderer->drawRange=gbRedBattleNativeRange;
++        return;
++    }
++    if (renderer->drawRange!=gbRedBattleRange) {
++        gbRedBattleNativeRange=renderer->drawRange;
++        renderer->drawRange=gbRedBattleRange;
++        gbRedBattleInvalid=true;
++    }
++}
++
++static void gbRedBattleVolume(const uint32_t* frame, uint32_t* out, struct PkWideView v) {
++    if (gbRedBattleInvalid || gbRedBattleFrame+1!=gbB->video.frameCounter ||
++        gbRam(0xcfe5)!=0xb0 || gbRam(0xd057)!=1 || gbRam(0xcc24)!=14 ||
++        gbRam(0xcc25)!=9 || gbRam(0xcc26)!=0) return;
++
++    uint32_t fingerprint=2166136261u, palette[4]={0};
++    unsigned seen=0;
++    for (int y=0;y<RED_BATTLER_SIZE;++y) for (int x=0;x<RED_BATTLER_SIZE;++x) {
++        unsigned ink=gbRedBattleInk[y][x];
++        if (ink>3) return;
++        unsigned tile=(unsigned)(x/8*7+y/8);
++        fingerprint=(fingerprint^tile)*16777619u;
++        fingerprint=(fingerprint^ink)*16777619u;
++        uint32_t color=frame[y*GBW+x+RED_BATTLER_X]&0x00ffffffu;
++        if ((seen&(1u<<ink)) && palette[ink]!=color) return;
++        palette[ink]=color;
++        seen|=1u<<ink;
++    }
++    // Exact English Red front Charmander artwork from the verified Fight
++    // checkpoint. Text, scrolling, fainting, and other species fail closed.
++    if (fingerprint!=0x9e4c3d9au || seen!=15 || palette[0]==palette[1] ||
++        palette[0]==palette[2] || palette[0]==palette[3]) return;
++
++    static struct BattleVolume volume;
++    static bool built;
++    if (!built) {
++        // Retain the native picture's placement and color indices. The
++        // shared helper consumes 4bpp 8x8 tiles in a padded 64-square.
++        uint8_t art[2048]={0};
++        for (int y=0;y<RED_BATTLER_SIZE;++y) for (int x=0;x<RED_BATTLER_SIZE;++x) {
++            unsigned slot=((y/8)*8+x/8)*32+(y%8)*4+(x%8)/2;
++            art[slot]|=(uint8_t)(gbRedBattleInk[y][x]<<((x&1)*4));
++        }
++        battleVolumeBuild(&volume,art,.44f,-.39f);
++        built=true;
++    }
++    for (int y=0;y<RED_BATTLER_SIZE;++y) for (int x=0;x<RED_BATTLER_SIZE;++x) {
++        int screenX=RED_BATTLER_X+x;
++        if (screenX<v.x || screenX>=v.x+v.w || y<v.y || y>=v.y+v.h) continue;
++        const struct BattleVolumePixel* sample=&volume.pixels[y+BATTLE_VOLUME_MARGIN][x+BATTLE_VOLUME_MARGIN];
++        if (!sample->ink) continue;
++        unsigned live=gbRedBattleInk[y][x];
++        if (!live && sample->face==1) continue;
++        uint32_t native=frame[y*GBW+screenX];
++        out[(y-v.y)*v.w+screenX-v.x]=voxelShade((native&0xff000000u)|palette[sample->ink],sample->light);
++    }
++}

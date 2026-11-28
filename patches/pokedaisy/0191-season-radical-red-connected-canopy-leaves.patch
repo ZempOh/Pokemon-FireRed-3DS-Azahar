@@ -1,0 +1,41 @@
+diff --git a/app/src/main/cpp/pk_scenery_radical_leaves.h b/app/src/main/cpp/pk_scenery_radical_leaves.h
+index dd124a7..2bd7999 100644
+--- a/app/src/main/cpp/pk_scenery_radical_leaves.h
++++ b/app/src/main/cpp/pk_scenery_radical_leaves.h
+@@ -17,3 +17,9 @@ static const uint16_t sceneryRadicalLeafRows[0x28][16] = {
+     [0x26] = {0xfffe,0xfffc,0xfff8,0xfff8,0xfff0,0xfff8,0xfffc,0xeffc,0x8ffc,0x0ffc,0x1ffc,0x3ff8,0xfff0,0xffc0,0xfe00,0xf000},
+     [0x27] = {0x7fff,0x3fff,0x1fff,0x1fff,0x0fff,0x1fff,0x3fff,0x3ff7,0x3ff1,0x3ff0,0x3ff8,0x1ffc,0x0fff,0x03ff,0x007f,0x000f},
+ };
++
++// Native Route 1 leaf texels adjoining the blue rail.
++static const uint16_t sceneryRadicalRoute1LeafRows[2][16] = {
++    {0x0000, 0x0000, 0x0000, 0x0001, 0x0003, 0x0003, 0x0007, 0x001f, 0x007f, 0x007f, 0x007f, 0x03ff, 0x03ff, 0x07ff, 0x03ff, 0x0fff},
++    {0x0fff, 0x07ff, 0x0fff, 0x3fff, 0x3fff, 0x1fff, 0x3fff, 0x3fff, 0x3fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x3fff, 0x7fff, 0x7fff},
++};
+diff --git a/app/src/main/cpp/pk_wide.c b/app/src/main/cpp/pk_wide.c
+index cfe7931..a88f1ec 100644
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -6655,14 +6655,17 @@ static bool drawVoxel(const struct Snap* s, int cx, int cy, int href, int vref,
+             const uint16_t* leafMask = winterLeafOpacity && conn < 0
+                 ? sceneryWinterLeafMask(solidRom,primary,secondary,id) : NULL;
+             const uint16_t* radicalLeaves=NULL;
+-            if (radicalPalletLeaves && (unsigned)id<0x28) {
+-                if (conn<0) radicalLeaves=sceneryRadicalLeafRows[id];
+-                else {
++            if (radicalPalletLeaves && ((unsigned)id<0x28 || id==0x2ab || id==0x2ba)) {
++                if (conn<0) {
++                    if ((unsigned)id<0x28) radicalLeaves=sceneryRadicalLeafRows[id];
++                } else {
+                     const struct Conn* north=&s->conn[conn];
+                     if (north->degree==1 && north->dir==2 && north->group==3 && north->num==19 &&
+                         north->primary==s->primary && north->secondary==s->secondary &&
+-                        r32(north->header)==0x082e55ccu)
+-                        radicalLeaves=sceneryRadicalLeafRows[id];
++                        r32(north->header)==0x082e55ccu) {
++                        if ((unsigned)id<0x28) radicalLeaves=sceneryRadicalLeafRows[id];
++                        else radicalLeaves=sceneryRadicalRoute1LeafRows[id==0x2ba];
++                    }
+                 }
+             }
+             for(int y=0;y<16;y++)for(int x=0;x<16;x++) {

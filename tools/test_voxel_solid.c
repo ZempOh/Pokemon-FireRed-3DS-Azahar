@@ -305,7 +305,11 @@ int main(void) {
         /* Red padding stands in for grass around the source facade. */
         for(int y=48;y<80;y++)for(int x=0;x<80;x++)
             if(x<5||x>=75||y>=78)building.art[y*80+x]=0xff0000ff;
-        struct VoxelView view={guarded+1,depth,floor,W,H,40,40,-24,-64,8,8,W,rises};
+        struct VoxelView view={
+            .out=guarded+1, .depth=depth, .texture=floor, .width=W, .height=H,
+            .centreX=40, .centreY=40, .left=-24, .top=-64,
+            .cols=8, .rows=8, .stride=W, .rises=rises,
+        };
         for(int kind=0;kind<3;kind++)for(int pass=0;pass<3;pass++) {
             profile.shape.roofKind=kind;
             guarded[0]=guarded[N+1]=0x12345678;

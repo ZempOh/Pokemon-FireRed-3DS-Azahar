@@ -1,0 +1,60 @@
+diff --git a/app/src/main/cpp/pk_wide.c b/app/src/main/cpp/pk_wide.c
+index 9edc688..c0b682d 100644
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -6279,6 +6279,47 @@ static const uint8_t* sceneryRoute212SouthFaces(const struct Snap* s,int cellX,i
+     return hidden;
+ }
+ 
++/* Fibernia paints these stone stairs on a single native movement
++ * plane. Give each authored tread an inset lip with a shallow riser. */
++static void sceneryFiberniaTreads(const struct Snap* s,const struct VoxelView* view,
++                                   int cellX,int cellY) {
++    if (solidRom!=0x6c5ee1b2u || s->group!=3 || s->num!=1 ||
++        !F.mapHeader || r32(F.mapHeader)!=0x08727f9cu ||
++        s->primary!=0x082d4a94u || s->secondary!=0x082d4b54u ||
++        s->width!=40 || s->height!=40) return;
++
++    static const struct { uint8_t x,y,width; } runs[] = {
++        {19,11,2}, {10,12,1}, {18,26,2}, {18,28,2},
++    };
++    for (size_t run=0; run<sizeof(runs)/sizeof(*runs); ++run) {
++        int x=MAP_OFFSET+runs[run].x,y=MAP_OFFSET+runs[run].y;
++        unsigned width=runs[run].width;
++        if ((unsigned)(x+(int)width-1)>=(unsigned)s->vw ||
++            (unsigned)y>=(unsigned)s->vh) continue;
++        const uint16_t* native=s->vmap+y*s->vw+x;
++        if (native[0]!=0x3091 || (width==2 && native[1]!=0x3089)) continue;
++        int row=y-cellY;
++        if ((unsigned)row>=(unsigned)view->rows) continue;
++        for (unsigned piece=0; piece<width; ++piece) {
++            int col=x+(int)piece-cellX;
++            if ((unsigned)col>=(unsigned)view->cols || !sceneryCellVisible(col,row)) continue;
++            int z=voxelRise(view,col,row);
++            const uint32_t* texture=view->texture+row*16*view->stride+col*16;
++            for (int tread=1; tread<16; tread+=4) {
++                const uint32_t* cap=texture+tread*view->stride;
++                const uint32_t* riser=cap+view->stride;
++                int worldY=view->top+row*16+tread;
++                int capY=voxelY(view,worldY,z+1), faceY=voxelY(view,worldY+1,z);
++                for (int u=0; u<16; ++u) {
++                    int worldX=view->left+col*16+u;
++                    voxelPixel(view,voxelX(view,worldX,worldY),capY,worldY,voxelShade(cap[u],241));
++                    voxelPixel(view,voxelX(view,worldX,worldY+1),faceY,worldY+1,voxelShade(riser[u],205));
++                }
++            }
++        }
++    }
++}
++
+ static bool scenerySouthLedgeMap(const struct Snap* s) {
+     if (!F.mapHeader || r8(F.mapHeader+0x17)!=3 || r8(F.mapHeader+0x16)!=2) return false;
+     for (size_t n=0; n<sizeof(scenerySouthLedgeMaps)/sizeof(*scenerySouthLedgeMaps); ++n) {
+@@ -6735,6 +6776,7 @@ static bool drawVoxel(const struct Snap* s, int cx, int cy, int href, int vref,
+     for (int i=0; i<stoneCount; ++i) sceneryStoneDraw(s,&voxel,&stones[i],alpha);
+     sceneryRoute12Terrace(s,&voxel,cellX,cellY,alpha);
+     if (span) voxelBridgeDraw(&voxel,span);
++    if (solidGroundAligned(href,vref)) sceneryFiberniaTreads(s,&voxel,cellX,cellY);
+     if (caveContact) sceneryCaveFootVolume(s,&voxel,cellX,cellY);
+     if (scenerySouthLedgeMap(s) && solidGroundAligned(href,vref))
+         scenerySouthLedgeVolume(s,&voxel,cellX,cellY);

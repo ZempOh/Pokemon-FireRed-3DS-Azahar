@@ -1,0 +1,50 @@
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -6222,24 +6222,24 @@
+             uint32_t color=voxelShade(rock,y==7 ? 182u : 221u-(unsigned)y*4u);
+             voxelPixel(view,x+u,top+y,pathY,color);
+         }
+     }
+ }
+ 
+-static void sceneryTerraceWestFace(const struct Snap* s,const struct VoxelView* view,
+-                                   int col,int row,int wall,uint32_t alpha) {
+-    int edgeX=view->left+col*VOXEL_TILE;
++static void sceneryTerraceSideFace(const struct Snap* s,const struct VoxelView* view,
++                                   int col,int row,int wall,bool east,uint32_t alpha) {
++    int edgeX=view->left+(col+east)*VOXEL_TILE;
+     int y0=view->top+row*VOXEL_TILE, y1=y0+VOXEL_TILE;
+     int x0=voxelX(view,edgeX,y0), x1=voxelX(view,edgeX,y1-1);
+     for (int x=x0; x<=x1; ++x) {
+         int first=view->centreY+4*(x-(view->width/2+edgeX-view->centreX));
+         int worldY=first+3 < y1 ? first+3 : y1-1;
+         int top=voxelY(view,first>y0?first:y0,8);
+         int bottom=voxelY(view,worldY,0);
+-        uint32_t cap=solidMaterialPixel(s,wall,14,worldY-y0,alpha);
+-        uint32_t base=solidMaterialPixel(s,wall,15,worldY-y0,alpha);
++        uint32_t cap=solidMaterialPixel(s,wall,east?1:14,worldY-y0,alpha);
++        uint32_t base=solidMaterialPixel(s,wall,east?0:15,worldY-y0,alpha);
+         for (int y=top; y<=bottom; ++y) {
+             uint32_t rock=y-top<3?cap:base;
+             voxelPixel(view,x,y,worldY,voxelShade(rock,y==bottom?135u:168u));
+         }
+     }
+ }
+@@ -6258,13 +6258,16 @@
+         const uint16_t* cell=s->vmap+y*s->vw+x;
+         if (*cell!=0x3001) continue;
+         int south=cell[s->vw];
+         if (south==0x117b || south==0x117d)
+             sceneryTerraceSouthFace(s,view,col,row,south&1023,alpha);
+         if (cell[-1]==0x117e)
+-            sceneryTerraceWestFace(s,view,col,row,0x17e,alpha);
++            sceneryTerraceSideFace(s,view,col,row,0x17e,false,alpha);
++        if (col+1<view->cols && x+1<MAP_OFFSET+s->width && x+1<s->vw &&
++            x==MAP_OFFSET+18 && y>=MAP_OFFSET+6 && y<=MAP_OFFSET+12 && cell[1]==0x117f)
++            sceneryTerraceSideFace(s,view,col,row,0x17f,true,alpha);
+     }
+ }
+ 
+ 
+ struct SceneryStone {
+     const struct SceneryStoneShape* shape;

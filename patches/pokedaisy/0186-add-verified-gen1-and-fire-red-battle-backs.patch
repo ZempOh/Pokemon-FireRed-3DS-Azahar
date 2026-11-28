@@ -1,0 +1,446 @@
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -5034,8 +5034,102 @@
+         battleVolumeFingerprint((const uint8_t*)(colors+1),30)==front->palette;
+ }
+ 
++struct BattleVolumeTarget {
++    const uint8_t* art;
++    uint32_t fingerprint;
++    int object, x, y, palette;
++    bool back;
++};
++
++struct BattleVolumeCache {
++    struct BattleVolume mesh;
++    struct BattleVolumeDetail detail;
++    uint32_t fingerprint, cartridge;
++    bool meshReady, detailReady;
++};
++
++static bool battleVolumeReady(void) {
++    return voxelEnabled && lineIoFrames>=2 && lineOamN==1 && linePalN==1 && !tintShown;
++}
++
++static void battleVolumePaint(const uint32_t* frame, uint32_t* out, struct PkWideView v, uint32_t alpha,
++        const struct BattleVolumeTarget* target, struct BattleVolumeCache* cache) {
++    const bool detailed=pk_wide_battle_detail_requested();
++    if (!detailed && target->back) return;
++    const int ox=target->x, oy=target->y, palette=target->palette;
++    struct BattleVolume* mesh=&cache->mesh;
++    struct BattleVolumeDetail* detail=&cache->detail;
++    const float yaw=target->back ? -.44f : .44f;
++    if (!cache->meshReady || cache->fingerprint!=target->fingerprint || cache->cartridge!=solidRom) {
++        battleVolumeBuild(mesh,target->art,yaw,-.39f);
++        cache->fingerprint=target->fingerprint;
++        cache->cartridge=solidRom;
++        cache->meshReady=true;
++        cache->detailReady=false;
++    }
++    if (detailed && !cache->detailReady) {
++        battleVolumeDetailBuild(detail,target->art,yaw,-.39f);
++        cache->detailReady=true;
++    }
++    uint8_t blocked[BATTLE_VOLUME_SIZE][BATTLE_VOLUME_SIZE] = {0};
++    battleVolumeProtect(lineOamBuf[0],target->object,ox-BATTLE_VOLUME_MARGIN,oy-BATTLE_VOLUME_MARGIN,blocked);
++    bool safeLine[BATTLE_VOLUME_SIZE] = {0};
++    // Require ordinary mode-0 1D sprites and palette on the source lines.
++    for (int row = 0; row < BATTLE_VOLUME_SIZE; ++row) {
++        int y = oy + row - BATTLE_VOLUME_MARGIN;
++        if (y < 0 || y >= BATTLE_TEXT_TOP) continue;
++        useLine(y);
++        if ((io(0) & 0x10c7) != 0x1040 || io(0x50) & 0x00c0 || io(0x4c)) continue;
++        if ((io(0x08)|io(0x0a)|io(0x0c)|io(0x0e)) & 0x40) continue;
++        safeLine[row] = true;
++    }
++    for (int row = 0; row < BATTLE_VOLUME_SIZE; ++row) {
++        int y = oy + row - BATTLE_VOLUME_MARGIN;
++        if (!safeLine[row] || y < v.y || y >= v.y+v.h) continue;
++        useLine(y);
++        for (int col = 0; col < BATTLE_VOLUME_SIZE; ++col) {
++            const struct BattleVolumePixel* pixel = &mesh->pixels[row][col];
++            if (!pixel->ink && (!detailed || !battleVolumeDetailCovers(detail,col,row))) continue;
++            int x = ox + col - BATTLE_VOLUME_MARGIN;
++            if (x < 0 || x >= PK_WIDE_W || x < v.x || x >= v.x+v.w) continue;
++            int sx = x-ox, sy = y-oy;
++            unsigned live = (unsigned)sx < 64 && (unsigned)sy < 64 ? mesh->mask[sy][sx] : 0;
++            if (!detailed && !live && pixel->face == 1) continue;
++            if ((windowLayers(x,y) & 0x18) != 0x18 || blocked[row][col]) continue;
++            int pal;
++            bool covered = false;
++            for (int b = 0; b < 3; ++b)
++                if ((io(0) & (0x100<<b)) && bgPixel(b,x,y,&pal)) covered = true;
++            if (covered || (io(0x0e)&3) < 2) continue;
++            unsigned arena = bgPixel(3,x,y,&pal);
++            if (!live && !arena) continue;
++            uint32_t expected = color(P[live ? palette + live : pal + arena],alpha);
++            const uint32_t native = frame[y*PK_WIDE_W+x];
++            if ((expected ^ native) & 0x00ffffffu) continue;
++            uint32_t* dst=out+(y-v.y)*v.w+x-v.x;
++            if (detailed) {
++                uint32_t samples[4]={*dst,*dst,*dst,*dst};
++                for (int sy=0; sy<2; ++sy) for (int sx=0; sx<2; ++sx) {
++                    const struct BattleVolumePixel* subpixel=&detail->pixels[row*2+sy][col*2+sx];
++                    if (!subpixel->ink || (!live && subpixel->face==1)) continue;
++                    unsigned light=battleVolumeDetailLight(detail,subpixel,col*2+sx,row*2+sy);
++                    uint32_t ink=color(P[palette+subpixel->ink],alpha);
++                    samples[sy*2+sx]=(native&0xff000000u)|(voxelShade(ink,light)&0x00ffffffu);
++                }
++                pk_wide_battle_detail_pixel(x,y,samples);
++            }
++            if (!target->back && pixel->ink && (live || pixel->face!=1)) {
++                uint32_t ink = color(P[palette + pixel->ink],alpha);
++                // mGBA uses the high byte for internal pixel flags on this host.
++                *dst=(native&0xff000000u)|(voxelShade(ink,pixel->light)&0x00ffffffu);
++            }
++        }
++    }
++    useLive();
++}
++
+ static void battleVolumeDraw(const uint32_t* frame, uint32_t* out, struct PkWideView v, uint32_t alpha) {
+-    if (!voxelEnabled || lineIoFrames < 2 || lineOamN != 1 || linePalN != 1 || tintShown) return;
++    if (!battleVolumeReady()) return;
+     const struct BattleFrontProfile* profile = NULL;
+     for (unsigned i = 0; i < sizeof(battleFrontProfiles)/sizeof(*battleFrontProfiles); ++i) {
+         if (battleFrontProfiles[i].crc == solidRom) {
+@@ -5073,80 +5167,40 @@
+         fingerprint = candidateFingerprint;
+     }
+     if (target < 0) return;
+-    static struct BattleVolume mesh;
+-    static struct BattleVolumeDetail detail;
+-    static bool detailReady;
+-    const bool detailed=pk_wide_battle_detail_requested();
+-    static uint32_t cachedFingerprint;
+-    static uint32_t cachedCartridge;
+-    static bool meshReady;
+-    if (!meshReady || cachedFingerprint != fingerprint || cachedCartridge != solidRom) {
+-        battleVolumeBuild(&mesh, art, .44f, -.39f);
+-        cachedFingerprint = fingerprint;
+-        cachedCartridge = solidRom;
+-        meshReady = true;
+-        detailReady = false;
+-    }
+-    if (detailed && !detailReady) {
+-        battleVolumeDetailBuild(&detail,art,.44f,-.39f);
+-        detailReady=true;
+-    }
+-    uint8_t blocked[BATTLE_VOLUME_SIZE][BATTLE_VOLUME_SIZE] = {0};
+-    battleVolumeProtect(oam,target,ox-BATTLE_VOLUME_MARGIN,oy-BATTLE_VOLUME_MARGIN,blocked);
+-    bool safeLine[BATTLE_VOLUME_SIZE] = {0};
+-    // Require ordinary mode-0 1D sprites and palette on the source lines.
+-    for (int row = 0; row < BATTLE_VOLUME_SIZE; ++row) {
+-        int y = oy + row - BATTLE_VOLUME_MARGIN;
+-        if (y < 0 || y >= BATTLE_TEXT_TOP) continue;
+-        useLine(y);
+-        if ((io(0) & 0x10c7) != 0x1040 || io(0x50) & 0x00c0 || io(0x4c)) continue;
+-        if ((io(0x08)|io(0x0a)|io(0x0c)|io(0x0e)) & 0x40) continue;
+-        safeLine[row] = true;
+-    }
+-    for (int row = 0; row < BATTLE_VOLUME_SIZE; ++row) {
+-        int y = oy + row - BATTLE_VOLUME_MARGIN;
+-        if (!safeLine[row] || y < v.y || y >= v.y+v.h) continue;
+-        useLine(y);
+-        for (int col = 0; col < BATTLE_VOLUME_SIZE; ++col) {
+-            const struct BattleVolumePixel* pixel = &mesh.pixels[row][col];
+-            if (!pixel->ink && (!detailed || !battleVolumeDetailCovers(&detail,col,row))) continue;
+-            int x = ox + col - BATTLE_VOLUME_MARGIN;
+-            if (x < 0 || x >= PK_WIDE_W || x < v.x || x >= v.x+v.w) continue;
+-            int sx = x-ox, sy = y-oy;
+-            unsigned live = (unsigned)sx < 64 && (unsigned)sy < 64 ? mesh.mask[sy][sx] : 0;
+-            if (!detailed && !live && pixel->face == 1) continue;
+-            if ((windowLayers(x,y) & 0x18) != 0x18 || blocked[row][col]) continue;
+-            int pal;
+-            bool covered = false;
+-            for (int b = 0; b < 3; ++b)
+-                if ((io(0) & (0x100<<b)) && bgPixel(b,x,y,&pal)) covered = true;
+-            if (covered || (io(0x0e)&3) < 2) continue;
+-            unsigned arena = bgPixel(3,x,y,&pal);
+-            if (!live && !arena) continue;
+-            uint32_t expected = color(P[live ? palette + live : pal + arena],alpha);
+-            const uint32_t native = frame[y*PK_WIDE_W+x];
+-            if ((expected ^ native) & 0x00ffffffu) continue;
+-            uint32_t* dst=out+(y-v.y)*v.w+x-v.x;
+-            if (detailed) {
+-                uint32_t samples[4]={*dst,*dst,*dst,*dst};
+-                for (int sy=0; sy<2; ++sy) for (int sx=0; sx<2; ++sx) {
+-                    const struct BattleVolumePixel* subpixel=&detail.pixels[row*2+sy][col*2+sx];
+-                    if (!subpixel->ink || (!live && subpixel->face==1)) continue;
+-                    unsigned light=battleVolumeDetailLight(&detail,subpixel,col*2+sx,row*2+sy);
+-                    uint32_t ink=color(P[palette+subpixel->ink],alpha);
+-                    samples[sy*2+sx]=(native&0xff000000u)|(voxelShade(ink,light)&0x00ffffffu);
+-                }
+-                pk_wide_battle_detail_pixel(x,y,samples);
+-            }
+-            if (pixel->ink && (live || pixel->face!=1)) {
+-                uint32_t ink = color(P[palette + pixel->ink],alpha);
+-                // mGBA uses the high byte for internal pixel flags on this host.
+-                *dst=(native&0xff000000u)|(voxelShade(ink,pixel->light)&0x00ffffffu);
+-            }
+-        }
+-    }
+-    useLive();
+-}
++    static struct BattleVolumeCache cache;
++    const struct BattleVolumeTarget front={art,fingerprint,target,ox,oy,palette,false};
++    battleVolumePaint(frame,out,v,alpha,&front,&cache);
++}
++
++#ifdef PK_BATTLE_BACK_DETAIL
++/* English FireRed rev 0 single battle. The two normal anchors are the
++ * observed one-pixel bob of the original Charmander back animation. */
++static void battleBackVolumeDraw(const uint32_t* frame, uint32_t* out, struct PkWideView v, uint32_t alpha) {
++    if (solidRom!=0xdd88761cu || !pk_wide_battle_detail_requested() || !battleVolumeReady() ||
++        r8(0x02023bccu)!=2 || r8(0x02023bd6u)!=0 || r8(0x02023bd7u)!=1 ||
++        r16(0x02023be4u)!=4) return;
++    const uint16_t* oam=lineOamBuf[0];
++    const uint8_t* tiles=(const uint8_t*)G->video.vram+0x10000;
++    struct BattleVolumeTarget back={.object=-1};
++    for (int k=0;k<128;++k) {
++        const uint16_t* a=oam+k*4;
++        int y=a[0]&255, tile=a[2]&1023;
++        if ((a[0]&0xff00)!=0x0100 || (a[1]&0xc000)!=0xc000 || (a[1]&511)!=40 ||
++            (y!=58 && y!=59) || ((a[2]>>10)&3)!=2 || tile>960) continue;
++        const uint8_t* art=tiles+tile*32;
++        int palette=256+(a[2]>>12)*16;
++        // Both digests come from the cartridge's native back and palette tables.
++        if (battleVolumeFingerprint(art,2048)!=0xdedd67a3u ||
++            battleVolumeFingerprint((const uint8_t*)(linePalBuf[0]+palette+1),30)!=0x5b268c8du) continue;
++        const uint16_t* matrix=oam+((a[1]>>9)&31)*16;
++        if (matrix[3]!=256 || matrix[7] || matrix[11] || matrix[15]!=256 || back.object>=0) return;
++        back=(struct BattleVolumeTarget){art,0xdedd67a3u,k,40,y,palette,true};
++    }
++    if (back.object<0) return;
++    static struct BattleVolumeCache cache;
++    battleVolumePaint(frame,out,v,alpha,&back,&cache);
++}
++#endif
+ 
+ static void fullDraw(const struct FullView* f) {
+     const uint32_t* frame = f->frame;
+@@ -5273,7 +5327,12 @@
+             i += n - 1;
+         }
+     }
+-    if (battle && !overlayDim && !holeLeft && !centre) battleVolumeDraw(frame,out,v,alpha);
++    if (battle && !overlayDim && !holeLeft && !centre) {
++        battleVolumeDraw(frame,out,v,alpha);
++#ifdef PK_BATTLE_BACK_DETAIL
++        battleBackVolumeDraw(frame,out,v,alpha);
++#endif
++    }
+     if (valid && (flyDx || flyDy)) flyLabel(f);
+     PW_MARK(pw5);
+     PW_ADD(3, pw4, pw5);
+diff --git a/app/src/main/cpp/pk_gen1_battle_back.h b/app/src/main/cpp/pk_gen1_battle_back.h
+new file mode 100644
+index 0000000..1d8caea
+--- /dev/null
++++ b/app/src/main/cpp/pk_gen1_battle_back.h
+@@ -0,0 +1,141 @@
++#pragma once
++
++/* The signed-address battle window places the player above the dialogue box.
++ * Same rear art can be shared across hardware palettes and cartridge layouts. */
++enum { GEN1_BACK_X=8, GEN1_BACK_Y=40, GEN1_BACK_SIZE=56, GEN1_BACK_FIRST_TILE=0x31 };
++enum Gen1BackArtId { GEN1_BACK_SQUIRTLE, GEN1_BACK_PIKACHU };
++
++static const struct {
++    uint32_t fingerprint;
++    uint8_t species;
++} gen1BattleBackArt[] = {
++    [GEN1_BACK_SQUIRTLE]={0xbb337c4du,0xb1},
++    [GEN1_BACK_PIKACHU]={0x710bc78du,0x54}
++};
++
++struct Gen1BattleBackProfile {
++    uint32_t crc;
++    uint16_t player;
++    uint8_t art, attribute;
++};
++static const struct Gen1BattleBackProfile gen1BattleBackProfiles[] = {
++    {0x9f7fdd53u,0xd014,GEN1_BACK_SQUIRTLE,0},
++    {0xd6da8a1au,0xd014,GEN1_BACK_PIKACHU,0},
++    {0x7d527d62u,0xd013,GEN1_BACK_PIKACHU,2}
++};
++
++static const struct Gen1BattleBackProfile* gbGen1BattleBack;
++static bool gbGen1BackArmed, gbGen1BackInvalid;
++static uint32_t gbGen1BackFrame;
++static uint8_t gbGen1BackInk[GEN1_BACK_SIZE][GEN1_BACK_SIZE];
++
++static void gbGen1BackConfigure(uint32_t crc) {
++    gbGen1BattleBack=NULL;
++    gbGen1BackArmed=false;
++    gbGen1BackInvalid=true;
++    for (size_t i=0;i<sizeof(gen1BattleBackProfiles)/sizeof(*gen1BattleBackProfiles);++i)
++        if (gen1BattleBackProfiles[i].crc==crc) {
++            gbGen1BattleBack=&gen1BattleBackProfiles[i];
++            return;
++        }
++}
++
++static unsigned gbGen1BackTile(int x, int y) {
++    return GEN1_BACK_FIRST_TILE+(unsigned)(x/8*7+y/8);
++}
++
++static void gbGen1BackObserve(struct GBVideoRenderer* renderer, int start, int end, int y) {
++    if (!gbGen1BackArmed || y<GEN1_BACK_Y || y>=GEN1_BACK_Y+GEN1_BACK_SIZE) return;
++    if (y==GEN1_BACK_Y && start==0) {
++        gbGen1BackFrame=gbB->video.frameCounter;
++        gbGen1BackInvalid=false;
++        memset(gbGen1BackInk,0xff,sizeof(gbGen1BackInk));
++    }
++    if (end<=GEN1_BACK_X || start>=GEN1_BACK_X+GEN1_BACK_SIZE || gbGen1BackInvalid ||
++        gbGen1BackFrame!=gbB->video.frameCounter) return;
++
++    const struct GBVideoSoftwareRenderer* r=(const struct GBVideoSoftwareRenderer*)renderer;
++    const struct Gen1BattleOwnership* layout=gbGen1BattleBatchLayout;
++    if (r->model!=layout->model || r->sgbBorders || renderer->sgbRenderMode ||
++        r->lcdc!=layout->lcdc || !r->hasWindow || renderer->disableWIN || renderer->highlightWIN ||
++        r->wx+r->currentWx!=7 || r->wy+r->currentWy!=0 || r->offsetWx || r->offsetWy) {
++        gbGen1BackInvalid=true;
++        return;
++    }
++    int from=start<GEN1_BACK_X ? GEN1_BACK_X : start;
++    int to=end>GEN1_BACK_X+GEN1_BACK_SIZE ? GEN1_BACK_X+GEN1_BACK_SIZE : end;
++    unsigned attribute=gbGen1BattleBack->attribute;
++    unsigned paletteBase=(attribute&7u)*4u;
++    for (int x=from;x<to;++x) {
++        unsigned mapAddress=0x1c00+(y/8)*32+x/8;
++        int px=x-GEN1_BACK_X, py=y-GEN1_BACK_Y;
++        if (renderer->vram[mapAddress]!=gbGen1BackTile(px,py) ||
++            r->row[x]<paletteBase || r->row[x]>paletteBase+3 ||
++            (layout->model==GB_MODEL_CGB && renderer->vram[mapAddress+0x2000]!=attribute)) {
++            gbGen1BackInvalid=true;
++            return;
++        }
++        gbGen1BackInk[py][px]=(uint8_t)(r->row[x]-paletteBase);
++    }
++}
++
++static void gbGen1BackArm(bool active) {
++    bool next=active && gbGen1BattleBack && gbGen1BattleBatchLayout &&
++        pk_wide_battle_detail_requested() &&
++        gbRam(gbGen1BattleBack->player)==gen1BattleBackArt[gbGen1BattleBack->art].species;
++    if (next!=gbGen1BackArmed) gbGen1BackInvalid=true;
++    gbGen1BackArmed=next;
++}
++
++static void gbGen1BackVolume(const uint32_t* frame, const uint32_t* out, struct PkWideView v) {
++    if (!gbGen1BackArmed || gbGen1BackInvalid || gbGen1BackFrame+1!=gbB->video.frameCounter) return;
++    if (gbR->sgbBorders || gbR->d.sgbRenderMode) return;
++    const struct Gen1BattleOwnership* layout=gbGen1BattleBatchLayout;
++    if (gbRam(layout->battle)!=1 || gbRam(layout->menu)!=14 ||
++        gbRam(layout->menu+1)!=layout->menuX || gbRam(layout->menu+2)!=0) return;
++
++    uint32_t fingerprint=2166136261u, palette[4]={0};
++    unsigned seen=0;
++    for (int y=0;y<GEN1_BACK_SIZE;++y) for (int x=0;x<GEN1_BACK_SIZE;++x) {
++        unsigned ink=gbGen1BackInk[y][x];
++        if (ink>3) return;
++        fingerprint=(fingerprint^gbGen1BackTile(x,y))*16777619u;
++        fingerprint=(fingerprint^ink)*16777619u;
++        uint32_t color=frame[(y+GEN1_BACK_Y)*GBW+x+GEN1_BACK_X]&0x00ffffffu;
++        if ((seen&(1u<<ink)) && palette[ink]!=color) return;
++        palette[ink]=color;
++        seen|=1u<<ink;
++    }
++    if (fingerprint!=gen1BattleBackArt[gbGen1BattleBack->art].fingerprint ||
++        seen!=15 || palette[0]==palette[1] || palette[0]==palette[2] || palette[0]==palette[3]) return;
++
++    static struct BattleVolumeDetail detail;
++    static uint32_t meshFingerprint;
++    if (meshFingerprint!=fingerprint) {
++        uint8_t art[2048]={0};
++        for (int y=0;y<GEN1_BACK_SIZE;++y) for (int x=0;x<GEN1_BACK_SIZE;++x) {
++            unsigned slot=((y/8)*8+x/8)*32+(y%8)*4+(x%8)/2;
++            art[slot]|=(uint8_t)(gbGen1BackInk[y][x]<<((x&1)*4));
++        }
++        battleVolumeDetailBuild(&detail,art,-.44f,-.39f);
++        meshFingerprint=fingerprint;
++    }
++    for (int y=0;y<GEN1_BACK_SIZE;++y) for (int x=0;x<GEN1_BACK_SIZE;++x) {
++        int screenX=x+GEN1_BACK_X, screenY=y+GEN1_BACK_Y;
++        if ((unsigned)(screenX-v.x)>=(unsigned)v.w || (unsigned)(screenY-v.y)>=(unsigned)v.h) continue;
++        int row=y+BATTLE_VOLUME_MARGIN, col=x+BATTLE_VOLUME_MARGIN;
++        if (!battleVolumeDetailCovers(&detail,col,row)) continue;
++        uint32_t base=out[(screenY-v.y)*v.w+screenX-v.x];
++        uint32_t native=frame[screenY*GBW+screenX];
++        uint32_t samples[4]={base,base,base,base};
++        bool painted=false;
++        for (int sy=0;sy<2;++sy) for (int sx=0;sx<2;++sx) {
++            const struct BattleVolumePixel* sub=&detail.pixels[row*2+sy][col*2+sx];
++            if (!sub->ink || (!gbGen1BackInk[y][x] && sub->face==1)) continue;
++            unsigned light=battleVolumeDetailLight(&detail,sub,col*2+sx,row*2+sy);
++            samples[sy*2+sx]=voxelShade((native&0xff000000u)|palette[sub->ink],light);
++            painted=true;
++        }
++        if (painted) pk_wide_battle_detail_pixel(screenX,screenY,samples);
++    }
++}
+diff --git a/app/src/main/cpp/pk_red_battle_pilot.h b/app/src/main/cpp/pk_red_battle_pilot.h
+index 8870dd6..cdd7e6e 100644
+--- a/app/src/main/cpp/pk_red_battle_pilot.h
++++ b/app/src/main/cpp/pk_red_battle_pilot.h
+@@ -15,6 +15,10 @@ static uint32_t gbGen1BattleFrame;
+ static uint8_t gbGen1BattleInk[GEN1_BATTLER_SIZE][GEN1_BATTLER_SIZE];
+ static void (*gbGen1BattleNativeRange)(struct GBVideoRenderer*, int, int, int);
+ 
++#ifdef PK_BATTLE_BACK_DETAIL
++#include "pk_gen1_battle_back.h"
++#endif
++
+ static const struct Gen1BattleOwnership* gbBattleOwnership(uint32_t crc) {
+     for (size_t i=0;i<sizeof(gen1BattleOwnership)/sizeof(*gen1BattleOwnership);++i)
+         if (gen1BattleOwnership[i].crc==crc &&
+@@ -30,6 +34,9 @@ static void gbGen1BattleConfigure(uint32_t crc) {
+     gbGen1BattleBatchLayout=NULL;
+     gbGen1BattleArmed=false;
+     gbGen1BattleInvalid=true;
++#ifdef PK_BATTLE_BACK_DETAIL
++    gbGen1BackConfigure(crc);
++#endif
+     uint32_t artCrc=crc;
+     for (size_t i=0;i<sizeof(gen1BattleFrontAliases)/sizeof(*gen1BattleFrontAliases);++i)
+         if (gen1BattleFrontAliases[i].crc==crc) {
+@@ -51,6 +58,9 @@ static void gbGen1BattleConfigure(uint32_t crc) {
+ 
+ static void gbGen1BattleRange(struct GBVideoRenderer* renderer, int start, int end, int y) {
+     gbGen1BattleNativeRange(renderer,start,end,y);
++#ifdef PK_BATTLE_BACK_DETAIL
++    gbGen1BackObserve(renderer,start,end,y);
++#endif
+     if (!gbGen1BattleArmed || y < GEN1_BATTLER_Y || y >= GEN1_BATTLER_SIZE) return;
+     if (y==0 && start==0) {
+         gbGen1BattleFrame=gbB->video.frameCounter;
+@@ -106,7 +116,13 @@ static void gbGen1BattleArm(struct GBVideoRenderer* renderer, bool active) {
+     gbGen1BattleSpecies=species;
+     gbGen1BattleFingerprint=front;
+     gbGen1BattleArmed=next!=NULL;
+-    if (!gbGen1BattleArmed) {
++#ifdef PK_BATTLE_BACK_DETAIL
++    gbGen1BackArm(active);
++    const bool observe=gbGen1BattleArmed || gbGen1BackArmed;
++#else
++    const bool observe=gbGen1BattleArmed;
++#endif
++    if (!observe) {
+         gbGen1BattleInvalid=true;
+         if (renderer->drawRange==gbGen1BattleRange) renderer->drawRange=gbGen1BattleNativeRange;
+         return;
+diff --git a/app/src/main/cpp/pk_wide_gb.c b/app/src/main/cpp/pk_wide_gb.c
+index e64a019..44c9bd7 100644
+--- a/app/src/main/cpp/pk_wide_gb.c
++++ b/app/src/main/cpp/pk_wide_gb.c
+@@ -1740,6 +1740,9 @@ int pk_wide_gb_view(struct mCore* core, const uint32_t* frame, uint32_t* out,
+     } else {
+         gbCompose(frame, out, v, alpha, valid && gbLastScene == PK_WIDE_SCENE_FIELD);
+         if (gbGen1BattleArmed && battle && !valid && !centre) gbGen1BattleVolume(frame,out,v);
++#ifdef PK_BATTLE_BACK_DETAIL
++        if (battle && !valid && !centre) gbGen1BackVolume(frame,out,v);
++#endif
+     }
+ #ifdef __ANDROID__
+     if (gbVoxelProfile && now->ok && ++gbSceneProbeFrames == 120u) {

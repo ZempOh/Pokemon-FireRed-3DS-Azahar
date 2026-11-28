@@ -1,0 +1,89 @@
+diff --git a/app/src/main/cpp/pk_wide.c b/app/src/main/cpp/pk_wide.c
+index eb8e43f..8a0fa7f 100644
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -33,6 +33,7 @@
+ #include "pk_scenery_pallet_banks.h"
+ #include "pk_scenery_cave_contact_profiles.h"
+ #include "pk_scenery_south_ledge_profiles.h"
++#include "pk_scenery_odyssey_stairs.h"
+ #include "pk_voxel_ledge_material.h"
+ #include "pk_scenery_berry_soil.h"
+ #include "pk_scenery_stone_profiles.h"
+@@ -6283,23 +6284,17 @@ static const uint8_t* sceneryRoute212SouthFaces(const struct Snap* s,int cellX,i
+  * landings. Give each authored tread an inset lip with a shallow riser. */
+ static void sceneryOdysseyTreads(const struct Snap* s,const struct VoxelView* view,
+                                    int cellX,int cellY) {
+-    if (solidRom!=0x6c5ee1b2u || s->group!=3 || !F.mapHeader ||
+-        s->primary!=0x082d4a94u || s->secondary!=0x082d4b54u ||
+-        s->width!=40) return;
+-
+-    struct StairRun { uint8_t x,y,width; };
+-    static const struct StairRun fibernia[] = {{19,11,2}, {10,12,1}, {18,26,2}, {18,28,2}};
+-    static const struct StairRun eastFlight[] = {{22,16,2}, {22,17,2}, {22,18,2}, {22,19,2}};
+-    static const struct { uint32_t layout; uint8_t map,height,count; const struct StairRun* runs; } maps[] = {
+-        {0x08727f9cu,1,40,sizeof(fibernia)/sizeof(*fibernia),fibernia},
+-        {0x0876c6e8u,38,30,sizeof(eastFlight)/sizeof(*eastFlight),eastFlight},
+-    };
+-    const struct StairRun* runs=NULL;
++    if (solidRom!=0x6c5ee1b2u || s->group!=3 || !F.mapHeader) return;
++
++    const struct SceneryStairRun* runs=NULL;
+     unsigned count=0;
+-    for (size_t i=0; i<sizeof(maps)/sizeof(*maps); ++i) {
+-        if (s->num==maps[i].map && s->height==maps[i].height && r32(F.mapHeader)==maps[i].layout) {
+-            runs=maps[i].runs;
+-            count=maps[i].count;
++    uint32_t layout=r32(F.mapHeader);
++    for (size_t i=0; i<sizeof(sceneryOdysseyStairMaps)/sizeof(*sceneryOdysseyStairMaps); ++i) {
++        const struct SceneryStairMap* m=&sceneryOdysseyStairMaps[i];
++        if (s->num==m->map && layout==m->layout && s->primary==m->primary && s->secondary==m->secondary &&
++            s->width==m->width && s->height==m->height) {
++            runs=sceneryOdysseyStairRuns+m->first;
++            count=m->count;
+             break;
+         }
+     }
+diff --git a/app/src/main/cpp/pk_scenery_odyssey_stairs.h b/app/src/main/cpp/pk_scenery_odyssey_stairs.h
+new file mode 100644
+index 0000000..beeaf3d
+--- /dev/null
++++ b/app/src/main/cpp/pk_scenery_odyssey_stairs.h
+@@ -0,0 +1,37 @@
++// Generated from source-audited Odyssey stairs.
++#pragma once
++
++struct SceneryStairRun { uint8_t x,y,width; };
++struct SceneryStairMap { uint32_t layout,primary,secondary; uint16_t first,count; uint8_t map,width,height; };
++static const struct SceneryStairRun sceneryOdysseyStairRuns[] = {
++    {19,11,2},
++    {10,12,1},
++    {18,26,2},
++    {18,28,2},
++    {24,13,2},
++    {22,16,2},
++    {22,17,2},
++    {22,18,2},
++    {22,19,2},
++    {18,18,2},
++    {5,48,2},
++    {8,24,2},
++    {7,85,2},
++    {13,8,2},
++    {4,10,2},
++    {15,17,2},
++    {7,30,2},
++    {10,49,2},
++    {13,68,2},
++    {15,74,2},
++};
++
++static const struct SceneryStairMap sceneryOdysseyStairMaps[] = {
++    {0x8727f9cu,0x82d4a94u,0x82d4b54u,0,4,1,40,40},
++    {0x87bb25cu,0x82d4a94u,0x82d4b24u,4,1,7,54,40},
++    {0x876c6e8u,0x82d4a94u,0x82d4b54u,5,4,38,40,30},
++    {0x8763f08u,0x82d4a94u,0x82d4aacu,9,1,41,40,50},
++    {0x832c648u,0x82d4a94u,0x82d5064u,10,1,57,24,60},
++    {0x832f3b4u,0x82d4a94u,0x82d507cu,11,2,60,24,100},
++    {0x8333f44u,0x82d4a94u,0x82d507cu,13,7,64,24,80},
++};

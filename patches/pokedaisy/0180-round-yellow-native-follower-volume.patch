@@ -1,0 +1,159 @@
+diff --git a/app/src/main/cpp/pk_red_voxel_pilot.h b/app/src/main/cpp/pk_red_voxel_pilot.h
+index bb4599d..05f2355 100644
+--- a/app/src/main/cpp/pk_red_voxel_pilot.h
++++ b/app/src/main/cpp/pk_red_voxel_pilot.h
+@@ -46,7 +46,11 @@ static uint32_t redTint(uint32_t color, const struct RedMaterialStyle* style) {
+         | ((style->g * shade >> 8) << 8) | ((style->b * shade >> 8) << 16);
+ }
+ 
++#include "pk_yellow_field_follower.h"
++
+ static void redVoxelActors(const struct VoxelView* view, int ox, int oy, uint32_t alpha) {
++    struct YellowFollowerShell follower;
++    yellowFollowerShell(&follower);
+     for (int k = 0; k < gbNObjs; ++k) {
+         const struct GbObj* o = &gbObjs[k];
+         bool tall = (gbLcdc & 4) != 0;
+@@ -55,6 +59,18 @@ static void redVoxelActors(const struct VoxelView* view, int ox, int oy, uint32_
+         if (foot < view->top || foot >= view->top + view->rows * VOXEL_TILE) continue;
+         int x0 = voxelX(view, wx, foot);
+         int y0 = voxelY(view, foot, foot - oy - o->y);
++        int quadrant=k-follower.first;
++        bool rounded=follower.first>=0 && quadrant>=0 && quadrant<4;
++        int qx=0,qy=0,offsetX[3],offsetY[3];
++        if (rounded) {
++            qx=((quadrant&1)^((o->attr>>5)&1))*8;
++            qy=(quadrant/2)*8;
++            for (int i=0;i<3;++i) {
++                int back=foot-2*(i+1);
++                offsetX[i]=voxelX(view,wx,back)-x0;
++                offsetY[i]=voxelY(view,back,0)-voxelY(view,foot,0);
++            }
++        }
+         uint32_t base = (uint32_t)(o->tile & 255) * 16;
+         if (gbCgb && (o->attr & 8)) base += 0x2000;
+         if (tall && (o->attr & 0x40)) base ^= 16;
+@@ -67,7 +83,13 @@ static void redVoxelActors(const struct VoxelView* view, int ox, int oy, uint32_
+                     const uint8_t* tile = gbObjectRomTiles[k] + row * 2;
+                     idx = ((tile[0] >> (7-col)) & 1) | (((tile[1] >> (7-col)) & 1) << 1);
+                 }
+-                if (idx) voxelActorPixel(view, x0+xx, y0+yy, foot, k, gbObjColor((uint8_t)o->attr, idx, alpha));
++                if (!idx) continue;
++                uint32_t color=gbObjColor((uint8_t)o->attr,idx,alpha);
++                if (rounded) {
++                    yellowFollowerPixel(view,&follower,x0+xx,y0+yy,foot,k,qx+xx,qy+yy,color,offsetX,offsetY);
++                } else {
++                    voxelActorPixel(view,x0+xx,y0+yy,foot,k,color);
++                }
+             }
+         }
+     }
+diff --git a/app/src/main/cpp/pk_wide_gb.c b/app/src/main/cpp/pk_wide_gb.c
+index e64a019..1a390b7 100644
+--- a/app/src/main/cpp/pk_wide_gb.c
++++ b/app/src/main/cpp/pk_wide_gb.c
+@@ -792,6 +792,7 @@ struct GbObj { int x, y, tile, attr, under; bool over; };
+ static struct GbObj gbObjs[GB_MAX_OBJS];
+ static int gbNObjs;
+ static const uint8_t *gbObjectRomTiles[GB_MAX_OBJS];
++static int gbNativeObjCount;
+ 
+ /** OAM as drawn, past the screen's edges too: an NPC walking off the right edge keeps its objects at x 168-176 for the
+  * step (the hardware shows none of them; the strip shows all of them), one walking off the left or top edge wraps to
+@@ -799,6 +800,7 @@ static const uint8_t *gbObjectRomTiles[GB_MAX_OBJS];
+  * all-zero entry (nothing written yet). */
+ static void gbObjsFromOam(void) {
+     gbNObjs = 0;
++    gbNativeObjCount = 0;
+     memset(gbObjectRomTiles, 0, sizeof gbObjectRomTiles);
+     if (!(gbLcdc & 0x02)) return;
+     bool tall = gbLcdc & 0x04;
+@@ -812,6 +814,7 @@ static void gbObjsFromOam(void) {
+         gbObjs[gbNObjs++] = (struct GbObj) { x, y, tile, o[3], -1 };
+         if (tall) gbObjs[gbNObjs++] = (struct GbObj) { x, y + 8, tile | 1, o[3] | 0x100, -1 };
+     }
++    gbNativeObjCount = gbNObjs;
+ }
+ 
+ /** Is sprite slot n a toggleable object switched off (IsObjectHidden)? */
+diff --git a/app/src/main/cpp/pk_yellow_field_follower.h b/app/src/main/cpp/pk_yellow_field_follower.h
+new file mode 100644
+index 0000000..73978bf
+--- /dev/null
++++ b/app/src/main/cpp/pk_yellow_field_follower.h
+@@ -0,0 +1,75 @@
++#pragma once
++
++/* English Yellow's own 8x8 OBJ quartet, from wSpritePikachuStateData1
++ * and the exact cartridge's PikachuSprite frames (3f:67ef). */
++struct YellowFollowerShell {
++    int first;
++    uint16_t rim[16], core[16];
++};
++
++static void yellowFollowerShell(struct YellowFollowerShell* shell) {
++    shell->first=-1;
++    if (gbGen1BattleCrc!=0x7d527d62u || gbR->model!=GB_MODEL_CGB ||
++        gbR->sgbBorders || gbR->d.sgbRenderMode || gbWinPart ||
++        (gbLcdc&6)!=2 || gbRam(0xc1f0)!=0x49 || gbRam(0xc1f2)==0xff) return;
++
++    const uint8_t* source=gbRom(0xfe7efu,0x180);
++    if (!source) return;
++    const int wantedX=(int8_t)gbRam(0xc1f6), wantedY=(int8_t)gbRam(0xc1f4);
++    const uint8_t* art=NULL;
++    int slot=-1;
++    for (int k=0;k+3<gbNativeObjCount;++k) {
++        const struct GbObj* o=&gbObjs[k];
++        const bool mirrored=(o->attr&0x20)!=0;
++        int x=o->x-(mirrored?8:0), y=o->y;
++        if ((o->tile&3) || (o->attr&0x40) || x<0 || y<0 || x+16>GBW || y+16>GBH ||
++            x<wantedX-2 || x>wantedX+2 || y<wantedY-2 || y>wantedY+2) continue;
++        if (o[1].x!=o->x+(mirrored?-8:8) || o[1].y!=y || o[2].x!=o->x || o[2].y!=y+8 ||
++            o[3].x!=o[1].x || o[3].y!=y+8) continue;
++        bool ordered=true;
++        for (int j=1;j<4;++j)
++            if (o[j].tile!=o->tile+j || ((o[j].attr^o->attr)&0x7f)) ordered=false;
++        if (!ordered) continue;
++        const uint8_t* live=gbVram+((o->attr&8)?0x2000:0)+o->tile*16;
++        bool known=false;
++        for (int off=0;off<0x180;off+=0x40)
++            if (!memcmp(live,source+off,0x40)) known=true;
++        if (!known) continue;
++        if (slot>=0) return;
++        slot=k;
++        art=live;
++    }
++    if (slot<0) return;
++    shell->first=slot;
++    uint16_t contour[16]={0};
++    const bool mirror=(gbObjs[slot].attr&0x20)!=0;
++    for (int y=0;y<16;++y) for (int x=0;x<16;++x) {
++        int column=mirror?15-x:x;
++        const uint8_t* row=art+(y/8*2+column/8)*16+(y&7)*2;
++        if ((row[0]|row[1])&(1u<<(7-(column&7)))) contour[y]|=(uint16_t)(1u<<x);
++    }
++    memset(shell->rim,0,sizeof(shell->rim));
++    memset(shell->core,0,sizeof(shell->core));
++    for (int y=1;y<15;++y) {
++        unsigned row=contour[y];
++        shell->rim[y]=(uint16_t)(row&(row<<1)&(row>>1)&contour[y-1]&contour[y+1]);
++    }
++    for (int y=2;y<14;++y) {
++        unsigned row=shell->rim[y];
++        shell->core[y]=(uint16_t)(row&(row<<1)&(row>>1)&shell->rim[y-1]&shell->rim[y+1]);
++    }
++}
++
++static void yellowFollowerPixel(const struct VoxelView* view, const struct YellowFollowerShell* shell,
++                                 int x, int y, int foot, int order, int px, int py, uint32_t color,
++                                 const int offsetX[3], const int offsetY[3]) {
++    static const unsigned shade[3]={214,176,150};
++    unsigned bit=1u<<px;
++    int layers=(shell->core[py]&bit)?3:(shell->rim[py]&bit)?2:1;
++    for (int i=layers-1;i>=0;--i) {
++        int back=foot-2*(i+1);
++        if (back<view->top) continue;
++        voxelSpritePixel(view,x+offsetX[i],y+offsetY[i],back,order,voxelShade(color,shade[i]));
++    }
++    voxelSpritePixel(view,x,y,foot,order,color);
++}

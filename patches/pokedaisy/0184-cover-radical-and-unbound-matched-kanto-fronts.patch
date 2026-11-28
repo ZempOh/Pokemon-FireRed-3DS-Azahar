@@ -1,0 +1,65 @@
+diff --git a/app/src/main/cpp/pk_cfru_battle_fronts.h b/app/src/main/cpp/pk_cfru_battle_fronts.h
+new file mode 100644
+index 0000000..de95bcc
+--- /dev/null
++++ b/app/src/main/cpp/pk_cfru_battle_fronts.h
+@@ -0,0 +1,13 @@
++#pragma once
++
++/* Native shared CFRU arts with separately verified cartridge placement. */
++static const struct CfruBattleFront {
++    uint32_t art, palette;
++    uint16_t species;
++    uint8_t radicalY, unboundY;
++} cfruBattleFronts[] = {
++    {0xed74977du, 0xa415d138u, 1, 24, 22},
++    {0xb92ce290u, 0xc0fc5724u, 25, 16, 16},
++    {0x5c5dadd8u, 0x278f4224u, 38, 11, 11},
++    {0xb95f631eu, 0x1770a2bau, 131, 10, 10},
++};
+diff --git a/app/src/main/cpp/pk_wide.c b/app/src/main/cpp/pk_wide.c
+index ee36fb5..9e1002c 100644
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -5034,6 +5034,23 @@ static bool battleKnownClassicPose(const struct ClassicBattleFront* front,
+     return palette==front->normal || palette==front->shiny;
+ }
+ 
++#include "pk_cfru_battle_fronts.h"
++
++static const struct CfruBattleFront* battleCfruFront(void) {
++    if ((solidRom!=0xfba55dd8u && solidRom!=0x4b3d4957u) ||
++        r8(0x02023bccu)!=2 || r8(0x02023bd6u)!=0 || r8(0x02023bd7u)!=1) return NULL;
++    unsigned species=r16(0x02023c3cu);
++    for (size_t i=0;i<sizeof(cfruBattleFronts)/sizeof(*cfruBattleFronts);++i)
++        if (cfruBattleFronts[i].species==species) return &cfruBattleFronts[i];
++    return NULL;
++}
++
++static bool battleKnownCfruPose(const struct CfruBattleFront* front,
++        uint32_t art, int y, const uint16_t* colors) {
++    return front && art==front->art && y==(solidRom==0xfba55dd8u ? front->radicalY : front->unboundY) &&
++        battleVolumeFingerprint((const uint8_t*)(colors+1),30)==front->palette;
++}
++
+ static void battleVolumeDraw(const uint32_t* frame, uint32_t* out, struct PkWideView v, uint32_t alpha) {
+     if (!voxelEnabled || lineIoFrames < 2 || lineOamN != 1 || linePalN != 1 || tintShown) return;
+     const struct BattleFrontProfile* profile = NULL;
+@@ -5046,6 +5063,7 @@ static void battleVolumeDraw(const uint32_t* frame, uint32_t* out, struct PkWide
+     bool sharedFronts = battleUsesSharedFireRedFronts(solidRom);
+     bool classic=solidRom==0xe4deb9beu;
+     const struct ClassicBattleFront* classicFront=classic ? battleClassicFront() : NULL;
++    const struct CfruBattleFront* cfruFront=battleCfruFront();
+     if (classic ? !classicFront : !sharedFronts && !profile) return;
+     const uint16_t* oam = lineOamBuf[0];
+     const uint8_t* vram = (const uint8_t*)G->video.vram;
+@@ -5065,7 +5083,8 @@ static void battleVolumeDraw(const uint32_t* frame, uint32_t* out, struct PkWide
+             if (!battleKnownClassicPose(classicFront,candidateFingerprint,y,linePalBuf[0]+paletteBase)) continue;
+         } else if (sharedFronts) {
+             if (!battleSharedFireRedFront(candidateFingerprint, y, linePalBuf[0] + paletteBase)) continue;
+-        } else if (y != profile->y || candidateFingerprint != profile->fingerprint) continue;
++        } else if ((y != profile->y || candidateFingerprint != profile->fingerprint) &&
++                   !battleKnownCfruPose(cfruFront,candidateFingerprint,y,linePalBuf[0]+paletteBase)) continue;
+         const uint16_t* matrix = oam + ((a[1] >> 9) & 31) * 16;
+         if (matrix[3] != 256 || matrix[7] || matrix[11] || matrix[15] != 256) return;
+         if (target >= 0) return;

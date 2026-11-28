@@ -1,0 +1,108 @@
+diff --git a/app/src/main/cpp/pk_wide.c b/app/src/main/cpp/pk_wide.c
+index d176860..cfe7931 100644
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -51,6 +51,7 @@
+ #include "pk_scenery_ground_surface.h"
+ #include "pk_scenery_bridges.h"
+ #include "pk_scenery_winter_leaves.h"
++#include "pk_scenery_radical_leaves.h"
+ #include "pk_scenery_object_profiles.h"
+ #include "pk_scenery_tree_profiles.h"
+ #include "pk_scenery_tall_tree_profiles.h"
+@@ -6628,6 +6629,9 @@ static bool drawVoxel(const struct Snap* s, int cx, int cy, int href, int vref,
+     voxelProbeBuildings=buildingCount;
+     SCENERY_FRAME_MARK(cost2);
+     SCENERY_FRAME_ADD(1,cost1,cost2);
++    const bool radicalPalletLeaves=solidRom==0xfba55dd8u && s->group==3 && s->num==0 &&
++        F.mapHeader && r32(F.mapHeader)==0x082dd4c0u &&
++        s->primary==0x082d4a94u && s->secondary==0x082d4aacu;
+     unsigned winterLeafOpacity=0;
+     if (voxelClimate.seasonBlend) {
+         if (solidRom==0x558ae42f &&
+@@ -6650,14 +6654,29 @@ static bool drawVoxel(const struct Snap* s, int cx, int cy, int href, int vref,
+             const uint16_t* landMask=path==2?0:scenerySecondaryLandMask(solidRom,primary,secondary,id);
+             const uint16_t* leafMask = winterLeafOpacity && conn < 0
+                 ? sceneryWinterLeafMask(solidRom,primary,secondary,id) : NULL;
++            const uint16_t* radicalLeaves=NULL;
++            if (radicalPalletLeaves && (unsigned)id<0x28) {
++                if (conn<0) radicalLeaves=sceneryRadicalLeafRows[id];
++                else {
++                    const struct Conn* north=&s->conn[conn];
++                    if (north->degree==1 && north->dir==2 && north->group==3 && north->num==19 &&
++                        north->primary==s->primary && north->secondary==s->secondary &&
++                        r32(north->header)==0x082e55ccu)
++                        radicalLeaves=sceneryRadicalLeafRows[id];
++                }
++            }
+             for(int y=0;y<16;y++)for(int x=0;x<16;x++) {
+                 int sy = row*16+y, sx = col*16+x;
+                 size_t at=(size_t)sy*w+sx;
+                 int groundPixel=y<capRows || (landMask && (landMask[y]&(1u<<x)));
+                 int climateMaterial = groundPixel?2:path;
+-                texture[at] = leafMask && (leafMask[y]&(1u<<x)) && !holeBuf[sy][sx]
+-                    ? climateKnownWinterLeaf(texture[at],climateMaterial)
+-                    : climateGround(texture[at],climateMaterial);
++                if (radicalLeaves && (radicalLeaves[y]&(1u<<x)) && !holeBuf[sy][sx]) {
++                    texture[at]=climateSourceFoliage(texture[at],climateMaterial);
++                } else {
++                    texture[at] = leafMask && (leafMask[y]&(1u<<x)) && !holeBuf[sy][sx]
++                        ? climateKnownWinterLeaf(texture[at],climateMaterial)
++                        : climateGround(texture[at],climateMaterial);
++                }
+             }
+         }
+     }
+diff --git a/app/src/main/cpp/pk_voxel_climate.h b/app/src/main/cpp/pk_voxel_climate.h
+index 13b0a14..ca92209 100644
+--- a/app/src/main/cpp/pk_voxel_climate.h
++++ b/app/src/main/cpp/pk_voxel_climate.h
+@@ -141,6 +141,23 @@ static uint32_t climateGround(uint32_t c, int path) {
+         target = climateMix(target,climateGroundColor(c,path,(season+3)&3,blend),voxelClimate.seasonTransition);
+     return target;
+ }
++/* Native night palettes can turn green foliage too teal for terrain hue
++ * detection. A verified source mask can keep its seasonal colors on those pixels. */
++static uint32_t climateSourceFoliage(uint32_t c,int groundMode) {
++    unsigned r=c&255,g=(c>>8)&255,b=(c>>16)&255;
++    if (!voxelClimate.seasonBlend || (g>r+8 && g>b+8)) return climateGround(c,groundMode);
++    const int season=voxelClimate.season,previous=(season+3)&3;
++    const unsigned blend=voxelClimate.seasonBlend,transition=voxelClimate.seasonTransition;
++    uint32_t color=season==3 ? climateGroundColor(c,2,3,blend)
++        : climateMix(c,climateLeafTarget(c,season),blend);
++    if (transition) {
++        uint32_t start=previous==3 ? climateGroundColor(c,2,3,blend)
++            : climateMix(c,climateLeafTarget(c,previous),blend);
++        color=climateMix(color,start,transition);
++    }
++    return color;
++}
++
+ /* Use the reviewed leaf identity for the winter contribution only, so the
+  * exact original transitions at the two ends of winter stay continuous. */
+ static uint32_t climateKnownWinterLeaf(uint32_t c, int groundMode) {
+diff --git a/app/src/main/cpp/pk_scenery_radical_leaves.h b/app/src/main/cpp/pk_scenery_radical_leaves.h
+new file mode 100644
+index 0000000..dd124a7
+--- /dev/null
++++ b/app/src/main/cpp/pk_scenery_radical_leaves.h
+@@ -0,0 +1,19 @@
++// Generated from the exact Radical Red Pallet tree layers.
++#pragma once
++
++static const uint16_t sceneryRadicalLeafRows[0x28][16] = {
++    [0x0e] = {0x0000,0x0000,0x0000,0x8000,0xc000,0xc000,0xe000,0xf800,0xfe00,0xfe00,0xfe00,0xffc0,0xffc0,0xffe0,0xffc0,0xfff0},
++    [0x0f] = {0x0000,0x0000,0x0000,0x0001,0x0003,0x0003,0x0007,0x001f,0x007f,0x007f,0x007f,0x03ff,0x03ff,0x07ff,0x03ff,0x0fff},
++    [0x14] = {0xfffe,0xfffc,0xfff8,0xfff8,0xfff0,0xfff8,0xfffc,0xfffc,0xfffe,0xfffe,0xfffc,0xfff8,0xfff0,0xffe0,0xffe0,0xfff0},
++    [0x15] = {0x7fff,0x3fff,0x1fff,0x1fff,0x0fff,0x1fff,0x3fff,0x3fff,0x7fff,0x7fff,0x3fff,0x1fff,0x0fff,0x07ff,0x07ff,0x0fff},
++    [0x16] = {0xfffe,0xfffc,0xfff8,0xfff8,0xfff0,0xfff8,0xfffc,0xfffc,0xfffc,0xfffc,0xfffc,0xfff8,0xfff0,0xffe0,0xffc0,0xfff0},
++    [0x17] = {0x7fff,0x3fff,0x1fff,0x1fff,0x0fff,0x1fff,0x3fff,0x3fff,0x3fff,0x3fff,0x3fff,0x1fff,0x0fff,0x07ff,0x07ff,0x0fff},
++    [0x1c] = {0xfff0,0xffe0,0xfff0,0xfffc,0xfffc,0xfff8,0xfffc,0xfffc,0xfffc,0xfffe,0xfffe,0xfffe,0xfffe,0xfffc,0xfffe,0xfffe},
++    [0x1d] = {0x0fff,0x07ff,0x3fff,0x3fff,0x7fff,0x7fff,0x3fff,0x3fff,0x3fff,0x7fff,0x7fff,0x7fff,0x7fff,0x3fff,0x7fff,0x7fff},
++    [0x1e] = {0xfff0,0xffe0,0xfff0,0xfffc,0xfffc,0xfff8,0xfffc,0xfffc,0xfffc,0xfffe,0xfffe,0xfffe,0xfffe,0xfffc,0xfffe,0xfffe},
++    [0x1f] = {0x0fff,0x07ff,0x0fff,0x3fff,0x3fff,0x1fff,0x3fff,0x3fff,0x3fff,0x7fff,0x7fff,0x7fff,0x7fff,0x3fff,0x7fff,0x7fff},
++    [0x24] = {0xfffe,0xfffc,0xfff8,0xfff8,0xfff0,0xfff8,0xfffc,0xeffc,0x8ffe,0x0ffe,0x1ffc,0x3ff8,0xfff0,0xffc0,0xfe00,0xf000},
++    [0x25] = {0x7fff,0x3fff,0x1fff,0x1fff,0x0fff,0x1fff,0x3fff,0x3ff7,0x7ff1,0x7ff0,0x3ff8,0x1ffc,0x0fff,0x03ff,0x007f,0x000f},
++    [0x26] = {0xfffe,0xfffc,0xfff8,0xfff8,0xfff0,0xfff8,0xfffc,0xeffc,0x8ffc,0x0ffc,0x1ffc,0x3ff8,0xfff0,0xffc0,0xfe00,0xf000},
++    [0x27] = {0x7fff,0x3fff,0x1fff,0x1fff,0x0fff,0x1fff,0x3fff,0x3ff7,0x3ff1,0x3ff0,0x3ff8,0x1ffc,0x0fff,0x03ff,0x007f,0x000f},
++};

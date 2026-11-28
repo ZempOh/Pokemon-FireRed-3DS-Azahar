@@ -1,0 +1,75 @@
+diff --git a/app/src/main/cpp/pk_wide.c b/app/src/main/cpp/pk_wide.c
+index d176860..9edc688 100644
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -6249,6 +6249,36 @@ static void sceneryStoneDraw(const struct Snap* s,const struct VoxelView* view,
+ }
+ 
+ 
++/* Here the native rocky lip occupies the next cell below the higher
++ * grass shelf. The upper edge is ordinary turf and has no separate wall. */
++static const uint8_t* sceneryRoute212SouthFaces(const struct Snap* s,int cellX,int cellY,
++                                                int cols,int rows,uint8_t* hidden) {
++    if (solidRom!=0x2be557a3u || s->group!=0 || s->num!=30 ||
++        !F.mapHeader || r32(F.mapHeader)!=0x089d90c0u ||
++        s->primary!=0x083df704u || s->secondary!=0x083df77cu ||
++        s->width!=40 || s->height!=80) return NULL;
++
++    static const struct { uint8_t x,y; uint16_t upper,lower; } transitions[] = {
++        {21,69,0x5004,0x0001},
++        {16,70,0x500d,0x0487},
++        {17,70,0x500d,0x0487},
++        {18,70,0x500d,0x0487},
++        {19,70,0x500d,0x04d6},
++        {20,70,0x500d,0x0001},
++    };
++    memset(hidden,0,(size_t)cols*rows);
++    for (size_t i=0; i<sizeof(transitions)/sizeof(*transitions); ++i) {
++        int x=MAP_OFFSET+transitions[i].x, y=MAP_OFFSET+transitions[i].y;
++        int col=x-cellX,row=y-cellY;
++        if ((unsigned)col>=(unsigned)cols || (unsigned)row>=(unsigned)(rows-1) ||
++            (unsigned)x>=(unsigned)s->vw || (unsigned)(y+1)>=(unsigned)s->vh) continue;
++        const uint16_t* cell=s->vmap+y*s->vw+x;
++        if (*cell==transitions[i].upper && cell[s->vw]==transitions[i].lower)
++            hidden[row*cols+col]=1;
++    }
++    return hidden;
++}
++
+ static bool scenerySouthLedgeMap(const struct Snap* s) {
+     if (!F.mapHeader || r8(F.mapHeader+0x17)!=3 || r8(F.mapHeader+0x16)!=2) return false;
+     for (size_t n=0; n<sizeof(scenerySouthLedgeMaps)/sizeof(*scenerySouthLedgeMaps); ++n) {
+@@ -6594,8 +6624,10 @@ static bool drawVoxel(const struct Snap* s, int cx, int cy, int href, int vref,
+         for (int x = 0; x < cols; x++)
+             rises[y * cols + x] = (uint8_t) terrainRise(s, cellX + x, cellY + y);
+ 
++    uint8_t hiddenSouthFaces[sizeof(rises)];
+     struct VoxelView voxel = { out, depth, texture, v.w, v.h, v.x + v.w / 2, v.y + v.h / 2,
+-                               left, top, cols, rows, w, rises };
++                               left, top, cols, rows, w, rises,
++                               sceneryRoute212SouthFaces(s,cellX,cellY,cols,rows,hiddenSouthFaces) };
+     SCENERY_FRAME_MARK(cost0);
+     drawRegion(s, cx, cy, href, vref, left, top, right, bottom, false, texture, w, alpha, true);
+     rawView = v;
+diff --git a/app/src/main/cpp/pk_wide_voxel.h b/app/src/main/cpp/pk_wide_voxel.h
+index a4f825e..29ee344 100644
+--- a/app/src/main/cpp/pk_wide_voxel.h
++++ b/app/src/main/cpp/pk_wide_voxel.h
+@@ -25,6 +25,7 @@ struct VoxelView {
+     int centreX, centreY;
+     int left, top, cols, rows, stride;
+     const uint8_t* rises;
++    const uint8_t* hiddenSouthFaces;
+ };
+ 
+ static int voxelFloor(int n, int d) {
+@@ -199,7 +200,8 @@ static void voxelTerrainSurfaces(const struct VoxelView* v, const uint32_t* floo
+             // South wall, continuing the color of the live texture's front edge.
+             const int openBridge = bridge && y0==bridge->y &&
+                 (unsigned)(x0-bridge->x) < (unsigned)bridge->width;
+-            if (rise > front && !openBridge) {
++            if (rise > front && !openBridge &&
++                (!v->hiddenSouthFaces || !v->hiddenSouthFaces[row*v->cols+col])) {
+                 int x = voxelX(v, x0, y1), top = voxelY(v, y1, rise);
+                 const uint32_t* src = v->texture + (row * VOXEL_TILE + VOXEL_TILE - 1) * v->stride + col * VOXEL_TILE;
+                 for (int i = 0; i < VOXEL_TILE; i++) {

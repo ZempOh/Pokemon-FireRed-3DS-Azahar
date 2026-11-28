@@ -1,0 +1,67 @@
+diff --git a/app/src/main/cpp/pk_battle_back_family.h b/app/src/main/cpp/pk_battle_back_family.h
+new file mode 100644
+index 0000000..9683841
+--- /dev/null
++++ b/app/src/main/cpp/pk_battle_back_family.h
+@@ -0,0 +1,12 @@
++#pragma once
++
++/* Generated from source decoding and repeated exact native OAM observations. */
++static const struct BattleBackProfile {
++    uint32_t crc, player, count, positions, art, palette;
++    uint16_t species;
++    uint8_t firstY, lastY;
++} battleBackProfiles[] = {
++    {0xdd88761cu, 0x2023be4u, 0x2023bccu, 0x2023bd6u, 0xdedd67a3u, 0x5b268c8du, 4, 58, 59}, // firered
++    {0x964763c0u, 0x2023b64u, 0x2023b4cu, 0x2023b56u, 0x5158e478u, 0x52817034u, 1, 64, 65}, // frlgplus
++    {0xe4deb9beu, 0x20230f8u, 0x20230e0u, 0x20230eau, 0x7592de65u, 0x7e39fa2bu, 412, 55, 56}, // classic
++};
+diff --git a/app/src/main/cpp/pk_wide.c b/app/src/main/cpp/pk_wide.c
+index dd05a70..37ecbda 100644
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -5173,12 +5173,19 @@ static void battleVolumeDraw(const uint32_t* frame, uint32_t* out, struct PkWide
+ }
+ 
+ #ifdef PK_BATTLE_BACK_DETAIL
+-/* English FireRed rev 0 single battle. The two normal anchors are the
+- * observed one-pixel bob of the original Charmander back animation. */
++#include "pk_battle_back_family.h"
++
+ static void battleBackVolumeDraw(const uint32_t* frame, uint32_t* out, struct PkWideView v, uint32_t alpha) {
+-    if (solidRom!=0xdd88761cu || !pk_wide_battle_detail_requested() || !battleVolumeReady() ||
+-        r8(0x02023bccu)!=2 || r8(0x02023bd6u)!=0 || r8(0x02023bd7u)!=1 ||
+-        r16(0x02023be4u)!=4) return;
++    if (!pk_wide_battle_detail_requested()) return;
++    const struct BattleBackProfile* profile=NULL;
++    for (size_t i=0;i<sizeof(battleBackProfiles)/sizeof(*battleBackProfiles);++i)
++        if (battleBackProfiles[i].crc==solidRom) {
++            profile=&battleBackProfiles[i];
++            break;
++        }
++    if (!profile || !battleVolumeReady() || r8(profile->count)!=2 ||
++        r8(profile->positions)!=0 || r8(profile->positions+1)!=1 ||
++        r16(profile->player)!=profile->species) return;
+     const uint16_t* oam=lineOamBuf[0];
+     const uint8_t* tiles=(const uint8_t*)G->video.vram+0x10000;
+     struct BattleVolumeTarget back={.object=-1};
+@@ -5186,15 +5193,15 @@ static void battleBackVolumeDraw(const uint32_t* frame, uint32_t* out, struct Pk
+         const uint16_t* a=oam+k*4;
+         int y=a[0]&255, tile=a[2]&1023;
+         if ((a[0]&0xff00)!=0x0100 || (a[1]&0xc000)!=0xc000 || (a[1]&511)!=40 ||
+-            (y!=58 && y!=59) || ((a[2]>>10)&3)!=2 || tile>960) continue;
++            (y!=profile->firstY && y!=profile->lastY) || ((a[2]>>10)&3)!=2 || tile>960) continue;
+         const uint8_t* art=tiles+tile*32;
+         int palette=256+(a[2]>>12)*16;
+         // Both digests come from the cartridge's native back and palette tables.
+-        if (battleVolumeFingerprint(art,2048)!=0xdedd67a3u ||
+-            battleVolumeFingerprint((const uint8_t*)(linePalBuf[0]+palette+1),30)!=0x5b268c8du) continue;
++        if (battleVolumeFingerprint(art,2048)!=profile->art ||
++            battleVolumeFingerprint((const uint8_t*)(linePalBuf[0]+palette+1),30)!=profile->palette) continue;
+         const uint16_t* matrix=oam+((a[1]>>9)&31)*16;
+         if (matrix[3]!=256 || matrix[7] || matrix[11] || matrix[15]!=256 || back.object>=0) return;
+-        back=(struct BattleVolumeTarget){art,0xdedd67a3u,k,40,y,palette,true};
++        back=(struct BattleVolumeTarget){art,profile->art,k,40,y,palette,true};
+     }
+     if (back.object<0) return;
+     static struct BattleVolumeCache cache;

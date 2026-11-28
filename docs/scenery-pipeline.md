@@ -1609,6 +1609,15 @@ between the three modes. Record source art size, material size, projected
 target, upload size, and display size separately. Keep HUD and native fallback
 frames exact and time both modes on the Thor before broader activation.
 
+Player-side HD uses independent live art, palette, position, and ownership
+guards on the six enrolled Red, Blue, Yellow, FireRed, Classic, and FRLG+
+fixtures. Check outside the individual front and back regions when both
+render. A visible front cannot stand in for a hidden or untested back pose.
+Radical Red and Unbound share 123 exact normal-palette Kanto fronts in the
+host inventory. Keep each game's native anchor and require live matches
+before drawing. Distinct sprites and unreviewed palette or animation states
+keep their original paths.
+
 The field atlas also supplies exposed rock detail to exact Route 1 ledges
 and Flash-lit Rock Tunnel feet. Native jump, collision, darkness, and 2D
 controls remain the source of truth. Viridian Mart counters share a

@@ -1,0 +1,97 @@
+diff --git a/app/src/main/cpp/pk_wide.c b/app/src/main/cpp/pk_wide.c
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -5811,6 +5811,8 @@
+     return true;
+ }
+ 
++#include "pk_scenery_indoor_parquet.h"
++
+ static bool solidGroundMaterial(const struct Snap* s, const uint32_t* mask,
+                                  int x, int y, int col, int row) {
+     if ((unsigned)(x - MAP_OFFSET) >= (unsigned)s->width ||
+@@ -6611,6 +6613,9 @@
+ 
+     // Header metadata and weather OAM are read from this same live session.
+     unsigned mapType = F.mapHeader ? r8(F.mapHeader + 0x17) : 0;
++#if VOXEL_PARQUET_TEXTURE_SIZE > 0
++    sceneryPalletParquet(s,&voxel,cellX,cellY,href,vref,mapType,texture);
++#endif
+     if (sceneryWaterMap(s,mapType) && solidGroundAligned(href,vref))
+         sceneryWaterDraw(s,&voxel,cellX,cellY,texture);
+     int nativeWeather = F.mapHeader ? r8(F.mapHeader + 0x16) > 2 : 1;
+diff --git a/app/src/main/cpp/pk_scenery_indoor_parquet.h b/app/src/main/cpp/pk_scenery_indoor_parquet.h
+new file mode 100644
+--- /dev/null
++++ b/app/src/main/cpp/pk_scenery_indoor_parquet.h
+@@ -0,0 +1,70 @@
++/* Original wood-face relief for the verified Pallet house parquet. */
++#pragma once
++
++#ifndef VOXEL_PARQUET_TEXTURE_SIZE
++#define VOXEL_PARQUET_TEXTURE_SIZE 256
++#endif
++
++#if VOXEL_PARQUET_TEXTURE_SIZE > 0
++static const uint8_t* parquetTexture(void) {
++    enum { size = VOXEL_PARQUET_TEXTURE_SIZE };
++    static uint8_t samples[size * size];
++    static bool initialized;
++    if (initialized) return samples;
++    for (unsigned y=0;y<size;++y) for (unsigned x=0;x<size;++x) {
++        unsigned u = (x * 256u + 128u) / size;
++        unsigned v = (y * 256u + 128u) / size;
++        unsigned grain = ((u >> 3) * 1459u + v * 71u) ^ ((v >> 2) * 439u);
++        unsigned strand = 5u + (grain & 15u);
++        unsigned fine = ((u * 113u + v * 331u) ^ (u * v * 19u)) & 7u;
++        samples[y * size + x] = (uint8_t)(255u - strand - fine);
++    }
++    initialized = true;
++    return samples;
++}
++
++static uint32_t parquetShade(const uint8_t* samples,uint32_t base,
++                             unsigned length, unsigned width) {
++    enum { size = VOXEL_PARQUET_TEXTURE_SIZE };
++    unsigned x = (length & 255u) * size / 256u;
++    unsigned y = (width & 255u) * size / 256u;
++    return voxelShade(base,samples[y * size + x]);
++}
++
++static void sceneryPalletParquet(const struct Snap* s,const struct VoxelView* v,
++                                int cellX,int cellY,int href,int vref,unsigned mapType,
++                                uint32_t* texture) {
++    if (solidRom != 0xdd88761cu || mapType != 8 || s->group != 4 || s->num != 0 ||
++        s->primary != 0x082d4bb4u || s->secondary != 0x082d4c74u ||
++        s->width != 13 || s->height != 10 || r32(F.mapHeader) != 0x082d5200u ||
++        !solidGroundAligned(href,vref))
++        return;
++
++    /* Only open native board faces receive relief. Keep the native seams,
++     * thresholds, furniture, and the underlay of mixed tiles as drawn. */
++    /* Native elevation 3 is the shared terrain renderer's ordinary rise 8. */
++    static const uint16_t faces[16] = {0x0000, 0xeefe, 0xeefe, 0xeefe, 0xee00, 0xeefe, 0xeefe, 0xeefe, 0x0000, 0xfeee, 0xfeee, 0xfeee, 0x00ee, 0xfeee, 0xfeee, 0xfeee};
++    const uint8_t* samples=parquetTexture();
++    for (int row=0;row<v->rows;++row) for (int col=0;col<v->cols;++col) {
++        int mx=cellX+col,my=cellY+row;
++        if ((unsigned)(mx-MAP_OFFSET) >= (unsigned)s->width ||
++            (unsigned)(my-MAP_OFFSET) >= (unsigned)s->height || voxelRise(v,col,row) != 8)
++            continue;
++        int connection;
++        int id=blockIn(s,mx,my,&connection,false);
++        if (connection>=0 || (id!=0x01 && id!=0x09)) continue;
++        for (int y=0;y<16;++y) {
++            int sy=row*16+y;
++            for (int x=0;x<16;++x) {
++                int sx=col*16+x;
++                if (!(faces[y] & (1u<<x)) || holeBuf[sy][sx]) continue;
++                unsigned u=(unsigned)(mx*16+x)*5u+3u;
++                unsigned b=(unsigned)(my*16+y)*7u+5u;
++                size_t index=(size_t)sy*v->stride+sx;
++                bool transverse=((x^y)&8)!=0;
++                texture[index]=parquetShade(samples,texture[index],transverse?b:u,transverse?u:b);
++            }
++        }
++    }
++}
++#endif

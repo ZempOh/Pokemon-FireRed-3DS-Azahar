@@ -1,0 +1,55 @@
+diff --git a/app/src/main/cpp/pk_wide.c b/app/src/main/cpp/pk_wide.c
+index c0b682d..eb8e43f 100644
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -6279,19 +6279,31 @@ static const uint8_t* sceneryRoute212SouthFaces(const struct Snap* s,int cellX,i
+     return hidden;
+ }
+ 
+-/* Fibernia paints these stone stairs on a single native movement
+- * plane. Give each authored tread an inset lip with a shallow riser. */
+-static void sceneryFiberniaTreads(const struct Snap* s,const struct VoxelView* view,
++/* These native Odyssey steps share their movement plane with their
++ * landings. Give each authored tread an inset lip with a shallow riser. */
++static void sceneryOdysseyTreads(const struct Snap* s,const struct VoxelView* view,
+                                    int cellX,int cellY) {
+-    if (solidRom!=0x6c5ee1b2u || s->group!=3 || s->num!=1 ||
+-        !F.mapHeader || r32(F.mapHeader)!=0x08727f9cu ||
++    if (solidRom!=0x6c5ee1b2u || s->group!=3 || !F.mapHeader ||
+         s->primary!=0x082d4a94u || s->secondary!=0x082d4b54u ||
+-        s->width!=40 || s->height!=40) return;
+-
+-    static const struct { uint8_t x,y,width; } runs[] = {
+-        {19,11,2}, {10,12,1}, {18,26,2}, {18,28,2},
++        s->width!=40) return;
++
++    struct StairRun { uint8_t x,y,width; };
++    static const struct StairRun fibernia[] = {{19,11,2}, {10,12,1}, {18,26,2}, {18,28,2}};
++    static const struct StairRun eastFlight[] = {{22,16,2}, {22,17,2}, {22,18,2}, {22,19,2}};
++    static const struct { uint32_t layout; uint8_t map,height,count; const struct StairRun* runs; } maps[] = {
++        {0x08727f9cu,1,40,sizeof(fibernia)/sizeof(*fibernia),fibernia},
++        {0x0876c6e8u,38,30,sizeof(eastFlight)/sizeof(*eastFlight),eastFlight},
+     };
+-    for (size_t run=0; run<sizeof(runs)/sizeof(*runs); ++run) {
++    const struct StairRun* runs=NULL;
++    unsigned count=0;
++    for (size_t i=0; i<sizeof(maps)/sizeof(*maps); ++i) {
++        if (s->num==maps[i].map && s->height==maps[i].height && r32(F.mapHeader)==maps[i].layout) {
++            runs=maps[i].runs;
++            count=maps[i].count;
++            break;
++        }
++    }
++    for (unsigned run=0; run<count; ++run) {
+         int x=MAP_OFFSET+runs[run].x,y=MAP_OFFSET+runs[run].y;
+         unsigned width=runs[run].width;
+         if ((unsigned)(x+(int)width-1)>=(unsigned)s->vw ||
+@@ -6776,7 +6788,7 @@ static bool drawVoxel(const struct Snap* s, int cx, int cy, int href, int vref,
+     for (int i=0; i<stoneCount; ++i) sceneryStoneDraw(s,&voxel,&stones[i],alpha);
+     sceneryRoute12Terrace(s,&voxel,cellX,cellY,alpha);
+     if (span) voxelBridgeDraw(&voxel,span);
+-    if (solidGroundAligned(href,vref)) sceneryFiberniaTreads(s,&voxel,cellX,cellY);
++    if (solidGroundAligned(href,vref)) sceneryOdysseyTreads(s,&voxel,cellX,cellY);
+     if (caveContact) sceneryCaveFootVolume(s,&voxel,cellX,cellY);
+     if (scenerySouthLedgeMap(s) && solidGroundAligned(href,vref))
+         scenerySouthLedgeVolume(s,&voxel,cellX,cellY);

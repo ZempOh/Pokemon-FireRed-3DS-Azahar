@@ -1,0 +1,12 @@
+diff --git a/app/src/main/cpp/pk_scenery_field_actor_profiles.h b/app/src/main/cpp/pk_scenery_field_actor_profiles.h
+index 68bb60f..fe3ee12 100644
+--- a/app/src/main/cpp/pk_scenery_field_actor_profiles.h
++++ b/app/src/main/cpp/pk_scenery_field_actor_profiles.h
+@@ -33,6 +33,7 @@ static const struct NativeFieldActorProfile nativeFieldActors[] = {
+     {0x4b3d4957u,0x083a0688u,0x104u,6,23,3,71,32,2}, // unbound npc
+     {0x6c5ee1b2u,0x083a00a0u,0x3feb7u,255,0,0,0,16,0}, // odyssey player
+     {0x6c5ee1b2u,0x083a0988u,0x033u,6,29,3,1,16,1}, // odyssey npc
++    {0xcec21496u,0x08b9b5a0u,0x1ffu,255,1,0,0,16,0}, // Dragon's Den player
+ };
+ 
+ static uint8_t nativeFieldActorSource(const struct Snap* snap,const uint8_t* event,uint32_t images) {

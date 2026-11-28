@@ -1,0 +1,12 @@
+diff --git a/app/src/main/cpp/pk_battle_firered_back_poses.h b/app/src/main/cpp/pk_battle_firered_back_poses.h
+--- a/app/src/main/cpp/pk_battle_firered_back_poses.h
++++ b/app/src/main/cpp/pk_battle_firered_back_poses.h
+@@ -132,7 +132,7 @@
+     [127] = {0xe2d54a17u, 0x67c491cau, 57, 58},
+     [128] = {0x080555e2u, 0xbeb6e15fu, 61, 61},
+     [129] = {0x998a342cu, 0x4672c327u, 57, 58},
+-    [130] = {0xac42baceu, 0x848dbc83u, 48, 48},
++    [130] = {0xac42baceu, 0x848dbc83u, 48, 49},
+     [131] = {0x57c11f8bu, 0x28090cccu, 52, 53},
+     [132] = {0xafdc6907u, 0x3aa34dafu, 65, 66},
+     [133] = {0x6be0f628u, 0x9d7bb9e7u, 58, 59},

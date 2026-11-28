@@ -1,0 +1,42 @@
+diff --git a/app/src/main/cpp/pk_scenery_field_actor_profiles.h b/app/src/main/cpp/pk_scenery_field_actor_profiles.h
+index fe3ee12..1877918 100644
+--- a/app/src/main/cpp/pk_scenery_field_actor_profiles.h
++++ b/app/src/main/cpp/pk_scenery_field_actor_profiles.h
+@@ -5,6 +5,7 @@
+ struct NativeFieldActorProfile {
+     uint32_t crc, images, poses;
+     uint8_t local, graphics, group, map, width, palette;
++    bool compact;
+ };
+ 
+ static const struct NativeFieldActorProfile nativeFieldActors[] = {
+@@ -34,6 +35,10 @@ static const struct NativeFieldActorProfile nativeFieldActors[] = {
+     {0x6c5ee1b2u,0x083a00a0u,0x3feb7u,255,0,0,0,16,0}, // odyssey player
+     {0x6c5ee1b2u,0x083a0988u,0x033u,6,29,3,1,16,1}, // odyssey npc
+     {0xcec21496u,0x08b9b5a0u,0x1ffu,255,1,0,0,16,0}, // Dragon's Den player
++    {0x558ae42fu,0x087ad180u,0x1ffu,255,0,0,0,16,1,true}, // lazarus player
++    {0x558ae42fu,0x08c62518u,0x033u,254,4,0,57,32,5,true}, // lazarus follower
++    {0x14465a33u,0x085ceb60u,0x0ffu,255,0,0,0,16,2,true}, // seaglass player
++    {0x14465a33u,0x085cec50u,0x137u,3,0,0,9,16,4,true}, // seaglass npc
+ };
+ 
+ static uint8_t nativeFieldActorSource(const struct Snap* snap,const uint8_t* event,uint32_t images) {
+@@ -89,12 +94,16 @@ static int nativeFieldActorPose(const struct Piece* p,const uint8_t* vram,const
+     if (p->w!=bind->width || p->pal!=bind->palette || offset+bytes>0x8000u ||
+         !nativeFieldActorOam(p,oam) || !nativeFieldActorWindow(p)) return -1;
+     const uint8_t* live=vram+0x10000u+offset;
++    /* Some expanded engines copy from the compact walking bank anchored by
++     * image zero. The other frame table entries describe a different layout. */
++    const uint8_t* first=bind->compact ? mem(bind->images,8) : NULL;
++    if (bind->compact && (!first || le16(first+4)!=bytes)) return -1;
+     // Extended original walking cycles are admitted only by the per-object ROM mask.
+     for (unsigned i=0;i<18;++i) {
+         if (!(bind->poses&(1u<<i))) continue;
+-        const uint8_t* frame=mem(bind->images+i*8u,8);
++        const uint8_t* frame=first ? first : mem(bind->images+i*8u,8);
+         if (!frame || le16(frame+4)!=bytes) continue;
+-        uint32_t art=le32(frame);
++        uint32_t art=le32(frame)+(first ? i*bytes : 0);
+         if (art<0x08000000u || art+bytes>0x0a000000u) continue;
+         const uint8_t* ink=mem(art,bytes);
+         if (ink && !memcmp(live,ink,bytes)) return (int)i;

@@ -22,6 +22,8 @@ and battle Pokémon alongside environmental scenery.
    on the Thor. Retain failures; never rerun unchanged candidates to cherry-pick a pass.
 5. Capture 2D/3D, seasonal and interaction media from that exact artifact. Review
    moving views as well as stills. Restore and verify the original device state.
+   Prepare filtered restore archives in temporary workspace storage. On Windows,
+   point the QA baseline junction at the verified backup to avoid a second copy.
 6. Run `gate --candidate BUILD --report qualification.json --output gate.json` after
    the inventory command's global options. The gate rejects changed sources,
    changed artifacts, missing checks, or changed evidence. It does not replace the
@@ -1668,7 +1670,9 @@ Gaia's submerged rock profiles distinguish isolated source formations from
 the connected reef. Test the wide 480×271 crop before reviewing the standard
 view. Only a water pixel immediately below a visible adjoining reef face can
 receive the guarded one-pixel continuation. Keep exposed wave pixels, the pier,
-and nearby formations under independent controls.
+and nearby formations under independent controls. Three northeast golden
+outcrops use the same connected geometry with their own source boundaries.
+The white shoreline junction retains its separate ownership review.
 
 Let’s Go shares the Kanto rock-contact bevel in two native Rock Tunnel fog
 maps and one weather-free cave. The exact room, tilesets, weather and event
@@ -1693,18 +1697,21 @@ art and palette fingerprints, and measured standing anchors. The shared batch
 compares six native, Standard, and HD replays per species, including serialized
 state and the untouched opponent and HUD. Pikachu and Gyarados have separately
 reloaded Thor fixtures. Ash Gray, Rocket, Fakemon, and Gaia use their own
-source-specific settled battle fixtures.
+source-specific settled battle fixtures. Match the live pose as well as the
+outside pixels. Gyarados has two measured settled bob positions, and its
+short transition pose retains the native rendering guard.
 
 English Red, Blue, and Yellow share source-owned field actor relief. The live
 object must match a native source pose before the renderer adds edge depth.
 Check the walking player and moving Pallet Girl in each game, plus Yellow's
 Vermilion Gambler and native dialogue. Actor relief uses the native palette.
 
-Native GBA player and NPC relief shares owner checks across thirteen reviewed
-cartridges. Gate it on a live palette and pose match, window visibility, and
-native object ownership. Check the walking indices that each source exposes
-and retain unresolved multipart or hidden poses. Test same-ROM darkness and
-another cartridge as fallback controls. The parquet-room exit mats use a separate
+Native GBA player and NPC relief shares owner checks across all sixteen
+cartridges in the scripted host scenes. Gate it on a live palette and pose
+match, window visibility, and native object ownership. Match the native walk
+index and exact source frame spacing for each engine. Retain unresolved hidden
+or unsupported poses. Test same-ROM darkness and another cartridge as fallback
+controls. The parquet-room exit mats use a separate
 256×256 textile material for the exact red-pile footprint, keeping cream
 borders, exit behavior, and indoor climate unchanged across nine games.
 

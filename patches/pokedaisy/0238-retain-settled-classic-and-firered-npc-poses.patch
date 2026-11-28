@@ -1,0 +1,16 @@
+diff --git a/app/src/main/cpp/pk_scenery_field_actor_profiles.h b/app/src/main/cpp/pk_scenery_field_actor_profiles.h
+index 4f0152b..68bb60f 100644
+--- a/app/src/main/cpp/pk_scenery_field_actor_profiles.h
++++ b/app/src/main/cpp/pk_scenery_field_actor_profiles.h
+@@ -9,9 +9,9 @@ struct NativeFieldActorProfile {
+ 
+ static const struct NativeFieldActorProfile nativeFieldActors[] = {
+     {0xdd88761cu,0x083a00a0u,0x1ffu,255,0,0,0,16,0}, // FireRed player
+-    {0xdd88761cu,0x083a07c0u,0x086u,2,27,3,0,16,5},  // Pallet NPC
++    {0xdd88761cu,0x083a07c0u,0x197u,2,27,3,0,16,5},  // Pallet NPC
+     {0xe4deb9beu,0x088669f4u,0x1ffu,255,0,0,0,32,1}, // Classic player
+-    {0xe4deb9beu,0x0885e86cu,0x084u,3,1,6,0,32,4},   // Pallet NPC
++    {0xe4deb9beu,0x0885e86cu,0x1b7u,3,1,6,0,32,4},   // Pallet NPC
+     {0x263a1187u,0x08801f78u,0x1ffu,255,0,0,0,16,1}, // Modern Emerald player
+     {0x263a1187u,0x08802818u,0x126u,1,0,0,0,16,2},   // Petalburg NPC
+     {0x964763c0u,0x08416318u,0x1ffu,255,0,0,0,16,0}, // frlgplus player

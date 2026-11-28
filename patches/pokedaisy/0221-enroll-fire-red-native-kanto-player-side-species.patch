@@ -1,0 +1,213 @@
+diff --git a/app/src/main/cpp/pk_wide.c b/app/src/main/cpp/pk_wide.c
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -5297,6 +5297,7 @@
+ 
+ #ifdef PK_BATTLE_BACK_DETAIL
+ #include "pk_battle_back_family.h"
++#include "pk_battle_firered_back_poses.h"
+ 
+ static void battleBackVolumeDraw(const uint32_t* frame, uint32_t* out, struct PkWideView v, uint32_t alpha) {
+     if (!pk_wide_battle_detail_requested()) return;
+@@ -5307,8 +5308,17 @@
+             break;
+         }
+     if (!profile || !battleVolumeReady() || r8(profile->count)!=2 ||
+-        r8(profile->positions)!=0 || r8(profile->positions+1)!=1 ||
+-        r16(profile->player)!=profile->species) return;
++        r8(profile->positions)!=0 || r8(profile->positions+1)!=1) return;
++    const unsigned species=r16(profile->player);
++    struct BattleBackPose pose;
++    if (solidRom==0xdd88761cu && species>0 &&
++        species<sizeof(battleFireRedBackPoses)/sizeof(*battleFireRedBackPoses)) {
++        pose=battleFireRedBackPoses[species];
++        if (!pose.art) return;
++    } else {
++        if (species!=profile->species) return;
++        pose=(struct BattleBackPose){profile->art,profile->palette,profile->firstY,profile->lastY};
++    }
+     const uint16_t* oam=lineOamBuf[0];
+     const uint8_t* tiles=(const uint8_t*)G->video.vram+0x10000;
+     struct BattleVolumeTarget back={.object=-1};
+@@ -5316,15 +5326,15 @@
+         const uint16_t* a=oam+k*4;
+         int y=a[0]&255, tile=a[2]&1023;
+         if ((a[0]&0xff00)!=0x0100 || (a[1]&0xc000)!=0xc000 || (a[1]&511)!=40 ||
+-            y<profile->firstY || y>profile->lastY || ((a[2]>>10)&3)!=2 || tile>960) continue;
++            y<pose.firstY || y>pose.lastY || ((a[2]>>10)&3)!=2 || tile>960) continue;
+         const uint8_t* art=tiles+tile*32;
+         int palette=256+(a[2]>>12)*16;
+         // Both digests come from the cartridge's native back and palette tables.
+-        if (battleVolumeFingerprint(art,2048)!=profile->art ||
+-            battleVolumeFingerprint((const uint8_t*)(linePalBuf[0]+palette+1),30)!=profile->palette) continue;
++        if (battleVolumeFingerprint(art,2048)!=pose.art ||
++            battleVolumeFingerprint((const uint8_t*)(linePalBuf[0]+palette+1),30)!=pose.palette) continue;
+         const uint16_t* matrix=oam+((a[1]>>9)&31)*16;
+         if (matrix[3]!=256 || matrix[7] || matrix[11] || matrix[15]!=256 || back.object>=0) return;
+-        back=(struct BattleVolumeTarget){art,profile->art,k,40,y,palette,true};
++        back=(struct BattleVolumeTarget){art,pose.art,k,40,y,palette,true};
+     }
+     if (back.object<0) return;
+     battleVolumePaint(frame,out,v,alpha,&back,&battlePlayerSideCache);
+diff --git a/app/src/main/cpp/pk_battle_firered_back_poses.h b/app/src/main/cpp/pk_battle_firered_back_poses.h
+new file mode 100644
+--- /dev/null
++++ b/app/src/main/cpp/pk_battle_firered_back_poses.h
+@@ -0,0 +1,157 @@
++#pragma once
++
++/* Native source/palette and stable anchors confirmed by the stock FireRed cohort. */
++struct BattleBackPose { uint32_t art, palette; uint8_t firstY, lastY; };
++static const struct BattleBackPose battleFireRedBackPoses[152] = {
++    [1] = {0x5158e478u, 0x52817034u, 64, 65},
++    [2] = {0xd7b3836bu, 0x9ed1f2a7u, 58, 59},
++    [3] = {0x22640304u, 0x90eeb121u, 58, 59},
++    [4] = {0xdedd67a3u, 0x5b268c8du, 58, 59},
++    [5] = {0x5670877bu, 0x085e73b2u, 55, 56},
++    [6] = {0x2719ffbau, 0xc0c6849cu, 52, 53},
++    [7] = {0xed732e3du, 0x58489bb7u, 63, 64},
++    [8] = {0xbb2aab9cu, 0x9153b707u, 58, 59},
++    [9] = {0x335c9096u, 0x8c9dbeb2u, 58, 59},
++    [10] = {0x6127b3a9u, 0x2993798cu, 63, 64},
++    [11] = {0xe209bb47u, 0xfa2ca45du, 60, 61},
++    [12] = {0xafd50562u, 0xa2399982u, 52, 53},
++    [13] = {0xbae18871u, 0x409df499u, 59, 60},
++    [14] = {0x30dc6608u, 0xb3d6beb5u, 58, 59},
++    [15] = {0xa7d10723u, 0xb81a016du, 57, 58},
++    [16] = {0x4d39d6a0u, 0x52af0c5fu, 56, 57},
++    [17] = {0x21c36a51u, 0x4e41f353u, 60, 61},
++    [18] = {0xc8350e00u, 0xf0b1f7feu, 54, 55},
++    [19] = {0xb796112cu, 0x39fe1729u, 61, 62},
++    [20] = {0x02c7d184u, 0xb4cedb93u, 61, 62},
++    [21] = {0x7b0ff27du, 0xea39866eu, 60, 61},
++    [22] = {0x5d05d272u, 0x35c8e1b2u, 53, 54},
++    [23] = {0xf1abe703u, 0xaca5a381u, 57, 57},
++    [24] = {0x1e56b219u, 0x98512173u, 52, 52},
++    [25] = {0xbd48c6ebu, 0x7e39fa2bu, 55, 56},
++    [26] = {0x2bde221bu, 0xb5db6e55u, 56, 57},
++    [27] = {0xe31ea033u, 0xa7bb4788u, 61, 62},
++    [28] = {0xff4c7fcbu, 0x479952a0u, 57, 58},
++    [29] = {0xc48cea47u, 0x6a629e40u, 60, 61},
++    [30] = {0x2d38f1ecu, 0x3c3e38d4u, 58, 59},
++    [31] = {0xad0fb616u, 0x6c6f544eu, 54, 55},
++    [32] = {0xac8b3d5eu, 0xe25c0b83u, 56, 57},
++    [33] = {0x9caecc4fu, 0x12a50190u, 57, 58},
++    [34] = {0xfdfa41a1u, 0x44d6dec3u, 51, 52},
++    [35] = {0xe185e576u, 0xf61f8703u, 61, 62},
++    [36] = {0xf75ab2afu, 0xa2eea06bu, 58, 59},
++    [37] = {0x062bd1ecu, 0x7b5dcb80u, 57, 58},
++    [38] = {0x1fc32124u, 0x4bcdf3b8u, 52, 53},
++    [39] = {0x508b1589u, 0x42a57502u, 61, 62},
++    [40] = {0x72a068f7u, 0x752b537fu, 56, 57},
++    [41] = {0x83c87851u, 0xf5dbc230u, 59, 60},
++    [42] = {0x0c99d852u, 0x8f09aa70u, 54, 55},
++    [43] = {0xd436192bu, 0x0edc2e7du, 56, 57},
++    [44] = {0x736e3781u, 0x3edf9decu, 59, 60},
++    [45] = {0x0a16c21fu, 0x7a19f916u, 55, 56},
++    [46] = {0x47ebdd64u, 0x59032cb8u, 68, 69},
++    [47] = {0x3dfe8480u, 0xa914e5acu, 55, 56},
++    [48] = {0xd0151081u, 0x3fd9a082u, 54, 55},
++    [49] = {0x5a841201u, 0xa1f865ceu, 52, 53},
++    [50] = {0x609ed2d8u, 0x584b758fu, 64, 65},
++    [51] = {0xb37fe829u, 0x7c8112c7u, 59, 60},
++    [52] = {0x774355f2u, 0x41b77870u, 60, 61},
++    [53] = {0xd561ac1eu, 0x0fd99864u, 55, 56},
++    [54] = {0x888e6341u, 0x85aa0980u, 55, 56},
++    [55] = {0xbc8f6f75u, 0x8b9f24ffu, 53, 54},
++    [56] = {0xcfaa19d9u, 0xcb66cc76u, 59, 60},
++    [57] = {0xe5b58553u, 0x277309cbu, 55, 56},
++    [58] = {0x7598d604u, 0xba13a173u, 56, 56},
++    [59] = {0x0aba30ebu, 0xa1a1a754u, 54, 54},
++    [60] = {0xd554f61au, 0x874a8becu, 64, 65},
++    [61] = {0x942b25c1u, 0xe9b5bb6cu, 61, 62},
++    [62] = {0xc6a805f5u, 0xcd15b236u, 58, 59},
++    [63] = {0x816875cfu, 0x2814e225u, 60, 61},
++    [64] = {0xd6ba815au, 0x7b089d8au, 57, 58},
++    [65] = {0xd54941bbu, 0xe1718c88u, 54, 54},
++    [66] = {0xcabb32ccu, 0x877b67b7u, 60, 61},
++    [67] = {0xbacaa6f2u, 0x31910385u, 57, 58},
++    [68] = {0xa462cee3u, 0x7cd2a4beu, 52, 53},
++    [69] = {0x8142cf74u, 0x3d2aab95u, 58, 59},
++    [70] = {0x79f8a93cu, 0x2b0ac3d3u, 57, 58},
++    [71] = {0x7331beeau, 0x4510c3e2u, 54, 55},
++    [72] = {0x3f180b11u, 0xfc05cd17u, 58, 59},
++    [73] = {0x74d11195u, 0xb26ed2b2u, 59, 60},
++    [74] = {0x20e4145fu, 0x66219408u, 59, 60},
++    [75] = {0x22aee6b8u, 0x3ba42e52u, 60, 61},
++    [76] = {0xccc12416u, 0x8f669533u, 64, 65},
++    [77] = {0x135433afu, 0xc686640eu, 57, 58},
++    [78] = {0x74e6ecccu, 0x0041457fu, 53, 54},
++    [79] = {0x230de4a2u, 0x6a13be1fu, 62, 63},
++    [80] = {0xed855e20u, 0x7a1caa10u, 58, 59},
++    [81] = {0x7901d2a4u, 0x89facd47u, 68, 69},
++    [82] = {0x9aef3f0eu, 0xd17eda87u, 58, 59},
++    [83] = {0x2d9cd13fu, 0x849002f9u, 58, 59},
++    [84] = {0x20e9d46eu, 0x5bd7794bu, 56, 57},
++    [85] = {0x16350db5u, 0xfd91a139u, 49, 50},
++    [86] = {0xe1d15f54u, 0xf1cb2d5au, 58, 59},
++    [87] = {0x5d6a4700u, 0xc167ed4bu, 53, 54},
++    [88] = {0x604cf731u, 0xa1065f5eu, 61, 62},
++    [89] = {0x832989e8u, 0x428c7616u, 61, 62},
++    [90] = {0x1219eb18u, 0x244565bfu, 59, 60},
++    [91] = {0xa6b21d15u, 0xed8b345du, 54, 55},
++    [92] = {0xbd4101eeu, 0x916f0811u, 62, 63},
++    [93] = {0x050f6667u, 0xf56159a8u, 57, 58},
++    [94] = {0xc26da352u, 0xd2da0a76u, 58, 59},
++    [95] = {0x63369b40u, 0xb01eac7eu, 48, 49},
++    [96] = {0x06212697u, 0x929234acu, 61, 62},
++    [97] = {0xe17151c0u, 0x591f473cu, 57, 58},
++    [98] = {0xa4205efcu, 0xa9631586u, 58, 59},
++    [99] = {0xfde373e8u, 0xf2e63e44u, 52, 53},
++    [100] = {0xa3eb9fc5u, 0x95055dfeu, 62, 63},
++    [101] = {0xc7ffff9bu, 0xac88176fu, 61, 62},
++    [102] = {0x2f899caeu, 0xa7dba0ecu, 61, 62},
++    [103] = {0xb44c40c4u, 0xa3f7cab1u, 55, 55},
++    [104] = {0x40068828u, 0xcb2302a2u, 58, 59},
++    [105] = {0xa9a49cd6u, 0xd08c61e6u, 56, 57},
++    [106] = {0x80cf052au, 0x168bef1au, 60, 61},
++    [107] = {0xc16030deu, 0x884a6e5eu, 60, 61},
++    [108] = {0xe9d36fc9u, 0x7e51cab0u, 62, 63},
++    [109] = {0x3e43da9au, 0x979c044bu, 57, 58},
++    [110] = {0x2526a688u, 0x73625336u, 60, 61},
++    [111] = {0x783c414eu, 0x2b717dbeu, 60, 61},
++    [112] = {0x3db7f454u, 0xe01567afu, 51, 52},
++    [113] = {0x0c0d0cfeu, 0xd029a86fu, 62, 63},
++    [114] = {0x166401e6u, 0x6d3347a4u, 62, 63},
++    [115] = {0x156cab88u, 0xe01468c2u, 53, 54},
++    [116] = {0x82a4e888u, 0x2415e212u, 57, 58},
++    [117] = {0xbd15de1au, 0xca40f05au, 56, 57},
++    [118] = {0x5ec7280bu, 0x3434a87bu, 56, 57},
++    [119] = {0xf2bdb80fu, 0x316b2deeu, 59, 60},
++    [120] = {0x7da659f0u, 0xa5eb3f10u, 61, 62},
++    [121] = {0x066f1742u, 0x54fcfe58u, 62, 63},
++    [122] = {0x8e6b7791u, 0x08f03385u, 61, 62},
++    [123] = {0xb55147e6u, 0xecca4e6eu, 52, 53},
++    [124] = {0x12fd61b7u, 0x68a28bb8u, 61, 61},
++    [125] = {0x97a08570u, 0x3219023du, 56, 57},
++    [126] = {0x1ccbbe88u, 0xeab59582u, 55, 56},
++    [127] = {0xe2d54a17u, 0x67c491cau, 57, 58},
++    [128] = {0x080555e2u, 0xbeb6e15fu, 61, 61},
++    [129] = {0x998a342cu, 0x4672c327u, 57, 58},
++    [130] = {0xac42baceu, 0x848dbc83u, 48, 48},
++    [131] = {0x57c11f8bu, 0x28090cccu, 52, 53},
++    [132] = {0xafdc6907u, 0x3aa34dafu, 65, 66},
++    [133] = {0x6be0f628u, 0x9d7bb9e7u, 58, 59},
++    [134] = {0xee8b669du, 0x24b5e3a3u, 58, 59},
++    [135] = {0x28fe8cb2u, 0x4d7d3b33u, 54, 55},
++    [136] = {0xb8edef44u, 0x6334356du, 53, 54},
++    [137] = {0xf28c94feu, 0x8e89993au, 61, 61},
++    [138] = {0x30838d7eu, 0x466f1bd6u, 58, 59},
++    [139] = {0x95473bb5u, 0xfa3f20c9u, 56, 57},
++    [140] = {0xd9c734eeu, 0x6602dca9u, 61, 62},
++    [141] = {0x2c7557c8u, 0x7c63c308u, 53, 54},
++    [142] = {0x958f516cu, 0x37060042u, 56, 57},
++    [143] = {0xd3d1e883u, 0x1ee933f8u, 59, 60},
++    [144] = {0xa399bf82u, 0x27596e47u, 60, 61},
++    [145] = {0x584e570au, 0x748bed92u, 59, 60},
++    [146] = {0x4fc5d513u, 0x0483355bu, 52, 53},
++    [147] = {0x0aa8a81eu, 0xe063fd78u, 57, 58},
++    [148] = {0x53887ba2u, 0x8553b6f7u, 48, 49},
++    [149] = {0x97cde2bau, 0x40b145bau, 54, 55},
++    [150] = {0x75e3f1fdu, 0x93b48666u, 49, 50},
++    [151] = {0x32a14f0eu, 0x38552eeau, 49, 50},
++};

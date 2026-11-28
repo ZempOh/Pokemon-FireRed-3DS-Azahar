@@ -1,0 +1,11 @@
+diff --git a/app/src/main/cpp/pk_scenery_cave_contact_profiles.h b/app/src/main/cpp/pk_scenery_cave_contact_profiles.h
+--- a/app/src/main/cpp/pk_scenery_cave_contact_profiles.h
++++ b/app/src/main/cpp/pk_scenery_cave_contact_profiles.h
+@@ -20,6 +20,7 @@
+     {0xfba55dd8u,0x8314008u,0x82d4a94u,0x82d4df4u,48,40,1,82,1,0}, // radical
+     {0x25c3d89fu,0x83130e4u,0x82d4a94u,0x82d4df4u,48,40,1,81,0,11}, // letsgo
+     {0x25c3d89fu,0x8314008u,0x82d4a94u,0x82d4df4u,48,40,1,82,0,11}, // letsgo
++    {0x25c3d89fu,0x8347a50u,0x82d4a94u,0x82d4df4u,32,24,1,122,0,0}, // letsgo
+ };
+ 
+ /* Last source rock texel in each column with three contiguous rock rows. */

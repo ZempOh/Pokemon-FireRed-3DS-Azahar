@@ -1,0 +1,24 @@
+diff --git a/app/src/main/cpp/pk_wide.c b/app/src/main/cpp/pk_wide.c
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -6969,6 +6969,9 @@
+     const bool radicalPalletLeaves=solidRom==0xfba55dd8u && s->group==3 && s->num==0 &&
+         F.mapHeader && r32(F.mapHeader)==0x082dd4c0u &&
+         s->primary==0x082d4a94u && s->secondary==0x082d4aacu;
++    const bool radicalViridianLeaves=solidRom==0xfba55dd8u && s->group==3 && s->num==1 &&
++        F.mapHeader && r32(F.mapHeader)==0x082de3e4u &&
++        s->primary==0x082d4a94u && s->secondary==0x082d4ac4u;
+     unsigned winterLeafOpacity=0;
+     if (voxelClimate.seasonBlend) {
+         if (solidRom==0x558ae42f &&
+@@ -6992,7 +6995,9 @@
+             const uint16_t* leafMask = winterLeafOpacity && conn < 0
+                 ? sceneryWinterLeafMask(solidRom,primary,secondary,id) : NULL;
+             const uint16_t* radicalLeaves=NULL;
+-            if (radicalPalletLeaves && ((unsigned)id<0x28 || id==0x2ab || id==0x2ba)) {
++            if (radicalViridianLeaves && conn<0 && (unsigned)id<0x28) {
++                radicalLeaves=sceneryRadicalLeafRows[id];
++            } else if (radicalPalletLeaves && ((unsigned)id<0x28 || id==0x2ab || id==0x2ba)) {
+                 if (conn<0) {
+                     if ((unsigned)id<0x28) radicalLeaves=sceneryRadicalLeafRows[id];
+                 } else {

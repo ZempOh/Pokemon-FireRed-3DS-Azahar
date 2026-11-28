@@ -1,0 +1,12 @@
+diff --git a/app/src/main/cpp/pk_scenery_turf_south_faces.h b/app/src/main/cpp/pk_scenery_turf_south_faces.h
+--- a/app/src/main/cpp/pk_scenery_turf_south_faces.h
++++ b/app/src/main/cpp/pk_scenery_turf_south_faces.h
+@@ -19,6 +19,8 @@
+ static const struct SceneryTurfFaceRun sceneryDrescoTurf[] = {
+     {22,28,28,0x4132,{0x00d4,0x00d4,0x00d4}},
+     {22,29,29,0x4008,{0x00d5,0x00d5,0x00d5}},
++    {29,29,29,0x4132,{0x0004,0x0004,0x0004}},
++    {29,30,30,0x4133,{0x00d3,0x00d3,0x00d3}},
+ };
+ 
+ static const struct SceneryTurfFaceMap sceneryTurfFaceMaps[] = {

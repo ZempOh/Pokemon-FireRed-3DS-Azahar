@@ -1,0 +1,46 @@
+diff --git a/app/src/main/cpp/pk_scenery_marine_cluster.h b/app/src/main/cpp/pk_scenery_marine_cluster.h
+--- a/app/src/main/cpp/pk_scenery_marine_cluster.h
++++ b/app/src/main/cpp/pk_scenery_marine_cluster.h
+@@ -66,6 +66,35 @@
+     return (struct MarineCluster){v->left+col*16,v->top+row*16,true};
+ }
+ 
++static void marineClusterJoinFaces(const struct Snap* s,const struct VoxelView* view,
++                                   const struct MarineCluster* cluster,uint32_t alpha) {
++    for (int y=marineClusterRows*16-1;y>=0;--y) {
++        int wy=cluster->y+y;
++        if (voxelY(view,wy,1)<0 || voxelY(view,wy,12)>=view->height) continue;
++        for (int x=1;x<marineClusterCols*16;++x) {
++            if (!marineClusterHeight(x,y)) continue;
++            unsigned west=marineClusterHeight(x-1,y),south=marineClusterHeight(x,y+1);
++            unsigned seam=west<south?west:south;
++            if (seam<2) continue;
++            int screenX=voxelX(view,cluster->x+x,wy);
++            int screenY=voxelY(view,wy,(int)seam-1);
++            if ((unsigned)screenX>=(unsigned)view->width ||
++                (unsigned)screenY>=(unsigned)view->height) continue;
++
++            // Quantized projection can leave one pixel between adjoining raised
++            // faces. Join only where the exposed water floor replaced this reef's
++            // own source rock, without touching its authored water margins.
++            int floorY=voxelWorldY(view,screenY,0);
++            unsigned floorDepth=(unsigned)(floorY-view->top+1)*512u;
++            if (view->depth[screenY*view->width+screenX]!=floorDepth) continue;
++            int floorX=screenX-voxelX(view,0,floorY);
++            if (!marineClusterHeight(floorX-cluster->x,floorY-cluster->y)) continue;
++            uint32_t ink=solidMaterialPixel(s,marineClusterWords[y/16][x/16]&1023,x&15,y&15,alpha);
++            voxelPixel(view,screenX,screenY,wy,voxelShade(ink,205u));
++        }
++    }
++}
++
+ static void sceneryMarineClusterDraw(const struct Snap* s,const struct VoxelView* v,
+                                     const struct MarineCluster* cluster,uint32_t alpha) {
+     for (int y=0;y<marineClusterRows*16;++y) {
+@@ -80,5 +109,6 @@
+             marineRockDrawSample(v,wx,wy,height,marineClusterHeight(x-1,y),marineClusterHeight(x,y+1),ink);
+         }
+     }
++    marineClusterJoinFaces(s,v,cluster,alpha);
+ }
+ #endif

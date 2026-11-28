@@ -1,0 +1,33 @@
+diff --git a/app/src/main/cpp/pk_wide.c b/app/src/main/cpp/pk_wide.c
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -6969,7 +6969,7 @@
+     const bool radicalPalletLeaves=solidRom==0xfba55dd8u && s->group==3 && s->num==0 &&
+         F.mapHeader && r32(F.mapHeader)==0x082dd4c0u &&
+         s->primary==0x082d4a94u && s->secondary==0x082d4aacu;
+-    const bool radicalViridianLeaves=solidRom==0xfba55dd8u && s->group==3 && s->num==1 &&
++    const bool radicalViridian=solidRom==0xfba55dd8u && s->group==3 && s->num==1 &&
+         F.mapHeader && r32(F.mapHeader)==0x082de3e4u &&
+         s->primary==0x082d4a94u && s->secondary==0x082d4ac4u;
+     unsigned winterLeafOpacity=0;
+@@ -6988,14 +6988,18 @@
+             uint32_t primary=conn>=0?s->conn[conn].primary:s->primary;
+             uint32_t secondary=conn>=0?s->conn[conn].secondary:s->secondary;
+             int kanto=sceneryKanto(solidRom,primary);
+-            int path=(sceneryLand(solidRom,primary,id)||scenerySecondaryLand(solidRom,primary,secondary,id))?2:(kanto && id>=0 && (id<=0x0d || climateKantoPath(id)));
++            // The exact Viridian lawn includes fully opaque lighter grass,
++            // which the live midnight palette makes bluer than common turf.
++            const bool viridianTurf=radicalViridian && conn<0 && ((id>=0xbd && id<=0xbf) ||
++                (id>=0xc4 && id<=0xc7) || id==0xcb || (id>=0xcd && id<=0xcf));
++            int path=(viridianTurf||sceneryLand(solidRom,primary,id)||scenerySecondaryLand(solidRom,primary,secondary,id))?2:(kanto && id>=0 && (id<=0x0d || climateKantoPath(id)));
+             if(path!=2 && sceneryPatternLand(solidRom,primary,secondary,id,cellX+col,cellY+row,s,sceneryGroundRead))path=2;
+             int capRows=sceneryLandCapRows(solidRom,primary,id);
+             const uint16_t* landMask=path==2?0:scenerySecondaryLandMask(solidRom,primary,secondary,id);
+             const uint16_t* leafMask = winterLeafOpacity && conn < 0
+                 ? sceneryWinterLeafMask(solidRom,primary,secondary,id) : NULL;
+             const uint16_t* radicalLeaves=NULL;
+-            if (radicalViridianLeaves && conn<0 && (unsigned)id<0x28) {
++            if (radicalViridian && conn<0 && (unsigned)id<0x28) {
+                 radicalLeaves=sceneryRadicalLeafRows[id];
+             } else if (radicalPalletLeaves && ((unsigned)id<0x28 || id==0x2ab || id==0x2ba)) {
+                 if (conn<0) {

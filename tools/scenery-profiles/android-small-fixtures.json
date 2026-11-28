@@ -21557,5 +21557,733 @@
       4095
     ],
     "reviewed": true
+  },
+  {
+    "game": "classic",
+    "rom_crc32": "e4deb9be",
+    "rom_sha256": "4ab7b1f7fb246490d798f49db1511d197d7c72376b6347d08e7c557122c6d722",
+    "primary": "0x084ad600",
+    "secondary": "0x084add28",
+    "id": 231,
+    "shape": "steel_fence",
+    "feet_x": [
+      4,
+      12
+    ],
+    "ink": [
+      3,
+      5,
+      3,
+      3
+    ],
+    "source_art_sha256": "57fed712eeef89a8899304c1e678acf243cbeeb1a086f7d5275edbb6a8ff66ba",
+    "floor_sha256": "2ac691155451152075f28c01bfd7997effbc71c367732afd39cdb35e786c9275",
+    "reviewed": true
+  },
+  {
+    "game": "classic",
+    "rom_crc32": "e4deb9be",
+    "rom_sha256": "4ab7b1f7fb246490d798f49db1511d197d7c72376b6347d08e7c557122c6d722",
+    "primary": "0x084ad600",
+    "secondary": "0x084add28",
+    "id": 236,
+    "shape": "steel_fence",
+    "rail": "corner_left",
+    "feet_x": [
+      4,
+      12
+    ],
+    "ink": [
+      3,
+      5,
+      3,
+      3
+    ],
+    "source_art_sha256": "d51cfb959d8d41094cac010eabf3b9e57472f80cae7585429c5042a874ca55c4",
+    "floor_sha256": "015e1efefe4a6149047b8805c80a939a554a15d2039fb54881b4f4bd14544402",
+    "reviewed": true
+  },
+  {
+    "game": "classic",
+    "rom_crc32": "e4deb9be",
+    "rom_sha256": "4ab7b1f7fb246490d798f49db1511d197d7c72376b6347d08e7c557122c6d722",
+    "primary": "0x084ad600",
+    "secondary": "0x084add28",
+    "id": 237,
+    "shape": "steel_fence",
+    "rail": "corner_right",
+    "feet_x": [
+      4,
+      12
+    ],
+    "ink": [
+      3,
+      5,
+      3,
+      3
+    ],
+    "source_art_sha256": "d316c39f6c64e0d2fce0d0f4117f5e8fae23bf3738d2bd08061ecff3f53aaec5",
+    "floor_sha256": "5fe0edd3056760956c10c62b4df0f786d246f51fa93c9311b918a383836e0898",
+    "reviewed": true
+  },
+  {
+    "game": "classic",
+    "rom_crc32": "e4deb9be",
+    "rom_sha256": "4ab7b1f7fb246490d798f49db1511d197d7c72376b6347d08e7c557122c6d722",
+    "primary": "0x084ad600",
+    "secondary": "0x084add28",
+    "id": 244,
+    "shape": "steel_fence",
+    "rail": "vertical",
+    "feet_x": [
+      4
+    ],
+    "ink": [
+      3,
+      0,
+      3,
+      3
+    ],
+    "source_art_sha256": "fab2634bac5480dbb4b7ee614d695acb499599d178cbb7f8bcac6a99a486e63d",
+    "floor_sha256": "2ef55b33a4a537823c5a3bdd5d3befe23935a6680f1523776ae572a9e8e8683f",
+    "reviewed": true,
+    "overlay_layer": 2
+  },
+  {
+    "game": "classic",
+    "rom_crc32": "e4deb9be",
+    "rom_sha256": "4ab7b1f7fb246490d798f49db1511d197d7c72376b6347d08e7c557122c6d722",
+    "primary": "0x084ad600",
+    "secondary": "0x084add28",
+    "id": 245,
+    "shape": "steel_fence",
+    "rail": "vertical",
+    "feet_x": [
+      12
+    ],
+    "ink": [
+      11,
+      0,
+      11,
+      3
+    ],
+    "source_art_sha256": "bd6509205895054f8d4f40cb1c5fdd650c0209979a5a9179722a1e20533e6219",
+    "floor_sha256": "6b341c207999fce35f3a8b4b82dbd04289812bc14ebb43fbf9499a0228757d75",
+    "reviewed": true,
+    "overlay_layer": 2
+  },
+  {
+    "game": "classic",
+    "rom_crc32": "e4deb9be",
+    "rom_sha256": "4ab7b1f7fb246490d798f49db1511d197d7c72376b6347d08e7c557122c6d722",
+    "primary": "0x084ad600",
+    "secondary": "0x084add28",
+    "id": 252,
+    "shape": "steel_fence",
+    "rail": "north_corner_left",
+    "feet_x": [
+      4,
+      12
+    ],
+    "ink": [
+      3,
+      5,
+      3,
+      3
+    ],
+    "source_art_sha256": "6666119b52f811d6438e70e37099f3fdad5f9802e4b5e77ccdab94f8cf47f319",
+    "floor_sha256": "015e1efefe4a6149047b8805c80a939a554a15d2039fb54881b4f4bd14544402",
+    "reviewed": true
+  },
+  {
+    "game": "classic",
+    "rom_crc32": "e4deb9be",
+    "rom_sha256": "4ab7b1f7fb246490d798f49db1511d197d7c72376b6347d08e7c557122c6d722",
+    "primary": "0x084ad600",
+    "secondary": "0x084add28",
+    "id": 253,
+    "shape": "steel_fence",
+    "rail": "north_corner_right",
+    "feet_x": [
+      4,
+      12
+    ],
+    "ink": [
+      3,
+      5,
+      3,
+      3
+    ],
+    "source_art_sha256": "39e05fc2385224c1f472dd662ad211b44f69341987ae03a548377cae363d43d0",
+    "floor_sha256": "5fe0edd3056760956c10c62b4df0f786d246f51fa93c9311b918a383836e0898",
+    "reviewed": true
+  },
+  {
+    "game": "firered",
+    "rom_crc32": "dd88761c",
+    "rom_sha256": "3d0c79f1627022e18765766f6cb5ea067f6b5bf7dca115552189ad65a5c3a8ac",
+    "primary": "0x082d4a94",
+    "secondary": "0x082d4ac4",
+    "id": 231,
+    "shape": "steel_fence",
+    "feet_x": [
+      4,
+      12
+    ],
+    "ink": [
+      3,
+      5,
+      3,
+      3
+    ],
+    "source_art_sha256": "57fed712eeef89a8899304c1e678acf243cbeeb1a086f7d5275edbb6a8ff66ba",
+    "floor_sha256": "2ac691155451152075f28c01bfd7997effbc71c367732afd39cdb35e786c9275",
+    "reviewed": true
+  },
+  {
+    "game": "firered",
+    "rom_crc32": "dd88761c",
+    "rom_sha256": "3d0c79f1627022e18765766f6cb5ea067f6b5bf7dca115552189ad65a5c3a8ac",
+    "primary": "0x082d4a94",
+    "secondary": "0x082d4ac4",
+    "id": 236,
+    "shape": "steel_fence",
+    "rail": "corner_left",
+    "feet_x": [
+      4,
+      12
+    ],
+    "ink": [
+      3,
+      5,
+      3,
+      3
+    ],
+    "source_art_sha256": "d51cfb959d8d41094cac010eabf3b9e57472f80cae7585429c5042a874ca55c4",
+    "floor_sha256": "015e1efefe4a6149047b8805c80a939a554a15d2039fb54881b4f4bd14544402",
+    "reviewed": true
+  },
+  {
+    "game": "firered",
+    "rom_crc32": "dd88761c",
+    "rom_sha256": "3d0c79f1627022e18765766f6cb5ea067f6b5bf7dca115552189ad65a5c3a8ac",
+    "primary": "0x082d4a94",
+    "secondary": "0x082d4ac4",
+    "id": 237,
+    "shape": "steel_fence",
+    "rail": "corner_right",
+    "feet_x": [
+      4,
+      12
+    ],
+    "ink": [
+      3,
+      5,
+      3,
+      3
+    ],
+    "source_art_sha256": "d316c39f6c64e0d2fce0d0f4117f5e8fae23bf3738d2bd08061ecff3f53aaec5",
+    "floor_sha256": "5fe0edd3056760956c10c62b4df0f786d246f51fa93c9311b918a383836e0898",
+    "reviewed": true
+  },
+  {
+    "game": "firered",
+    "rom_crc32": "dd88761c",
+    "rom_sha256": "3d0c79f1627022e18765766f6cb5ea067f6b5bf7dca115552189ad65a5c3a8ac",
+    "primary": "0x082d4a94",
+    "secondary": "0x082d4ac4",
+    "id": 244,
+    "shape": "steel_fence",
+    "rail": "vertical",
+    "feet_x": [
+      4
+    ],
+    "ink": [
+      3,
+      0,
+      3,
+      3
+    ],
+    "source_art_sha256": "fab2634bac5480dbb4b7ee614d695acb499599d178cbb7f8bcac6a99a486e63d",
+    "floor_sha256": "2ef55b33a4a537823c5a3bdd5d3befe23935a6680f1523776ae572a9e8e8683f",
+    "reviewed": true
+  },
+  {
+    "game": "firered",
+    "rom_crc32": "dd88761c",
+    "rom_sha256": "3d0c79f1627022e18765766f6cb5ea067f6b5bf7dca115552189ad65a5c3a8ac",
+    "primary": "0x082d4a94",
+    "secondary": "0x082d4ac4",
+    "id": 245,
+    "shape": "steel_fence",
+    "rail": "vertical",
+    "feet_x": [
+      12
+    ],
+    "ink": [
+      11,
+      0,
+      11,
+      3
+    ],
+    "source_art_sha256": "bd6509205895054f8d4f40cb1c5fdd650c0209979a5a9179722a1e20533e6219",
+    "floor_sha256": "6b341c207999fce35f3a8b4b82dbd04289812bc14ebb43fbf9499a0228757d75",
+    "reviewed": true
+  },
+  {
+    "game": "firered",
+    "rom_crc32": "dd88761c",
+    "rom_sha256": "3d0c79f1627022e18765766f6cb5ea067f6b5bf7dca115552189ad65a5c3a8ac",
+    "primary": "0x082d4a94",
+    "secondary": "0x082d4ac4",
+    "id": 252,
+    "shape": "steel_fence",
+    "rail": "north_corner_left",
+    "feet_x": [
+      4,
+      12
+    ],
+    "ink": [
+      3,
+      5,
+      3,
+      3
+    ],
+    "source_art_sha256": "6666119b52f811d6438e70e37099f3fdad5f9802e4b5e77ccdab94f8cf47f319",
+    "floor_sha256": "015e1efefe4a6149047b8805c80a939a554a15d2039fb54881b4f4bd14544402",
+    "reviewed": true
+  },
+  {
+    "game": "firered",
+    "rom_crc32": "dd88761c",
+    "rom_sha256": "3d0c79f1627022e18765766f6cb5ea067f6b5bf7dca115552189ad65a5c3a8ac",
+    "primary": "0x082d4a94",
+    "secondary": "0x082d4ac4",
+    "id": 253,
+    "shape": "steel_fence",
+    "rail": "north_corner_right",
+    "feet_x": [
+      4,
+      12
+    ],
+    "ink": [
+      3,
+      5,
+      3,
+      3
+    ],
+    "source_art_sha256": "39e05fc2385224c1f472dd662ad211b44f69341987ae03a548377cae363d43d0",
+    "floor_sha256": "5fe0edd3056760956c10c62b4df0f786d246f51fa93c9311b918a383836e0898",
+    "reviewed": true
+  },
+  {
+    "game": "frlgplus",
+    "rom_crc32": "964763c0",
+    "rom_sha256": "41b51f4f1d0a894dbb27572d6580821c6a192231f930d85c2805af664c13bbb6",
+    "primary": "0x08316a4c",
+    "secondary": "0x08316a7c",
+    "id": 236,
+    "shape": "steel_fence",
+    "rail": "corner_left",
+    "feet_x": [
+      4,
+      12
+    ],
+    "ink": [
+      3,
+      5,
+      3,
+      3
+    ],
+    "source_art_sha256": "d51cfb959d8d41094cac010eabf3b9e57472f80cae7585429c5042a874ca55c4",
+    "floor_sha256": "015e1efefe4a6149047b8805c80a939a554a15d2039fb54881b4f4bd14544402",
+    "reviewed": true
+  },
+  {
+    "game": "frlgplus",
+    "rom_crc32": "964763c0",
+    "rom_sha256": "41b51f4f1d0a894dbb27572d6580821c6a192231f930d85c2805af664c13bbb6",
+    "primary": "0x08316a4c",
+    "secondary": "0x08316a7c",
+    "id": 237,
+    "shape": "steel_fence",
+    "rail": "corner_right",
+    "feet_x": [
+      4,
+      12
+    ],
+    "ink": [
+      3,
+      5,
+      3,
+      3
+    ],
+    "source_art_sha256": "d316c39f6c64e0d2fce0d0f4117f5e8fae23bf3738d2bd08061ecff3f53aaec5",
+    "floor_sha256": "5fe0edd3056760956c10c62b4df0f786d246f51fa93c9311b918a383836e0898",
+    "reviewed": true
+  },
+  {
+    "game": "frlgplus",
+    "rom_crc32": "964763c0",
+    "rom_sha256": "41b51f4f1d0a894dbb27572d6580821c6a192231f930d85c2805af664c13bbb6",
+    "primary": "0x08316a4c",
+    "secondary": "0x08316a7c",
+    "id": 244,
+    "shape": "steel_fence",
+    "rail": "vertical",
+    "feet_x": [
+      4
+    ],
+    "ink": [
+      3,
+      0,
+      3,
+      3
+    ],
+    "source_art_sha256": "fab2634bac5480dbb4b7ee614d695acb499599d178cbb7f8bcac6a99a486e63d",
+    "floor_sha256": "2ef55b33a4a537823c5a3bdd5d3befe23935a6680f1523776ae572a9e8e8683f",
+    "reviewed": true
+  },
+  {
+    "game": "frlgplus",
+    "rom_crc32": "964763c0",
+    "rom_sha256": "41b51f4f1d0a894dbb27572d6580821c6a192231f930d85c2805af664c13bbb6",
+    "primary": "0x08316a4c",
+    "secondary": "0x08316a7c",
+    "id": 245,
+    "shape": "steel_fence",
+    "rail": "vertical",
+    "feet_x": [
+      12
+    ],
+    "ink": [
+      11,
+      0,
+      11,
+      3
+    ],
+    "source_art_sha256": "bd6509205895054f8d4f40cb1c5fdd650c0209979a5a9179722a1e20533e6219",
+    "floor_sha256": "6b341c207999fce35f3a8b4b82dbd04289812bc14ebb43fbf9499a0228757d75",
+    "reviewed": true
+  },
+  {
+    "game": "frlgplus",
+    "rom_crc32": "964763c0",
+    "rom_sha256": "41b51f4f1d0a894dbb27572d6580821c6a192231f930d85c2805af664c13bbb6",
+    "primary": "0x08316a4c",
+    "secondary": "0x08316a7c",
+    "id": 252,
+    "shape": "steel_fence",
+    "rail": "north_corner_left",
+    "feet_x": [
+      4,
+      12
+    ],
+    "ink": [
+      3,
+      5,
+      3,
+      3
+    ],
+    "source_art_sha256": "6666119b52f811d6438e70e37099f3fdad5f9802e4b5e77ccdab94f8cf47f319",
+    "floor_sha256": "015e1efefe4a6149047b8805c80a939a554a15d2039fb54881b4f4bd14544402",
+    "reviewed": true
+  },
+  {
+    "game": "frlgplus",
+    "rom_crc32": "964763c0",
+    "rom_sha256": "41b51f4f1d0a894dbb27572d6580821c6a192231f930d85c2805af664c13bbb6",
+    "primary": "0x08316a4c",
+    "secondary": "0x08316a7c",
+    "id": 253,
+    "shape": "steel_fence",
+    "rail": "north_corner_right",
+    "feet_x": [
+      4,
+      12
+    ],
+    "ink": [
+      3,
+      5,
+      3,
+      3
+    ],
+    "source_art_sha256": "39e05fc2385224c1f472dd662ad211b44f69341987ae03a548377cae363d43d0",
+    "floor_sha256": "5fe0edd3056760956c10c62b4df0f786d246f51fa93c9311b918a383836e0898",
+    "reviewed": true
+  },
+  {
+    "game": "radical",
+    "rom_crc32": "fba55dd8",
+    "rom_sha256": "679d112cdfe699c2793d82c7e7999ac9dfca9e222ad5a85d4f8f1e457cd0283f",
+    "primary": "0x082d4a94",
+    "secondary": "0x082d4ac4",
+    "id": 236,
+    "shape": "steel_fence",
+    "rail": "corner_left",
+    "feet_x": [
+      4,
+      12
+    ],
+    "ink": [
+      3,
+      5,
+      3,
+      3
+    ],
+    "source_art_sha256": "d51cfb959d8d41094cac010eabf3b9e57472f80cae7585429c5042a874ca55c4",
+    "floor_sha256": "015e1efefe4a6149047b8805c80a939a554a15d2039fb54881b4f4bd14544402",
+    "reviewed": true
+  },
+  {
+    "game": "radical",
+    "rom_crc32": "fba55dd8",
+    "rom_sha256": "679d112cdfe699c2793d82c7e7999ac9dfca9e222ad5a85d4f8f1e457cd0283f",
+    "primary": "0x082d4a94",
+    "secondary": "0x082d4ac4",
+    "id": 237,
+    "shape": "steel_fence",
+    "rail": "corner_right",
+    "feet_x": [
+      4,
+      12
+    ],
+    "ink": [
+      3,
+      5,
+      3,
+      3
+    ],
+    "source_art_sha256": "d316c39f6c64e0d2fce0d0f4117f5e8fae23bf3738d2bd08061ecff3f53aaec5",
+    "floor_sha256": "5fe0edd3056760956c10c62b4df0f786d246f51fa93c9311b918a383836e0898",
+    "reviewed": true
+  },
+  {
+    "game": "radical",
+    "rom_crc32": "fba55dd8",
+    "rom_sha256": "679d112cdfe699c2793d82c7e7999ac9dfca9e222ad5a85d4f8f1e457cd0283f",
+    "primary": "0x082d4a94",
+    "secondary": "0x082d4ac4",
+    "id": 244,
+    "shape": "steel_fence",
+    "rail": "vertical",
+    "feet_x": [
+      4
+    ],
+    "ink": [
+      3,
+      0,
+      3,
+      3
+    ],
+    "source_art_sha256": "fab2634bac5480dbb4b7ee614d695acb499599d178cbb7f8bcac6a99a486e63d",
+    "floor_sha256": "2ef55b33a4a537823c5a3bdd5d3befe23935a6680f1523776ae572a9e8e8683f",
+    "reviewed": true
+  },
+  {
+    "game": "radical",
+    "rom_crc32": "fba55dd8",
+    "rom_sha256": "679d112cdfe699c2793d82c7e7999ac9dfca9e222ad5a85d4f8f1e457cd0283f",
+    "primary": "0x082d4a94",
+    "secondary": "0x082d4ac4",
+    "id": 245,
+    "shape": "steel_fence",
+    "rail": "vertical",
+    "feet_x": [
+      12
+    ],
+    "ink": [
+      11,
+      0,
+      11,
+      3
+    ],
+    "source_art_sha256": "bd6509205895054f8d4f40cb1c5fdd650c0209979a5a9179722a1e20533e6219",
+    "floor_sha256": "6b341c207999fce35f3a8b4b82dbd04289812bc14ebb43fbf9499a0228757d75",
+    "reviewed": true
+  },
+  {
+    "game": "radical",
+    "rom_crc32": "fba55dd8",
+    "rom_sha256": "679d112cdfe699c2793d82c7e7999ac9dfca9e222ad5a85d4f8f1e457cd0283f",
+    "primary": "0x082d4a94",
+    "secondary": "0x082d4ac4",
+    "id": 252,
+    "shape": "steel_fence",
+    "rail": "north_corner_left",
+    "feet_x": [
+      4,
+      12
+    ],
+    "ink": [
+      3,
+      5,
+      3,
+      3
+    ],
+    "source_art_sha256": "6666119b52f811d6438e70e37099f3fdad5f9802e4b5e77ccdab94f8cf47f319",
+    "floor_sha256": "015e1efefe4a6149047b8805c80a939a554a15d2039fb54881b4f4bd14544402",
+    "reviewed": true
+  },
+  {
+    "game": "radical",
+    "rom_crc32": "fba55dd8",
+    "rom_sha256": "679d112cdfe699c2793d82c7e7999ac9dfca9e222ad5a85d4f8f1e457cd0283f",
+    "primary": "0x082d4a94",
+    "secondary": "0x082d4ac4",
+    "id": 253,
+    "shape": "steel_fence",
+    "rail": "north_corner_right",
+    "feet_x": [
+      4,
+      12
+    ],
+    "ink": [
+      3,
+      5,
+      3,
+      3
+    ],
+    "source_art_sha256": "39e05fc2385224c1f472dd662ad211b44f69341987ae03a548377cae363d43d0",
+    "floor_sha256": "5fe0edd3056760956c10c62b4df0f786d246f51fa93c9311b918a383836e0898",
+    "reviewed": true
+  },
+  {
+    "game": "dragonsden",
+    "rom_crc32": "cec21496",
+    "rom_sha256": "6ca88c3ecd54c78bf8a8cbb80f2b9ab049d66d4b070e97849cf4073ee8d2f15c",
+    "primary": "0x087c14a0",
+    "secondary": "0x087c1470",
+    "id": 244,
+    "shape": "steel_fence",
+    "rail": "vertical",
+    "feet_x": [
+      4
+    ],
+    "ink": [
+      3,
+      0,
+      3,
+      3
+    ],
+    "source_art_sha256": "fab2634bac5480dbb4b7ee614d695acb499599d178cbb7f8bcac6a99a486e63d",
+    "floor_sha256": "2ef55b33a4a537823c5a3bdd5d3befe23935a6680f1523776ae572a9e8e8683f",
+    "reviewed": true,
+    "overlay_layer": 2
+  },
+  {
+    "game": "dragonsden",
+    "rom_crc32": "cec21496",
+    "rom_sha256": "6ca88c3ecd54c78bf8a8cbb80f2b9ab049d66d4b070e97849cf4073ee8d2f15c",
+    "primary": "0x087c14a0",
+    "secondary": "0x087c1470",
+    "id": 245,
+    "shape": "steel_fence",
+    "rail": "vertical",
+    "feet_x": [
+      12
+    ],
+    "ink": [
+      11,
+      0,
+      11,
+      3
+    ],
+    "source_art_sha256": "bd6509205895054f8d4f40cb1c5fdd650c0209979a5a9179722a1e20533e6219",
+    "floor_sha256": "6b341c207999fce35f3a8b4b82dbd04289812bc14ebb43fbf9499a0228757d75",
+    "reviewed": true,
+    "overlay_layer": 2
+  },
+  {
+    "game": "dragonsden",
+    "rom_crc32": "cec21496",
+    "rom_sha256": "6ca88c3ecd54c78bf8a8cbb80f2b9ab049d66d4b070e97849cf4073ee8d2f15c",
+    "primary": "0x087c14a0",
+    "secondary": "0x087c1470",
+    "id": 252,
+    "shape": "steel_fence",
+    "rail": "north_corner_left",
+    "feet_x": [
+      4,
+      12
+    ],
+    "ink": [
+      3,
+      5,
+      3,
+      3
+    ],
+    "source_art_sha256": "6666119b52f811d6438e70e37099f3fdad5f9802e4b5e77ccdab94f8cf47f319",
+    "floor_sha256": "015e1efefe4a6149047b8805c80a939a554a15d2039fb54881b4f4bd14544402",
+    "reviewed": true
+  },
+  {
+    "game": "dragonsden",
+    "rom_crc32": "cec21496",
+    "rom_sha256": "6ca88c3ecd54c78bf8a8cbb80f2b9ab049d66d4b070e97849cf4073ee8d2f15c",
+    "primary": "0x087c14a0",
+    "secondary": "0x087c1470",
+    "id": 253,
+    "shape": "steel_fence",
+    "rail": "north_corner_right",
+    "feet_x": [
+      4,
+      12
+    ],
+    "ink": [
+      3,
+      5,
+      3,
+      3
+    ],
+    "source_art_sha256": "39e05fc2385224c1f472dd662ad211b44f69341987ae03a548377cae363d43d0",
+    "floor_sha256": "5fe0edd3056760956c10c62b4df0f786d246f51fa93c9311b918a383836e0898",
+    "reviewed": true
+  },
+  {
+    "game": "dragonsden",
+    "rom_crc32": "cec21496",
+    "rom_sha256": "6ca88c3ecd54c78bf8a8cbb80f2b9ab049d66d4b070e97849cf4073ee8d2f15c",
+    "primary": "0x087c14a0",
+    "secondary": "0x087c1470",
+    "id": 238,
+    "shape": "steel_fence",
+    "rail": "single_south_end",
+    "feet_x": [
+      12
+    ],
+    "ink": [
+      12,
+      6,
+      12,
+      4
+    ],
+    "source_art_sha256": "dfb6c53c463f6c03a16f655ea6aed89dd7cb208fda6a2100b718b0660176e69e",
+    "floor_sha256": "015e1efefe4a6149047b8805c80a939a554a15d2039fb54881b4f4bd14544402",
+    "reviewed": true,
+    "overlay_layer": 2
+  },
+  {
+    "game": "dragonsden",
+    "rom_crc32": "cec21496",
+    "rom_sha256": "6ca88c3ecd54c78bf8a8cbb80f2b9ab049d66d4b070e97849cf4073ee8d2f15c",
+    "primary": "0x087c14a0",
+    "secondary": "0x087c1470",
+    "id": 239,
+    "shape": "steel_fence",
+    "rail": "single_south_end",
+    "feet_x": [
+      4
+    ],
+    "ink": [
+      4,
+      6,
+      4,
+      4
+    ],
+    "source_art_sha256": "7763128e9c8439d809531e39642bd7eac03f4f442770e00ecabaa83cbd5c96f5",
+    "floor_sha256": "5fe0edd3056760956c10c62b4df0f786d246f51fa93c9311b918a383836e0898",
+    "reviewed": true,
+    "overlay_layer": 2
   }
 ]

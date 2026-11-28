@@ -1,0 +1,26 @@
+diff --git a/app/src/main/cpp/pk_wide.c b/app/src/main/cpp/pk_wide.c
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -6996,12 +6996,16 @@
+                 if (conn<0) {
+                     if ((unsigned)id<0x28) radicalLeaves=sceneryRadicalLeafRows[id];
+                 } else {
+-                    const struct Conn* north=&s->conn[conn];
+-                    if (north->degree==1 && north->dir==2 && north->group==3 && north->num==19 &&
+-                        north->primary==s->primary && north->secondary==s->secondary &&
+-                        r32(north->header)==0x082e55ccu) {
+-                        if ((unsigned)id<0x28) radicalLeaves=sceneryRadicalLeafRows[id];
+-                        else radicalLeaves=sceneryRadicalRoute1LeafRows[id==0x2ba];
++                    const struct Conn* edge=&s->conn[conn];
++                    if (edge->degree==1 && edge->group==3 &&
++                        edge->primary==s->primary && edge->secondary==s->secondary) {
++                        const uint32_t layout=r32(edge->header);
++                        const bool north=edge->dir==2 && edge->num==19 && layout==0x082e55ccu;
++                        const bool south=edge->dir==1 && edge->num==39 && layout==0x082f5f1cu;
++                        if ((north || south) && (unsigned)id<0x28)
++                            radicalLeaves=sceneryRadicalLeafRows[id];
++                        else if (north)
++                            radicalLeaves=sceneryRadicalRoute1LeafRows[id==0x2ba];
+                     }
+                 }
+             }

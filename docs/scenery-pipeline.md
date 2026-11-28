@@ -1656,3 +1656,38 @@ mask. It samples a world-aligned 256×256 sediment atlas along the shallow
 band. Keep the first two native edge pixels, wave and reflection passes, and
 dry-ground mask intact. Check the native Surf and dismount sequence alongside
 the winter shoreline before taking device credit.
+
+Reuse native source ownership when extending an asset family. The Viridian
+fence generator registers connected steel faces and endcaps on five exact
+cartridges. Tests walk both approaches and compare collisions, winter cover,
+and native 2D. Radical Red's Pallet and Viridian foliage and lawn require
+their own map, tileset, and native-cell matches. Unbound's Dresco turf includes
+four separately framed outer faces as well as the central strip.
+
+Gaia's submerged rock profiles distinguish isolated source formations from
+the connected reef. Test the wide 480×271 crop before reviewing the standard
+view. Only a water pixel immediately below a visible adjoining reef face can
+receive the guarded one-pixel continuation. Keep exposed wave pixels, the pier,
+and nearby formations under independent controls.
+
+Let’s Go shares the Kanto rock-contact bevel in two native Rock Tunnel fog
+maps and one weather-free cave. The exact room, tilesets, weather and event
+state select the cave profile. Preserve FireRed's separate Flash gate and
+check player, ladder, items, route traversal and native 2D in matched replays.
+The illuminated Rock Tunnel floors on five source-matched cartridges sample
+the shared 256×256 ground atlas. Verify the same room and exact Flash fixture
+when reading the cave floor marker. Unlit cave and native 2D marker counts
+must stay zero. Keep the wall-foot geometry and floor sampling as separate
+checks.
+
+FireRed's original 151 player-side poses use the native species slot, exact
+art and palette fingerprints, and measured standing anchors. The shared batch
+compares six native, Standard, and HD replays per species, including serialized
+state and the untouched opponent and HUD. Pikachu and Gyarados have separately
+reloaded Thor fixtures. Ash Gray, Rocket, Fakemon, and Gaia use their own
+source-specific settled battle fixtures.
+
+English Red, Blue, and Yellow share source-owned field actor relief. The live
+object must match a native source pose before the renderer adds edge depth.
+Check the walking player and moving Pallet Girl in each game, plus Yellow's
+Vermilion Gambler and native dialogue. Actor relief uses the native palette.

@@ -1,0 +1,88 @@
+diff --git a/app/src/main/cpp/pk_wide.c b/app/src/main/cpp/pk_wide.c
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -6246,6 +6246,8 @@
+     return true;
+ }
+ 
++#include "pk_scenery_cave_floor_material.h"
++
+ static void sceneryRoute212GardenFrost(const struct Snap* s,const struct VoxelView* v,
+                                       int cellX,int cellY,uint32_t* texture,uint32_t alpha) {
+     if (solidRom!=0x2be557a3u || s->group!=0 || s->num!=30 || s->width!=40 || s->height!=80 ||
+@@ -6935,6 +6937,9 @@
+     fireRedPalletWater(s,&voxel,cellX,cellY,texture);
+     bool caveContact=sceneryCaveContactReady(s,href,vref);
+     if (caveContact) sceneryCaveContact(s,&voxel,cellX,cellY,texture);
++#if VOXEL_CAVE_FLOOR_TEXTURE_SIZE && VOXEL_GROUND_TEXTURE_SIZE == 256
++    if (caveContact) sceneryCaveFloorMaterial(s,&voxel,cellX,cellY,texture);
++#endif
+     if (solidGroundAligned(href,vref)) sceneryRoute212GardenFrost(s,&voxel,cellX,cellY,texture,alpha);
+ 
+     // Header metadata and weather OAM are read from this same live session.
+diff --git a/app/src/main/cpp/pk_scenery_cave_floor_material.h b/app/src/main/cpp/pk_scenery_cave_floor_material.h
+new file mode 100644
+--- /dev/null
++++ b/app/src/main/cpp/pk_scenery_cave_floor_material.h
+@@ -0,0 +1,61 @@
++/* Shared high-resolution relief for source-owned, fully illuminated cave floor. */
++#pragma once
++
++#ifndef VOXEL_CAVE_FLOOR_TEXTURE_SIZE
++#define VOXEL_CAVE_FLOOR_TEXTURE_SIZE 256
++#endif
++
++#if VOXEL_CAVE_FLOOR_TEXTURE_SIZE && VOXEL_GROUND_TEXTURE_SIZE == 256
++static unsigned sceneryCaveFloorTexel(int coordinate) {
++    enum { step = 256 / VOXEL_CAVE_FLOOR_TEXTURE_SIZE };
++    return (((unsigned)coordinate * 4u) & 255u) / step * step + step / 2;
++}
++
++static void sceneryCaveFloorMaterial(const struct Snap* s,const struct VoxelView* view,
++                                     int cellX,int cellY,uint32_t* texture) {
++    const uint8_t* atlas=voxelGroundTexture();
++#if defined(__ANDROID__) || defined(CAVE_FLOOR_HOST_PROBE)
++    unsigned sampled=0;
++#endif
++    for (int row=0;row<view->rows;++row) for (int col=0;col<view->cols;++col) {
++        int x=cellX+col,y=cellY+row;
++        if ((unsigned)(x-MAP_OFFSET)>=(unsigned)s->width ||
++            (unsigned)(y-MAP_OFFSET)>=(unsigned)s->height ||
++            s->vmap[y*s->vw+x]!=0x3281u || !sceneryCellVisible(col,row)) continue;
++        for (int sy=0;sy<16;++sy) {
++            unsigned v=sceneryCaveFloorTexel((y-MAP_OFFSET)*16+sy);
++            const uint8_t* relief=atlas+256u*v;
++            uint32_t* line=texture+(row*16+sy)*view->stride+col*16;
++            for (int sx=0;sx<16;++sx) {
++                unsigned u=sceneryCaveFloorTexel((x-MAP_OFFSET)*16+sx);
++                unsigned shade=2u*relief[u]-256u;
++                line[sx]=voxelShade(line[sx],shade);
++            }
++        }
++#if defined(__ANDROID__) || defined(CAVE_FLOOR_HOST_PROBE)
++        sampled+=256u;
++#endif
++#ifdef CAVE_FLOOR_HOST_PROBE
++        caveFloorHostCell(col,row);
++#endif
++    }
++#ifdef CAVE_FLOOR_HOST_PROBE
++    caveFloorHostSample(view,cellX,cellY,sampled,VOXEL_CAVE_FLOOR_TEXTURE_SIZE);
++#endif
++#ifdef __ANDROID__
++    static unsigned previousRom,previousMap;
++    static unsigned frames;
++    unsigned identity=(unsigned)s->group<<8 | s->num;
++    if (previousRom!=solidRom || previousMap!=identity) {
++        previousRom=solidRom;
++        previousMap=identity;
++        frames=0;
++    }
++    if (sampled && !(frames++ & 255u))
++        __android_log_print(ANDROID_LOG_INFO,"pokedaisy",
++            "voxel cave floor atlas crc=%08x map=%u/%u source=%ux%u target=%dx%d samples=%u",
++            solidRom,(unsigned)s->group,(unsigned)s->num,(unsigned)VOXEL_CAVE_FLOOR_TEXTURE_SIZE,
++            (unsigned)VOXEL_CAVE_FLOOR_TEXTURE_SIZE,view->width,view->height,sampled);
++#endif
++}
++#endif

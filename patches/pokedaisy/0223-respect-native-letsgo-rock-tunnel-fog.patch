@@ -1,0 +1,76 @@
+diff --git a/app/src/main/cpp/pk_wide.c b/app/src/main/cpp/pk_wide.c
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -6217,25 +6217,29 @@
+     return bridge;
+ }
+ 
+-static bool sceneryCaveContactMap(const struct Snap* s) {
++static const struct SceneryCaveContactProfile* sceneryCaveContactMap(const struct Snap* s) {
+     for (size_t i=0; i<sizeof(sceneryCaveContacts)/sizeof(*sceneryCaveContacts); ++i) {
+         const struct SceneryCaveContactProfile* p=&sceneryCaveContacts[i];
+         if (p->rom==solidRom && p->group==s->group && p->map==s->num &&
+             p->primary==s->primary && p->secondary==s->secondary &&
+             p->width==s->width && p->height==s->height && p->layout==r32(F.mapHeader))
+-            return true;
+-    }
+-    return false;
++            return p;
++    }
++    return NULL;
+ }
+ 
+ /* Shade bare, walkable cave floor beside a source-verified north rock foot. */
+ static bool sceneryCaveContactReady(const struct Snap* s, int href, int vref) {
+-    if (!F.mapHeader || r8(F.mapHeader+0x15)!=1 || r8(F.mapHeader+0x16)!=0 ||
+-        r8(F.mapHeader+0x17)!=4 || !F.saveBlock1 || F.saveStatic || !sceneryCaveContactMap(s))
++    if (!F.mapHeader || r8(F.mapHeader+0x17)!=4 || !F.saveBlock1 || F.saveStatic ||
++        !solidGroundAligned(href,vref))
++        return false;
++    const struct SceneryCaveContactProfile* profile=sceneryCaveContactMap(s);
++    if (!profile || r8(F.mapHeader+0x15)!=profile->nativeCaveFlag ||
++        r8(F.mapHeader+0x16)!=profile->nativeWeather)
+         return false;
+     uint32_t sb1 = r32(F.saveBlock1);
+     if (!mem(sb1, 0xf00) || r8(sb1+4)!=s->group || r8(sb1+5)!=s->num ||
+-        r8(sb1+0x30)!=0 || !flagSet(sb1,0x806) || !solidGroundAligned(href,vref))
++        r8(sb1+0x30)!=0 || (profile->nativeCaveFlag && !flagSet(sb1,0x806)))
+         return false;
+     return true;
+ }
+diff --git a/app/src/main/cpp/pk_scenery_cave_contact_profiles.h b/app/src/main/cpp/pk_scenery_cave_contact_profiles.h
+--- a/app/src/main/cpp/pk_scenery_cave_contact_profiles.h
++++ b/app/src/main/cpp/pk_scenery_cave_contact_profiles.h
+@@ -5,19 +5,21 @@
+ struct SceneryCaveContactProfile {
+     uint32_t rom, layout, primary, secondary;
+     uint16_t width, height;
+-    uint8_t group, map;
++    uint8_t group, map, nativeCaveFlag, nativeWeather;
+ };
+ static const struct SceneryCaveContactProfile sceneryCaveContacts[] = {
+-    {0xdd88761cu,0x83130e4u,0x82d4a94u,0x82d4df4u,48,40,1,81}, // firered
+-    {0xdd88761cu,0x8314008u,0x82d4a94u,0x82d4df4u,48,40,1,82}, // firered
+-    {0x964763c0u,0x8354f80u,0x8316a4cu,0x8316dacu,48,40,1,84}, // frlgplus
+-    {0x964763c0u,0x8355ea4u,0x8316a4cu,0x8316dacu,48,40,1,85}, // frlgplus
+-    {0x5e704d77u,0x83130e4u,0x82d4a94u,0x82d4df4u,48,40,1,81}, // fakemon
+-    {0x5e704d77u,0x8314008u,0x82d4a94u,0x82d4df4u,48,40,1,82}, // fakemon
+-    {0xf2d16ebdu,0x83130e4u,0x82d4a94u,0x82d4df4u,48,40,1,81}, // rocket
+-    {0xf2d16ebdu,0x8314008u,0x82d4a94u,0x82d4df4u,48,40,1,82}, // rocket
+-    {0xfba55dd8u,0x83130e4u,0x82d4a94u,0x82d4df4u,48,40,1,81}, // radical
+-    {0xfba55dd8u,0x8314008u,0x82d4a94u,0x82d4df4u,48,40,1,82}, // radical
++    {0xdd88761cu,0x83130e4u,0x82d4a94u,0x82d4df4u,48,40,1,81,1,0}, // firered
++    {0xdd88761cu,0x8314008u,0x82d4a94u,0x82d4df4u,48,40,1,82,1,0}, // firered
++    {0x964763c0u,0x8354f80u,0x8316a4cu,0x8316dacu,48,40,1,84,1,0}, // frlgplus
++    {0x964763c0u,0x8355ea4u,0x8316a4cu,0x8316dacu,48,40,1,85,1,0}, // frlgplus
++    {0x5e704d77u,0x83130e4u,0x82d4a94u,0x82d4df4u,48,40,1,81,1,0}, // fakemon
++    {0x5e704d77u,0x8314008u,0x82d4a94u,0x82d4df4u,48,40,1,82,1,0}, // fakemon
++    {0xf2d16ebdu,0x83130e4u,0x82d4a94u,0x82d4df4u,48,40,1,81,1,0}, // rocket
++    {0xf2d16ebdu,0x8314008u,0x82d4a94u,0x82d4df4u,48,40,1,82,1,0}, // rocket
++    {0xfba55dd8u,0x83130e4u,0x82d4a94u,0x82d4df4u,48,40,1,81,1,0}, // radical
++    {0xfba55dd8u,0x8314008u,0x82d4a94u,0x82d4df4u,48,40,1,82,1,0}, // radical
++    {0x25c3d89fu,0x83130e4u,0x82d4a94u,0x82d4df4u,48,40,1,81,0,11}, // letsgo
++    {0x25c3d89fu,0x8314008u,0x82d4a94u,0x82d4df4u,48,40,1,82,0,11}, // letsgo
+ };
+ 
+ /* Last source rock texel in each column with three contiguous rock rows. */

@@ -1,0 +1,10 @@
+diff --git a/app/src/main/cpp/pk_battle_back_family.h b/app/src/main/cpp/pk_battle_back_family.h
+--- a/app/src/main/cpp/pk_battle_back_family.h
++++ b/app/src/main/cpp/pk_battle_back_family.h
+@@ -11,4 +11,6 @@
+     {0xe4deb9beu, 0x20230f8u, 0x20230e0u, 0x20230eau, 0x7592de65u, 0x7e39fa2bu, 412, 55, 57}, // classic
+     {0x63478921u, 0x2023be4u, 0x2023bccu, 0x2023bd6u, 0x28fe8cb2u, 0x4d7d3b33u, 135, 54, 55}, // ash-gray
+     {0xf2d16ebdu, 0x2023be4u, 0x2023bccu, 0x2023bd6u, 0x57c11f8bu, 0x28090cccu, 131, 52, 53}, // rocket
++    {0x5e704d77u, 0x02023be4u, 0x02023bccu, 0x02023bd6u, 0x1ab15b9cu, 0xcb161791u, 131, 53, 54}, // fakemon
++    {0xb9465c5au, 0x02023be4u, 0x02023bccu, 0x02023bd6u, 0x06daad12u, 0xf25ce442u, 443, 54, 55}, // gaia
+ };

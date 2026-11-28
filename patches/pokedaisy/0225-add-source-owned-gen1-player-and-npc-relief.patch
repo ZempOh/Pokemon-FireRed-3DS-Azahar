@@ -1,0 +1,246 @@
+diff --git a/app/src/main/cpp/pk_gen1_field_actor_relief.h b/app/src/main/cpp/pk_gen1_field_actor_relief.h
+new file mode 100644
+index 0000000..afd1325
+--- /dev/null
++++ b/app/src/main/cpp/pk_gen1_field_actor_relief.h
+@@ -0,0 +1,109 @@
++#pragma once
++
++struct GbActorShell {
++    int first;
++    uint16_t rim[16], core[16];
++};
++
++static void gbActorContours(struct GbActorShell* shell, const uint8_t* art, bool mirror) {
++    uint16_t contour[16]={0};
++    for (int y=0;y<16;++y) for (int x=0;x<16;++x) {
++        int column=mirror?15-x:x;
++        const uint8_t* row=art+(y/8*2+column/8)*16+(y&7)*2;
++        if ((row[0]|row[1])&(1u<<(7-(column&7)))) contour[y]|=(uint16_t)(1u<<x);
++    }
++    memset(shell->rim,0,sizeof(shell->rim));
++    memset(shell->core,0,sizeof(shell->core));
++    for (int y=1;y<15;++y) {
++        unsigned row=contour[y];
++        shell->rim[y]=(uint16_t)(row&(row<<1)&(row>>1)&contour[y-1]&contour[y+1]);
++    }
++    for (int y=2;y<14;++y) {
++        unsigned row=shell->rim[y];
++        shell->core[y]=(uint16_t)(row&(row<<1)&(row>>1)&shell->rim[y-1]&shell->rim[y+1]);
++    }
++}
++
++static void gbActorReliefPixel(const struct VoxelView* view, const struct GbActorShell* shell,
++                               int x, int y, int foot, int order, int px, int py, uint32_t color,
++                               const int offsetX[3], const int offsetY[3]) {
++    static const unsigned shade[3]={214,176,150};
++    unsigned bit=1u<<px;
++    int layers=(shell->core[py]&bit)?3:(shell->rim[py]&bit)?2:1;
++    for (int i=layers-1;i>=0;--i) {
++        int back=foot-2*(i+1);
++        if (back<view->top) continue;
++        voxelSpritePixel(view,x+offsetX[i],y+offsetY[i],back,order,voxelShade(color,shade[i]));
++    }
++    voxelSpritePixel(view,x,y,foot,order,color);
++}
++
++static uint32_t gbActorSheetTable(void) {
++    if (gbGen1BattleCrc==0x7d527d62u && gbR->model==GB_MODEL_CGB)
++        return gbLinear(5,0x42a9);
++    if ((gbGen1BattleCrc==0x9f7fdd53u || gbGen1BattleCrc==0xd6da8a1au) && gbR->model==GB_MODEL_SGB)
++        return gbLinear(5,0x7b27);
++    return 0;
++}
++
++static int gbActorSourceOwner(const struct GbSnap* snap, const struct GbObj* o,
++                               uint32_t table, const uint8_t* live, bool mirror) {
++    const int x=o->x-(mirror?8:0), y=o->y;
++    int found=-1;
++    for (int slot=0;slot<15;++slot) {
++        const uint8_t* state=&snap->spr1[slot*16];
++        const unsigned id=state[0], frame=state[2];
++        // Red, Pallet's girl, and Yellow's Vermilion gambler are the
++        // independently exercised atlas rows. Unsupported actors retain relief.
++        if (id!=1 && id!=0x0d && !(id==0x0b && gbCgb)) continue;
++        if (frame>=0xa0 || abs((int)state[4]-y)>2 || abs((int)state[6]-x)>2) continue;
++        // OAM can be a frame behind RAM. Choose the visible pose from OAM,
++        // but require its original sprite's native VRAM slot and exact ink.
++        const int vramFrame=o->tile-(frame>>4)*12;
++        const int sheetTile=vramFrame&0x7f;
++        if (vramFrame<0 || vramFrame>0x88 || sheetTile>8 || (sheetTile&3)) continue;
++        const unsigned sourceFrame=sheetTile/4+(vramFrame>=0x80?3:0);
++        const uint8_t* row=gbRom(table+(id-1)*4,4);
++        if (!row || row[2]!=0xc0) continue;
++        const unsigned address=row[0]|row[1]<<8;
++        if (address<0x4000 || address+6*64>0x8000) continue;
++        const uint8_t* art=gbRom(gbLinear(row[3],address)+sourceFrame*64,64);
++        if (!art || memcmp(live,art,64)) continue;
++        if (found>=0) return -1;
++        found=slot;
++    }
++    return found;
++}
++
++static int gbFieldActorShells(const struct GbSnap* snap, struct GbActorShell* shells, int first) {
++    const uint32_t table=gbActorSheetTable();
++    if (!table || gbR->sgbBorders || gbR->d.sgbRenderMode || gbWinPart || (gbLcdc&6)!=2)
++        return first;
++    int count=first;
++    for (int k=0;k+3<gbNativeObjCount && count<10;++k) {
++        const struct GbObj* o=&gbObjs[k];
++        const bool mirror=(o->attr&0x20)!=0;
++        int x=o->x-(mirror?8:0), y=o->y, step=mirror?-8:8;
++        if ((o->tile&3) || o->tile>252 || (o->attr&0xc0) ||
++            x<0 || y<0 || x+16>GBW || y+16>GBH) continue;
++        if (o[1].x!=o->x+step || o[1].y!=y || o[2].x!=o->x || o[2].y!=y+8 ||
++            o[3].x!=o[1].x || o[3].y!=y+8) continue;
++        const unsigned attrMask=gbCgb ? 0xff : 0xf8;
++        bool ordered=true;
++        for (int j=1;j<4;++j)
++            if (o[j].tile!=o->tile+j || ((o[j].attr^o->attr)&attrMask)) ordered=false;
++        if (!ordered) continue;
++        const uint8_t* art=gbVram+((gbCgb && (o->attr&8))?0x2000:0)+o->tile*16;
++        const int owner=gbActorSourceOwner(snap,o,table,art,mirror);
++        if (owner<0) continue;
++        struct GbActorShell* shell=&shells[count++];
++        shell->first=k;
++        gbActorContours(shell,art,mirror);
++#ifdef PK_GB_ACTOR_WITNESS
++        fprintf(stderr,"ACTOR %d %u %u %d %d %d\n",k,snap->spr1[owner*16],
++                snap->spr1[owner*16+2]&15,x,y,owner);
++#endif
++        k+=3;
++    }
++    return count;
++}
+diff --git a/app/src/main/cpp/pk_red_voxel_pilot.h b/app/src/main/cpp/pk_red_voxel_pilot.h
+index 53473cf..efe35ed 100644
+--- a/app/src/main/cpp/pk_red_voxel_pilot.h
++++ b/app/src/main/cpp/pk_red_voxel_pilot.h
+@@ -49,11 +49,14 @@ static uint32_t redTint(uint32_t color, const struct RedMaterialStyle* style) {
+         | ((style->g * shade >> 8) << 8) | ((style->b * shade >> 8) << 16);
+ }
+ 
++#include "pk_gen1_field_actor_relief.h"
+ #include "pk_yellow_field_follower.h"
+ 
+-static void redVoxelActors(const struct VoxelView* view, int ox, int oy, uint32_t alpha) {
+-    struct YellowFollowerShell follower;
+-    yellowFollowerShell(&follower);
++static void redVoxelActors(const struct GbSnap* snap, const struct VoxelView* view, int ox, int oy, uint32_t alpha) {
++    struct GbActorShell shells[10];
++    yellowFollowerShell(&shells[0]);
++    const bool originalFollower=shells[0].first>=0;
++    const int count=gbFieldActorShells(snap,shells,originalFollower ? 1 : 0);
+     for (int k = 0; k < gbNObjs; ++k) {
+         const struct GbObj* o = &gbObjs[k];
+         bool tall = (gbLcdc & 4) != 0;
+@@ -62,8 +65,14 @@ static void redVoxelActors(const struct VoxelView* view, int ox, int oy, uint32_
+         if (foot < view->top || foot >= view->top + view->rows * VOXEL_TILE) continue;
+         int x0 = voxelX(view, wx, foot);
+         int y0 = voxelY(view, foot, foot - oy - o->y);
+-        int quadrant=k-follower.first;
+-        bool rounded=follower.first>=0 && quadrant>=0 && quadrant<4;
++        const struct GbActorShell* shell=NULL;
++        for (int i=0;i<count;++i)
++            if (k>=shells[i].first && k-shells[i].first<4) {
++                shell=&shells[i];
++                break;
++            }
++        const int quadrant=shell ? k-shell->first : 0;
++        const bool rounded=shell!=NULL;
+         int qx=0,qy=0,offsetX[3],offsetY[3];
+         if (rounded) {
+             qx=((quadrant&1)^((o->attr>>5)&1))*8;
+@@ -74,6 +83,18 @@ static void redVoxelActors(const struct VoxelView* view, int ox, int oy, uint32_
+                 offsetY[i]=voxelY(view,back,0)-voxelY(view,foot,0);
+             }
+         }
++#ifdef PK_GB_ACTOR_WITNESS
++        if (rounded && !(shell==shells && originalFollower)) {
++            int minX=x0-1,minY=y0-3,maxX=x0+8,maxY=y0+8;
++            for (int i=0;i<3;++i) {
++                if (x0+offsetX[i]<minX) minX=x0+offsetX[i];
++                if (y0+offsetY[i]<minY) minY=y0+offsetY[i];
++                if (x0+offsetX[i]+8>maxX) maxX=x0+offsetX[i]+8;
++                if (y0+offsetY[i]+8>maxY) maxY=y0+offsetY[i]+8;
++            }
++            fprintf(stderr,"BOUNDS %d %d %d %d %d\n",shell->first,minX,minY,maxX,maxY);
++        }
++#endif
+         uint32_t base = (uint32_t)(o->tile & 255) * 16;
+         if (gbCgb && (o->attr & 8)) base += 0x2000;
+         if (tall && (o->attr & 0x40)) base ^= 16;
+@@ -89,7 +110,7 @@ static void redVoxelActors(const struct VoxelView* view, int ox, int oy, uint32_
+                 if (!idx) continue;
+                 uint32_t color=gbObjColor((uint8_t)o->attr,idx,alpha);
+                 if (rounded) {
+-                    yellowFollowerPixel(view,&follower,x0+xx,y0+yy,foot,k,qx+xx,qy+yy,color,offsetX,offsetY);
++                    gbActorReliefPixel(view,shell,x0+xx,y0+yy,foot,k,qx+xx,qy+yy,color,offsetX,offsetY);
+                 } else {
+                     voxelActorPixel(view,x0+xx,y0+yy,foot,k,color);
+                 }
+@@ -855,7 +876,7 @@ static bool gbVoxelDraw(const struct GbSnap* snap, int ox, int oy, struct PkWide
+         }
+     }
+     for (int i=0; i<furnitureCount; ++i) redRenderFurniture(&view,furniture[i],alpha);
+-    redVoxelActors(&view, ox, oy, alpha);
++    redVoxelActors(snap, &view, ox, oy, alpha);
+     climateAtmosphere(view.out,view.depth,view.width,view.height);
+     return true;
+ }
+diff --git a/app/src/main/cpp/pk_yellow_field_follower.h b/app/src/main/cpp/pk_yellow_field_follower.h
+index 73978bf..2582ab9 100644
+--- a/app/src/main/cpp/pk_yellow_field_follower.h
++++ b/app/src/main/cpp/pk_yellow_field_follower.h
+@@ -2,12 +2,7 @@
+ 
+ /* English Yellow's own 8x8 OBJ quartet, from wSpritePikachuStateData1
+  * and the exact cartridge's PikachuSprite frames (3f:67ef). */
+-struct YellowFollowerShell {
+-    int first;
+-    uint16_t rim[16], core[16];
+-};
+-
+-static void yellowFollowerShell(struct YellowFollowerShell* shell) {
++static void yellowFollowerShell(struct GbActorShell* shell) {
+     shell->first=-1;
+     if (gbGen1BattleCrc!=0x7d527d62u || gbR->model!=GB_MODEL_CGB ||
+         gbR->sgbBorders || gbR->d.sgbRenderMode || gbWinPart ||
+@@ -41,35 +36,5 @@ static void yellowFollowerShell(struct YellowFollowerShell* shell) {
+     }
+     if (slot<0) return;
+     shell->first=slot;
+-    uint16_t contour[16]={0};
+-    const bool mirror=(gbObjs[slot].attr&0x20)!=0;
+-    for (int y=0;y<16;++y) for (int x=0;x<16;++x) {
+-        int column=mirror?15-x:x;
+-        const uint8_t* row=art+(y/8*2+column/8)*16+(y&7)*2;
+-        if ((row[0]|row[1])&(1u<<(7-(column&7)))) contour[y]|=(uint16_t)(1u<<x);
+-    }
+-    memset(shell->rim,0,sizeof(shell->rim));
+-    memset(shell->core,0,sizeof(shell->core));
+-    for (int y=1;y<15;++y) {
+-        unsigned row=contour[y];
+-        shell->rim[y]=(uint16_t)(row&(row<<1)&(row>>1)&contour[y-1]&contour[y+1]);
+-    }
+-    for (int y=2;y<14;++y) {
+-        unsigned row=shell->rim[y];
+-        shell->core[y]=(uint16_t)(row&(row<<1)&(row>>1)&shell->rim[y-1]&shell->rim[y+1]);
+-    }
+-}
+-
+-static void yellowFollowerPixel(const struct VoxelView* view, const struct YellowFollowerShell* shell,
+-                                 int x, int y, int foot, int order, int px, int py, uint32_t color,
+-                                 const int offsetX[3], const int offsetY[3]) {
+-    static const unsigned shade[3]={214,176,150};
+-    unsigned bit=1u<<px;
+-    int layers=(shell->core[py]&bit)?3:(shell->rim[py]&bit)?2:1;
+-    for (int i=layers-1;i>=0;--i) {
+-        int back=foot-2*(i+1);
+-        if (back<view->top) continue;
+-        voxelSpritePixel(view,x+offsetX[i],y+offsetY[i],back,order,voxelShade(color,shade[i]));
+-    }
+-    voxelSpritePixel(view,x,y,foot,order,color);
++    gbActorContours(shell,art,(gbObjs[slot].attr&0x20)!=0);
+ }

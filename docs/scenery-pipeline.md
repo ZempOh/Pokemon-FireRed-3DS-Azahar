@@ -1416,3 +1416,18 @@ high-contrast rows beyond the new grass in the full-size Thor captures.
 Patch 0099 models the second tree family with a trunk and stepped canopy.
 The same Route 1 host replay retained identical 2D frames and removed the
 flat bands in 3D. Keep the rejected APK and its full-size winter screenshot.
+
+The next fixture expansion uses the same shape records for Radical Red,
+Fakemon, Rocket and FRLG+ only where composite art and the original floor
+both match FireRed. Let's Go's Pallet posts have their own exact wood and
+floor hashes. FireRed's coastal steel posts include horizontal, vertical
+and corner runs. A connected map uses the same geometry only when both
+of its tileset pointers match the current map. The generated fixture table
+is grouped by ROM and tileset pair, so a field frame only scans the current
+pair's IDs. The source audit checks all 121 registered entries.
+
+FireRed and FRLG+ also use metatile `0x0d` with native encounter behavior 2.
+That art includes the blades in its lower layer. The replacement floor uses
+the compatible local lawn material `0x11`, with matching base palette and
+its own hash. The grass blade model and the original encounter mechanics
+share that placement. Retest dense grass before any release.

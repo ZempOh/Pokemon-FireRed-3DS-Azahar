@@ -927,5 +927,47 @@
     "source_sha256": "4723af51ebeb8aebe256129a9449b6b0819118d854db6e48ef8c348d8486caa0",
     "ground_sha256": "abab91ab97d95d499d97c6f2b2f8571785d7d9c31b5e3bde0ca5f09cb726929a",
     "reviewed": true
+  },
+  {
+    "game": "firered",
+    "rom_crc32": "dd88761c",
+    "rom_sha256": "3d0c79f1627022e18765766f6cb5ea067f6b5bf7dca115552189ad65a5c3a8ac",
+    "primary": "0x82d4a94",
+    "id": 13,
+    "kind": 1,
+    "ground": 17,
+    "ink": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "source_sha256": "bb21761412f5255814dda5943bd4aa8c8975028d220d1dd717cfd2cbae82897e",
+    "reviewed": true,
+    "behavior": 2,
+    "compatible_ground_sha256": "2ac691155451152075f28c01bfd7997effbc71c367732afd39cdb35e786c9275"
+  },
+  {
+    "game": "frlgplus",
+    "rom_crc32": "964763c0",
+    "rom_sha256": "41b51f4f1d0a894dbb27572d6580821c6a192231f930d85c2805af664c13bbb6",
+    "primary": "0x8316a4c",
+    "id": 13,
+    "kind": 1,
+    "ground": 17,
+    "ink": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "source_sha256": "bb21761412f5255814dda5943bd4aa8c8975028d220d1dd717cfd2cbae82897e",
+    "reviewed": true,
+    "behavior": 2,
+    "compatible_ground_sha256": "2ac691155451152075f28c01bfd7997effbc71c367732afd39cdb35e786c9275"
   }
 ]

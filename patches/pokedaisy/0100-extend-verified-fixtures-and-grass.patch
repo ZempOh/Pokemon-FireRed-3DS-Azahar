@@ -1,0 +1,272 @@
+--- a/app/src/main/cpp/pk_scenery_ground_props.h
++++ b/app/src/main/cpp/pk_scenery_ground_props.h
+@@ -46,6 +46,8 @@
+     {0xdd88761c,0x82d4a94,5,17,4,{0,0,0,0,0,0},{0,0,0}},
+     {0x4b3d4957,0x08725ab4,36,0,3,{0,0,0,0,0,0},{0,0,0}},
+     {0x4b3d4957,0x08725ab4,83,89,3,{0,0,0,0,0,0},{0,0,0}},
++    {0xdd88761c,0x82d4a94,13,17,1,{0,0,0,0,0,0},{0,0,0}},
++    {0x964763c0,0x8316a4c,13,17,1,{0,0,0,0,0,0},{0,0,0}},
+ };
+ static const struct SceneryGroundProp *sceneryGroundProp(uint32_t rom,uint32_t primary,int id) {
+     for(unsigned i=0;i<sizeof(sceneryGroundProps)/sizeof(sceneryGroundProps[0]);i++) {
+--- a/app/src/main/cpp/pk_scenery_small_fixtures.h
++++ b/app/src/main/cpp/pk_scenery_small_fixtures.h
+@@ -1,25 +1,203 @@
+ // Generated from reviewed tileset pairs and source layers.
+ #pragma once
+ enum SceneryFixtureShape { SCENERY_STEEL_FENCE, SCENERY_CUT_TIMBER };
+-struct SceneryFixture { uint32_t rom, primary, secondary; uint16_t tile; uint8_t shape, posts, x[2], ink[4]; };
++struct SceneryFixture { uint16_t tile; uint8_t shape, rail, posts, x[2], ink[4]; };
++struct SceneryFixtureGroup { uint32_t rom, primary, secondary; uint16_t first, count; };
+ static const struct SceneryFixture sceneryFixtures[] = {
+-    {0xdd88761c, 0x082d4a94, 0x082d4aac, 0x284, SCENERY_STEEL_FENCE, 2, {4,12}, {3,5,3,3}},
+-    {0xdd88761c, 0x082d4a94, 0x082d4aac, 0x287, SCENERY_STEEL_FENCE, 2, {4,12}, {3,5,3,3}},
+-    {0xdd88761c, 0x082d4a94, 0x082d4aac, 0xe7, SCENERY_STEEL_FENCE, 2, {4,12}, {3,5,3,3}},
+-    {0xdd88761c, 0x082d4a94, 0x082d4dc4, 0xea, SCENERY_CUT_TIMBER, 1, {12}, {10,3,11,3}},
+-    {0xdd88761c, 0x082d4a94, 0x082d4dc4, 0xf1, SCENERY_CUT_TIMBER, 1, {12}, {10,3,11,3}},
+-    {0xdd88761c, 0x082d4a94, 0x082d4dc4, 0x2a6, SCENERY_CUT_TIMBER, 2, {4,12}, {2,7,3,3}},
+-    {0xdd88761c, 0x082d4a94, 0x082d4dc4, 0x2a7, SCENERY_CUT_TIMBER, 2, {4,12}, {2,7,3,3}},
++    {0xe6, SCENERY_CUT_TIMBER, 0, 2, {4,12}, {1,4,3,3}},
++    {0xe7, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0x284, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0x287, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0xe7, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0xea, SCENERY_CUT_TIMBER, 0, 1, {12}, {10,3,11,3}},
++    {0xf1, SCENERY_CUT_TIMBER, 0, 1, {12}, {10,3,11,3}},
++    {0xe7, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0xe7, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0xe7, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0xe7, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0xea, SCENERY_CUT_TIMBER, 0, 1, {12}, {10,3,11,3}},
++    {0xf1, SCENERY_CUT_TIMBER, 0, 1, {12}, {10,3,11,3}},
++    {0xe7, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0xe7, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0xe7, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0xea, SCENERY_CUT_TIMBER, 0, 1, {12}, {10,3,11,3}},
++    {0xf1, SCENERY_CUT_TIMBER, 0, 1, {12}, {10,3,11,3}},
++    {0x2a6, SCENERY_CUT_TIMBER, 0, 2, {4,12}, {2,7,3,3}},
++    {0x2a7, SCENERY_CUT_TIMBER, 0, 2, {4,12}, {2,7,3,3}},
++    {0xe7, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0xea, SCENERY_CUT_TIMBER, 0, 1, {12}, {10,3,11,3}},
++    {0xf1, SCENERY_CUT_TIMBER, 0, 1, {12}, {10,3,11,3}},
++    {0xe7, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0xea, SCENERY_CUT_TIMBER, 0, 1, {12}, {10,3,11,3}},
++    {0xf1, SCENERY_CUT_TIMBER, 0, 1, {12}, {10,3,11,3}},
++    {0xe7, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0xea, SCENERY_CUT_TIMBER, 0, 1, {12}, {10,3,11,3}},
++    {0xf1, SCENERY_CUT_TIMBER, 0, 1, {12}, {10,3,11,3}},
++    {0xe7, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0x284, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0x287, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0xe7, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0xea, SCENERY_CUT_TIMBER, 0, 1, {12}, {10,3,11,3}},
++    {0xf1, SCENERY_CUT_TIMBER, 0, 1, {12}, {10,3,11,3}},
++    {0xe7, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0xe7, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0xe7, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0xe7, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0xea, SCENERY_CUT_TIMBER, 0, 1, {12}, {10,3,11,3}},
++    {0xf1, SCENERY_CUT_TIMBER, 0, 1, {12}, {10,3,11,3}},
++    {0xe7, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0xe7, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0xe7, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0xea, SCENERY_CUT_TIMBER, 0, 1, {12}, {10,3,11,3}},
++    {0xf1, SCENERY_CUT_TIMBER, 0, 1, {12}, {10,3,11,3}},
++    {0x2a6, SCENERY_CUT_TIMBER, 0, 2, {4,12}, {2,7,3,3}},
++    {0x2a7, SCENERY_CUT_TIMBER, 0, 2, {4,12}, {2,7,3,3}},
++    {0xe7, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0xea, SCENERY_CUT_TIMBER, 0, 1, {12}, {10,3,11,3}},
++    {0xf1, SCENERY_CUT_TIMBER, 0, 1, {12}, {10,3,11,3}},
++    {0xe7, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0xea, SCENERY_CUT_TIMBER, 0, 1, {12}, {10,3,11,3}},
++    {0xf1, SCENERY_CUT_TIMBER, 0, 1, {12}, {10,3,11,3}},
++    {0xe7, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0xec, SCENERY_STEEL_FENCE, 3, 2, {4,12}, {3,5,3,3}},
++    {0xed, SCENERY_STEEL_FENCE, 4, 2, {4,12}, {3,5,3,3}},
++    {0xf4, SCENERY_STEEL_FENCE, 2, 1, {4}, {3,0,3,3}},
++    {0xf5, SCENERY_STEEL_FENCE, 2, 1, {12}, {11,0,11,3}},
++    {0x284, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0x287, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0xea, SCENERY_CUT_TIMBER, 0, 1, {12}, {10,3,11,3}},
++    {0xf1, SCENERY_CUT_TIMBER, 0, 1, {12}, {10,3,11,3}},
++    {0x2a6, SCENERY_CUT_TIMBER, 0, 2, {4,12}, {2,7,3,3}},
++    {0x2a7, SCENERY_CUT_TIMBER, 0, 2, {4,12}, {2,7,3,3}},
++    {0xe7, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0x284, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0x287, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0xe7, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0xea, SCENERY_CUT_TIMBER, 0, 1, {12}, {10,3,11,3}},
++    {0xf1, SCENERY_CUT_TIMBER, 0, 1, {12}, {10,3,11,3}},
++    {0xe7, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0xe7, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0xe7, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0xe7, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0xea, SCENERY_CUT_TIMBER, 0, 1, {12}, {10,3,11,3}},
++    {0xf1, SCENERY_CUT_TIMBER, 0, 1, {12}, {10,3,11,3}},
++    {0xe7, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0xe7, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0xe7, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0xea, SCENERY_CUT_TIMBER, 0, 1, {12}, {10,3,11,3}},
++    {0xf1, SCENERY_CUT_TIMBER, 0, 1, {12}, {10,3,11,3}},
++    {0x2a6, SCENERY_CUT_TIMBER, 0, 2, {4,12}, {2,7,3,3}},
++    {0x2a7, SCENERY_CUT_TIMBER, 0, 2, {4,12}, {2,7,3,3}},
++    {0xea, SCENERY_CUT_TIMBER, 0, 1, {12}, {10,3,11,3}},
++    {0xf1, SCENERY_CUT_TIMBER, 0, 1, {12}, {10,3,11,3}},
++    {0xe7, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0xea, SCENERY_CUT_TIMBER, 0, 1, {12}, {10,3,11,3}},
++    {0xf1, SCENERY_CUT_TIMBER, 0, 1, {12}, {10,3,11,3}},
++    {0xe7, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0xea, SCENERY_CUT_TIMBER, 0, 1, {12}, {10,3,11,3}},
++    {0xf1, SCENERY_CUT_TIMBER, 0, 1, {12}, {10,3,11,3}},
++    {0xe7, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0x284, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0x287, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0xe7, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0xea, SCENERY_CUT_TIMBER, 0, 1, {12}, {10,3,11,3}},
++    {0xf1, SCENERY_CUT_TIMBER, 0, 1, {12}, {10,3,11,3}},
++    {0xe7, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0xf1, SCENERY_CUT_TIMBER, 0, 1, {12}, {10,3,11,3}},
++    {0xe7, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0xe7, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0xe7, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0xea, SCENERY_CUT_TIMBER, 0, 1, {12}, {10,3,11,3}},
++    {0xf1, SCENERY_CUT_TIMBER, 0, 1, {12}, {10,3,11,3}},
++    {0xe7, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0xe7, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0xe7, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0xea, SCENERY_CUT_TIMBER, 0, 1, {12}, {10,3,11,3}},
++    {0xf1, SCENERY_CUT_TIMBER, 0, 1, {12}, {10,3,11,3}},
++    {0x2a6, SCENERY_CUT_TIMBER, 0, 2, {4,12}, {2,7,3,3}},
++    {0x2a7, SCENERY_CUT_TIMBER, 0, 2, {4,12}, {2,7,3,3}},
++    {0xe7, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0xea, SCENERY_CUT_TIMBER, 0, 1, {12}, {10,3,11,3}},
++    {0xf1, SCENERY_CUT_TIMBER, 0, 1, {12}, {10,3,11,3}},
++    {0xe7, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0xea, SCENERY_CUT_TIMBER, 0, 1, {12}, {10,3,11,3}},
++    {0xf1, SCENERY_CUT_TIMBER, 0, 1, {12}, {10,3,11,3}},
++    {0xe7, SCENERY_STEEL_FENCE, 1, 2, {4,12}, {3,5,3,3}},
++    {0xea, SCENERY_CUT_TIMBER, 0, 1, {12}, {10,3,11,3}},
++    {0xf1, SCENERY_CUT_TIMBER, 0, 1, {12}, {10,3,11,3}},
+ };
+-static int scenerySmallFixtureTileset(uint32_t rom, uint32_t primary) {
+-    for (unsigned i=0; i<sizeof(sceneryFixtures)/sizeof(sceneryFixtures[0]); ++i)
+-        if (sceneryFixtures[i].rom==rom && sceneryFixtures[i].primary==primary) return 1;
++static const struct SceneryFixtureGroup sceneryFixtureGroups[] = {
++    {0x25c3d89f, 0x082d4a94, 0x082d4aac, 0, 1},
++    {0x5e704d77, 0x082d4a94, 0x082d4aac, 1, 3},
++    {0x5e704d77, 0x082d4a94, 0x082d4ac4, 4, 1},
++    {0x5e704d77, 0x082d4a94, 0x082d4adc, 5, 2},
++    {0x5e704d77, 0x082d4a94, 0x082d4af4, 7, 1},
++    {0x5e704d77, 0x082d4a94, 0x082d4b0c, 8, 1},
++    {0x5e704d77, 0x082d4a94, 0x082d4b24, 9, 1},
++    {0x5e704d77, 0x082d4a94, 0x082d4b3c, 10, 3},
++    {0x5e704d77, 0x082d4a94, 0x082d4b54, 13, 1},
++    {0x5e704d77, 0x082d4a94, 0x082d4b84, 14, 1},
++    {0x5e704d77, 0x082d4a94, 0x082d4b9c, 15, 1},
++    {0x5e704d77, 0x082d4a94, 0x082d4dc4, 16, 4},
++    {0x5e704d77, 0x082d4a94, 0x082d504c, 20, 3},
++    {0x5e704d77, 0x082d4a94, 0x082d5064, 23, 3},
++    {0x5e704d77, 0x082d4a94, 0x082d507c, 26, 3},
++    {0x964763c0, 0x08316a4c, 0x08316a64, 29, 3},
++    {0x964763c0, 0x08316a4c, 0x08316a7c, 32, 1},
++    {0x964763c0, 0x08316a4c, 0x08316a94, 33, 2},
++    {0x964763c0, 0x08316a4c, 0x08316aac, 35, 1},
++    {0x964763c0, 0x08316a4c, 0x08316ac4, 36, 1},
++    {0x964763c0, 0x08316a4c, 0x08316adc, 37, 1},
++    {0x964763c0, 0x08316a4c, 0x08316af4, 38, 3},
++    {0x964763c0, 0x08316a4c, 0x08316b0c, 41, 1},
++    {0x964763c0, 0x08316a4c, 0x08316b3c, 42, 1},
++    {0x964763c0, 0x08316a4c, 0x08316b54, 43, 1},
++    {0x964763c0, 0x08316a4c, 0x08316d7c, 44, 4},
++    {0x964763c0, 0x08316a4c, 0x08317004, 48, 1},
++    {0x964763c0, 0x08316a4c, 0x0831701c, 49, 2},
++    {0x964763c0, 0x08316a4c, 0x0831710c, 51, 1},
++    {0x964763c0, 0x08316a4c, 0x08317124, 52, 2},
++    {0xdd88761c, 0x082d4a94, 0x082d4aac, 54, 7},
++    {0xdd88761c, 0x082d4a94, 0x082d4dc4, 61, 4},
++    {0xf2d16ebd, 0x082d4a94, 0x082d4aac, 65, 3},
++    {0xf2d16ebd, 0x082d4a94, 0x082d4ac4, 68, 1},
++    {0xf2d16ebd, 0x082d4a94, 0x082d4adc, 69, 2},
++    {0xf2d16ebd, 0x082d4a94, 0x082d4af4, 71, 1},
++    {0xf2d16ebd, 0x082d4a94, 0x082d4b0c, 72, 1},
++    {0xf2d16ebd, 0x082d4a94, 0x082d4b24, 73, 1},
++    {0xf2d16ebd, 0x082d4a94, 0x082d4b3c, 74, 3},
++    {0xf2d16ebd, 0x082d4a94, 0x082d4b54, 77, 1},
++    {0xf2d16ebd, 0x082d4a94, 0x082d4b84, 78, 1},
++    {0xf2d16ebd, 0x082d4a94, 0x082d4b9c, 79, 1},
++    {0xf2d16ebd, 0x082d4a94, 0x082d4dc4, 80, 4},
++    {0xf2d16ebd, 0x082d4a94, 0x082d504c, 84, 2},
++    {0xf2d16ebd, 0x082d4a94, 0x082d5064, 86, 3},
++    {0xf2d16ebd, 0x082d4a94, 0x082d507c, 89, 3},
++    {0xfba55dd8, 0x082d4a94, 0x082d4aac, 92, 3},
++    {0xfba55dd8, 0x082d4a94, 0x082d4ac4, 95, 1},
++    {0xfba55dd8, 0x082d4a94, 0x082d4adc, 96, 2},
++    {0xfba55dd8, 0x082d4a94, 0x082d4af4, 98, 2},
++    {0xfba55dd8, 0x082d4a94, 0x082d4b0c, 100, 1},
++    {0xfba55dd8, 0x082d4a94, 0x082d4b24, 101, 1},
++    {0xfba55dd8, 0x082d4a94, 0x082d4b3c, 102, 3},
++    {0xfba55dd8, 0x082d4a94, 0x082d4b54, 105, 1},
++    {0xfba55dd8, 0x082d4a94, 0x082d4b84, 106, 1},
++    {0xfba55dd8, 0x082d4a94, 0x082d4b9c, 107, 1},
++    {0xfba55dd8, 0x082d4a94, 0x082d4dc4, 108, 4},
++    {0xfba55dd8, 0x082d4a94, 0x082d504c, 112, 3},
++    {0xfba55dd8, 0x082d4a94, 0x082d5064, 115, 3},
++    {0xfba55dd8, 0x082d4a94, 0x082d507c, 118, 3},
++};
++static const struct SceneryFixtureGroup* scenerySmallFixtureGroup(uint32_t rom, uint32_t primary, uint32_t secondary) {
++    for (unsigned i=0; i<sizeof(sceneryFixtureGroups)/sizeof(sceneryFixtureGroups[0]); ++i) {
++        const struct SceneryFixtureGroup* p=&sceneryFixtureGroups[i];
++        if (p->rom==rom && p->primary==primary && p->secondary==secondary) return p;
++    }
+     return 0;
+ }
+-static int scenerySmallFixture(uint32_t rom, uint32_t primary, uint32_t secondary, int tile) {
+-    for (unsigned i=0; i<sizeof(sceneryFixtures)/sizeof(sceneryFixtures[0]); ++i) {
+-        const struct SceneryFixture* p=&sceneryFixtures[i];
+-        if (p->rom==rom && p->primary==primary && p->secondary==secondary && p->tile==tile) return (int)i;
+-    }
++static int scenerySmallFixture(const struct SceneryFixtureGroup* group, int tile) {
++    if (!group) return -1;
++    for (int i=group->first; i<group->first+group->count; ++i)
++        if (sceneryFixtures[i].tile==tile) return i;
+     return -1;
+ }
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -5192,7 +5192,7 @@
+     int snow=solidRom==0x4b3d4957 && s->primary==0x08725ab4;
+     int indoor=solidPlantTileset(solidRom,s->primary);
+     int profiled=sceneryGroundPropsTileset(solidRom,s->primary);
+-    int smallFixtures=scenerySmallFixtureTileset(solidRom,s->primary);
++    const struct SceneryFixtureGroup* smallFixtures=scenerySmallFixtureGroup(solidRom,s->primary,s->secondary);
+     if(!letsgo&&!radical&&!snow&&!unboundGreen&&!indoor&&!profiled&&!smallFixtures)return 0;
+     /* Only metadata resets: cached pixels are rebuilt on each snapshot's first
+      * use, so palette animation, season switches and maps cannot retain old art. */
+@@ -5203,8 +5203,8 @@
+     for(int row=0;row<v->rows;row++)for(int col=0;col<v->cols;col++) {
+         int conn,id=blockIn(s,cellX+col,cellY+row,&conn,false),kind=0,ground=8;
+         if(conn>=0 && s->conn[conn].primary!=s->primary)continue;
+-        if (smallFixtures && conn<0 && count<cap) {
+-            int index=scenerySmallFixture(solidRom,s->primary,s->secondary,id);
++        if (smallFixtures && count<cap && (conn<0 || s->conn[conn].secondary==s->secondary)) {
++            int index=scenerySmallFixture(smallFixtures,id);
+             if (index>=0) {
+                 const struct SceneryFixture* profile=&sceneryFixtures[index];
+                 struct SolidProp* p=&props[count++];
+--- a/app/src/main/cpp/pk_wide_props.h
++++ b/app/src/main/cpp/pk_wide_props.h
+@@ -91,8 +91,13 @@
+     const struct SolidTree* surface=&prop->surface;
+     const int x=surface->x, y=surface->y+9, z=surface->rise;
+     const uint32_t sides=surface->art[0], cap=surface->art[1];
+-    if (profile->shape==SCENERY_STEEL_FENCE)
++    if (profile->rail && profile->rail!=2)
+         voxelPropBox(view,x,y,16,2,z+3,2,sides);
++    if (profile->rail>=2) {
++        int post=profile->rail==4 ? profile->posts-1 : 0;
++        int start=profile->rail==2 ? 0 : 9;
++        voxelPropBox(view,x+profile->x[post]-1,surface->y+start,2,16-start,z+3,2,sides);
++    }
+     for (int i=0; i<profile->posts; ++i) {
+         int foot=x+profile->x[i];
+         if (profile->shape==SCENERY_STEEL_FENCE) {

@@ -12,11 +12,14 @@
 #include "pk_scenery_ui.h"
 
 static void testSmallFixtures(void) {
-    int metal=scenerySmallFixture(0xdd88761c,0x082d4a94,0x082d4aac,0x284);
-    int wood=scenerySmallFixture(0xdd88761c,0x082d4a94,0x082d4dc4,0xea);
+    int metal=scenerySmallFixture(scenerySmallFixtureGroup(0xdd88761c,0x082d4a94,0x082d4aac),0x284);
+    int wood=scenerySmallFixture(scenerySmallFixtureGroup(0xdd88761c,0x082d4a94,0x082d4dc4),0xea);
     assert(metal>=0 && wood>=0);
-    assert(scenerySmallFixture(0xdd88761c,0x082d4a94,0x082d4aac,0xea)<0);
-    assert(scenerySmallFixture(0xfba55dd8,0x082d4a94,0x082d4aac,0x284)<0);
+    assert(scenerySmallFixture(scenerySmallFixtureGroup(0x25c3d89f,0x082d4a94,0x082d4aac),0xe6)>=0);
+    const struct SceneryGroundProp* grass=sceneryGroundProp(0xdd88761c,0x082d4a94,13);
+    assert(grass && grass->kind==1 && grass->ground==17);
+    assert(scenerySmallFixture(scenerySmallFixtureGroup(0xdd88761c,0x082d4a94,0x082d4aac),0xea)<0);
+    assert(scenerySmallFixture(scenerySmallFixtureGroup(0x4b3d4957,0x082d4a94,0x082d4aac),0x284)<0);
     uint32_t pixels[48*48]={0}, depth[48*48]={0};
     struct VoxelView view={.out=pixels,.depth=depth,.width=48,.height=48,.top=-16,.rows=4};
     struct SolidProp prop={.kind=SOLID_SMALL_FIXTURE,.fixtureProfile=metal};

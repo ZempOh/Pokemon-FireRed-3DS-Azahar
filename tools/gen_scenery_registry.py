@@ -210,9 +210,12 @@ def generate_small_fixtures(profiles, output):
     lines = ['// Generated from reviewed tileset pairs and source layers.',
              '#pragma once',
              'enum SceneryFixtureShape { SCENERY_STEEL_FENCE, SCENERY_CUT_TIMBER };',
-             'struct SceneryFixture { uint32_t rom, primary, secondary; uint16_t tile; uint8_t shape, posts, x[2], ink[4]; };',
+             'struct SceneryFixture { uint16_t tile; uint8_t shape, rail, posts, x[2], ink[4]; };',
+             'struct SceneryFixtureGroup { uint32_t rom, primary, secondary; uint16_t first, count; };',
              'static const struct SceneryFixture sceneryFixtures[] = {']
     shapes = {'steel_fence': 'SCENERY_STEEL_FENCE', 'cut_timber': 'SCENERY_CUT_TIMBER'}
+    rails = {'none': 0, 'horizontal': 1, 'vertical': 2, 'corner_left': 3, 'corner_right': 4}
+    groups = {}
     seen = set()
     for profile in profiles:
         key = (int(profile['rom_crc32'], 16), int(profile['primary'], 16),
@@ -226,22 +229,36 @@ def generate_small_fixtures(profiles, output):
         assert 1 <= len(posts) <= 2 and all(3 <= x <= 13 for x in posts)
         assert posts == sorted(set(posts))
         assert len(ink) == 4 and all(0 <= coordinate < 16 for coordinate in ink)
-        assert profile['shape'] != 'steel_fence' or len(posts) == 2
-        lines.append('    {0x%08x, 0x%08x, 0x%08x, 0x%x, %s, %d, {%s}, {%s}},'
-                     % (*key, shapes[profile['shape']], len(posts),
-                        ','.join(map(str, posts)), ','.join(map(str, ink))))
+        steel = profile['shape'] == 'steel_fence'
+        rail = rails[profile.get('rail', 'horizontal' if steel else 'none')]
+        assert (rail != 0) == steel
+        assert not steel or len(posts) == (1 if rail == rails['vertical'] else 2)
+        line = '    {0x%x, %s, %d, %d, {%s}, {%s}},' % (
+            key[3], shapes[profile['shape']], rail, len(posts),
+            ','.join(map(str, posts)), ','.join(map(str, ink)))
+        groups.setdefault(key[:3], {})[key[3]] = line
+    assert 0 < len(seen) <= 65535
+    offsets = []
+    first = 0
+    for key, fixtures in sorted(groups.items()):
+        count = len(fixtures)
+        lines.extend(line for tile, line in sorted(fixtures.items()))
+        offsets.append('    {0x%08x, 0x%08x, 0x%08x, %d, %d},' % (*key, first, count))
+        first += count
+    lines.extend(['};', 'static const struct SceneryFixtureGroup sceneryFixtureGroups[] = {', *offsets])
     lines.extend([
         '};',
-        'static int scenerySmallFixtureTileset(uint32_t rom, uint32_t primary) {',
-        '    for (unsigned i=0; i<sizeof(sceneryFixtures)/sizeof(sceneryFixtures[0]); ++i)',
-        '        if (sceneryFixtures[i].rom==rom && sceneryFixtures[i].primary==primary) return 1;',
+        'static const struct SceneryFixtureGroup* scenerySmallFixtureGroup(uint32_t rom, uint32_t primary, uint32_t secondary) {',
+        '    for (unsigned i=0; i<sizeof(sceneryFixtureGroups)/sizeof(sceneryFixtureGroups[0]); ++i) {',
+        '        const struct SceneryFixtureGroup* p=&sceneryFixtureGroups[i];',
+        '        if (p->rom==rom && p->primary==primary && p->secondary==secondary) return p;',
+        '    }',
         '    return 0;',
         '}',
-        'static int scenerySmallFixture(uint32_t rom, uint32_t primary, uint32_t secondary, int tile) {',
-        '    for (unsigned i=0; i<sizeof(sceneryFixtures)/sizeof(sceneryFixtures[0]); ++i) {',
-        '        const struct SceneryFixture* p=&sceneryFixtures[i];',
-        '        if (p->rom==rom && p->primary==primary && p->secondary==secondary && p->tile==tile) return (int)i;',
-        '    }',
+        'static int scenerySmallFixture(const struct SceneryFixtureGroup* group, int tile) {',
+        '    if (!group) return -1;',
+        '    for (int i=group->first; i<group->first+group->count; ++i)',
+        '        if (sceneryFixtures[i].tile==tile) return i;',
         '    return -1;',
         '}',
     ])

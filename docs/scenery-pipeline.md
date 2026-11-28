@@ -1409,3 +1409,10 @@ the prop. The generator requires both tileset pointers and separate source
 and floor hashes. Mixed architecture and unreviewed variants retain their
 source appearance. Include a winter close-up of the original patterned ground
 before timing this candidate.
+
+Red Route 1's fixed tree border also uses the live `40 41 50 51` pattern.
+The earlier renderer recognized `2a 2b 3a 3b` only, leaving two flat,
+high-contrast rows beyond the new grass in the full-size Thor captures.
+Patch 0099 models the second tree family with a trunk and stepped canopy.
+The same Route 1 host replay retained identical 2D frames and removed the
+flat bands in 3D. Keep the rejected APK and its full-size winter screenshot.

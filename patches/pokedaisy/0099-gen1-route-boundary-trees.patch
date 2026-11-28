@@ -1,0 +1,49 @@
+--- a/app/src/main/cpp/pk_red_voxel_pilot.h
++++ b/app/src/main/cpp/pk_red_voxel_pilot.h
+@@ -1,6 +1,6 @@
+ // Reviewed Pallet material cells for the exact US/EU Red cartridge.
+ // Units are 16 source pixels; the live map has a three-block border.
+-enum RedMaterial { RED_FIELD, RED_TREE, RED_ROOF, RED_WALL, RED_FLOWER, RED_POST, RED_WATER, RED_NATIVE, RED_SIGN, RED_PIPE, RED_GRASS };
++enum RedMaterial { RED_FIELD, RED_TREE, RED_ROOF, RED_WALL, RED_FLOWER, RED_POST, RED_WATER, RED_NATIVE, RED_SIGN, RED_PIPE, RED_GRASS, RED_ROUND_TREE };
+ static enum RedMaterial redMaterialAt(int cx, int cy) {
+     if ((unsigned)cx >= 20 || (unsigned)cy >= 18) return RED_FIELD;
+     if ((cy == 1 && cx != 9) || (cy == 0 && (cx == 3 || cx == 8 || cx == 10 || cx == 17)) ||
+@@ -21,6 +21,7 @@
+ } redStyles[] = {
+     [RED_FIELD]  = {0, 155, 181, 123},
+     [RED_TREE]   = {16, 117, 164, 106},
++    [RED_ROUND_TREE] = {16, 117, 164, 106},
+     [RED_ROOF]   = {17, 196, 125, 105},
+     [RED_WALL]   = {6, 216, 191, 148},
+     [RED_FLOWER] = {2, 199, 131, 136},
+@@ -121,6 +122,14 @@
+     redBox(v,x-5,y-5,10,10,15,5,climateLeafColor(alpha|RED_COLOR(126,173,115)));
+     redBox(v,x-3,y-3,6,6,19,4,climateLeafColor(alpha|RED_COLOR(154,192,133)));
+ }
++static void redRoundTree(const struct VoxelView* view, int x, int y, uint32_t alpha) {
++    voxelPropBox(view,x-2,y-2,4,4,0,10,alpha|RED_COLOR(117,82,59));
++    voxelPropBox(view,x-4,y-4,8,8,6,5,climateLeafColor(alpha|RED_COLOR(70,115,80)));
++    voxelPropBox(view,x-7,y-6,14,12,10,6,climateLeafColor(alpha|RED_COLOR(92,143,91)));
++    voxelPropBox(view,x-6,y-5,12,10,15,5,climateLeafColor(alpha|RED_COLOR(112,161,99)));
++    voxelPropBox(view,x-4,y-3,8,6,19,4,climateLeafColor(alpha|RED_COLOR(138,179,111)));
++}
++
+ /* Profiles use the live 2x2 tile signatures. The standard overworld
+  * tileset is checked as a family before its material rules are enabled.
+  * Other tilesets keep their source colors and gain the depth camera. */
+@@ -176,6 +185,7 @@
+     if (!classicTiles) return RED_NATIVE;
+     switch(signature) {
+     case 0x3b3a2b2au: return RED_TREE;
++    case 0x51504140u: return RED_ROUND_TREE;
+     case 0x55550e0eu: return RED_POST;
+     case 0x57564746u: return RED_SIGN;
+     case 0x14141414u: case 0x54141414u: case 0x14141432u: return RED_WATER;
+@@ -310,6 +320,7 @@
+                 redBox(&view,x+2,y+7,12,4,5,6,alpha|RED_COLOR(196,170,124));
+             }
+             if (material==RED_TREE) redTree(&view,x+8,y+8,alpha);
++            if (material==RED_ROUND_TREE) redRoundTree(&view,x+8,y+8,alpha);
+             if (material==RED_POST) {
+                 uint32_t wood=alpha|RED_COLOR(165,126,85);
+                 for (int dx=2; dx<16; dx+=8) {

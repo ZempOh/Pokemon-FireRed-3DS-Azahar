@@ -1,0 +1,86 @@
+--- a/app/src/main/cpp/pk_wide_voxel.h
++++ b/app/src/main/cpp/pk_wide_voxel.h
+@@ -91,6 +91,19 @@
+     return (color & 0xFF000000u) | rb | g;
+ }
+
++// A four-unit thickness projects one pixel left and three pixels up.
++// Every rear sample carries its own world depth, so foreground terrain and
++// the original front face can occlude the exposed sides.
++static void voxelActorPixel(const struct VoxelView* v, int x, int y, int foot, int order, uint32_t color) {
++    if (foot >= v->top + 4) {
++        uint32_t side = voxelShade(color, 175);
++        voxelSpritePixel(v, x - 1, y - 3, foot - 4, order, side);
++        voxelSpritePixel(v, x - 1, y - 2, foot - 3, order, side);
++        voxelSpritePixel(v, x, y - 1, foot - 2, order, voxelShade(color, 213));
++    }
++    voxelSpritePixel(v, x, y, foot, order, color);
++}
++
+ static void voxelTerrainWithFloor(const struct VoxelView* v, const uint32_t* floor) {
+     // The floor fills the output. The projection bounds in pk_wide.c include every sample.
+     for (int y = 0; y < v->height; y++) {
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -1470,7 +1470,7 @@
+ static uint32_t solidRom;
+ struct Piece {
+     int solidKind,solidLeaf,solidBark;
+-    bool vegetation;
++    bool vegetation, actor;
+     int x, y, w, h, tile, prio, pal, mode;   // mode: OAM objMode (0 normal, 1 semi-transparent, 2 OBJ window)
+     bool hflip, vflip;
+     bool copy;                               // a weather sprite repeated past the screen: margins only
+@@ -1511,6 +1511,7 @@
+  * AddSubspritesToOamBuffer), positions kept as s16 instead of OAM's 9 / 8 bits. */
+ static int buildPieces(const struct Snap* s, struct Piece* out) {
+     int nspr = C[PK_WIDE_MAX_SPRITES];
++    bool actor[SPRITES_CAP] = { false };
+     bool offscreen[SPRITES_CAP] = { false };   // sprites the game hid only for being off screen
+     int propKind[SPRITES_CAP]={0},propLeaf[SPRITES_CAP]={0},propBark[SPRITES_CAP]={0};
+     for (int i = 0; i < 16; i++) {
+@@ -1520,6 +1521,7 @@
+         if ((flags & 1) && (flags & (1 << 14)) && !(flags & (1 << 13)) && id < nspr) offscreen[id] = true;
+         if((flags&1)&&!(flags&(1<<13))&&id<nspr&&solidRom==0x25c3d89f&&oe[5]==0xd7)propKind[id]=6;
+         if ((flags&1) && !(flags&(1<<13)) && id<nspr) {
++            actor[id] = true;
+             // Match the live image table, not an engine-dependent graphics byte.
+             const struct SceneryObjectProfile *profile=sceneryObjectProfile(solidRom,le32(s->sprites+0x44*id+0x0c));
+             if(profile) { propKind[id]=profile->kind; propLeaf[id]=profile->leaf; propBark[id]=profile->bark; }
+@@ -1552,6 +1554,7 @@
+         }
+         struct Piece base = { .tile = (int) (a2 & 0x3FF), .prio = (int) ((a2 >> 10) & 3), .pal = (int) (a2 >> 12),
+                               .solidKind=propKind[id],.solidLeaf=propLeaf[id],.solidBark=propBark[id],
++                              .actor=actor[id] && !propKind[id],
+                               .vegetation=climateGrassEffect(solidRom,le32(sp+0x14),le32(sp+0x0c)),
+                               .mode = (int) ((a0 >> 10) & 3), .hflip = !(rot & 1) && (a1 & 0x1000), .vflip = !(rot & 1) && (a1 & 0x2000),
+                               .copy = false, .world = world, .rot = rot, .mat = (int) ((a1 >> 9) & 31) };
+@@ -2076,6 +2079,7 @@
+         int pa = (int16_t) oam[(4 * m) * 4 + 3], pb = (int16_t) oam[(4 * m + 1) * 4 + 3];
+         int pc = (int16_t) oam[(4 * m + 2) * 4 + 3], pd = (int16_t) oam[(4 * m + 3) * 4 + 3];
+         int foot = p[i].y + bh - 1;
++        bool solidActor = p[i].actor && !p[i].vegetation && p[i].mode == 0 && !(p[i].rot & 1);
+         int vx = 0, vy = 0;
+         if (voxel && p[i].world) {
+             int z = voxelRiseAt(voxel, p[i].x + bw / 2, foot);
+@@ -2192,7 +2196,8 @@
+                     dst[J * stride + X] = c;
+                     holeBuf[J][X] = 0;
+                 } else if (p[i].world) {
+-                    voxelSpritePixel(voxel, vx + xx, vy + yy, foot, i, c);
++                    if (solidActor) voxelActorPixel(voxel, vx + xx, vy + yy, foot, i, c);
++                    else voxelSpritePixel(voxel, vx + xx, vy + yy, foot, i, c);
+                 } else if (onFrame(p[i].x + xx, Y)) {
+                     int sx = p[i].x + xx - (voxel->centreX - voxel->width / 2);
+                     int sy = Y - (voxel->centreY - voxel->height / 2);
+--- a/app/src/main/cpp/pk_red_voxel_pilot.h
++++ b/app/src/main/cpp/pk_red_voxel_pilot.h
+@@ -59,7 +59,7 @@
+                     const uint8_t* tile = gbObjectRomTiles[k] + row * 2;
+                     idx = ((tile[0] >> (7-col)) & 1) | (((tile[1] >> (7-col)) & 1) << 1);
+                 }
+-                if (idx) voxelSpritePixel(view, x0+xx, y0+yy, foot, k, gbObjColor((uint8_t)o->attr, idx, alpha));
++                if (idx) voxelActorPixel(view, x0+xx, y0+yy, foot, k, gbObjColor((uint8_t)o->attr, idx, alpha));
+             }
+         }
+     }

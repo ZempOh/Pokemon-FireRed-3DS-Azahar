@@ -1,0 +1,52 @@
+--- a/app/src/main/cpp/pk_red_voxel_pilot.h
++++ b/app/src/main/cpp/pk_red_voxel_pilot.h
+@@ -648,6 +648,36 @@
+             int at=(top+y)*width+left+x, mirror=top+y-2*bank-1;
+             uint32_t reflected=(unsigned)mirror<(unsigned)height ? art[mirror*width+left+x] : 0x00aaaaaau;
+             floor[at]=waterSurfacePixel(floor[at],reflected,tx*8+x,ty*8+y,edge,bank);
++        }
++    }
++}
++
++/* A short west-wall penumbra for the three source-verified Pallet houses.
++ * Shade only native ground. Keep geometry and actor depth entirely intact. */
++static void redHouseContactShadow(const struct GbSnap* snap,const struct VoxelView* v,
++                                  const uint8_t* materials,const uint8_t* details,int x,int y,int h) {
++    static const unsigned strength[] = {205,219,233,243,250};
++    int start=voxelY(v,y+5,0),stop=voxelY(v,y+h-5,0);
++    if (start<0) start=0;
++    if (stop>v->height) stop=v->height;
++    for (int py=start;py<stop;++py) {
++        int wy=voxelWorldY(v,py,0);
++        int row=voxelFloor(wy-v->top,VOXEL_TILE);
++        if ((unsigned)row>=(unsigned)v->rows) continue;
++        int end=wy-y-4,other=y+h-4-wy;
++        if (other<end) end=other;
++        uint32_t groundDepth=(uint32_t)(wy-v->top+1)*512u;
++        for (int distance=1;distance<=5 && distance<end;++distance) {
++            int wx=x-distance,col=voxelFloor(wx-v->left,VOXEL_TILE);
++            if ((unsigned)col>=(unsigned)v->cols) continue;
++            int source=row*v->cols+col;
++            if (materials[source]!=RED_FIELD || details[source]!=RED_DETAIL_NONE ||
++                gbPalletWaterTile(snap,wx/8,wy/8)) continue;
++            int px=voxelX(v,wx,wy);
++            if ((unsigned)px>=(unsigned)v->width) continue;
++            int at=py*v->width+px;
++            if (v->depth[at]==groundDepth)
++                v->out[at]=voxelShade(v->out[at],strength[distance-1]);
+         }
+     }
+ }
+@@ -764,6 +794,12 @@
+     const int border=96;
+     const uint8_t* roofTexture = pallet || houseCount ? voxelRoofTexture() : 0;
+     if (pallet) {
++        bool winter=voxelClimate.season==3 || (voxelClimate.season==0 && voxelClimate.seasonTransition);
++        if (gbGen1BattleCrc==0x9f7fdd53u && !winter && voxelClimate.weather<2) {
++            redHouseContactShadow(snap,&view,materials,terrainDetails,border+64,border+48,48);
++            redHouseContactShadow(snap,&view,materials,terrainDetails,border+192,border+48,48);
++            redHouseContactShadow(snap,&view,materials,terrainDetails,border+160,border+128,64);
++        }
+         redHouse(&view,art,border+64,border+48,64,48,20,alpha,roofTexture);
+         redHouse(&view,art,border+192,border+48,64,48,20,alpha,roofTexture);
+         redHouse(&view,art,border+160,border+128,96,64,24,alpha,roofTexture);

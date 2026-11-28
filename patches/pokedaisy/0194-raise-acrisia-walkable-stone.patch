@@ -1,0 +1,40 @@
+diff --git a/app/src/main/cpp/pk_scenery_stone_profiles.h b/app/src/main/cpp/pk_scenery_stone_profiles.h
+index 33d7c14..7d1f60d 100644
+--- a/app/src/main/cpp/pk_scenery_stone_profiles.h
++++ b/app/src/main/cpp/pk_scenery_stone_profiles.h
+@@ -1,9 +1,10 @@
+ #pragma once
+ 
+-struct SceneryStoneShape { uint8_t twoEdges[16][2], peak; };
++struct SceneryStoneShape { uint8_t twoEdges[16][2], peak; bool wholeTurf; };
+ static const struct SceneryStoneShape sceneryStoneShapes[] = {
+-    {{{6,9},{5,11},{4,12},{3,13},{2,13},{2,14},{2,14},{1,15},{1,15},{1,15},{1,15},{1,15},{1,14},{2,14},{3,13},{5,11}},5},
+-    {{{5,10},{4,11},{3,12},{3,13},{2,13},{2,14},{1,14},{1,15},{1,15},{1,15},{1,15},{1,15},{2,14},{2,14},{3,13},{5,11}},6},
++    {{{6,9},{5,11},{4,12},{3,13},{2,13},{2,14},{2,14},{1,15},{1,15},{1,15},{1,15},{1,15},{1,14},{2,14},{3,13},{5,11}},5,true},
++    {{{5,10},{4,11},{3,12},{3,13},{2,13},{2,14},{1,14},{1,15},{1,15},{1,15},{1,15},{1,15},{2,14},{2,14},{3,13},{5,11}},6,true},
++    {{{1,0},{1,0},{1,0},{1,0},{1,0},{2,8},{1,10},{0,11},{0,11},{0,11},{1,11},{1,11},{1,10},{1,7},{1,0},{1,0}},3,false},
+ };
+ 
+ struct SceneryStonePlacement { uint8_t x,y,shape; uint16_t native; };
+@@ -13,4 +14,5 @@ static const struct SceneryStonePlacement acrisiaStonePlacements[] = {
+     {25,15,1,0x066d},
+     {25,22,1,0x066d},
+     {10,24,1,0x066d},
++    {24,15,2,0x3264},
+ };
+diff --git a/app/src/main/cpp/pk_wide.c b/app/src/main/cpp/pk_wide.c
+index d176860..2cd2007 100644
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -6208,8 +6208,10 @@ static int sceneryAcrisiaStonesPrepare(const struct Snap* s,const struct VoxelVi
+         stone->rise=voxelRise(view,col,row);
+         stone->tile=p->native&1023;
+         for (int y=0; y<16; ++y) for (int x=0; x<16; ++x) {
++            bool footprint=x>=stone->shape->twoEdges[y][0] && x<=stone->shape->twoEdges[y][1];
++            if (!stone->shape->wholeTurf && !footprint) continue;
+             uint32_t floor=solidPlantGroundPixel(s,stone->tile,x,y,alpha,1);
+-            unsigned weight=(x>=stone->shape->twoEdges[y][0] && x<=stone->shape->twoEdges[y][1])?218u:256u;
++            unsigned weight=footprint?218u:256u;
+             texture[(row*16+y)*view->stride+col*16+x]=voxelShade(climateGround(floor,2),weight);
+         }
+     }

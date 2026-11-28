@@ -1624,3 +1624,9 @@ controls remain the source of truth. Viridian Mart counters share a
 limestone atlas across the three English Gen 1 games. Run handheld probes
 with Android's SGB borders disabled, assert the native buffer size after
 loading the fixture, and keep any text and clerk interactions intact.
+
+The shared GBA waterbed material applies inside the existing admitted water
+mask. It samples a world-aligned 256×256 sediment atlas along the shallow
+band. Keep the first two native edge pixels, wave and reflection passes, and
+dry-ground mask intact. Check the native Surf and dismount sequence alongside
+the winter shoreline before taking device credit.

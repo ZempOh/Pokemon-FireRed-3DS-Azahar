@@ -1,0 +1,101 @@
+diff --git a/app/src/main/cpp/pk_wide.c b/app/src/main/cpp/pk_wide.c
+index 1b70b03..f2f3de5 100644
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -29,6 +29,7 @@
+ #include "pk_cheats.h"
+ #include "pk_wide_voxel.h"
+ #include "pk_water_surface.h"
++#include "pk_voxel_waterbed.h"
+ #include "pk_scenery_water_profiles.h"
+ #include "pk_scenery_pallet_banks.h"
+ #include "pk_scenery_cave_contact_profiles.h"
+@@ -5955,6 +5956,9 @@ static void sceneryWaterDeep(int x, int row, int col, int stride, uint32_t* text
+ }
+ static void sceneryWaterDraw(const struct Snap* s, const struct VoxelView* view,
+                              int cellX, int cellY, uint32_t* texture) {
++#if VOXEL_WATERBED_TEXTURE_SIZE
++    const uint8_t* waterbed=voxelWaterbedTexture();
++#endif
+     struct WaterDeepTint deep[128]={0};
+     for (int row=0;row<view->rows;++row) for (int col=0;col<view->cols;++col) {
+         int x=cellX+col,y=cellY+row;
+@@ -5985,6 +5989,9 @@ static void sceneryWaterDraw(const struct Snap* s, const struct VoxelView* view,
+                 bank=texture[mirror*view->stride+srcX];
+             uint32_t* pixel=&texture[srcY*view->stride+srcX];
+             *pixel=waterSurfacePixel(*pixel,bank,x*16+px,y*16+py,edge,upper);
++#if VOXEL_WATERBED_TEXTURE_SIZE
++            *pixel=voxelWaterbedPixel(waterbed,*pixel,x*16+px,y*16+py,edge);
++#endif
+         }
+     }
+ }
+@@ -6000,6 +6007,9 @@ static void fireRedPalletWater(const struct Snap* s, const struct VoxelView* vie
+         int conn;
+         if(blockIn(s,waterX+x,waterY+y,&conn,false)!=0x12b || conn>=0) return;
+     }
++#if VOXEL_WATERBED_TEXTURE_SIZE
++    const uint8_t* waterbed=voxelWaterbedTexture();
++#endif
+     for(int y=0;y<32;++y)for(int x=0;x<32;++x) {
+         int dx=(waterX-cellX)*16+x,dy=(waterY-cellY)*16+y;
+         if((unsigned)dx>=(unsigned)view->stride || (unsigned)dy>=(unsigned)(view->rows*16))continue;
+@@ -6011,6 +6021,9 @@ static void fireRedPalletWater(const struct Snap* s, const struct VoxelView* vie
+             ? texture[sample*view->stride+dx] : 0x00aaaaaau;
+         uint32_t* pixel=&texture[dy*view->stride+dx];
+         *pixel=waterSurfacePixel(*pixel,bank,waterX*16+x,waterY*16+y,edge,y);
++#if VOXEL_WATERBED_TEXTURE_SIZE
++        *pixel=voxelWaterbedPixel(waterbed,*pixel,waterX*16+x,waterY*16+y,edge);
++#endif
+     }
+ }
+ 
+diff --git a/app/src/main/cpp/pk_voxel_waterbed.h b/app/src/main/cpp/pk_voxel_waterbed.h
+new file mode 100644
+index 0000000..504a184
+--- /dev/null
++++ b/app/src/main/cpp/pk_voxel_waterbed.h
+@@ -0,0 +1,43 @@
++/* Original sediment relief under the existing GBA water reflection pass. */
++#pragma once
++#include <stdbool.h>
++#include <stdint.h>
++#include "pk_water_surface.h"
++
++#ifndef VOXEL_WATERBED_TEXTURE_SIZE
++#define VOXEL_WATERBED_TEXTURE_SIZE 256
++#endif
++
++#if VOXEL_WATERBED_TEXTURE_SIZE
++static const uint8_t* voxelWaterbedTexture(void) {
++    enum { size = VOXEL_WATERBED_TEXTURE_SIZE };
++    static uint8_t atlas[size * size];
++    static bool ready;
++    if (ready) return atlas;
++    for (unsigned y=0; y<size; ++y) for (unsigned x=0; x<size; ++x) {
++        const unsigned u=(x*256u+128u)/size, v=(y*256u+128u)/size;
++        const unsigned zig=u&63u, bend=zig<32 ? zig : 63u-zig;
++        const unsigned bank=(v+(u>>2)+(bend>>1))&31u;
++        const unsigned grit=((u*1667u+v*607u)^(u*v*23u))&15u;
++        const unsigned sediment=bank<4 ? 48u : bank<11 ? 29u : 13u;
++        atlas[y*size+x]=(uint8_t)(sediment+grit);
++    }
++    ready=true;
++    return atlas;
++}
++
++static inline uint32_t voxelWaterbedPixel(const uint8_t* atlas, uint32_t reflected,
++                                         int worldX, int worldY, int edge) {
++    enum { size = VOXEL_WATERBED_TEXTURE_SIZE };
++    if (edge<3 || edge>=16) return reflected;
++    const unsigned u=((unsigned)worldX*7u&255u)*size/256u;
++    const unsigned v=((unsigned)worldY*5u&255u)*size/256u;
++    const unsigned envelope=(unsigned)(edge<6 ? (edge-2)*20 : (16-edge)*8);
++    const unsigned weight=(atlas[v*size+u]+28u)*envelope/96u;
++    const unsigned r=reflected&255u, g=(reflected>>8)&255u, b=(reflected>>16)&255u;
++    return (reflected&0xff000000u)
++        | waterMix(r,110u+r/3u,weight)
++        | waterMix(g,139u+g/5u,weight)<<8
++        | waterMix(b,115u+b/4u,weight)<<16;
++}
++#endif

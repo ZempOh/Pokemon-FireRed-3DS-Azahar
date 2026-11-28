@@ -1,0 +1,26 @@
+diff --git a/app/src/main/cpp/pk_battle_back_family.h b/app/src/main/cpp/pk_battle_back_family.h
+index 9683841..cfd66b9 100644
+--- a/app/src/main/cpp/pk_battle_back_family.h
++++ b/app/src/main/cpp/pk_battle_back_family.h
+@@ -7,6 +7,6 @@ static const struct BattleBackProfile {
+     uint8_t firstY, lastY;
+ } battleBackProfiles[] = {
+     {0xdd88761cu, 0x2023be4u, 0x2023bccu, 0x2023bd6u, 0xdedd67a3u, 0x5b268c8du, 4, 58, 59}, // firered
+-    {0x964763c0u, 0x2023b64u, 0x2023b4cu, 0x2023b56u, 0x5158e478u, 0x52817034u, 1, 64, 65}, // frlgplus
+-    {0xe4deb9beu, 0x20230f8u, 0x20230e0u, 0x20230eau, 0x7592de65u, 0x7e39fa2bu, 412, 55, 56}, // classic
++    {0x964763c0u, 0x2023b64u, 0x2023b4cu, 0x2023b56u, 0x5158e478u, 0x52817034u, 1, 64, 66}, // frlgplus
++    {0xe4deb9beu, 0x20230f8u, 0x20230e0u, 0x20230eau, 0x7592de65u, 0x7e39fa2bu, 412, 55, 57}, // classic
+ };
+diff --git a/app/src/main/cpp/pk_wide.c b/app/src/main/cpp/pk_wide.c
+index 37ecbda..86c2db3 100644
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -5193,7 +5193,7 @@ static void battleBackVolumeDraw(const uint32_t* frame, uint32_t* out, struct Pk
+         const uint16_t* a=oam+k*4;
+         int y=a[0]&255, tile=a[2]&1023;
+         if ((a[0]&0xff00)!=0x0100 || (a[1]&0xc000)!=0xc000 || (a[1]&511)!=40 ||
+-            (y!=profile->firstY && y!=profile->lastY) || ((a[2]>>10)&3)!=2 || tile>960) continue;
++            y<profile->firstY || y>profile->lastY || ((a[2]>>10)&3)!=2 || tile>960) continue;
+         const uint8_t* art=tiles+tile*32;
+         int palette=256+(a[2]>>12)*16;
+         // Both digests come from the cartridge's native back and palette tables.

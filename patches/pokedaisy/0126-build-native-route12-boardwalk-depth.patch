@@ -1,0 +1,103 @@
+diff --git a/app/src/main/cpp/pk_gen1_boardwalks.h b/app/src/main/cpp/pk_gen1_boardwalks.h
+new file mode 100644
+index 0000000..dd0ec2f
+--- /dev/null
++++ b/app/src/main/cpp/pk_gen1_boardwalks.h
+@@ -0,0 +1,7 @@
++// Source-audited Route 12 spans shared by English Red and Yellow.
++#pragma once
++struct Gen1Boardwalk { uint8_t x, deck, width; uint32_t rows[3][6]; };
++static const struct Gen1Boardwalk gen1Route12Boardwalks[] = {
++    {6, 11, 4, {{0x3c3c3c3cu, 0x3c3c3c3cu, 0x2c30302cu, 0x2c30302cu}, {0x14143131u, 0x14143131u, 0x14143131u, 0x14143131u}, {0x14141414u, 0x14141414u, 0x14141414u, 0x14141414u}}},
++    {12, 13, 6, {{0x30303030u, 0x57564746u, 0x3c3c3c3cu, 0x3c3c3c3cu, 0x3c3c3c3cu, 0x3c3c3c3cu}, {0x14143131u, 0x14143131u, 0x14143131u, 0x14143131u, 0x14143131u, 0x14143131u}, {0x14141414u, 0x14141414u, 0x14141414u, 0x14141414u, 0x14141414u, 0x14141414u}}},
++};
+diff --git a/app/src/main/cpp/pk_red_voxel_pilot.h b/app/src/main/cpp/pk_red_voxel_pilot.h
+index 86ca811..3b61115 100644
+--- a/app/src/main/cpp/pk_red_voxel_pilot.h
++++ b/app/src/main/cpp/pk_red_voxel_pilot.h
+@@ -1,4 +1,5 @@
+ #include "pk_voxel_roof_material.h"
++#include "pk_gen1_boardwalks.h"
+ #include "pk_water_surface.h"
+ 
+ // Reviewed Pallet material cells for the exact US/EU Red cartridge.
+@@ -241,6 +242,53 @@ static struct GbVoxelHouse gbVoxelHouseAt(const struct GbSnap* s, int x, int y)
+     return (struct GbVoxelHouse){x,y,width+1,rows};
+ }
+ 
++/* Add a short projected apron only below the verified native fascia.
++ * The deck stays on its original plane, as do local actors and collisions. */
++static void redBoardwalkApron(const struct VoxelView* view, int x, int y, int width, uint32_t wood) {
++    for (int sy=voxelY(view,y,0); sy<voxelY(view,y+8,0); ++sy) {
++        if ((unsigned)sy >= (unsigned)view->height) continue;
++        int worldY=voxelWorldY(view,sy,0);
++        int dy=worldY-y;
++        if ((unsigned)dy>=8u || worldY<view->top || worldY>=view->top+view->rows*VOXEL_TILE) continue;
++        int left=voxelX(view,x,worldY);
++        uint32_t floorDepth=(uint32_t)(worldY-view->top+1)*512u;
++        for (int dx=0; dx<width; ++dx) {
++            int sx=left+dx;
++            if ((unsigned)sx >= (unsigned)view->width) continue;
++            int at=sy*view->width+sx;
++            if (view->depth[at]!=floorDepth) continue;
++            if (dy<2) {
++                view->out[at]=voxelShade(wood,dy==0 ? 222u : 178u);
++                continue;
++            }
++            unsigned post=(unsigned)(dx-9)&31u;
++            if (post<5u && dy<7)
++                view->out[at]=voxelShade(wood,post<2u ? 166u : 201u);
++            else if (post<8u && dy>=5)
++                view->out[at]=voxelShade(view->out[at],214u);
++        }
++    }
++}
++
++static void redRoute12Boardwalks(const struct GbSnap* snap, const struct VoxelView* view, uint32_t alpha) {
++    enum { collar=6 };
++    if (!gbRoute12BoardwalkProfile || snap->w!=10 || snap->h!=54 ||
++        gbRam(gbCfg[GB_YCOORD]-3)!=0x17) return;
++    for (unsigned i=0; i<sizeof(gen1Route12Boardwalks)/sizeof(*gen1Route12Boardwalks); ++i) {
++        const struct Gen1Boardwalk* b=&gen1Route12Boardwalks[i];
++        bool matches=true;
++        for (int row=0; row<3 && matches; ++row)
++            for (int col=0; col<b->width; ++col)
++                if (gbVoxelSignature(snap,collar+b->x+col,collar+b->deck+row)!=b->rows[row][col]) {
++                    matches=false;
++                    break;
++                }
++        if (matches)
++            redBoardwalkApron(view,(collar+b->x)*VOXEL_TILE,(collar+b->deck+1)*VOXEL_TILE+8,
++                             b->width*VOXEL_TILE,alpha|RED_COLOR(148,128,92));
++    }
++}
++
+ static bool gbPalletWaterTile(const struct GbSnap* snap, int tx, int ty) {
+     // This is an exact Pallet Town source window in world 8x8 tile units.
+     return tx >= 20 && tx < 28 && ty >= 40 && ty < 48 && gbTile(snap,tx,ty)==0x14;
+@@ -345,6 +393,7 @@ static bool gbVoxelDraw(const struct GbSnap* snap, int ox, int oy, struct PkWide
+     const struct VoxelGroundMaterial groundMaterial = {groundCells, 0, 0};
+     if (pallet) gbPalletWater(snap,&view,art,floor,w,h);
+     voxelTerrainWithGround(&view, floor, classicTiles ? &groundMaterial : 0);
++    if (classicTiles) redRoute12Boardwalks(snap,&view,alpha);
+     const int border=96;
+     const uint8_t* roofTexture = pallet || houseCount ? voxelRoofTexture() : 0;
+     if (pallet) {
+--- a/app/src/main/cpp/pk_wide_gb.c
++++ b/app/src/main/cpp/pk_wide_gb.c
+@@ -1044,6 +1044,7 @@
+ static uint8_t gbObjMask[GB_BUF];    // an object already took this pixel
+ static struct PkWideView gbRawView;
+ static bool gbVoxelProfile;
++static bool gbRoute12BoardwalkProfile;
+ static uint32_t gbOver[GB_MAX_OBJS * 64];   // gbRaw's pixels (an `over` object's) that go over the game's own picture
+ static int gbNOver;
+ 
+@@ -1384,6 +1385,7 @@
+ 
+ int pk_wide_gb_configure(uint32_t crc) {
+     gbVoxelProfile = pk_wide_gb_voxel_knows(crc);
++    gbRoute12BoardwalkProfile = crc==0x9f7fdd53u || crc==0x7d527d62u;
+     gbGen1BattleConfigure(crc);
+ #ifdef __ANDROID__
+     gbSceneProbeFrames = 0;

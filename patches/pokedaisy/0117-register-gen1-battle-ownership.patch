@@ -1,0 +1,240 @@
+--- a/app/src/main/cpp/pk_wide_gb.c
++++ b/app/src/main/cpp/pk_wide_gb.c
+@@ -1380,9 +1380,9 @@
+ 
+ int pk_wide_gb_configure(uint32_t crc) {
+     gbVoxelProfile = pk_wide_gb_voxel_knows(crc);
+-    gbRedBattleProfile = crc == 0x9f7fdd53u;
+-    gbRedBattleArmed = false;
+-    gbRedBattleInvalid = true;
++    gbGen1BattleProfile = gbBattleOwnership(crc);
++    gbGen1BattleArmed = false;
++    gbGen1BattleInvalid = true;
+     memset(&voxelClimate, 0, sizeof(voxelClimate));
+     // Polished Crystal 3.2.3 (normal): its own structs and LZ, a profile of its own (pk_wide_gb_polished.inc)
+     if (crc && crc == PC_WIDE_CRC) return pk_wide_gb_configure_polished(pcWideConfig, pcLz);
+@@ -1525,7 +1525,7 @@
+     int cur = gbPrev == 0 ? 1 : 0;
+     gbTake(&gbSnaps[cur]);
+     gbCopyLive();
+-    gbRedBattleArm(&gbR->d, voxel && out && gbSnaps[cur].battle);
++    gbGen1BattleArm(&gbR->d, voxel && out && gbSnaps[cur].battle);
+     if (!out) {   // pk_wide_skip: only the RAM after this frame, for the next one drawn
+         gbPrev = cur;
+         return gbMix;
+@@ -1731,7 +1731,7 @@
+         gbMix = 256;
+     } else {
+         gbCompose(frame, out, v, alpha, valid && gbLastScene == PK_WIDE_SCENE_FIELD);
+-        if (gbRedBattleArmed && battle && !valid && !centre) gbRedBattleVolume(frame,out,v);
++        if (gbGen1BattleArmed && battle && !valid && !centre) gbGen1BattleVolume(frame,out,v);
+     }
+     gbPrev = cur;
+     return gbMix;
+--- a/app/src/main/cpp/pk_red_battle_pilot.h
++++ b/app/src/main/cpp/pk_red_battle_pilot.h
+@@ -1,102 +1,116 @@
+ #pragma once
+ #include "pk_battle_volume.h"
++#include "pk_gen1_battle_ownership.h"
+ 
+-enum { RED_BATTLER_X=96, RED_BATTLER_Y=0, RED_BATTLER_SIZE=56 };
+-static bool gbRedBattleProfile, gbRedBattleArmed, gbRedBattleInvalid;
+-static uint32_t gbRedBattleFrame;
+-static uint8_t gbRedBattleInk[RED_BATTLER_SIZE][RED_BATTLER_SIZE];
+-static void (*gbRedBattleNativeRange)(struct GBVideoRenderer*, int, int, int);
++enum { GEN1_BATTLER_X=96, GEN1_BATTLER_Y=0, GEN1_BATTLER_SIZE=56 };
++static const struct Gen1BattleOwnership* gbGen1BattleProfile;
++static bool gbGen1BattleArmed, gbGen1BattleInvalid;
++static uint32_t gbGen1BattleFrame;
++static uint8_t gbGen1BattleInk[GEN1_BATTLER_SIZE][GEN1_BATTLER_SIZE];
++static void (*gbGen1BattleNativeRange)(struct GBVideoRenderer*, int, int, int);
+ 
+-static void gbRedBattleRange(struct GBVideoRenderer* renderer, int start, int end, int y) {
+-    gbRedBattleNativeRange(renderer,start,end,y);
+-    if (!gbRedBattleArmed || y < RED_BATTLER_Y || y >= RED_BATTLER_SIZE) return;
++static const struct Gen1BattleOwnership* gbBattleOwnership(uint32_t crc) {
++    for (size_t i=0;i<sizeof(gen1BattleOwnership)/sizeof(*gen1BattleOwnership);++i)
++        if (gen1BattleOwnership[i].crc==crc) return &gen1BattleOwnership[i];
++    return NULL;
++}
++
++static void gbGen1BattleRange(struct GBVideoRenderer* renderer, int start, int end, int y) {
++    gbGen1BattleNativeRange(renderer,start,end,y);
++    if (!gbGen1BattleArmed || y < GEN1_BATTLER_Y || y >= GEN1_BATTLER_SIZE) return;
+     if (y==0 && start==0) {
+-        gbRedBattleFrame=gbB->video.frameCounter;
+-        gbRedBattleInvalid=false;
+-        memset(gbRedBattleInk,0xff,sizeof(gbRedBattleInk));
++        gbGen1BattleFrame=gbB->video.frameCounter;
++        gbGen1BattleInvalid=false;
++        memset(gbGen1BattleInk,0xff,sizeof(gbGen1BattleInk));
+     }
+-    if (end<=RED_BATTLER_X || start>=RED_BATTLER_X+RED_BATTLER_SIZE) return;
+-    if (gbRedBattleInvalid || gbRedBattleFrame!=gbB->video.frameCounter) return;
++    if (end<=GEN1_BATTLER_X || start>=GEN1_BATTLER_X+GEN1_BATTLER_SIZE) return;
++    if (gbGen1BattleInvalid || gbGen1BattleFrame!=gbB->video.frameCounter) return;
+ 
+     const struct GBVideoSoftwareRenderer* r=(const struct GBVideoSoftwareRenderer*)renderer;
+     // The proven fight menu draws the full-screen, signed-address window.
+-    // Final native row indices above 3 belong to OBJ/highlight, not this art.
+-    if (r->model!=GB_MODEL_SGB || r->sgbBorders || renderer->sgbRenderMode ||
+-        r->lcdc!=0xe3 || !r->hasWindow || renderer->disableWIN || renderer->highlightWIN ||
++    // The exact unflipped window palette excludes final OBJ/highlight rows.
++    const struct Gen1BattleOwnership* profile=gbGen1BattleProfile;
++    if (r->model!=profile->model || r->sgbBorders || renderer->sgbRenderMode ||
++        r->lcdc!=profile->lcdc || !r->hasWindow || renderer->disableWIN || renderer->highlightWIN ||
+         r->wx+r->currentWx!=7 || r->wy+r->currentWy!=0 || r->offsetWx || r->offsetWy) {
+-        gbRedBattleInvalid=true;
++        gbGen1BattleInvalid=true;
+         return;
+     }
+-    int from=start<RED_BATTLER_X?RED_BATTLER_X:start;
+-    int to=end>RED_BATTLER_X+RED_BATTLER_SIZE?RED_BATTLER_X+RED_BATTLER_SIZE:end;
++    int from=start<GEN1_BATTLER_X?GEN1_BATTLER_X:start;
++    int to=end>GEN1_BATTLER_X+GEN1_BATTLER_SIZE?GEN1_BATTLER_X+GEN1_BATTLER_SIZE:end;
++    unsigned paletteBase=(profile->attribute&7u)*4u;
+     for (int x=from;x<to;++x) {
+-        int px=x-RED_BATTLER_X;
++        int px=x-GEN1_BATTLER_X;
+         unsigned expected=(unsigned)(px/8*7+y/8);
+-        unsigned tile=renderer->vram[0x1c00+(y/8)*32+x/8];
+-        if (tile!=expected || r->row[x]>3) {
+-            gbRedBattleInvalid=true;
++        unsigned mapAddress=0x1c00+(y/8)*32+x/8;
++        unsigned tile=renderer->vram[mapAddress];
++        if (tile!=expected || r->row[x]<paletteBase || r->row[x]>paletteBase+3 ||
++            (profile->model==GB_MODEL_CGB && renderer->vram[mapAddress+0x2000]!=profile->attribute)) {
++            gbGen1BattleInvalid=true;
+             return;
+         }
+-        gbRedBattleInk[y][px]=(uint8_t)r->row[x];
++        gbGen1BattleInk[y][px]=(uint8_t)(r->row[x]-paletteBase);
+     }
+ }
+ 
+-static void gbRedBattleArm(struct GBVideoRenderer* renderer, bool active) {
+-    gbRedBattleArmed=gbRedBattleProfile && active;
+-    if (!gbRedBattleArmed) {
+-        gbRedBattleInvalid=true;
+-        if (renderer->drawRange==gbRedBattleRange) renderer->drawRange=gbRedBattleNativeRange;
++static void gbGen1BattleArm(struct GBVideoRenderer* renderer, bool active) {
++    gbGen1BattleArmed=gbGen1BattleProfile && active;
++    if (!gbGen1BattleArmed) {
++        gbGen1BattleInvalid=true;
++        if (renderer->drawRange==gbGen1BattleRange) renderer->drawRange=gbGen1BattleNativeRange;
+         return;
+     }
+-    if (renderer->drawRange!=gbRedBattleRange) {
+-        gbRedBattleNativeRange=renderer->drawRange;
+-        renderer->drawRange=gbRedBattleRange;
+-        gbRedBattleInvalid=true;
++    if (renderer->drawRange!=gbGen1BattleRange) {
++        gbGen1BattleNativeRange=renderer->drawRange;
++        renderer->drawRange=gbGen1BattleRange;
++        gbGen1BattleInvalid=true;
+     }
+ }
+ 
+-static void gbRedBattleVolume(const uint32_t* frame, uint32_t* out, struct PkWideView v) {
+-    if (gbRedBattleInvalid || gbRedBattleFrame+1!=gbB->video.frameCounter ||
+-        gbRam(0xcfe5)!=0xb0 || gbRam(0xd057)!=1 || gbRam(0xcc24)!=14 ||
+-        gbRam(0xcc25)!=9 || gbRam(0xcc26)!=0) return;
++static void gbGen1BattleVolume(const uint32_t* frame, uint32_t* out, struct PkWideView v) {
++    const struct Gen1BattleOwnership* profile=gbGen1BattleProfile;
++    if (gbGen1BattleInvalid || gbGen1BattleFrame+1!=gbB->video.frameCounter ||
++        gbRam(profile->enemy)!=profile->species || gbRam(profile->battle)!=1 ||
++        gbRam(profile->menu)!=14 || gbRam(profile->menu+1)!=profile->menuX ||
++        gbRam(profile->menu+2)!=0) return;
+ 
+     uint32_t fingerprint=2166136261u, palette[4]={0};
+     unsigned seen=0;
+-    for (int y=0;y<RED_BATTLER_SIZE;++y) for (int x=0;x<RED_BATTLER_SIZE;++x) {
+-        unsigned ink=gbRedBattleInk[y][x];
++    for (int y=0;y<GEN1_BATTLER_SIZE;++y) for (int x=0;x<GEN1_BATTLER_SIZE;++x) {
++        unsigned ink=gbGen1BattleInk[y][x];
+         if (ink>3) return;
+         unsigned tile=(unsigned)(x/8*7+y/8);
+         fingerprint=(fingerprint^tile)*16777619u;
+         fingerprint=(fingerprint^ink)*16777619u;
+-        uint32_t color=frame[y*GBW+x+RED_BATTLER_X]&0x00ffffffu;
++        uint32_t color=frame[y*GBW+x+GEN1_BATTLER_X]&0x00ffffffu;
+         if ((seen&(1u<<ink)) && palette[ink]!=color) return;
+         palette[ink]=color;
+         seen|=1u<<ink;
+     }
+-    // Exact English Red front Charmander artwork from the verified Fight
++    // Exact front artwork from this cartridge revision and its verified Fight
+     // checkpoint. Text, scrolling, fainting, and other species fail closed.
+-    if (fingerprint!=0x9e4c3d9au || seen!=15 || palette[0]==palette[1] ||
++    if (fingerprint!=profile->front || seen!=15 || palette[0]==palette[1] ||
+         palette[0]==palette[2] || palette[0]==palette[3]) return;
+ 
+     static struct BattleVolume volume;
+-    static bool built;
+-    if (!built) {
++    static uint32_t meshFingerprint;
++    if (meshFingerprint!=fingerprint) {
+         // Retain the native picture's placement and color indices. The
+         // shared helper consumes 4bpp 8x8 tiles in a padded 64-square.
+         uint8_t art[2048]={0};
+-        for (int y=0;y<RED_BATTLER_SIZE;++y) for (int x=0;x<RED_BATTLER_SIZE;++x) {
++        for (int y=0;y<GEN1_BATTLER_SIZE;++y) for (int x=0;x<GEN1_BATTLER_SIZE;++x) {
+             unsigned slot=((y/8)*8+x/8)*32+(y%8)*4+(x%8)/2;
+-            art[slot]|=(uint8_t)(gbRedBattleInk[y][x]<<((x&1)*4));
++            art[slot]|=(uint8_t)(gbGen1BattleInk[y][x]<<((x&1)*4));
+         }
+         battleVolumeBuild(&volume,art,.44f,-.39f);
+-        built=true;
++        meshFingerprint=fingerprint;
+     }
+-    for (int y=0;y<RED_BATTLER_SIZE;++y) for (int x=0;x<RED_BATTLER_SIZE;++x) {
+-        int screenX=RED_BATTLER_X+x;
++    for (int y=0;y<GEN1_BATTLER_SIZE;++y) for (int x=0;x<GEN1_BATTLER_SIZE;++x) {
++        int screenX=GEN1_BATTLER_X+x;
+         if (screenX<v.x || screenX>=v.x+v.w || y<v.y || y>=v.y+v.h) continue;
+         const struct BattleVolumePixel* sample=&volume.pixels[y+BATTLE_VOLUME_MARGIN][x+BATTLE_VOLUME_MARGIN];
+         if (!sample->ink) continue;
+-        unsigned live=gbRedBattleInk[y][x];
++        unsigned live=gbGen1BattleInk[y][x];
+         if (!live && sample->face==1) continue;
+         uint32_t native=frame[y*GBW+screenX];
+         out[(y-v.y)*v.w+screenX-v.x]=voxelShade((native&0xff000000u)|palette[sample->ink],sample->light);
+--- /dev/null
++++ b/app/src/main/cpp/pk_gen1_battle_ownership.h
+@@ -0,0 +1,35 @@
++#pragma once
++#include <stdint.h>
++
++/* Generated by gen_battle_ownership_profiles.py from exact native window fixtures. */
++struct Gen1BattleOwnership {
++    uint32_t crc, front;
++    uint16_t enemy, battle, menu;
++    uint8_t species, menuX, model, lcdc, attribute;
++};
++
++static const struct Gen1BattleOwnership gen1BattleOwnership[] = {
++    {0x9f7fdd53u,0x9e4c3d9au,0xcfe5,0xd057,0xcc24,0xb0,9,0x20,0xe3,0},
++    {0xd6da8a1au,0x9e4c3d9au,0xcfe5,0xd057,0xcc24,0xb0,9,0x20,0xe3,0},
++    {0x7d527d62u,0xea6ae72cu,0xcfe4,0xd056,0xcc24,0xb0,9,0x80,0xe3,3},
++    {0x89197825u,0x9e4c3d9au,0xcfea,0xd05c,0xcc24,0xb0,7,0x20,0xe3,0},
++    {0x9c336307u,0x9e4c3d9au,0xcfea,0xd05c,0xcc24,0xb0,7,0x20,0xe3,0},
++    {0x7a01e45au,0xea6ae72cu,0xcfe9,0xd05b,0xcc24,0xb0,7,0x80,0xe3,3},
++    {0x337fce11u,0x9e4c3d9au,0xcfea,0xd05c,0xcc24,0xb0,7,0x20,0xe3,0},
++    {0x50e2fc1du,0x9e4c3d9au,0xcfea,0xd05c,0xcc24,0xb0,7,0x20,0xe3,0},
++    {0xd03426e9u,0xea6ae72cu,0xcfe9,0xd05b,0xcc24,0xb0,7,0x80,0xe3,3},
++    {0xd8507d8au,0x9e4c3d9au,0xcfea,0xd05c,0xcc24,0xb0,9,0x20,0xe3,0},
++    {0xd95416f9u,0x9e4c3d9au,0xcfea,0xd05c,0xcc24,0xb0,9,0x20,0xe3,0},
++    {0x964b7a10u,0xea6ae72cu,0xcfe9,0xd05b,0xcc24,0xb0,9,0x80,0xe3,3},
++    {0x2945acebu,0x9e4c3d9au,0xcfea,0xd05c,0xcc24,0xb0,7,0x20,0xe3,0},
++    {0x4d0984a9u,0x9e4c3d9au,0xcfea,0xd05c,0xcc24,0xb0,7,0x20,0xe3,0},
++    {0x8b56fe33u,0xea6ae72cu,0xcfe9,0xd05b,0xcc24,0xb0,7,0x80,0xe3,3},
++    {0xb77be1e0u,0xdc8c5435u,0xcfcc,0xd034,0xcc24,0xb0,10,0x20,0xe3,0},
++    {0x13652705u,0xdc8c5435u,0xcfcc,0xd034,0xcc24,0xb0,10,0x20,0xe3,0},
++    {0xe4468d14u,0x9e4c3d9au,0xcfcc,0xd034,0xcc24,0xb0,10,0x20,0xe3,0},
++    {0xbaeacd2bu,0xdc8c5435u,0xcfcc,0xd034,0xcc24,0xb0,10,0x20,0xe3,0},
++    {0xa2545d33u,0xea6ae72cu,0xcfcc,0xd034,0xcc24,0xb0,10,0x20,0xe3,0},
++    {0xfd3da7ffu,0xea6ae72cu,0xcfcc,0xd034,0xcc24,0xb0,10,0x20,0xe3,0},
++    {0xe9e6483au,0xea6ae72cu,0xcfcc,0xd034,0xcc24,0xb0,10,0x20,0xe3,0},
++    {0x4ec85504u,0xea6ae72cu,0xcfcc,0xd034,0xcc24,0xb0,10,0x20,0xe3,0},
++};

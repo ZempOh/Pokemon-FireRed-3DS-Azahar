@@ -1,0 +1,52 @@
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -5631,6 +5631,41 @@
+     }
+ }
+ 
++/* Cast a soft contact shadow in the same grounded surface coordinates
++ * used by the live actor. Draw afterward to keep the original occlusion. */
++static void solidActorContactShadows(const struct VoxelView* v, const uint8_t* groundCells,
++                                      uint32_t* texture) {
++    static const uint8_t darkness[5][9] = {
++        {0,0,2,5,7,5,2,0,0},
++        {0,4,11,18,23,18,11,4,0},
++        {3,10,23,36,42,36,23,10,3},
++        {0,4,11,18,23,18,11,4,0},
++        {0,0,2,5,7,5,2,0,0},
++    };
++    const struct Piece* objects = pieces[shown];
++    for (int i = 0; i < npieces[shown]; ++i) {
++        const struct Piece* p = &objects[i];
++        if (!p->world || !p->actor || p->vegetation || p->copy || p->mode || p->rot) continue;
++        int x = p->x + p->w / 2;
++        int foot = p->y + p->h - 1;
++        int surface = voxelRiseAt(v, x, foot);
++        for (int dy = 0; dy < 5; ++dy) {
++            int y = foot + dy - 1 - v->top;
++            if ((unsigned)y >= (unsigned)v->rows * VOXEL_TILE) continue;
++            int row = y / VOXEL_TILE;
++            for (int dx = 0; dx < 9; ++dx) {
++                unsigned shade = darkness[dy][dx];
++                int pixel = x + dx - 4 - v->left;
++                if (!shade || (unsigned)pixel >= (unsigned)v->cols * VOXEL_TILE) continue;
++                int col = pixel / VOXEL_TILE;
++                if (!groundCells[row * v->cols + col] || voxelRise(v, col, row) != surface) continue;
++                uint32_t* target = texture + y * v->stride + pixel;
++                *target = voxelShade(*target, 256u - shade);
++            }
++        }
++    }
++}
++
+ static bool drawVoxel(const struct Snap* s, int cx, int cy, int href, int vref,
+                       uint32_t* out, struct PkWideView v, uint32_t alpha) {
+     if (!voxelViewportFits(v.w, v.h)) return false;
+@@ -5747,6 +5782,7 @@
+         for (int row=0; row<rows; ++row)
+             for (int col=0; col<cols; ++col)
+                 groundCells[row*cols+col] = solidGroundMaterial(s,groundMask,cellX+col,cellY+row,col,row);
++        solidActorContactShadows(&voxel,groundCells,texture);
+         const struct VoxelGroundMaterial groundMaterial = {groundCells,cx,cy};
+         voxelTerrainWithGround(&voxel,texture,&groundMaterial);
+     } else voxelTerrain(&voxel);

@@ -1506,3 +1506,48 @@ cadence. Keep the same strict field and battle gates and retest both 2D and 3D.
   cartridge headers with `tools/gen_scenery_ocean_routes.py`. The runtime still
   reads the current map's weather and checks for native weather objects.
   Underwater, cave, and indoor map types keep their existing classification.
+
+### Follow-up recognition and geometry
+
+- The Game Boy battle registry checks exact cartridge, window ownership,
+  source palette and front ink fingerprint. Charmander has a verified host
+  fixture in all 23 revisions. The full 151 front species have verified
+  host fixtures for English Red, Japanese Red and English Yellow. All
+  remaining revisions match every compressed front source of one of these
+  three groups. Share only art lookups. Keep each revision's live palette,
+  ownership and text-window checks. Four native front fixtures per revision
+  confirm state and 2D parity, with screen changes confined to the sprite.
+  Keep tutorials, move menus, flashes and unmatched subjects on their native
+  path. Use native fixtures to verify attacks and return to field separately.
+- All 16 GBA opponent fixtures now have exact CRC, affine origin and
+  source ink registrations. The host checks live palettes, adjacent 3D
+  sides, unchanged 2D frames and battle state, and unchanged HUD pixels.
+  Additional species, rear views, battle trainers and device motion are
+  separate coverage items.
+- World-actor contact shadows use approved floor cells at the actor's
+  current elevation. Shadows stop at a material or height boundary.
+- Unbound's Dresco crossing and Modern Emerald Route 104 have separately
+  verified upper decks over water. The support meshes keep the native deck,
+  steps and collision. Unbound's crossing and Modern Emerald's post-battle
+  crossing both match native movement on the host.
+- English Red and Yellow have two Route 12 boardwalk spans with under-deck
+  supports. Match both live apron and deck signatures. The disposable crossing
+  confirms native movement and identical 2D output.
+- Rock Tunnel contact shadows are limited to source-owned bare cave floor by
+  tall rock faces. Eight verified exact maps cover FireRed, FRLG+, Fakemon
+  FireRed and Rocket Edition. The shadows require the native Flash flag and
+  level. The unlit renderer frame and the native 2D controls remain identical.
+- Lazarus's Acrisia hedge mask admits only the 13 source texels confirmed as
+  grass gaps. Preserve the separate source stone and bark. Review the full
+  winter frame on Thor before accepting the fix.
+- Exact Game Boy scene logs report native battle state, field confidence,
+  voxel draw state, coordinates, and cartridge identity. Use them to verify
+  a projected return to field even where localized companion telemetry is
+  unavailable.
+
+Track large terrain and small scenery separately. Route steps, slopes and
+ledges, mixed surfaces, shore and waterbeds, doorway thresholds, mailboxes,
+posts, fences and decorative props each need source variant counts and
+representative play evidence. A roof, field or cave sample leaves other
+variants open. Map-owned and live interactive variants must be checked
+separately so removed objects do not reappear in the projected view.

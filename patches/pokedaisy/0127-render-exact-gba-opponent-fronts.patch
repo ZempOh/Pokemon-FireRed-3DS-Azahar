@@ -1,0 +1,71 @@
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -4899,10 +4899,39 @@
+     }
+ }
+ 
++// Cartridge-specific native front pictures verified against disposable battle fixtures.
++static const struct BattleFrontProfile {
++    uint32_t crc, fingerprint;
++    uint8_t y;
++} battleFrontProfiles[] = {
++    {0x25c3d89fu, 0x7433dabau, 21}, // letsgo
++    {0xfba55dd8u, 0x914b19e0u, 20}, // radical
++    {0x4b3d4957u, 0xdcaa7d93u, 19}, // unbound
++    {0x2be557a3u, 0xe511ac70u, 24}, // better-emerald-2
++    {0x263a1187u, 0x3c41115au, 22}, // modern-emerald
++    {0x5e704d77u, 0x052429d9u, 22}, // fakemon
++    {0x558ae42fu, 0x8c18f859u, 17}, // lazarus
++    {0xcec21496u, 0x4e918feau, 18}, // dragonsden
++    {0x63478921u, 0xf2105245u, 23}, // ash-gray
++    {0xb9465c5au, 0xa8acf0edu, 4}, // gaia
++    {0xf2d16ebdu, 0x25f73d05u, 24}, // rocket
++    {0x14465a33u, 0xbfaf0846u, 10}, // seaglass
++    {0x6c5ee1b2u, 0x29c80268u, 16}, // odyssey
++    {0xe4deb9beu, 0x65473f54u, 5}, // classic
++    {0x964763c0u, 0x94d81a08u, 22}, // frlgplus
++    {0xdd88761cu, 0x1e472829u, 21}, // firered
++};
++
+ static void battleVolumeDraw(const uint32_t* frame, uint32_t* out, struct PkWideView v, uint32_t alpha) {
+-    // Only the reviewed FireRed opponent front picture is enrolled.
+-    if (!voxelEnabled || solidRom != 0xdd88761cu || lineIoFrames < 2 ||
+-        lineOamN != 1 || linePalN != 1 || tintShown) return;
++    if (!voxelEnabled || lineIoFrames < 2 || lineOamN != 1 || linePalN != 1 || tintShown) return;
++    const struct BattleFrontProfile* profile = NULL;
++    for (unsigned i = 0; i < sizeof(battleFrontProfiles)/sizeof(*battleFrontProfiles); ++i) {
++        if (battleFrontProfiles[i].crc == solidRom) {
++            profile = &battleFrontProfiles[i];
++            break;
++        }
++    }
++    if (!profile) return;
+     const uint16_t* oam = lineOamBuf[0];
+     const uint8_t* vram = (const uint8_t*)G->video.vram;
+     const uint8_t* art = NULL;
+@@ -4912,9 +4941,9 @@
+         if ((a[0] & 0xff00) != 0x0100 || (a[1] & 0xc000) != 0xc000) continue;
+         int x = a[1] & 511, y = a[0] & 255;
+         int p = (a[2] >> 10) & 3, tile = a[2] & 1023;
+-        if (x != 144 || y != 21 || p != 2 || tile > 960) continue;
++        if (x != 144 || y != profile->y || p != 2 || tile > 960) continue;
+         const uint8_t* candidate = vram + 0x10000 + tile*32;
+-        if (battleVolumeFingerprint(candidate, 2048) != 0x1e472829u) continue;
++        if (battleVolumeFingerprint(candidate, 2048) != profile->fingerprint) continue;
+         const uint16_t* matrix = oam + ((a[1] >> 9) & 31) * 16;
+         if (matrix[3] != 256 || matrix[7] || matrix[11] || matrix[15] != 256) return;
+         if (target >= 0) return;
+@@ -4922,10 +4951,10 @@
+     }
+     if (target < 0) return;
+     static struct BattleVolume mesh;
+-    static bool built;
+-    if (!built) {
++    static const struct BattleFrontProfile* cachedProfile;
++    if (cachedProfile != profile) {
+         battleVolumeBuild(&mesh, art, .44f, -.39f);
+-        built = true;
++        cachedProfile = profile;
+     }
+     uint8_t blocked[BATTLE_VOLUME_SIZE][BATTLE_VOLUME_SIZE] = {0};
+     battleVolumeProtect(oam,target,ox-BATTLE_VOLUME_MARGIN,oy-BATTLE_VOLUME_MARGIN,blocked);

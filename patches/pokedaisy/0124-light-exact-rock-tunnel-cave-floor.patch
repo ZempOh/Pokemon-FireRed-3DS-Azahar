@@ -1,0 +1,94 @@
+--- a/app/src/main/cpp/pk_wide.c
++++ b/app/src/main/cpp/pk_wide.c
+@@ -30,6 +30,7 @@
+ #include "pk_wide_voxel.h"
+ #include "pk_water_surface.h"
+ #include "pk_scenery_water_profiles.h"
++#include "pk_scenery_cave_contact_profiles.h"
+ #include "pk_battle_volume.h"
+ #include "pk_wide_solid.h"
+ #include "pk_wide_props.h"
+@@ -5730,6 +5731,53 @@
+     return bridge;
+ }
+ 
++static bool sceneryCaveContactMap(const struct Snap* s) {
++    for (size_t i=0; i<sizeof(sceneryCaveContacts)/sizeof(*sceneryCaveContacts); ++i) {
++        const struct SceneryCaveContactProfile* p=&sceneryCaveContacts[i];
++        if (p->rom==solidRom && p->group==s->group && p->map==s->num &&
++            p->primary==s->primary && p->secondary==s->secondary &&
++            p->width==s->width && p->height==s->height && p->layout==r32(F.mapHeader))
++            return true;
++    }
++    return false;
++}
++
++/* Shade bare, walkable cave floor beside a source-verified north rock foot. */
++static void sceneryCaveContact(const struct Snap* s, const struct VoxelView* view,
++                                      int cellX, int cellY, int href, int vref, uint32_t* texture) {
++    if (!F.mapHeader || r8(F.mapHeader+0x15)!=1 || r8(F.mapHeader+0x16)!=0 ||
++        r8(F.mapHeader+0x17)!=4 || !F.saveBlock1 || F.saveStatic || !sceneryCaveContactMap(s))
++        return;
++    uint32_t sb1 = r32(F.saveBlock1);
++    if (!mem(sb1, 0xf00) || r8(sb1+4)!=s->group || r8(sb1+5)!=s->num ||
++        r8(sb1+0x30)!=0 || !flagSet(sb1,0x806) || !solidGroundAligned(href,vref))
++        return;
++    for (int row=0; row<view->rows; ++row) for (int col=0; col<view->cols; ++col) {
++        int x=cellX+col, y=cellY+row;
++        if ((unsigned)(x-MAP_OFFSET) >= (unsigned)s->width || y <= MAP_OFFSET || y >= MAP_OFFSET+s->height)
++            continue;
++        int conn, northConn;
++        int floor=blockIn(s,x,y,&conn,false), north=blockIn(s,x,y-1,&northConn,false);
++        if (conn >= 0 || northConn >= 0 || floor != 0x281 || north < 0x298 || north > 0x29a)
++            continue;
++        bool visible=true;
++        for (int py=0; py<16 && visible; ++py)
++            visible = !memchr(holeBuf[row*16+py]+col*16, 1, 16);
++        if (!visible) continue;
++        for (int py=0; py<7; ++py) {
++            unsigned gain=256-7*(7-py);
++            for (int px=0; px<16; ++px) {
++                uint32_t* pixel=&texture[(row*16+py)*view->stride+col*16+px];
++                uint32_t c=*pixel;
++                *pixel=(c&0xff000000u) | ((c&0x0000ffu)*gain>>8) |
++                    (((c&0x00ff00u)*gain>>8)&0x00ff00u) |
++                    (((c&0xff0000u)*gain>>8)&0xff0000u);
++            }
++        }
++    }
++}
++
++
+ static bool drawVoxel(const struct Snap* s, int cx, int cy, int href, int vref,
+                       uint32_t* out, struct PkWideView v, uint32_t alpha) {
+     if (!voxelViewportFits(v.w, v.h)) return false;
+@@ -5778,6 +5826,7 @@
+         memcpy(rawHole[y], holeBuf[sy] + sx, (size_t) v.w);
+     }
+     fireRedPalletWater(s,&voxel,cellX,cellY,texture);
++    sceneryCaveContact(s,&voxel,cellX,cellY,href,vref,texture);
+ 
+     // Header metadata and weather OAM are read from this same live session.
+     unsigned mapType = F.mapHeader ? r8(F.mapHeader + 0x17) : 0;
+--- /dev/null
++++ b/app/src/main/cpp/pk_scenery_cave_contact_profiles.h
+@@ -0,0 +1,19 @@
++#pragma once
++#include <stdint.h>
++
++/* Matches the approved source floor and north rock-foot signatures. */
++struct SceneryCaveContactProfile {
++    uint32_t rom, layout, primary, secondary;
++    uint16_t width, height;
++    uint8_t group, map;
++};
++static const struct SceneryCaveContactProfile sceneryCaveContacts[] = {
++    {0xdd88761cu,0x83130e4u,0x82d4a94u,0x82d4df4u,48,40,1,81}, // firered
++    {0xdd88761cu,0x8314008u,0x82d4a94u,0x82d4df4u,48,40,1,82}, // firered
++    {0x964763c0u,0x8354f80u,0x8316a4cu,0x8316dacu,48,40,1,84}, // frlgplus
++    {0x964763c0u,0x8355ea4u,0x8316a4cu,0x8316dacu,48,40,1,85}, // frlgplus
++    {0x5e704d77u,0x83130e4u,0x82d4a94u,0x82d4df4u,48,40,1,81}, // fakemon
++    {0x5e704d77u,0x8314008u,0x82d4a94u,0x82d4df4u,48,40,1,82}, // fakemon
++    {0xf2d16ebdu,0x83130e4u,0x82d4a94u,0x82d4df4u,48,40,1,81}, // rocket
++    {0xf2d16ebdu,0x8314008u,0x82d4a94u,0x82d4df4u,48,40,1,82}, // rocket
++};

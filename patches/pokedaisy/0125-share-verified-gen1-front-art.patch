@@ -1,0 +1,60 @@
+--- a/app/src/main/cpp/pk_red_battle_pilot.h
++++ b/app/src/main/cpp/pk_red_battle_pilot.h
+@@ -2,6 +2,7 @@
+ #include "pk_battle_volume.h"
+ #include "pk_gen1_battle_ownership.h"
+ #include "pk_gen1_battle_front_batch.h"
++#include "pk_gen1_battle_front_aliases.h"
+ 
+ enum { GEN1_BATTLER_X=96, GEN1_BATTLER_Y=0, GEN1_BATTLER_SIZE=56 };
+ static uint32_t gbGen1BattleCrc, gbGen1BattleFingerprint;
+@@ -29,8 +30,17 @@
+     gbGen1BattleBatchLayout=NULL;
+     gbGen1BattleArmed=false;
+     gbGen1BattleInvalid=true;
++    uint32_t artCrc=crc;
++    for (size_t i=0;i<sizeof(gen1BattleFrontAliases)/sizeof(*gen1BattleFrontAliases);++i)
++        if (gen1BattleFrontAliases[i].crc==crc) {
++            artCrc=gen1BattleFrontAliases[i].artCrc;
++            break;
++        }
+     for (size_t i=0;i<sizeof(gen1BattleFrontBatch)/sizeof(*gen1BattleFrontBatch);++i)
+-        if (gen1BattleFrontBatch[i].crc==crc) gbGen1BattleBatch=gen1BattleFrontBatch[i].front;
++        if (gen1BattleFrontBatch[i].crc==artCrc) {
++            gbGen1BattleBatch=gen1BattleFrontBatch[i].front;
++            break;
++        }
+     if (!gbGen1BattleBatch) return;
+     for (size_t i=0;i<sizeof(gen1BattleOwnership)/sizeof(*gen1BattleOwnership);++i)
+         if (gen1BattleOwnership[i].crc==crc) {
+--- /dev/null
++++ b/app/src/main/cpp/pk_gen1_battle_front_aliases.h
+@@ -0,0 +1,28 @@
++#pragma once
++#include <stdint.h>
++
++/* Generated from byte-identical front art. Runtime layout remains cartridge-specific. */
++struct Gen1BattleFrontAlias { uint32_t crc, artCrc; };
++
++static const struct Gen1BattleFrontAlias gen1BattleFrontAliases[] = {
++    {0x2945acebu,0x9f7fdd53u},
++    {0x337fce11u,0x9f7fdd53u},
++    {0x4d0984a9u,0x9f7fdd53u},
++    {0x4ec85504u,0x7d527d62u},
++    {0x50e2fc1du,0x9f7fdd53u},
++    {0x7a01e45au,0x7d527d62u},
++    {0x89197825u,0x9f7fdd53u},
++    {0x8b56fe33u,0x7d527d62u},
++    {0x964b7a10u,0x7d527d62u},
++    {0x9c336307u,0x9f7fdd53u},
++    {0xa2545d33u,0x7d527d62u},
++    {0xb77be1e0u,0x13652705u},
++    {0xbaeacd2bu,0x13652705u},
++    {0xd03426e9u,0x7d527d62u},
++    {0xd6da8a1au,0x9f7fdd53u},
++    {0xd8507d8au,0x9f7fdd53u},
++    {0xd95416f9u,0x9f7fdd53u},
++    {0xe4468d14u,0x9f7fdd53u},
++    {0xe9e6483au,0x7d527d62u},
++    {0xfd3da7ffu,0x7d527d62u},
++};

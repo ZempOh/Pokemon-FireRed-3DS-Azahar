@@ -7880,6 +7880,30 @@
         65535
       ],
       "rgba_sha256": "ede6ba1a47ed153f07ca6bf6700b4e30511123a556e2a81f3fc29e7be84b9c22"
+    },
+    {
+      "id": "lazarus-acrisia-verified-hedge-ground:40",
+      "game": "lazarus",
+      "source_metatile_id": 64,
+      "rows": [
+        32768,
+        1,
+        32770,
+        32769,
+        0,
+        0,
+        32769,
+        0,
+        0,
+        1,
+        32770,
+        1,
+        0,
+        0,
+        32768,
+        0
+      ],
+      "rgba_sha256": "eae98cf457c5da61956123fcae09341dbbe6d89e27e86f893f5720af6460f9a6"
     }
   ],
   "targets": [
@@ -66248,6 +66272,29 @@
           ],
           "rgba_sha256": "057c9dedf240289b6e9a2444345485000eed06cdef173ec4c4342b56e439c84a",
           "reference_id": "lazarus-quad-ground70:0x1df"
+        },
+        {
+          "id": 64,
+          "rows": [
+            32768,
+            1,
+            32770,
+            32769,
+            0,
+            0,
+            32769,
+            0,
+            0,
+            1,
+            32770,
+            1,
+            0,
+            0,
+            32768,
+            0
+          ],
+          "reference_id": "lazarus-acrisia-verified-hedge-ground:40",
+          "rgba_sha256": "eae98cf457c5da61956123fcae09341dbbe6d89e27e86f893f5720af6460f9a6"
         }
       ]
     },
@@ -87203,6 +87250,22 @@
       ],
       "private_atlas_sha256": "c9cae576c4d7e0ff790e95d45948cdaa41400dd945f4df1602eaeeed00ca6981",
       "scope": "Own Pallet fence/sign background only. Source palette13/14 mask preserves every wooden/stone fence and sign pixel. Full-size exact62 winter exposed fence strips; replacement still requires Thor review."
+    },
+    {
+      "game": "lazarus",
+      "rom_sha256": "d756b2783dede0bb2c534d1f07713bef733cf53500388e3912f14220a7e16e97",
+      "primary": "0x8e3e21c",
+      "secondary": "0x8e3e92c",
+      "source_ground_reference_ids": [
+        1
+      ],
+      "source_ground_palette_indices": [
+        33
+      ],
+      "reviewed_ids": [
+        64
+      ],
+      "scope": "The exact visible ground agrees with the pure lower grass under a transparent leaf layer. Foreground and ambiguous pixels retain their live source colors."
     }
   ]
 }

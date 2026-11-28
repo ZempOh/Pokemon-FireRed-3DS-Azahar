@@ -1,0 +1,55 @@
+--- a/app/src/main/cpp/pk_wide_gb.c
++++ b/app/src/main/cpp/pk_wide_gb.c
+@@ -1380,7 +1380,8 @@
+ 
+ int pk_wide_gb_configure(uint32_t crc) {
+     gbVoxelProfile = pk_wide_gb_voxel_knows(crc);
+-    gbGen1BattleProfile = gbBattleOwnership(crc);
++    gbGen1BattleCrc = crc;
++    gbGen1BattleProfile = NULL;
+     gbGen1BattleArmed = false;
+     gbGen1BattleInvalid = true;
+     memset(&voxelClimate, 0, sizeof(voxelClimate));
+--- a/app/src/main/cpp/pk_red_battle_pilot.h
++++ b/app/src/main/cpp/pk_red_battle_pilot.h
+@@ -3,6 +3,7 @@
+ #include "pk_gen1_battle_ownership.h"
+ 
+ enum { GEN1_BATTLER_X=96, GEN1_BATTLER_Y=0, GEN1_BATTLER_SIZE=56 };
++static uint32_t gbGen1BattleCrc;
+ static const struct Gen1BattleOwnership* gbGen1BattleProfile;
+ static bool gbGen1BattleArmed, gbGen1BattleInvalid;
+ static uint32_t gbGen1BattleFrame;
+@@ -11,7 +12,9 @@
+ 
+ static const struct Gen1BattleOwnership* gbBattleOwnership(uint32_t crc) {
+     for (size_t i=0;i<sizeof(gen1BattleOwnership)/sizeof(*gen1BattleOwnership);++i)
+-        if (gen1BattleOwnership[i].crc==crc) return &gen1BattleOwnership[i];
++        if (gen1BattleOwnership[i].crc==crc &&
++            gbRam(gen1BattleOwnership[i].enemy)==gen1BattleOwnership[i].species)
++            return &gen1BattleOwnership[i];
+     return NULL;
+ }
+ 
+@@ -54,7 +57,10 @@
+ }
+ 
+ static void gbGen1BattleArm(struct GBVideoRenderer* renderer, bool active) {
+-    gbGen1BattleArmed=gbGen1BattleProfile && active;
++    const struct Gen1BattleOwnership* next=active ? gbBattleOwnership(gbGen1BattleCrc) : NULL;
++    if (next!=gbGen1BattleProfile) gbGen1BattleInvalid=true;
++    gbGen1BattleProfile=next;
++    gbGen1BattleArmed=next!=NULL;
+     if (!gbGen1BattleArmed) {
+         gbGen1BattleInvalid=true;
+         if (renderer->drawRange==gbGen1BattleRange) renderer->drawRange=gbGen1BattleNativeRange;
+--- a/app/src/main/cpp/pk_gen1_battle_ownership.h
++++ b/app/src/main/cpp/pk_gen1_battle_ownership.h
+@@ -32,4 +32,7 @@
+     {0xfd3da7ffu,0xea6ae72cu,0xcfcc,0xd034,0xcc24,0xb0,10,0x20,0xe3,0},
+     {0xe9e6483au,0xea6ae72cu,0xcfcc,0xd034,0xcc24,0xb0,10,0x20,0xe3,0},
+     {0x4ec85504u,0xea6ae72cu,0xcfcc,0xd034,0xcc24,0xb0,10,0x20,0xe3,0},
++    {0x9f7fdd53u,0x0104f74au,0xcfe5,0xd057,0xcc24,0x24,9,0x20,0xe3,0},
++    {0x13652705u,0xa9098c48u,0xcfcc,0xd034,0xcc24,0x24,10,0x20,0xe3,0},
++    {0x7d527d62u,0x4725ab69u,0xcfe4,0xd056,0xcc24,0x24,9,0x80,0xe3,3},
+ };
